@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Equianalgesia Opioide — DEMO</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F2EE;--surface:#FFFFFF;--surface-alt:#FAF8F5;
+  --teal-700:#3A6E7E;--teal-600:#4E8DA0;--teal-500:#5EA8BD;--teal-100:#D8EEF4;
+  --warm-700:#8A7252;--warm-600:#A68B5B;--warm-500:#CFA377;--warm-100:#F5EDE0;
+  --green-600:#4A8C5E;--green-500:#5BAB7A;--green-100:#DFF0E5;
+  --red-600:#A05050;--red-500:#BF7680;--red-100:#F5E0E3;
+  --rose-500:#C06070;--rose-100:#FAEAED;
+  --text:#2C3E4A;--text-muted:#6B7D8A;--border:#DDD8D0;
+  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,0.06);
+  --purple-600:#6B5B95;--purple-100:#EDE8F5;
+  --orange-600:#C47050;--orange-100:#FDE8DD;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
+h1,h2,h3{font-family:'DM Serif Display',serif;font-weight:400;}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--teal-700) 0%,#2C5A6A 100%);color:#fff;padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-60%;right:-20%;width:70%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%);pointer-events:none;}
+.header h1{font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:0.3rem;position:relative;}
+.header .subtitle{font-size:0.95rem;opacity:0.85;font-weight:400;position:relative;}
+.header .badge-row{display:flex;justify-content:center;gap:0.6rem;margin-top:1rem;flex-wrap:wrap;position:relative;}
+.header .badge{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);padding:0.3rem 0.8rem;border-radius:20px;font-size:0.72rem;font-weight:600;letter-spacing:0.03em;}
+
+/* ── WARNING BANNER ── */
+.warning-banner{background:var(--orange-100);border:2px solid var(--orange-600);border-radius:var(--radius);padding:1rem 1.2rem;margin:1.5rem auto;max-width:920px;font-size:0.82rem;line-height:1.5;}
+.warning-banner strong{color:var(--orange-600);}
+
+/* ── CONTAINER ── */
+.container{max-width:960px;margin:0 auto;padding:0 1rem 3rem;}
+
+/* ── NAV PILLS ── */
+.nav-pills{display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;padding:1rem 0;position:sticky;top:0;z-index:90;background:var(--bg);border-bottom:1px solid var(--border);}
+.pill{padding:0.45rem 1rem;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.25s;color:var(--text-muted);}
+.pill:hover{border-color:var(--teal-600);color:var(--teal-600);}
+.pill.active{background:var(--teal-600);color:#fff;border-color:var(--teal-600);}
+
+/* ── SECTIONS ── */
+.section{display:none;animation:fadeUp 0.4s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.2rem;box-shadow:var(--shadow);}
+.card h2{font-size:1.3rem;color:var(--teal-700);margin-bottom:0.8rem;}
+.card h3{font-size:1.05rem;color:var(--teal-700);margin-bottom:0.5rem;}
+
+/* ── FORM ELEMENTS ── */
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;}
+.form-group{display:flex;flex-direction:column;gap:0.3rem;}
+.form-group label{font-size:0.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;}
+.form-group select,.form-group input[type="number"]{padding:0.6rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.9rem;background:var(--surface-alt);transition:border-color 0.2s;color:var(--text);}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--teal-600);box-shadow:0 0 0 3px var(--teal-100);}
+.form-group .hint{font-size:0.7rem;color:var(--text-muted);font-style:italic;}
+
+/* ── BUTTONS ── */
+.btn{padding:0.7rem 1.5rem;border-radius:8px;border:none;font-family:inherit;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.25s;}
+.btn-primary{background:var(--teal-600);color:#fff;}
+.btn-primary:hover{background:var(--teal-700);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface-alt);border:1.5px solid var(--border);color:var(--text);}
+.btn-secondary:hover{border-color:var(--teal-600);color:var(--teal-600);}
+
+/* ── RESULT PANEL ── */
+.result-panel{background:linear-gradient(135deg,var(--teal-100) 0%,#E8F4F8 100%);border:2px solid var(--teal-500);border-radius:var(--radius);padding:1.5rem;margin:1.2rem 0;display:none;}
+.result-panel.show{display:block;animation:fadeUp 0.35s ease;}
+.demo-value{font-family:'DM Serif Display',serif;font-size:2.8rem;color:var(--teal-700);line-height:1.1;}
+.demo-label{font-size:0.78rem;color:var(--teal-600);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+.demo-unit{font-size:1rem;color:var(--text-muted);font-weight:500;}
+
+/* ── CONVERSION TABLE ── */
+.conv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.8rem;margin-top:1rem;}
+.conv-card{background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1rem;text-align:center;transition:all 0.2s;}
+.conv-card:hover{border-color:var(--teal-600);transform:translateY(-2px);box-shadow:var(--shadow);}
+.conv-card .opioid-name{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:0.2rem;}
+.conv-card .opioid-dose{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--teal-700);}
+.conv-card .opioid-route{font-size:0.7rem;color:var(--text-muted);}
+.conv-card.weak{border-left:3px solid var(--warm-500);}
+.conv-card.strong{border-left:3px solid var(--teal-600);}
+.conv-card.special{border-left:3px solid var(--purple-600);}
+.conv-card.highlight{background:var(--teal-100);border-color:var(--teal-600);}
+
+/* ── ALERT BOXES ── */
+.alert{border-radius:var(--radius);padding:0.9rem 1.1rem;margin:0.8rem 0;font-size:0.82rem;line-height:1.5;}
+.alert-danger{background:var(--red-100);border-left:3px solid var(--red-600);color:var(--red-600);}
+.alert-warning{background:var(--orange-100);border-left:3px solid var(--orange-600);}
+.alert-info{background:var(--teal-100);border-left:3px solid var(--teal-600);}
+.alert-purple{background:var(--purple-100);border-left:3px solid var(--purple-600);}
+
+/* ── TABLES ── */
+.ref-table{width:100%;border-collapse:collapse;font-size:0.8rem;margin:1rem 0;}
+.ref-table th{background:var(--teal-700);color:#fff;padding:0.6rem 0.8rem;text-align:left;font-weight:600;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;}
+.ref-table td{padding:0.5rem 0.8rem;border-bottom:1px solid var(--border);}
+.ref-table tr:nth-child(even){background:var(--surface-alt);}
+.ref-table tr:hover{background:var(--teal-100);}
+.type-weak{color:var(--warm-600);font-weight:600;}
+.type-strong{color:var(--teal-700);font-weight:600;}
+
+/* ── FOOTER ── */
+.footer{background:var(--teal-700);color:rgba(255,255,255,0.9);padding:2rem 1.5rem;text-align:center;font-size:0.78rem;line-height:1.8;margin-top:2rem;}
+.footer a{color:var(--teal-100);text-decoration:underline;}
+.footer .author{font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:0.5rem;color:#fff;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .form-row{grid-template-columns:1fr;}
+  .conv-grid{grid-template-columns:1fr 1fr;}
+  .header{padding:1.5rem 1rem;}
+  .demo-value{font-size:2.2rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="header">
+  <h1>💊 Calculadora de Equianalgesia Opioide</h1>
+  <p class="subtitle">Dosis Equivalente de Morfina Oral (DEMO) · Rotación de Opioides</p>
+  <div class="badge-row">
+    <span class="badge">Opioides débiles y fuertes</span>
+    <span class="badge">Vías oral · IV · SC · TD</span>
+    <span class="badge">Educación en Cuidados Paliativos</span>
+    <span class="badge">Colombia 🇨🇴</span>
+  </div>
+</header>
+
+<!-- ══════════ WARNING ══════════ -->
+<div class="warning-banner">
+  <strong>⚠️ HERRAMIENTA EXCLUSIVAMENTE EDUCATIVA.</strong> Esta calculadora es un recurso de apoyo académico para el programa de maestría en Cuidados Paliativos. <strong>NO reemplaza el juicio clínico</strong> ni las guías institucionales. Las dosis equianalgésicas son orientativas y la rotación de opioides siempre requiere <strong>reducción del 25–50 %</strong> de la dosis calculada por tolerancia cruzada incompleta, individualización según comorbilidades renales/hepáticas y titulación cuidadosa. Consulte siempre con un especialista antes de prescribir.
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<div class="container">
+<nav class="nav-pills">
+  <button class="pill active" onclick="showSection('calc',this)">🧮 Calculadora</button>
+  <button class="pill" onclick="showSection('tabla',this)">📊 Tabla Equianalgésica</button>
+  <button class="pill" onclick="showSection('metadona',this)">⚡ Metadona</button>
+  <button class="pill" onclick="showSection('rotacion',this)">🔄 Principios de Rotación</button>
+  <button class="pill" onclick="showSection('refs',this)">📚 Referencias</button>
+</nav>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 1: CALCULADORA                 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section active" id="sec-calc">
+  <div class="card">
+    <h2>Calculadora de Dosis Equivalente de Morfina Oral (DEMO)</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.2rem;">Seleccione el opioide actual, ingrese la dosis y obtenga la equivalencia en morfina oral y las conversiones a otros opioides.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Opioide actual</label>
+        <select id="opioidSelect" onchange="updateRoutes()">
+          <optgroup label="── Opioides Débiles ──">
+            <option value="codeina">Codeína</option>
+            <option value="tramadol">Tramadol</option>
+          </optgroup>
+          <optgroup label="── Opioides Fuertes ──">
+            <option value="morfina" selected>Morfina</option>
+            <option value="oxicodona">Oxicodona</option>
+            <option value="hidromorfona">Hidromorfona</option>
+            <option value="fentanilo_td">Fentanilo transdérmico (parche)</option>
+            <option value="fentanilo_iv">Fentanilo IV/SC</option>
+            <option value="buprenorfina_td">Buprenorfina transdérmica (parche 72–96h)</option>
+            <option value="buprenorfina_td7">Buprenorfina transdérmica (parche 7 días)</option>
+            <option value="buprenorfina_sl">Buprenorfina sublingual</option>
+            <option value="tapentadol">Tapentadol</option>
+            <option value="metadona">Metadona oral</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vía de administración</label>
+        <select id="routeSelect">
+          <option value="oral">Oral</option>
+          <option value="iv">Intravenosa (IV)</option>
+          <option value="sc">Subcutánea (SC)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label id="doseLabel">Dosis (mg)</label>
+        <input type="number" id="doseInput" min="0" step="any" placeholder="Ej: 30" value="">
+        <span class="hint" id="doseHint">Ingrese la dosis individual o diaria según selección</span>
+      </div>
+      <div class="form-group">
+        <label>Frecuencia</label>
+        <select id="freqSelect">
+          <option value="24">Dosis total en 24 horas</option>
+          <option value="1_4">Cada 4 horas (×6/día)</option>
+          <option value="1_6">Cada 6 horas (×4/día)</option>
+          <option value="1_8">Cada 8 horas (×3/día)</option>
+          <option value="1_12">Cada 12 horas (×2/día)</option>
+          <option value="1_24">Cada 24 horas (×1/día)</option>
+          <option value="1_72">Cada 72 horas (parche)</option>
+          <option value="1_168">Cada 7 días (parche semanal)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.5rem;">
+      <button class="btn btn-primary" onclick="calculate()">🧮 Calcular equivalencia</button>
+      <button class="btn btn-secondary" onclick="resetCalc()">↺ Limpiar</button>
+    </div>
+  </div>
+
+  <!-- RESULT PANEL -->
+  <div class="result-panel" id="resultPanel">
+    <div style="display:flex;align-items:baseline;gap:0.8rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+      <div>
+        <div class="demo-label">DEMO — Dosis Equivalente de Morfina Oral / 24h</div>
+        <div style="display:flex;align-items:baseline;gap:0.5rem;">
+          <span class="demo-value" id="demoValue">—</span>
+          <span class="demo-unit">mg/día vía oral</span>
+        </div>
+      </div>
+    </div>
+    <div id="demoExplain" style="font-size:0.82rem;color:var(--teal-700);margin-bottom:0.8rem;"></div>
+
+    <!-- Alerts container -->
+    <div id="alertsContainer"></div>
+
+    <!-- Conversion cards -->
+    <h3 style="font-family:'DM Serif Display',serif;color:var(--teal-700);margin:1rem 0 0.5rem;">Equivalencias en otros opioides (dosis/24h)</h3>
+    <p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.6rem;font-style:italic;">⚠ Valores orientativos. Aplicar reducción 25–50 % en rotación por tolerancia cruzada incompleta.</p>
+    <div class="conv-grid" id="convGrid"></div>
+  </div>
+
+  <!-- QUICK NOTES -->
+  <div class="alert alert-info" style="margin-top:1.2rem;">
+    <strong>💡 Recordatorio:</strong> La DEMO (Dosis Equivalente de Morfina Oral) es la dosis total de morfina oral en 24 horas que produce analgesia equivalente. Es el estándar universal para comparar potencia entre opioides y es la base para la rotación opioide segura.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 2: TABLA EQUIANALGÉSICA        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-tabla">
+  <div class="card">
+    <h2>Tabla de Equivalencia Equianalgésica</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Factores de conversión a Morfina Oral Equivalente (DEMO). Basado en guías SECPAL, EAPC, OMS y literatura actual.</p>
+
+    <table class="ref-table">
+      <thead>
+        <tr>
+          <th>Opioide</th>
+          <th>Vía</th>
+          <th>Factor → DEMO</th>
+          <th>Equivalencia a Morfina Oral 30 mg</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Codeína</strong></td><td>Oral</td><td>÷ 10</td><td>300 mg</td><td class="type-weak">Débil</td></tr>
+        <tr><td><strong>Tramadol</strong></td><td>Oral</td><td>÷ 5</td><td>150 mg</td><td class="type-weak">Débil</td></tr>
+        <tr><td><strong>Tramadol</strong></td><td>IV/SC</td><td>÷ 5 × 1 (≈ oral)</td><td>150 mg</td><td class="type-weak">Débil</td></tr>
+        <tr style="background:var(--teal-100);"><td><strong>Morfina</strong></td><td>Oral</td><td>× 1 (referencia)</td><td><strong>30 mg</strong></td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Morfina</strong></td><td>IV / SC</td><td>× 3</td><td>10 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Oxicodona</strong></td><td>Oral</td><td>× 1,5</td><td>20 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Oxicodona</strong></td><td>IV / SC</td><td>× 3</td><td>10 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Hidromorfona</strong></td><td>Oral</td><td>× 5</td><td>6 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Hidromorfona</strong></td><td>IV / SC</td><td>× 20</td><td>1,5 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Fentanilo</strong></td><td>Transdérmico</td><td>mcg/h × 2,4 = DEMO mg/día</td><td>12 mcg/h ≈ 30 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Fentanilo</strong></td><td>IV / SC</td><td>mcg/día ÷ 10 ≈ DEMO mg/día*</td><td>300 mcg/día ≈ 30 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Buprenorfina</strong></td><td>TD 72–96h</td><td>mcg/h × 1,7 ≈ DEMO mg/día</td><td>17,5 mcg/h ≈ 30 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Buprenorfina</strong></td><td>TD 7 días</td><td>mcg/h × 1,7 ≈ DEMO mg/día</td><td>17,5 mcg/h ≈ 30 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Buprenorfina</strong></td><td>Sublingual</td><td>× 37,5 (rango 30–75)</td><td>0,8 mg ≈ 30 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Tapentadol</strong></td><td>Oral</td><td>÷ 2,5</td><td>75 mg</td><td class="type-strong">Fuerte</td></tr>
+        <tr><td><strong>Metadona</strong></td><td>Oral</td><td>⚠ Variable (ver tabla)</td><td>Ratio variable 4:1 a 12:1</td><td style="color:var(--purple-600);font-weight:600;">Especial</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-purple" style="margin-top:1rem;">
+      <strong>📌 Nota sobre fentanilo:</strong> *El fentanilo IV se expresa en mcg/día. El factor de conversión a morfina oral varía según las fuentes entre 1:80 y 1:100. Esta calculadora utiliza un factor conservador de 1:100 (100 mcg fentanilo IV ≈ 10 mg morfina oral). Para parches transdérmicos, la conversión estándar es: mcg/h × 2,4 = mg/día de morfina oral.
+    </div>
+
+    <div class="alert alert-purple" style="margin-top:0.8rem;">
+      <strong>📌 Nota sobre buprenorfina transdérmica:</strong> Existen dos tipos de parches:<br>
+      • <strong>Parches de 72–96 horas</strong> (ej: Transtec®): disponibles en 35, 52,5 y 70 mcg/h. Se cambian cada 3–4 días.<br>
+      • <strong>Parches de 7 días</strong> (ej: BuTrans®, Norspan®): disponibles en 5, 10, 15 y 20 mcg/h. Se cambian semanalmente. Los parches de «10 mg» o «20 mg» se refieren al contenido total de fármaco; la tasa de liberación equivale a ~10 o ~20 mcg/h respectivamente.<br>
+      El factor de conversión (mcg/h × 1,7 ≈ DEMO mg/día) aplica para ambos tipos. La buprenorfina es un agonista parcial μ con efecto techo analgésico teórico a dosis altas; su equianalgesia en rangos bajos-moderados está bien establecida.
+    </div>
+
+    <div class="alert alert-warning" style="margin-top:0.8rem;">
+      <strong>⚠ Nota sobre buprenorfina sublingual:</strong> El factor de conversión SL → DEMO es controvertido. La literatura reporta rangos amplios: desde ×30 (conservador, McPherson 2014) hasta ×75 (algunas tablas de cuidados paliativos). Esta calculadora utiliza ×37,5 como valor intermedio. <strong>La evidencia es de baja calidad</strong> para esta conversión específica, con estudios predominantemente de dosis única en dolor agudo. La individualización clínica es especialmente crítica con esta presentación.
+    </div>
+
+    <div class="alert alert-info">
+      <strong>🔑 Principio fundamental:</strong> Todos los factores son <strong>aproximaciones clínicas</strong>. La respuesta individual varía por farmacogenómica (CYP2D6, CYP3A4), función renal/hepática, interacciones farmacológicas, tolerancia cruzada incompleta y factores psicosociales. La regla de oro: <em>«titular según respuesta, no según tabla»</em>.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 3: METADONA                    -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-metadona">
+  <div class="card">
+    <h2>⚡ Conversión a Metadona — Tablas Especiales</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">La metadona tiene farmacocinética única que hace peligrosa la conversión directa. La ratio varía según la dosis previa de morfina.</p>
+
+    <div class="alert alert-danger">
+      <strong>🚨 PRECAUCIÓN MÁXIMA:</strong> La metadona tiene vida media larga e impredecible (15–60 horas), acumulación tisular, riesgo de prolongación QTc, e interacciones CYP3A4/CYP2B6. La rotación a metadona <strong>SIEMPRE requiere supervisión de un especialista</strong> en cuidados paliativos o manejo del dolor.
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.6rem;">Método de Ripamonti (EAPC, más utilizado)</h3>
+    <table class="ref-table">
+      <thead><tr><th>DEMO (Morfina oral/24h)</th><th>Ratio Morfina:Metadona</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 90 mg/día</td><td style="font-weight:700;color:var(--green-600);">4 : 1</td><td>60 mg morfina → 15 mg metadona</td></tr>
+        <tr><td>90–300 mg/día</td><td style="font-weight:700;color:var(--warm-600);">8 : 1</td><td>240 mg morfina → 30 mg metadona</td></tr>
+        <tr><td>&gt; 300 mg/día</td><td style="font-weight:700;color:var(--red-600);">12 : 1</td><td>600 mg morfina → 50 mg metadona</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin:1.2rem 0 0.6rem;">Método de Ayonrinde (alternativo, más conservador)</h3>
+    <table class="ref-table">
+      <thead><tr><th>DEMO (Morfina oral/24h)</th><th>Ratio Morfina:Metadona</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 100 mg/día</td><td>5 : 1</td></tr>
+        <tr><td>100–300 mg/día</td><td>10 : 1</td></tr>
+        <tr><td>301–600 mg/día</td><td>15 : 1</td></tr>
+        <tr><td>601–1000 mg/día</td><td>20 : 1</td></tr>
+        <tr><td>&gt; 1000 mg/día</td><td>20 : 1 (+ consultar especialista)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-purple" style="margin-top:1.2rem;">
+      <strong>📐 Cálculo integrado en la calculadora:</strong> Cuando se calcula DEMO desde cualquier opioide, la sección de conversiones incluye automáticamente la dosis estimada de metadona usando el método de Ripamonti, con la advertencia correspondiente.
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.6rem;">Características únicas de la metadona</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.8rem;">
+      <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:0.8rem;">
+        <div style="font-size:0.72rem;font-weight:600;color:var(--purple-600);text-transform:uppercase;">Agonista NMDA</div>
+        <div style="font-size:0.82rem;margin-top:0.3rem;">Bloquea receptores NMDA → útil en dolor neuropático y tolerancia a opioides μ</div>
+      </div>
+      <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:0.8rem;">
+        <div style="font-size:0.72rem;font-weight:600;color:var(--purple-600);text-transform:uppercase;">Inhibidor recaptación 5-HT/NA</div>
+        <div style="font-size:0.82rem;margin-top:0.3rem;">Efecto «dual» similar a antidepresivos → beneficio adicional en dolor crónico</div>
+      </div>
+      <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:0.8rem;">
+        <div style="font-size:0.72rem;font-weight:600;color:var(--red-600);text-transform:uppercase;">Vida media prolongada</div>
+        <div style="font-size:0.82rem;margin-top:0.3rem;">15–60 horas. Acumulación en 5–7 días. Riesgo de sobredosis tardía</div>
+      </div>
+      <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:0.8rem;">
+        <div style="font-size:0.72rem;font-weight:600;color:var(--red-600);text-transform:uppercase;">QTc prolongado</div>
+        <div style="font-size:0.82rem;margin-top:0.3rem;">ECG basal obligatorio. Monitorizar QTc &gt; 500ms. Interacciones CYP3A4</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 4: PRINCIPIOS DE ROTACIÓN      -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-rotacion">
+  <div class="card">
+    <h2>🔄 Principios de Rotación de Opioides</h2>
+
+    <h3 style="margin:0.8rem 0 0.5rem;">¿Cuándo rotar?</h3>
+    <div style="font-size:0.85rem;line-height:1.7;">
+      La rotación opioide está indicada cuando existe dolor refractario al opioide actual a pesar de escalada adecuada, efectos adversos intolerables (náuseas, somnolencia, delirium, mioclonías, prurito), deterioro de la vía de administración (no puede tragar, acceso IV perdido), disponibilidad del fármaco (contexto colombiano: acceso limitado a ciertos opioides en zonas rurales), sospecha de hiperalgesia inducida por opioides, o insuficiencia renal/hepática que contraindica el opioide actual.
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">Pasos de la rotación segura</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0.8rem;margin-top:0.5rem;">
+      <div style="background:var(--teal-100);border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--teal-700);">1</div>
+        <div style="font-weight:600;color:var(--teal-700);margin:0.3rem 0;">Calcular DEMO</div>
+        <div style="font-size:0.8rem;">Convertir dosis actual a Morfina Oral Equivalente/24h</div>
+      </div>
+      <div style="background:var(--warm-100);border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--warm-700);">2</div>
+        <div style="font-weight:600;color:var(--warm-700);margin:0.3rem 0;">Calcular dosis equianalgésica</div>
+        <div style="font-size:0.8rem;">Convertir DEMO al nuevo opioide usando factor de conversión</div>
+      </div>
+      <div style="background:var(--red-100);border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--red-600);">3</div>
+        <div style="font-weight:600;color:var(--red-600);margin:0.3rem 0;">Reducir 25–50 %</div>
+        <div style="font-size:0.8rem;">Por tolerancia cruzada incompleta. Más reducción si paciente frágil</div>
+      </div>
+      <div style="background:var(--green-100);border-radius:8px;padding:1rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green-600);">4</div>
+        <div style="font-weight:600;color:var(--green-600);margin:0.3rem 0;">Titular y rescate</div>
+        <div style="font-size:0.8rem;">Dejar dosis de rescate (10–15 % de la dosis diaria). Titular cada 24–48h</div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" style="margin-top:1.2rem;">
+      <strong>⚠ Excepciones a la reducción del 25–50 %:</strong><br>
+      • <strong>Dolor mal controlado</strong> con el opioide previo → no reducir (o reducir solo 25 %)<br>
+      • <strong>Rotación a metadona</strong> → usar tablas específicas (ya incluyen la reducción)<br>
+      • <strong>Rotación a fentanilo transdérmico</strong> → no reducir (la absorción gradual actúa como titulación)<br>
+      • <strong>Insuficiencia renal/hepática</strong> → considerar mayor reducción (hasta 50–75 %)
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">Cambio de vía (mismo opioide)</h3>
+    <table class="ref-table">
+      <thead><tr><th>Opioide</th><th>Oral → IV/SC</th><th>IV → SC</th><th>Oral → Rectal</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Morfina</strong></td><td>÷ 3 (oral:parenteral = 3:1)</td><td>1:1</td><td>1:1</td></tr>
+        <tr><td><strong>Oxicodona</strong></td><td>÷ 2 (oral:parenteral = 2:1)</td><td>1:1</td><td>—</td></tr>
+        <tr><td><strong>Hidromorfona</strong></td><td>÷ 5 (oral:parenteral = 5:1)</td><td>1:1</td><td>1:1</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-info" style="margin-top:1rem;">
+      <strong>🇨🇴 Contexto colombiano:</strong> La disponibilidad de opioides varía significativamente entre zonas urbanas y rurales. La morfina oral sigue siendo el opioide de primera línea recomendado por la OMS y está en la lista de medicamentos esenciales del país (Ley 1733 de 2014). La tramadol oral es el opioide débil más accesible en Atención Primaria colombiana.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 5: REFERENCIAS                 -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-refs">
+  <div class="card">
+    <h2>📚 Referencias Bibliográficas</h2>
+    <ol style="font-size:0.82rem;line-height:2;padding-left:1.2rem;">
+      <li>Caraceni A, Hanks G, Kaasa S, et al. Use of opioid analgesics in the treatment of cancer pain: evidence-based recommendations from the EAPC. <em>Lancet Oncol.</em> 2012;13(2):e58–e68. <a href="https://doi.org/10.1016/S1470-2045(12)70040-2" target="_blank" style="color:var(--teal-600);">doi:10.1016/S1470-2045(12)70040-2</a></li>
+      <li>Mercadante S, Caraceni A. Conversion ratios for opioid switching in the treatment of cancer pain: a systematic review. <em>Palliat Med.</em> 2011;25(5):504–515. <a href="https://doi.org/10.1177/0269216311406577" target="_blank" style="color:var(--teal-600);">doi:10.1177/0269216311406577</a></li>
+      <li>Ripamonti CI, Santini D, Maranzano E, et al. Management of cancer pain: ESMO Clinical Practice Guidelines. <em>Ann Oncol.</em> 2012;23(Suppl 7):vii139–vii154. <a href="https://doi.org/10.1093/annonc/mds233" target="_blank" style="color:var(--teal-600);">doi:10.1093/annonc/mds233</a></li>
+      <li>Sociedad Española de Cuidados Paliativos (SECPAL). <em>Guía de Práctica Clínica sobre Cuidados Paliativos.</em> Ministerio de Sanidad; 2008, actualización 2014.</li>
+      <li>World Health Organization. <em>WHO Guidelines for the Pharmacological and Radiotherapeutic Management of Cancer Pain in Adults and Adolescents.</em> Geneva: WHO; 2018. <a href="https://www.who.int/publications/i/item/9789241550390" target="_blank" style="color:var(--teal-600);">ISBN 978-92-4-155039-0</a></li>
+      <li>Pereira J, Lawlor P, Vigano A, et al. Equianalgesic dose ratios for opioids: a critical appraisal of proposals for reference doses. <em>J Pain Symptom Manage.</em> 2001;22(2):672–687. <a href="https://doi.org/10.1016/S0885-3924(01)00294-9" target="_blank" style="color:var(--teal-600);">doi:10.1016/S0885-3924(01)00294-9</a></li>
+      <li>Dowell D, Ragan KR, Jones CM, Baldwin GT, Chou R. CDC Clinical Practice Guideline for Prescribing Opioids for Pain — United States, 2022. <em>MMWR Recomm Rep.</em> 2022;71(No. RR-3):1–95. <a href="https://doi.org/10.15585/mmwr.rr7103a1" target="_blank" style="color:var(--teal-600);">doi:10.15585/mmwr.rr7103a1</a></li>
+      <li>Shaheen PE, Walsh D, Lasheen W, et al. Opioid equianalgesic tables: are they all equally dangerous? <em>J Pain Symptom Manage.</em> 2009;38(3):409–417. <a href="https://doi.org/10.1016/j.jpainsymman.2009.06.004" target="_blank" style="color:var(--teal-600);">doi:10.1016/j.jpainsymman.2009.06.004</a></li>
+      <li>Ministerio de Salud y Protección Social de Colombia. Ley 1733 de 2014 — Ley Consuelo Devis Saavedra. Derecho a los Cuidados Paliativos. <em>Diario Oficial.</em> 2014.</li>
+      <li>McPherson ML. <em>Demystifying Opioid Conversion Calculations: A Guide for Effective Dosing.</em> 2nd ed. Bethesda, MD: ASHP; 2014.</li>
+      <li>Reddy A, Yennurajalingam S, Pulivarthi K, et al. Frequency, outcome, and predictors of success within 6 weeks of an opioid rotation among outpatients with cancer receiving strong opioids. <em>Oncologist.</em> 2013;18(2):212–220. <a href="https://doi.org/10.1634/theoncologist.2012-0269" target="_blank" style="color:var(--teal-600);">doi:10.1634/theoncologist.2012-0269</a></li>
+      <li>Fine PG, Portenoy RK. Establishing «best practices» for opioid rotation: conclusions of an expert panel. <em>J Pain Symptom Manage.</em> 2009;38(3):418–425. <a href="https://doi.org/10.1016/j.jpainsymman.2009.06.002" target="_blank" style="color:var(--teal-600);">doi:10.1016/j.jpainsymman.2009.06.002</a></li>
+    </ol>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <div class="author">Elaborado por Jorge Bogoya con Claude AI (Anthropic)</div>
+  <div>Maestría en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴</div>
+  <div style="margin-top:0.5rem;">Herramienta educativa · No reemplaza el juicio clínico · Última actualización: Abril 2026</div>
+  <div style="margin-top:0.5rem;font-size:0.7rem;opacity:0.7;">Factores de conversión basados en EAPC 2012, SECPAL, OMS 2018 y CDC 2022.<br>Tablas de metadona: Ripamonti et al. / Ayonrinde et al.</div>
+</footer>
+
+<script>
+/* ══════════ NAVIGATION ══════════ */
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:document.querySelector('.nav-pills').offsetTop-10,behavior:'smooth'});
+}
+
+/* ══════════ ROUTE UPDATER ══════════ */
+function updateRoutes(){
+  const opioid=document.getElementById('opioidSelect').value;
+  const routeSel=document.getElementById('routeSelect');
+  const freqSel=document.getElementById('freqSelect');
+  const doseLabel=document.getElementById('doseLabel');
+  const doseHint=document.getElementById('doseHint');
+  
+  // Reset routes
+  routeSel.innerHTML='';
+  
+  const patchOpioids=['fentanilo_td','buprenorfina_td','buprenorfina_td7'];
+  const ivOnly=['fentanilo_iv'];
+  const slOnly=['buprenorfina_sl'];
+  
+  if(patchOpioids.includes(opioid)){
+    routeSel.innerHTML='<option value="td">Transdérmica (parche)</option>';
+    doseLabel.textContent='Dosis (mcg/h)';
+    if(opioid==='buprenorfina_td7'){
+      doseHint.textContent='Dosis del parche semanal en mcg/h (ej: 10 mcg/h = parche de 10 mg)';
+      freqSel.value='1_168';
+    } else if(opioid==='buprenorfina_td'){
+      doseHint.textContent='Dosis del parche en mcg/h (ej: 35, 52.5, 70 mcg/h)';
+      freqSel.value='1_72';
+    } else {
+      doseHint.textContent='Dosis del parche en microgramos por hora';
+      freqSel.value='1_72';
+    }
+  } else if(ivOnly.includes(opioid)){
+    routeSel.innerHTML='<option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
+    doseLabel.textContent='Dosis (mcg)';
+    doseHint.textContent='Dosis en microgramos. Seleccione frecuencia abajo.';
+  } else if(slOnly.includes(opioid)){
+    routeSel.innerHTML='<option value="sl">Sublingual</option>';
+    doseLabel.textContent='Dosis (mg)';
+    doseHint.textContent='Dosis sublingual en mg';
+  } else if(opioid==='codeina'||opioid==='tramadol'||opioid==='tapentadol'||opioid==='metadona'){
+    routeSel.innerHTML='<option value="oral">Oral</option>';
+    if(opioid==='tramadol'){
+      routeSel.innerHTML+='<option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
+    }
+    doseLabel.textContent='Dosis (mg)';
+    doseHint.textContent='Dosis en mg';
+  } else {
+    routeSel.innerHTML='<option value="oral">Oral</option><option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
+    doseLabel.textContent='Dosis (mg)';
+    doseHint.textContent='Dosis en mg';
+  }
+}
+
+/* ══════════ CALCULATE DEMO ══════════ */
+function calculate(){
+  const opioid=document.getElementById('opioidSelect').value;
+  const route=document.getElementById('routeSelect').value;
+  const dose=parseFloat(document.getElementById('doseInput').value);
+  const freq=document.getElementById('freqSelect').value;
+  
+  if(isNaN(dose)||dose<=0){
+    alert('Por favor ingrese una dosis válida mayor que 0.');
+    return;
+  }
+  
+  // Calculate total daily dose
+  let dailyDose;
+  if(freq==='24'){
+    dailyDose=dose;
+  } else {
+    const parts=freq.split('_');
+    const perDose=parseFloat(parts[0]);
+    const hours=parseFloat(parts[1]);
+    dailyDose=dose*(24/hours);
+  }
+  
+  // ── CONVERSION FACTORS TO DEMO (Oral Morphine Equivalent mg/day) ──
+  let demo=0;
+  let explanation='';
+  
+  switch(opioid){
+    case 'codeina':
+      demo=dailyDose/10;
+      explanation=`Codeína oral ${dailyDose} mg/día ÷ 10 = ${demo.toFixed(1)} mg DEMO`;
+      break;
+    case 'tramadol':
+      if(route==='oral'){
+        demo=dailyDose/5;
+        explanation=`Tramadol oral ${dailyDose} mg/día ÷ 5 = ${demo.toFixed(1)} mg DEMO`;
+      } else {
+        demo=dailyDose/5;
+        explanation=`Tramadol IV/SC ${dailyDose} mg/día ÷ 5 = ${demo.toFixed(1)} mg DEMO`;
+      }
+      break;
+    case 'morfina':
+      if(route==='oral'){
+        demo=dailyDose;
+        explanation=`Morfina oral ${dailyDose} mg/día × 1 = ${demo.toFixed(1)} mg DEMO`;
+      } else {
+        demo=dailyDose*3;
+        explanation=`Morfina IV/SC ${dailyDose} mg/día × 3 = ${demo.toFixed(1)} mg DEMO`;
+      }
+      break;
+    case 'oxicodona':
+      if(route==='oral'){
+        demo=dailyDose*1.5;
+        explanation=`Oxicodona oral ${dailyDose} mg/día × 1,5 = ${demo.toFixed(1)} mg DEMO`;
+      } else {
+        demo=dailyDose*3;
+        explanation=`Oxicodona IV/SC ${dailyDose} mg/día × 3 = ${demo.toFixed(1)} mg DEMO (×1,5 potencia oral × 2 ratio oral:parenteral)`;
+      }
+      break;
+    case 'hidromorfona':
+      if(route==='oral'){
+        demo=dailyDose*5;
+        explanation=`Hidromorfona oral ${dailyDose} mg/día × 5 = ${demo.toFixed(1)} mg DEMO`;
+      } else {
+        demo=dailyDose*20;
+        explanation=`Hidromorfona IV/SC ${dailyDose} mg/día × 20 = ${demo.toFixed(1)} mg DEMO`;
+      }
+      break;
+    case 'fentanilo_td':
+      // mcg/h input, patch
+      demo=dailyDose*2.4;
+      explanation=`Fentanilo parche ${dailyDose} mcg/h × 2,4 = ${demo.toFixed(1)} mg DEMO/día`;
+      break;
+    case 'fentanilo_iv':
+      // mcg input per dose, calculate daily mcg then convert
+      const dailyMcg=dailyDose; // already daily from freq calc
+      demo=dailyMcg/10;
+      explanation=`Fentanilo IV/SC ${dailyMcg.toFixed(0)} mcg/día ÷ 10 = ${demo.toFixed(1)} mg DEMO`;
+      break;
+    case 'buprenorfina_td':
+      demo=dailyDose*1.7;
+      explanation=`Buprenorfina parche 72–96h ${dailyDose} mcg/h × 1,7 ≈ ${demo.toFixed(1)} mg DEMO/día`;
+      break;
+    case 'buprenorfina_td7':
+      demo=dailyDose*1.7;
+      explanation=`Buprenorfina parche 7d ${dailyDose} mcg/h × 1,7 ≈ ${demo.toFixed(1)} mg DEMO/día`;
+      break;
+    case 'buprenorfina_sl':
+      demo=dailyDose*37.5;
+      explanation=`Buprenorfina SL ${dailyDose} mg/día × 37,5 = ${demo.toFixed(1)} mg DEMO (rango en literatura: 30–75×, ver nota)`;
+      break;
+    case 'tapentadol':
+      demo=dailyDose/2.5;
+      explanation=`Tapentadol oral ${dailyDose} mg/día ÷ 2,5 = ${demo.toFixed(1)} mg DEMO`;
+      break;
+    case 'metadona':
+      // Reverse conversion using Ripamonti
+      // Metadona -> DEMO is trickier. Use approximate reverse
+      let ratio;
+      // We need to estimate DEMO from methadone dose
+      // Since we don't know DEMO yet, use conservative approach
+      // If methadone < 20mg/d, assume ratio 4:1 → DEMO = methadone × 4
+      // If 20-40, ratio 8:1 → DEMO = methadone × 8
+      // If >40, ratio 12:1 → DEMO = methadone × 12
+      if(dailyDose<20){ratio=4;} else if(dailyDose<=40){ratio=8;} else{ratio=12;}
+      demo=dailyDose*ratio;
+      explanation=`Metadona oral ${dailyDose} mg/día × ${ratio} (Ripamonti inverso) ≈ ${demo.toFixed(1)} mg DEMO`;
+      break;
+  }
+  
+  if(demo<=0){
+    alert('Error en el cálculo. Verifique los datos ingresados.');
+    return;
+  }
+  
+  // Display results
+  const panel=document.getElementById('resultPanel');
+  panel.classList.add('show');
+  document.getElementById('demoValue').textContent=demo.toFixed(1);
+  document.getElementById('demoExplain').textContent=explanation;
+  
+  // Generate alerts
+  const alertsHtml=generateAlerts(demo,opioid);
+  document.getElementById('alertsContainer').innerHTML=alertsHtml;
+  
+  // Generate conversion cards
+  generateConversions(demo,opioid);
+  
+  // Scroll to results
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ══════════ ALERTS ══════════ */
+function generateAlerts(demo,currentOpioid){
+  let html='';
+  if(demo>=200){
+    html+=`<div class="alert alert-danger"><strong>🚨 Dosis alta de opioides:</strong> DEMO ≥ 200 mg/día. Se recomienda evaluación por especialista en dolor/cuidados paliativos, considerar coadyuvantes y descartar hiperalgesia inducida por opioides.</div>`;
+  }
+  if(demo>=90){
+    html+=`<div class="alert alert-warning"><strong>⚠ Precaución en rotación:</strong> Con DEMO ≥ 90 mg/día, las ratios de conversión pueden ser menos precisas. Considerar reducción mayor (hasta 50 %) al rotar.</div>`;
+  }
+  if(currentOpioid==='metadona'){
+    html+=`<div class="alert alert-purple"><strong>⚡ Conversión desde metadona:</strong> La conversión inversa (metadona → DEMO) es aproximada. Las ratios de Ripamonti fueron diseñadas para la dirección opuesta. Consultar con especialista.</div>`;
+  }
+  return html;
+}
+
+/* ══════════ CONVERSIONS ══════════ */
+function generateConversions(demo,currentOpioid){
+  const grid=document.getElementById('convGrid');
+  let html='';
+  
+  // All conversions from DEMO
+  const conversions=[
+    {name:'Codeína',route:'Oral',dose:(demo*10).toFixed(0),unit:'mg/día',type:'weak',note:demo*10>360?'⚠ Excede dosis máx. recomendada (360 mg/día)':'',max:360,id:'codeina'},
+    {name:'Tramadol',route:'Oral',dose:(demo*5).toFixed(0),unit:'mg/día',type:'weak',note:demo*5>400?'⚠ Excede dosis máx. recomendada (400 mg/día)':'',max:400,id:'tramadol'},
+    {name:'Morfina',route:'Oral',dose:demo.toFixed(1),unit:'mg/día',type:'strong',note:'',id:'morfina_oral'},
+    {name:'Morfina',route:'IV / SC',dose:(demo/3).toFixed(1),unit:'mg/día',type:'strong',note:'',id:'morfina_iv'},
+    {name:'Oxicodona',route:'Oral',dose:(demo/1.5).toFixed(1),unit:'mg/día',type:'strong',note:'',id:'oxicodona'},
+    {name:'Hidromorfona',route:'Oral',dose:(demo/5).toFixed(1),unit:'mg/día',type:'strong',note:'',id:'hidromorfona'},
+    {name:'Hidromorfona',route:'IV / SC',dose:(demo/20).toFixed(2),unit:'mg/día',type:'strong',note:'',id:'hidromorfona_iv'},
+    {name:'Fentanilo',route:'Parche TD',dose:(demo/2.4).toFixed(0),unit:'mcg/h',type:'strong',note:'Parche c/72h',id:'fentanilo_td'},
+    {name:'Buprenorfina',route:'Parche 72–96h',dose:(demo/1.7).toFixed(0),unit:'mcg/h',type:'strong',note:'Parches: 35, 52.5, 70 mcg/h',id:'buprenorfina_td'},
+    {name:'Buprenorfina',route:'Parche 7 días',dose:(demo/1.7).toFixed(0),unit:'mcg/h',type:'strong',note:`≈ ${(demo/1.7).toFixed(0)} mcg/h (parche ${Math.round(demo/1.7)} mg)`,id:'buprenorfina_td7'},
+    {name:'Buprenorfina',route:'Sublingual',dose:(demo/37.5).toFixed(2),unit:'mg/día',type:'strong',note:'Factor ×37,5 (rango 30–75×)',id:'buprenorfina_sl'},
+    {name:'Tapentadol',route:'Oral',dose:(demo*2.5).toFixed(0),unit:'mg/día',type:'strong',note:demo*2.5>500?'⚠ Excede dosis máx. (500 mg/día)':'',max:500,id:'tapentadol'},
+  ];
+  
+  // Methadone (Ripamonti)
+  let metRatio, metNote;
+  if(demo<90){metRatio=4;metNote='Ratio 4:1 (DEMO<90)';}
+  else if(demo<=300){metRatio=8;metNote='Ratio 8:1 (DEMO 90-300)';}
+  else{metRatio=12;metNote='Ratio 12:1 (DEMO>300)';}
+  const metDose=(demo/metRatio).toFixed(1);
+  
+  conversions.forEach(c=>{
+    const isCurrent=(c.id&&c.id.startsWith(currentOpioid));
+    const isOverMax=c.max&&(parseFloat(c.dose)>c.max);
+    html+=`<div class="conv-card ${c.type} ${isCurrent?'highlight':''}">
+      <div class="opioid-name">${c.name}</div>
+      <div class="opioid-dose">${isOverMax?'<span style="color:var(--red-600);">'+c.dose+'</span>':c.dose}</div>
+      <div class="opioid-route">${c.unit} · ${c.route}</div>
+      ${c.note?'<div style="font-size:0.68rem;color:var(--red-600);margin-top:0.2rem;">'+c.note+'</div>':''}
+    </div>`;
+  });
+  
+  // Add methadone card
+  html+=`<div class="conv-card special">
+    <div class="opioid-name">Metadona ⚡</div>
+    <div class="opioid-dose">${metDose}</div>
+    <div class="opioid-route">mg/día · Oral</div>
+    <div style="font-size:0.68rem;color:var(--purple-600);margin-top:0.2rem;">${metNote}</div>
+    <div style="font-size:0.65rem;color:var(--red-600);margin-top:0.15rem;">⚠ Requiere especialista</div>
+  </div>`;
+  
+  grid.innerHTML=html;
+}
+
+/* ══════════ RESET ══════════ */
+function resetCalc(){
+  document.getElementById('doseInput').value='';
+  document.getElementById('resultPanel').classList.remove('show');
+  document.getElementById('opioidSelect').selectedIndex=2; // Morfina
+  updateRoutes();
+}
+
+/* ══════════ INIT ══════════ */
+updateRoutes();
+</script>
+</body>
+</html>
