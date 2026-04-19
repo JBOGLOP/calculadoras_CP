@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase 2 — Factores pronósticos y cuidado al final de la vida</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,300;1,8..60,400&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════
+   HEALTHCARE PALETTE — extracted from reference
+   ═══════════════════════════════════════════════════ */
+:root {
+  /* ── Core palette ── */
+  --slate-900: #1A2F38;
+  --slate-800: #1F3E47;
+  --slate-700: #2C4D5B;
+  --slate-600: #3A5F6E;
+  --slate-500: #4E7A87;
+  --teal-600: #4E8DA0;
+  --teal-500: #5BABA3;
+  --teal-400: #6DC4B8;
+  --teal-300: #8DD5CB;
+  --sage-500: #6D8F8E;
+  --sage-400: #8BA8A7;
+  --sage-300: #A3BDB9;
+  --ice-200: #C8E3DE;
+  --ice-100: #D8EDE9;
+  --ice-50:  #EAF5F3;
+  --cloud:   #F4F9F8;
+
+  /* ── Functional accents ── */
+  --warm-600: #B8845A;
+  --warm-500: #CFA377;
+  --warm-400: #DEBB96;
+  --warm-dim: rgba(207,163,119,0.10);
+  --warm-dim2: rgba(207,163,119,0.18);
+  --rose-500: #BF7680;
+  --rose-400: #D4949C;
+  --rose-dim: rgba(191,118,128,0.10);
+  --blue-500: #5A8DB8;
+  --violet-400: #9590BB;
+  --green-500: #5BAB7A;
+  --green-dim: rgba(91,171,122,0.10);
+
+  /* ── Semantic ── */
+  --bg-body:    var(--cloud);
+  --bg-card:    #FFFFFF;
+  --bg-surface: var(--ice-50);
+  --bg-dark:    var(--slate-800);
+  --border:     rgba(44,77,91,0.10);
+  --border-md:  rgba(44,77,91,0.18);
+  --border-strong: rgba(44,77,91,0.30);
+  --text-primary:  var(--slate-900);
+  --text-body:     #3B5A63;
+  --text-secondary: var(--sage-500);
+  --text-muted:    #8CA0A0;
+  --text-on-dark:  var(--ice-100);
+  --accent:        var(--teal-600);
+  --accent-dim:    rgba(78,141,160,0.10);
+  --accent-dim2:   rgba(78,141,160,0.18);
+
+  /* ── Design tokens ── */
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --shadow-sm: 0 1px 3px rgba(26,47,56,0.06);
+  --shadow: 0 4px 20px rgba(26,47,56,0.07);
+  --shadow-lg: 0 12px 40px rgba(26,47,56,0.10);
+  --shadow-xl: 0 20px 60px rgba(26,47,56,0.12);
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:var(--font-body);
+  background:var(--bg-body);
+  color:var(--text-body);
+  line-height:1.75;
+  font-size:16px;
+  overflow-x:hidden;
+}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--ice-50);}
+::-webkit-scrollbar-thumb{background:var(--sage-400);border-radius:3px;}
+
+/* ═══════ SIDEBAR NAV ═══════ */
+.nav-sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:272px;
+  background:var(--slate-800);
+  z-index:100;padding:0;overflow-y:auto;
+  transition:transform 0.4s ease;
+  box-shadow:4px 0 30px rgba(26,47,56,0.15);
+}
+.nav-sidebar.collapsed{transform:translateX(-272px);}
+
+.nav-brand{
+  padding:2rem 1.6rem 1.4rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.nav-brand small{
+  display:block;font-size:0.65rem;
+  text-transform:uppercase;letter-spacing:0.2em;
+  color:var(--sage-400);margin-bottom:0.3rem;
+}
+.nav-brand h3{
+  font-family:var(--font-display);
+  font-size:1.05rem;font-weight:500;
+  color:var(--ice-100);line-height:1.3;
+}
+
+.nav-section-label{
+  padding:1.2rem 1.6rem 0.4rem;
+  font-size:0.6rem;text-transform:uppercase;
+  letter-spacing:0.2em;color:var(--sage-500);
+  font-weight:600;
+}
+
+.nav-link{
+  display:flex;align-items:center;gap:0.8rem;
+  padding:0.55rem 1.6rem;
+  color:rgba(200,227,222,0.6);
+  text-decoration:none;font-size:0.8rem;
+  transition:var(--transition);
+  border-left:3px solid transparent;
+  cursor:pointer;font-weight:400;
+}
+.nav-link:hover{
+  color:var(--ice-100);
+  background:rgba(255,255,255,0.04);
+}
+.nav-link.active{
+  color:#fff;
+  background:rgba(91,171,163,0.12);
+  border-left-color:var(--teal-400);
+  font-weight:500;
+}
+.nav-link .nn{
+  font-family:var(--font-mono);
+  font-size:0.65rem;color:var(--teal-400);
+  min-width:22px;opacity:0.7;
+}
+
+.nav-toggle{
+  position:fixed;top:1rem;left:1rem;z-index:101;
+  width:42px;height:42px;
+  background:#fff;border:1px solid var(--border);
+  border-radius:10px;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  color:var(--slate-700);font-size:1.1rem;
+  box-shadow:var(--shadow);
+}
+
+/* ═══════ MAIN ═══════ */
+.main{margin-left:272px;transition:margin-left 0.4s ease;}
+.main.expanded{margin-left:0;}
+
+/* ═══════ HERO ═══════ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  background:linear-gradient(160deg, var(--slate-800) 0%, var(--slate-700) 40%, var(--teal-600) 100%);
+}
+
+.hero-grain{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.5;pointer-events:none;
+}
+
+.hero-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);opacity:0.15;
+  animation:orbFloat 20s infinite ease-in-out;
+}
+.orb-1{width:500px;height:500px;background:var(--teal-400);top:-10%;left:-5%;animation-delay:0s;}
+.orb-2{width:400px;height:400px;background:var(--ice-200);bottom:-15%;right:-5%;animation-delay:-7s;}
+.orb-3{width:300px;height:300px;background:var(--warm-500);top:40%;right:20%;animation-delay:-14s;opacity:0.08;}
+
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(30px,-20px) scale(1.05);}
+  66%{transform:translate(-20px,30px) scale(0.95);}
+}
+
+.hero-content{
+  text-align:center;max-width:780px;padding:2rem;
+  position:relative;z-index:2;
+  animation:heroIn 1.2s ease-out;
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:0.72rem;
+  text-transform:uppercase;letter-spacing:0.3em;
+  color:var(--teal-300);margin-bottom:1.2rem;
+}
+
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,5vw,3.8rem);
+  font-weight:400;line-height:1.2;
+  color:#fff;margin-bottom:0.8rem;
+}
+.hero h1 em{font-style:italic;color:var(--teal-300);font-weight:300;}
+
+.hero-quote{
+  font-family:var(--font-display);
+  font-size:1.15rem;font-style:italic;
+  color:var(--warm-400);margin:2rem auto;
+  max-width:580px;padding:1.2rem 2rem;
+  border-left:2px solid var(--warm-500);
+  text-align:left;
+  opacity:0;animation:fadeUp 1s 0.4s ease forwards;
+}
+.hero-quote cite{
+  display:block;font-size:0.8rem;
+  color:var(--sage-400);font-style:normal;margin-top:0.4rem;
+}
+
+.hero-meta{
+  display:flex;gap:1.8rem;justify-content:center;flex-wrap:wrap;
+  margin-top:2.5rem;
+  opacity:0;animation:fadeUp 1s 0.7s ease forwards;
+}
+.hero-meta-item{font-size:0.78rem;color:var(--sage-300);}
+.hero-meta-item strong{color:var(--ice-100);font-weight:500;}
+
+.scroll-ind{
+  position:absolute;bottom:2rem;left:50%;
+  transform:translateX(-50%);
+  color:var(--teal-300);font-size:1.3rem;
+  opacity:0.5;animation:bob 2.5s infinite;cursor:pointer;
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══════ SECTIONS ═══════ */
+.section{
+  padding:5rem 3rem;max-width:1060px;margin:0 auto;
+  opacity:0;transform:translateY(24px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+}
+.section.visible{opacity:1;transform:translateY(0);}
+
+.section-label{
+  font-family:var(--font-mono);font-size:0.68rem;
+  text-transform:uppercase;letter-spacing:0.22em;
+  color:var(--teal-600);margin-bottom:0.6rem;
+  font-weight:500;
+}
+.section h2{
+  font-family:var(--font-display);
+  font-size:clamp(1.7rem,3vw,2.4rem);
+  font-weight:500;color:var(--text-primary);
+  margin-bottom:1.2rem;line-height:1.25;
+}
+.section h3{
+  font-family:var(--font-display);
+  font-size:1.25rem;font-weight:600;
+  color:var(--slate-700);margin:2.5rem 0 0.8rem;
+}
+.section p{color:var(--text-body);margin-bottom:1rem;max-width:72ch;}
+.section p strong{color:var(--slate-700);}
+
+/* ═══════ CARDS ═══════ */
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.8rem;margin:1.2rem 0;
+  transition:var(--transition);
+  box-shadow:var(--shadow-sm);
+}
+.card:hover{
+  box-shadow:var(--shadow);
+  border-color:var(--border-md);
+  transform:translateY(-2px);
+}
+
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.2rem;margin:1.5rem 0;
+}
+
+/* ═══════ COLLAPSIBLE SECTIONS (Acordeón) ═══════ */
+.section.collapsible{
+  padding-top:2rem;
+  padding-bottom:2rem;
+}
+.collapsible-toggle{
+  width:100%;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:1.4rem 1.8rem;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.2rem;
+  text-align:left;
+  font-family:var(--font-body);
+  transition:var(--transition);
+  box-shadow:var(--shadow-sm);
+}
+.collapsible-toggle:hover{
+  border-color:var(--teal-500);
+  box-shadow:var(--shadow);
+  transform:translateY(-1px);
+}
+.collapsible-toggle .toggle-text{
+  flex:1;
+  min-width:0;
+}
+.collapsible-toggle .toggle-label{
+  font-family:var(--font-mono);
+  font-size:0.68rem;
+  text-transform:uppercase;
+  letter-spacing:0.22em;
+  color:var(--teal-600);
+  margin-bottom:0.3rem;
+  font-weight:500;
+  display:block;
+}
+.collapsible-toggle .toggle-title{
+  font-family:var(--font-display);
+  font-size:clamp(1.1rem,2vw,1.35rem);
+  font-weight:500;
+  color:var(--text-primary);
+  line-height:1.3;
+  display:block;
+}
+.collapsible-toggle .toggle-hint{
+  font-size:0.78rem;
+  color:var(--text-muted);
+  font-style:italic;
+  margin-top:0.3rem;
+  display:block;
+}
+.collapsible-toggle .toggle-icon{
+  flex-shrink:0;
+  width:40px;height:40px;
+  border-radius:50%;
+  background:var(--accent-dim2);
+  color:var(--teal-600);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+  transition:transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.25s ease;
+}
+.collapsible-toggle:hover .toggle-icon{
+  background:var(--teal-500);
+  color:#fff;
+}
+.collapsible-toggle[aria-expanded="true"] .toggle-icon{
+  transform:rotate(180deg);
+  background:var(--teal-500);
+  color:#fff;
+}
+.collapsible-content{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease, margin-top 0.3s ease;
+  opacity:0;
+  margin-top:0;
+}
+.collapsible-content.open{
+  max-height:8000px;
+  opacity:1;
+  margin-top:1.5rem;
+}
+@media(max-width:720px){
+  .collapsible-toggle{padding:1.1rem 1.2rem;gap:0.8rem;}
+  .collapsible-toggle .toggle-icon{width:34px;height:34px;font-size:0.95rem;}
+}
+
+.card-header{display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;}
+
+.card-icon{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.card-icon.teal{background:var(--accent-dim2);color:var(--teal-600);}
+.card-icon.warm{background:var(--warm-dim2);color:var(--warm-600);}
+.card-icon.rose{background:var(--rose-dim);color:var(--rose-500);}
+.card-icon.gold{background:var(--warm-dim);color:var(--warm-600);}
+
+.card h4{font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--text-primary);}
+.card p,.card li{font-size:0.88rem;color:var(--text-body);line-height:1.7;}
+.badge{display:inline-block;padding:0.2rem 0.65rem;border-radius:20px;font-size:0.68rem;font-weight:600;}
+.badge-teal{background:var(--accent-dim2);color:var(--teal-600);}
+.badge-warm{background:var(--warm-dim2);color:var(--warm-600);}
+.badge-rose{background:var(--rose-dim);color:var(--rose-500);}
+
+/* ═══════ TOOL CONTAINERS ═══════ */
+.tool-box{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  overflow:hidden;margin:2rem 0;
+  box-shadow:var(--shadow);
+}
+.tool-top{
+  padding:1.4rem 2rem;
+  background:linear-gradient(135deg,var(--ice-50),var(--ice-100));
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:1rem;
+}
+.tool-top h3{
+  font-family:var(--font-display);font-size:1.2rem;
+  font-weight:600;color:var(--text-primary);margin:0;
+}
+.tool-badge{
+  font-family:var(--font-mono);font-size:0.6rem;
+  padding:0.25rem 0.65rem;border-radius:20px;
+  background:var(--accent-dim2);color:var(--teal-600);
+  text-transform:uppercase;letter-spacing:0.1em;font-weight:600;
+}
+.tool-inner{padding:2rem;}
+
+/* Scale rows */
+.scale-row{
+  display:grid;grid-template-columns:150px 1fr;gap:1rem;
+  align-items:start;padding:0.9rem 0;
+  border-bottom:1px solid var(--border);
+}
+.scale-row:last-child{border-bottom:none;}
+.scale-label{
+  font-size:0.82rem;font-weight:600;
+  color:var(--slate-600);padding-top:0.4rem;
+}
+.scale-options{display:flex;flex-wrap:wrap;gap:0.4rem;}
+
+.scale-opt{
+  padding:0.5rem 0.9rem;
+  background:var(--bg-surface);
+  border:1.5px solid var(--border);
+  border-radius:10px;font-size:0.78rem;
+  color:var(--text-body);cursor:pointer;
+  transition:var(--transition);text-align:left;
+}
+.scale-opt:hover{border-color:var(--teal-500);color:var(--slate-700);}
+.scale-opt.selected{
+  background:var(--accent-dim2);
+  border-color:var(--teal-500);
+  color:var(--teal-600);font-weight:600;
+  box-shadow:0 0 0 3px rgba(91,171,163,0.12);
+}
+
+/* Result panels */
+.result-panel{
+  margin-top:1.5rem;padding:1.5rem;
+  background:var(--bg-surface);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  transition:var(--transition);
+}
+.result-panel.active{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim);}
+
+.result-score{
+  font-family:var(--font-display);
+  font-size:2.8rem;font-weight:700;line-height:1;
+}
+.result-score.high{color:var(--green-500);}
+.result-score.medium{color:var(--warm-600);}
+.result-score.low{color:var(--rose-500);}
+
+.result-label{font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem;}
+
+.result-interp{
+  margin-top:1rem;padding:1rem 1.2rem;border-radius:10px;
+  font-size:0.88rem;line-height:1.7;
+}
+.result-interp.green{background:rgba(91,171,122,0.08);color:#3a7a53;border-left:3px solid var(--green-500);}
+.result-interp.yellow{background:rgba(184,132,90,0.08);color:#7a5c3a;border-left:3px solid var(--warm-600);}
+.result-interp.red{background:rgba(191,118,128,0.08);color:#7a3a44;border-left:3px solid var(--rose-500);}
+
+.progress-track{
+  width:100%;height:6px;background:var(--ice-200);
+  border-radius:3px;margin:1rem 0;overflow:hidden;
+}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.6s ease,background 0.4s ease;}
+
+/* ═══════ CHART ═══════ */
+.chart-box{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-xl);padding:2rem;
+  margin:2rem 0;box-shadow:var(--shadow);
+}
+.chart-wrap{position:relative;height:360px;}
+.chart-legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;justify-content:center;}
+.legend-item{
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.8rem;color:var(--text-body);
+  cursor:pointer;padding:0.4rem 0.8rem;
+  border-radius:8px;transition:var(--transition);
+}
+.legend-item:hover{background:var(--ice-50);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+
+/* ═══════ CASE SIMULATOR ═══════ */
+.case-sim{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-xl);overflow:hidden;
+  margin:2rem 0;box-shadow:var(--shadow-lg);
+}
+.case-head{
+  padding:2rem;
+  background:linear-gradient(135deg,var(--slate-700),var(--slate-800));
+  color:var(--ice-100);
+}
+.case-head h3{font-family:var(--font-display);font-size:1.4rem;color:var(--teal-300);margin:0 0 0.4rem;}
+.case-head p{color:var(--sage-300);font-size:0.82rem;margin:0;}
+
+.case-story{
+  font-family:var(--font-display);font-size:1rem;
+  font-style:italic;color:var(--text-body);
+  line-height:1.9;padding:1.8rem 2rem;
+  border-bottom:1px solid var(--border);
+  background:var(--ice-50);
+}
+
+.case-tools{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.case-panel{padding:1.5rem;border-right:1px solid var(--border);}
+.case-panel:last-child{border-right:none;}
+
+.case-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+}
+.case-strip-item{
+  padding:1.2rem;text-align:center;
+  border-right:1px solid var(--border);
+  transition:var(--transition);
+}
+.case-strip-item:last-child{border-right:none;}
+.case-strip-item .val{font-family:var(--font-display);font-size:1.7rem;font-weight:700;}
+.case-strip-item .lbl{
+  font-size:0.65rem;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem;
+}
+
+/* ═══════ FORM ═══════ */
+.form-group{margin-bottom:1rem;}
+.form-group label{
+  display:block;font-size:0.78rem;
+  color:var(--slate-600);margin-bottom:0.35rem;font-weight:600;
+}
+.form-select{
+  width:100%;padding:0.55rem 1rem;
+  background:#fff;border:1.5px solid var(--border-md);
+  border-radius:10px;color:var(--text-primary);
+  font-family:var(--font-body);font-size:0.82rem;
+  appearance:none;cursor:pointer;transition:var(--transition);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234E7A87' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  padding-right:2rem;
+}
+.form-select:focus{outline:none;border-color:var(--teal-500);box-shadow:0 0 0 3px var(--accent-dim);}
+
+/* ═══════ TABLE ═══════ */
+.styled-table{
+  width:100%;border-collapse:separate;border-spacing:0;
+  border-radius:var(--radius);overflow:hidden;
+  margin:1.2rem 0;font-size:0.82rem;
+  box-shadow:var(--shadow-sm);
+}
+.styled-table thead th{
+  background:var(--slate-700);padding:0.75rem 1rem;
+  text-align:left;font-weight:600;color:var(--ice-100);
+  font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;
+}
+.styled-table tbody td{
+  padding:0.65rem 1rem;border-bottom:1px solid var(--border);
+  color:var(--text-body);background:#fff;
+}
+.styled-table tbody tr:hover td{background:var(--ice-50);}
+
+/* ═══════ TABS ═══════ */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;}
+.tab-btn{
+  padding:0.75rem 1.4rem;background:none;border:none;
+  color:var(--text-muted);font-family:var(--font-body);
+  font-size:0.82rem;cursor:pointer;font-weight:500;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;transition:var(--transition);
+}
+.tab-btn:hover{color:var(--text-body);}
+.tab-btn.active{color:var(--teal-600);border-bottom-color:var(--teal-500);}
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+/* ═══════ BUTTONS ═══════ */
+.btn{
+  padding:0.6rem 1.5rem;border-radius:10px;
+  font-family:var(--font-body);font-size:0.85rem;
+  font-weight:500;cursor:pointer;transition:var(--transition);border:none;
+}
+.btn-primary{background:var(--teal-600);color:#fff;}
+.btn-primary:hover{background:var(--teal-500);box-shadow:0 4px 16px rgba(91,171,163,0.25);}
+.btn-ghost{
+  background:transparent;color:var(--teal-600);
+  border:1.5px solid var(--border-md);
+}
+.btn-ghost:hover{background:var(--accent-dim);border-color:var(--teal-500);}
+.btn-ghost.sel{
+  background:var(--accent-dim2);border-color:var(--teal-500);
+  color:var(--teal-600);font-weight:600;
+}
+
+/* ══════════════════════════════════════════════════════
+   HUMAN SECTION — warm tones, delicate
+   ══════════════════════════════════════════════════════ */
+.human-section{
+  position:relative;margin:3rem 0;padding:0;overflow:hidden;
+}
+.human-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,var(--cloud) 0%,rgba(207,163,119,0.04) 40%,rgba(207,163,119,0.06) 60%,var(--cloud) 100%);
+  pointer-events:none;
+}
+.human-divider{
+  text-align:center;padding:3rem 0;position:relative;
+}
+.human-divider::before{
+  content:'';position:absolute;left:15%;right:15%;top:50%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--warm-500),transparent);
+}
+.human-divider span{
+  position:relative;background:var(--cloud);
+  padding:0 2rem;font-family:var(--font-display);
+  font-size:0.85rem;letter-spacing:0.18em;
+  color:var(--warm-600);font-weight:500;
+}
+
+.human-core{max-width:680px;margin:0 auto;padding:0 2rem;}
+
+.human-poem{
+  font-family:var(--font-display);
+  font-size:1.5rem;font-weight:300;
+  line-height:1.9;color:var(--text-primary);
+  text-align:center;margin:2.5rem 0;
+  opacity:0;transition:opacity 1.2s ease;
+}
+.human-poem.visible{opacity:1;}
+.human-poem .line{
+  display:block;opacity:0;
+  transform:translateY(8px);
+  animation:lineIn 0.7s ease forwards;
+}
+@keyframes lineIn{to{opacity:1;transform:translateY(0);}}
+
+.human-text{
+  font-size:0.98rem;color:var(--text-body);
+  line-height:2;margin:1.5rem 0;text-align:justify;
+}
+.human-text .hl{color:var(--warm-600);font-weight:500;}
+
+.breath-box{text-align:center;padding:2.5rem;}
+.breath-ring{
+  width:70px;height:70px;margin:0 auto 1rem;
+  border-radius:50%;border:2px solid var(--warm-500);
+  opacity:0.35;animation:breathe 6s infinite ease-in-out;
+}
+@keyframes breathe{0%,100%{transform:scale(0.8);opacity:0.25;}50%{transform:scale(1.15);opacity:0.5;}}
+.breath-text{
+  font-family:var(--font-display);font-size:0.85rem;
+  font-style:italic;color:var(--text-muted);
+}
+
+.voice-card{
+  background:linear-gradient(135deg,rgba(207,163,119,0.06),rgba(91,171,163,0.03));
+  border:1px solid rgba(207,163,119,0.2);
+  border-radius:var(--radius);padding:1.5rem 2rem;
+  margin:1.3rem 0;position:relative;
+}
+.voice-card::before{
+  content:'\201C';font-family:var(--font-display);
+  font-size:3.5rem;color:var(--warm-500);
+  opacity:0.2;position:absolute;top:-0.3rem;left:0.8rem;line-height:1;
+}
+.voice-card blockquote{
+  font-family:var(--font-display);font-size:1.05rem;
+  font-style:italic;color:var(--text-primary);
+  line-height:1.8;margin:0;
+}
+.voice-card .voice-attr{
+  font-size:0.78rem;color:var(--warm-600);margin-top:0.7rem;
+  font-style:normal;font-weight:500;
+}
+
+.commitment-box{
+  background:linear-gradient(135deg,var(--ice-50),rgba(91,171,163,0.05));
+  border:1px solid var(--border-md);
+  border-radius:var(--radius-xl);padding:2.5rem;
+  margin:3rem 0;text-align:center;
+}
+.commitment-box h4{
+  font-family:var(--font-display);font-size:1.35rem;
+  color:var(--teal-600);margin-bottom:1.2rem;font-weight:500;
+}
+.commitment-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1.2rem;margin-top:1.5rem;
+}
+.commitment-item{
+  padding:1.2rem;background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);border:1px solid var(--border);
+}
+.commitment-item strong{
+  display:block;font-family:var(--font-display);
+  color:var(--warm-600);font-size:1.5rem;font-weight:400;margin-bottom:0.3rem;
+}
+.commitment-item p{
+  font-size:0.85rem;color:var(--text-body);margin:0;line-height:1.6;
+}
+
+/* ═══════ RESPONSIVE ═══════ */
+@media(max-width:1024px){
+  .nav-sidebar{transform:translateX(-272px);}
+  .nav-sidebar.open{transform:translateX(0);}
+  .nav-toggle{display:flex;}
+  .main{margin-left:0;}
+  .case-tools{grid-template-columns:1fr;}
+  .case-strip{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  .section{padding:3rem 1.5rem;}
+  .hero h1{font-size:2rem;}
+  .scale-row{grid-template-columns:1fr;}
+  .case-strip{grid-template-columns:1fr;}
+}
+/* ═══ CHECKBOX CALCULATOR ITEMS ═══ */
+.check-item{display:flex;align-items:center;gap:0.7rem;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:var(--radius);margin:0.35rem 0;cursor:pointer;transition:var(--transition);background:var(--bg-card);font-size:0.86rem;}
+.check-item:hover{border-color:var(--teal-500);background:rgba(78,141,160,0.04);}
+.check-item input[type="checkbox"]{display:none;}
+.check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;font-size:0.7rem;color:transparent;}
+.check-item input:checked~.check-box{background:var(--teal-600);border-color:var(--teal-600);color:#fff;}
+.check-item input:checked~.check-box::after{content:'✓';}
+.check-item input:checked~.check-text{color:var(--text-primary);font-weight:500;}
+.check-text{color:var(--text-secondary);transition:var(--transition);display:flex;align-items:center;gap:0.5rem;flex:1;}
+.check-pts{margin-left:auto;font-family:var(--font-mono);font-size:0.72rem;font-weight:600;color:var(--warm-600);background:rgba(207,163,119,0.12);padding:0.15rem 0.5rem;border-radius:10px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAV TOGGLE ═══════ -->
+<button class="nav-toggle" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+
+<!-- ═══════ NAV SIDEBAR ═══════ -->
+<nav class="nav-sidebar" id="nav">
+  <div class="nav-brand">
+    <small>Maestría en Cuidados Paliativos · UAN</small>
+    <h3>Clase 2 — Semana 3</h3>
+  </div>
+  <div class="nav-section-label">Contenido</div>
+  <a class="nav-link active" href="#hero"><span class="nn">00</span>Inicio</a>
+  <a class="nav-link" href="#apertura"><span class="nn">01</span>Apertura</a>
+  <a class="nav-link" href="#pronostico"><span class="nn">02</span>Factores pronósticos</a>
+  <a class="nav-link" href="#herramientas"><span class="nn">03</span>Escalas pronósticas</a>
+  <a class="nav-link" href="#escalas-funcionales"><span class="nn">04</span>Escalas funcionales y ESAS</a>
+  <a class="nav-link" href="#indices-pluri"><span class="nn">05</span>Índices pluripatológicos</a>
+  <a class="nav-link" href="#trayectorias"><span class="nn">06</span>Trayectorias de enfermedad</a>
+  <a class="nav-link" href="#fase-terminal"><span class="nn">07</span>Criterios fase terminal</a>
+  <div class="nav-section-label">Reflexión</div>
+  <a class="nav-link" href="#humano"><span class="nn">08</span>Detrás de cada pronóstico</a>
+  <div class="nav-section-label">Tema 1.4</div>
+  <a class="nav-link" href="#final-vida"><span class="nn">09</span>Cuidado al final de la vida</a>
+  <a class="nav-link" href="#investigacion"><span class="nn">10</span>Perspectiva investigativa</a>
+  <a class="nav-link" href="#cierre"><span class="nn">11</span>Cierre</a>
+</nav>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main" id="mainContent">
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="hero">
+  <div class="hero-grain"></div>
+  <div class="hero-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Unidad 1 · Tema 1.3 & 1.4 · Encuentro Sincrónico</div>
+    <h1>Factores pronósticos y<br><em>cuidado al final de la vida</em></h1>
+    <div class="hero-quote">
+      «No se trata de añadir días a la vida, sino de añadir vida a los días.»
+      <cite>— Cicely Saunders, fundadora del movimiento hospice moderno</cite>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Fecha</strong> 20/02/2026</div>
+      <div class="hero-meta-item"><strong>Duración</strong> 120 min</div>
+      <div class="hero-meta-item"><strong>Modalidad</strong> Google Meet</div>
+      <div class="hero-meta-item"><strong>Método</strong> Aula Invertida</div>
+    </div>
+  </div>
+  <div class="scroll-ind" onclick="document.getElementById('apertura').scrollIntoView({behavior:'smooth'})">↓</div>
+</section>
+
+<!-- ═══════ APERTURA ═══════ -->
+<section class="section collapsible" id="apertura">
+  <button class="collapsible-toggle" aria-expanded="false" aria-controls="apertura-content" onclick="toggleCollapsible(this)">
+    <span class="toggle-text">
+      <span class="toggle-label">01 · Apertura impactante</span>
+      <span class="toggle-title">¿Cuánto tiempo le queda?</span>
+      <span class="toggle-hint">Caso clínico y marco introductorio — clic para desplegar</span>
+    </span>
+    <span class="toggle-icon" aria-hidden="true">▼</span>
+  </button>
+  <div class="collapsible-content" id="apertura-content">
+    <p>En nuestra primera clase exploramos qué son los cuidados paliativos. Hoy profundizaremos en dos preguntas que atraviesan toda la práctica clínica paliativa:</p>
+
+    <div class="card" style="border-left:3px solid var(--warm-500);">
+      <p style="font-family:var(--font-display);font-size:1.1rem;font-style:italic;color:var(--warm-600);margin-bottom:1.2rem;">
+        Imaginen que están en un centro de atención primaria rural en Colombia. Llega una familia preocupada porque su abuela de 82 años, con insuficiencia cardíaca avanzada y deterioro funcional progresivo, ha dejado de comer hace tres días. La familia les pregunta:
+      </p>
+      <p style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);text-align:center;margin:1.5rem 0;font-weight:500;">
+        «¿Cuánto tiempo le queda?»
+      </p>
+      <p style="color:var(--text-muted);text-align:center;font-size:0.88rem;">
+        ¿Qué responderían? ¿Qué herramientas tienen hoy para aproximar una respuesta honesta y útil?
+      </p>
+    </div>
+
+    <p>Esa tensión entre la necesidad de anticipar y la incertidumbre inherente es el corazón de lo que exploraremos hoy. <strong style="color:var(--teal-600);">Las herramientas pronósticas no son sentencias — son brújulas para planificar el cuidado con dignidad.</strong></p>
+  </div>
+</section>
+
+<!-- ═══════ PRONÓSTICO ═══════ -->
+<section class="section collapsible" id="pronostico">
+  <button class="collapsible-toggle" aria-expanded="false" aria-controls="pronostico-content" onclick="toggleCollapsible(this)">
+    <span class="toggle-text">
+      <span class="toggle-label">02 · Tema 1.3</span>
+      <span class="toggle-title">Factores pronósticos en cuidados paliativos</span>
+      <span class="toggle-hint">Marco teórico y escalas — clic para desplegar</span>
+    </span>
+    <span class="toggle-icon" aria-hidden="true">▼</span>
+  </button>
+  <div class="collapsible-content" id="pronostico-content">
+    <p>El pronóstico no es un ejercicio de predicción exacta sino una herramienta para planificar el cuidado, comunicar con la familia y tomar decisiones compartidas. La literatura muestra consistentemente que los profesionales de salud tienden a <strong style="color:var(--warm-600);">sobreestimar la supervivencia</strong> (Glare et al., 2003; White et al., 2016).</p>
+    <p>En Colombia, la <strong style="color:var(--teal-600);">Ley 1733 de 2014</strong> (Ley Consuelo Devis Saavedra) reconoce el derecho a la atención en cuidados paliativos, pero la identificación oportuna sigue siendo un desafío en Atención Primaria.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-icon teal">📊</div><h4>PPS — Palliative Performance Scale</h4></div>
+        <p>Escala funcional: 5 dimensiones, 0–100 %. Un PPS ≤ 40 % se asocia con mediana de supervivencia inferior a un mes en oncología.</p>
+        <span class="badge badge-teal">Anderson et al., 1996</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon warm">🔍</div><h4>NECPAL CCOMS-ICO</h4></div>
+        <p>Herramienta poblacional para identificar necesidades paliativas en cualquier nivel de atención. Aplicable por cualquier profesional.</p>
+        <span class="badge badge-warm">Gómez-Batiste et al., 2013</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon rose">⚕️</div><h4>ECOG — Performance Status</h4></div>
+        <p>Escala 0–5. Un ECOG ≥ 3 sugiere evaluar pronóstico. Limitaciones en enfermedades no oncológicas.</p>
+        <span class="badge badge-rose">Oken et al., 1982</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon gold">❓</div><h4>La Pregunta Sorpresa</h4></div>
+        <p>«¿Le sorprendería que esta persona falleciera en los próximos 12 meses?» Sensibilidad 67 %. Aplicable por cualquier profesional en cualquier nivel.</p>
+        <span class="badge badge-warm">Downar et al., 2017</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon teal">📈</div><h4>PPI — Palliative Prognostic Index</h4></div>
+        <p>Predice supervivencia a 3–6 semanas integrando PPS, vía oral, edemas, disnea en reposo y delirium. PPI > 6 → supervivencia ≈ 3 semanas; PPI > 4 → ≈ 6 semanas.</p>
+        <span class="badge badge-teal">Morita et al., 1999</span>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon warm">📋</div><h4>PaP — Palliative Prognostic Score</h4></div>
+        <p>Estima supervivencia a 30 días con predicción clínica, KPS, disnea, anorexia, leucocitos y linfocitos. No aplicable en enfermedades hematológicas.</p>
+        <span class="badge badge-warm">Pirovano et al., 1999</span>
+      </div>
+    </div>
+
+    <h3>Escalas de valoración funcional y sintomática</h3>
+    <p>Además de las escalas pronósticas, la valoración integral en cuidados paliativos incluye herramientas para cuantificar la funcionalidad y la carga sintomática, esenciales para la toma de decisiones y el seguimiento.</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-icon teal">📊</div><h4>Karnofsky (KPS)</h4></div>
+        <p>Escala 0–100 que mide capacidad funcional. Predictor independiente de mortalidad. KPS ≤ 50 indica alto riesgo de muerte en 6 meses. Base del PaP Score.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon warm">🧑‍🦽</div><h4>Índice de Barthel</h4></div>
+        <p>Evalúa 10 actividades básicas de la vida diaria (0–100). Cuantifica el grado de dependencia funcional y permite planificar necesidades de cuidado.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon rose">📝</div><h4>ESAS Edmonton</h4></div>
+        <p>Evaluación de 10 síntomas frecuentes (0–10 cada uno). Perfil visual de carga sintomática. Desarrollado en 1991. Puede completarlo la persona o el cuidador.</p>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon gold">💛</div><h4>Zarit (Cuidador)</h4></div>
+        <p>Mide sobrecarga subjetiva del cuidador. < 47: sin sobrecarga; 47–55: sobrecarga leve; > 55: sobrecarga intensa. El cuidador también es sujeto de cuidado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ HERRAMIENTAS INTERACTIVAS ═══════ -->
+<section class="section" id="herramientas">
+  <div class="section-label">03 · Calculadoras interactivas</div>
+  <h2>Escalas pronósticas — Cálculo en tiempo real</h2>
+  <p>Utilice estas calculadoras como ejercicio formativo. Recuerde: cada puntaje representa <em>un momento</em> en la trayectoria de una persona, no una sentencia.</p>
+
+  <div class="tabs" style="overflow-x:auto;">
+    <button class="tab-btn active" onclick="switchTab('pps',this)">PPS</button>
+    <button class="tab-btn" onclick="switchTab('ecog',this)">ECOG</button>
+    <button class="tab-btn" onclick="switchTab('surprise',this)">P. Sorpresa</button>
+    <button class="tab-btn" onclick="switchTab('necpal',this)">NECPAL</button>
+    <button class="tab-btn" onclick="switchTab('ppi',this)">PPI Score</button>
+    <button class="tab-btn" onclick="switchTab('pap',this)">PaP Score</button>
+  </div>
+
+  <!-- PPS -->
+  <div class="tab-content active" id="tab-pps">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Palliative Performance Scale (PPS v2)</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Seleccione la opción que mejor describe el estado actual de la persona en cada dimensión.</p>
+        <div class="scale-row"><div class="scale-label">Deambulación</div><div class="scale-options" data-pps="amb"><div class="scale-opt" data-value="100" onclick="selPPS(this)">Completa</div><div class="scale-opt" data-value="80" onclick="selPPS(this)">Con esfuerzo</div><div class="scale-opt" data-value="60" onclick="selPPS(this)">Reducida</div><div class="scale-opt" data-value="40" onclick="selPPS(this)">Mainly sentado</div><div class="scale-opt" data-value="20" onclick="selPPS(this)">Encamado</div></div></div>
+        <div class="scale-row"><div class="scale-label">Actividad</div><div class="scale-options" data-pps="act"><div class="scale-opt" data-value="100" onclick="selPPS(this)">Normal</div><div class="scale-opt" data-value="80" onclick="selPPS(this)">Con esfuerzo</div><div class="scale-opt" data-value="60" onclick="selPPS(this)">No trabaja</div><div class="scale-opt" data-value="40" onclick="selPPS(this)">No hobbies</div><div class="scale-opt" data-value="20" onclick="selPPS(this)">Ninguna</div></div></div>
+        <div class="scale-row"><div class="scale-label">Autocuidado</div><div class="scale-options" data-pps="self"><div class="scale-opt" data-value="100" onclick="selPPS(this)">Completo</div><div class="scale-opt" data-value="80" onclick="selPPS(this)">Con esfuerzo</div><div class="scale-opt" data-value="60" onclick="selPPS(this)">Asist. ocasional</div><div class="scale-opt" data-value="40" onclick="selPPS(this)">Asist. considerable</div><div class="scale-opt" data-value="20" onclick="selPPS(this)">Cuidado total</div></div></div>
+        <div class="scale-row"><div class="scale-label">Ingesta oral</div><div class="scale-options" data-pps="ing"><div class="scale-opt" data-value="100" onclick="selPPS(this)">Normal</div><div class="scale-opt" data-value="80" onclick="selPPS(this)">Normal/reducida</div><div class="scale-opt" data-value="60" onclick="selPPS(this)">Reducida</div><div class="scale-opt" data-value="40" onclick="selPPS(this)">Mínima/sorbos</div><div class="scale-opt" data-value="20" onclick="selPPS(this)">Solo boca</div></div></div>
+        <div class="scale-row"><div class="scale-label">Conciencia</div><div class="scale-options" data-pps="con"><div class="scale-opt" data-value="100" onclick="selPPS(this)">Completa</div><div class="scale-opt" data-value="80" onclick="selPPS(this)">Completa</div><div class="scale-opt" data-value="60" onclick="selPPS(this)">Confusión±</div><div class="scale-opt" data-value="40" onclick="selPPS(this)">Somnolencia±</div><div class="scale-opt" data-value="20" onclick="selPPS(this)">Coma</div></div></div>
+        <div class="result-panel" id="ppsResult"><div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;"><div><div class="result-score" id="ppsScore">—</div><div class="result-label">Puntuación PPS estimada</div></div><div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="ppsBar" style="width:0%;"></div></div></div></div><div class="result-interp" id="ppsInterp" style="display:none;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECOG -->
+  <div class="tab-content" id="tab-ecog">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Escala ECOG — Performance Status</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner"><p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Seleccione la descripción que corresponde al estado funcional.</p><div id="ecogOpts"></div>
+      <div class="result-panel" id="ecogResult"><div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;"><div><div class="result-score" id="ecogScore">—</div><div class="result-label">ECOG Performance Status</div></div><div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="ecogBar" style="width:0%;"></div></div></div></div><div class="result-interp" id="ecogInterp" style="display:none;"></div></div></div>
+    </div>
+  </div>
+
+  <!-- SURPRISE -->
+  <div class="tab-content" id="tab-surprise">
+    <div class="tool-box">
+      <div class="tool-top"><h3>La Pregunta Sorpresa</h3><span class="tool-badge">Reflexivo</span></div>
+      <div class="tool-inner" style="text-align:center;">
+        <p style="font-family:var(--font-display);font-size:1.4rem;color:var(--text-primary);margin:2rem 0;">
+          ¿Le <em style="color:var(--warm-600)">sorprendería</em> que esta persona falleciera en los próximos <strong>12 meses</strong>?
+        </p>
+        <div style="display:flex;gap:1rem;justify-content:center;margin:2rem 0;">
+          <button class="btn btn-ghost" id="btnSurpNo" style="font-size:1rem;padding:1rem 2.5rem;" onclick="surpriseAns('no')">No me sorprendería</button>
+          <button class="btn btn-ghost" id="btnSurpSi" style="font-size:1rem;padding:1rem 2.5rem;" onclick="surpriseAns('si')">Sí me sorprendería</button>
+        </div>
+        <div id="surpriseResult" style="display:none;"></div>
+        <div style="margin-top:2rem;padding:1.5rem;background:var(--bg-surface);border-radius:var(--radius);text-align:left;">
+          <h4 style="font-family:var(--font-display);color:var(--teal-600);margin-bottom:0.8rem;">Datos de validación</h4>
+          <table class="styled-table"><thead><tr><th>Métrica</th><th>Valor (Downar et al., 2017)</th><th>Implicación clínica</th></tr></thead><tbody>
+            <tr><td>Sensibilidad</td><td>67 % (IC 95 %: 55–77 %)</td><td>Detecta 2 de cada 3 personas que fallecerán</td></tr>
+            <tr><td>Especificidad</td><td>Variable (80–90 %)</td><td>Pocos falsos positivos en la mayoría de contextos</td></tr>
+            <tr><td>Aplicabilidad AP</td><td>Alta</td><td>No requiere instrumentos ni entrenamiento especial</td></tr>
+            <tr><td>Limitación</td><td>Subjetividad clínica</td><td>Depende de la experiencia del profesional</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NECPAL -->
+  <div class="tab-content" id="tab-necpal">
+    <div class="tool-box">
+      <div class="tool-top"><h3>NECPAL Screening — Cribado simplificado</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Evalúe si la persona podría beneficiarse de un abordaje paliativo (Gómez-Batiste et al., 2013).</p>
+        <div id="necpalQ"></div>
+        <div class="result-panel" id="necpalResult"><div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;"><div><div class="result-score" id="necpalScore">0 / 7</div><div class="result-label">Indicadores positivos</div></div><div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="necpalBar" style="width:0%;background:var(--green-500);"></div></div></div></div><div class="result-interp" id="necpalInterp" style="display:none;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PPI Score -->
+  <div class="tab-content" id="tab-ppi">
+    <div class="tool-box">
+      <div class="tool-top"><h3>PPI — Palliative Prognostic Index</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Predice supervivencia a 3–6 semanas integrando PPS, síntomas y estado clínico. Seleccione los valores que aplican.</p>
+
+        <div class="scale-row"><div class="scale-label">PPS (Palliative Performance Scale)</div>
+          <div class="scale-options" data-ppi="pps">
+            <div class="scale-opt" data-value="0" onclick="selPPI(this)">PPS 70–100 % (0 pts)</div>
+            <div class="scale-opt" data-value="2.5" onclick="selPPI(this)">PPS 50–60 % (2.5 pts)</div>
+            <div class="scale-opt" data-value="4" onclick="selPPI(this)">PPS 10–40 % (4 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Ingesta oral</div>
+          <div class="scale-options" data-ppi="oral">
+            <div class="scale-opt" data-value="0" onclick="selPPI(this)">Normal (0 pts)</div>
+            <div class="scale-opt" data-value="1" onclick="selPPI(this)">Moderadamente reducida (1 pt)</div>
+            <div class="scale-opt" data-value="2.5" onclick="selPPI(this)">Severamente reducida / solo sorbos (2.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Edemas</div>
+          <div class="scale-options" data-ppi="edema">
+            <div class="scale-opt" data-value="0" onclick="selPPI(this)">No (0 pts)</div>
+            <div class="scale-opt" data-value="1" onclick="selPPI(this)">Sí (1 pt)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Disnea en reposo</div>
+          <div class="scale-options" data-ppi="disnea">
+            <div class="scale-opt" data-value="0" onclick="selPPI(this)">No (0 pts)</div>
+            <div class="scale-opt" data-value="3.5" onclick="selPPI(this)">Sí (3.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Delirium (criterios DSM)</div>
+          <div class="scale-options" data-ppi="delirium">
+            <div class="scale-opt" data-value="0" onclick="selPPI(this)">No (0 pts)</div>
+            <div class="scale-opt" data-value="4" onclick="selPPI(this)">Sí (4 pts)</div>
+          </div>
+        </div>
+
+        <div class="result-panel" id="ppiResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="ppiScore">—</div><div class="result-label">PPI Score</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="ppiBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="ppiInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PaP Score -->
+  <div class="tab-content" id="tab-pap">
+    <div class="tool-box">
+      <div class="tool-top"><h3>PaP — Palliative Prognostic Score</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Estima probabilidad de supervivencia a 30 días. No aplicable en enfermedades hematológicas. Si se asocia al delirium mejora la estimación.</p>
+
+        <div class="scale-row"><div class="scale-label">Predicción clínica (semanas)</div>
+          <div class="scale-options" data-pap="clinica">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">> 12 semanas (0 pts)</div>
+            <div class="scale-opt" data-value="2" onclick="selPaP(this)">11–12 semanas (2 pts)</div>
+            <div class="scale-opt" data-value="2.5" onclick="selPaP(this)">9–10 semanas (2.5 pts)</div>
+            <div class="scale-opt" data-value="4.5" onclick="selPaP(this)">7–8 semanas (4.5 pts)</div>
+            <div class="scale-opt" data-value="6" onclick="selPaP(this)">5–6 semanas (6 pts)</div>
+            <div class="scale-opt" data-value="8.5" onclick="selPaP(this)">1–4 semanas (8.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Karnofsky / PPS</div>
+          <div class="scale-options" data-pap="kps">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">KPS ≥ 50 (0 pts)</div>
+            <div class="scale-opt" data-value="2.5" onclick="selPaP(this)">KPS 10–40 (2.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Disnea</div>
+          <div class="scale-options" data-pap="disnea">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">No (0 pts)</div>
+            <div class="scale-opt" data-value="1" onclick="selPaP(this)">Sí (1 pt)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Anorexia</div>
+          <div class="scale-options" data-pap="anorexia">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">No (0 pts)</div>
+            <div class="scale-opt" data-value="1.5" onclick="selPaP(this)">Sí (1.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">Leucocitos (×10⁹/L)</div>
+          <div class="scale-options" data-pap="leuco">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">Normal 4.8–8.5 (0 pts)</div>
+            <div class="scale-opt" data-value="0.5" onclick="selPaP(this)">8.6–11.0 (0.5 pts)</div>
+            <div class="scale-opt" data-value="1.5" onclick="selPaP(this)">> 11.0 (1.5 pts)</div>
+          </div>
+        </div>
+        <div class="scale-row"><div class="scale-label">% Linfocitos</div>
+          <div class="scale-options" data-pap="linfo">
+            <div class="scale-opt" data-value="0" onclick="selPaP(this)">12–20 % (0 pts)</div>
+            <div class="scale-opt" data-value="1" onclick="selPaP(this)">0–11.9 % (1 pt)</div>
+            <div class="scale-opt" data-value="2.5" onclick="selPaP(this)">> 20 % (2.5 pts)</div>
+          </div>
+        </div>
+
+        <div class="result-panel" id="papResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="papScore">—</div><div class="result-label">PaP Score</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="papBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="papInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════ ESCALAS FUNCIONALES Y ESAS ═══════ -->
+<section class="section" id="escalas-funcionales">
+  <div class="section-label">04 · Valoración funcional y sintomática</div>
+  <h2>Escalas de funcionalidad y evaluación de síntomas</h2>
+  <p>Además de las herramientas pronósticas, los cuidados paliativos requieren una evaluación integral de la funcionalidad y la carga sintomática. Estas escalas permiten objetivar el estado de la persona, planificar intervenciones y evaluar resultados.</p>
+
+  <div class="tabs" style="overflow-x:auto;">
+    <button class="tab-btn active" onclick="switchTab('kps',this)">Karnofsky (KPS)</button>
+    <button class="tab-btn" onclick="switchTab('barthel',this)">Barthel</button>
+    <button class="tab-btn" onclick="switchTab('esas',this)">ESAS Edmonton</button>
+    <button class="tab-btn" onclick="switchTab('zarit',this)">Zarit (Cuidador)</button>
+  </div>
+
+  <!-- KARNOFSKY -->
+  <div class="tab-content active" id="tab-kps">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice de Karnofsky (KPS)</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Mide la capacidad de realizar actividades cotidianas. Predictor independiente de mortalidad. Un KPS ≤ 50 indica elevado riesgo de muerte en los 6 meses siguientes.</p>
+        <div id="kpsOpts"></div>
+        <div class="result-panel" id="kpsResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="kpsScore">—</div><div class="result-label">Karnofsky Performance Status</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="kpsBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="kpsInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARTHEL -->
+  <div class="tab-content" id="tab-barthel">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice de Barthel — Actividades básicas de la vida diaria</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Evalúa 10 actividades básicas de la vida diaria. Puntuación 0–100. Permite cuantificar el grado de dependencia funcional.</p>
+        <div id="barthelItems"></div>
+        <div class="result-panel" id="barthelResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="barthelScore">0</div><div class="result-label">Índice de Barthel (0–100)</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="barthelBar" style="width:0%;background:var(--green-500);"></div></div></div>
+          </div>
+          <div class="result-interp" id="barthelInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESAS -->
+  <div class="tab-content" id="tab-esas">
+    <div class="tool-box">
+      <div class="tool-top"><h3>ESAS — Edmonton Symptom Assessment System</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Evaluación del promedio de intensidad de 10 síntomas frecuentes (0 = ausente, 10 = peor posible). Desarrollado por el grupo de Edmonton (1991). Puede ser completado por la persona o su cuidador.</p>
+        <div id="esasSliders"></div>
+        <div style="margin-top:1.5rem;">
+          <div style="background:var(--bg-surface);border-radius:var(--radius);padding:1.5rem;border:1px solid var(--border);">
+            <h4 style="font-family:var(--font-display);color:var(--teal-600);margin-bottom:1rem;">Perfil sintomático ESAS</h4>
+            <div style="height:300px;"><canvas id="esasChart"></canvas></div>
+          </div>
+        </div>
+        <div class="result-panel" id="esasResult" style="margin-top:1rem;">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="esasTotal" style="color:var(--teal-600);">0</div><div class="result-label">Carga sintomática total (0–100)</div></div>
+          </div>
+          <div class="result-interp" id="esasInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZARIT -->
+  <div class="tab-content" id="tab-zarit">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Escala de Zarit — Sobrecarga del cuidador (Versión abreviada)</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.2rem;">Mide el grado de sobrecarga subjetiva del cuidador. Versión reducida de 7 ítems para cribado rápido. Puntuación 7–35.</p>
+        <div id="zaritItems"></div>
+        <div class="result-panel" id="zaritResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="zaritScore" style="color:var(--teal-600);">—</div><div class="result-label">Puntuación Zarit abreviado</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="zaritBar" style="width:0%;background:var(--green-500);"></div></div></div>
+          </div>
+          <div class="result-interp" id="zaritInterp" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ ÍNDICES PLURIPATOLÓGICOS ═══════ -->
+<section class="section" id="indices-pluri">
+  <div class="section-label">05 · Pacientes no oncológicos · PAI Junta de Andalucía</div>
+  <h2>Índices pronósticos para pacientes pluripatológicos</h2>
+  <p>Los índices <strong>PROFUND</strong>, <strong>PALIAR</strong> y <strong>PROFUNCTION</strong> fueron diseñados y validados específicamente en población española pluripatológica — hospitalaria y de Atención Primaria. Son herramientas clave para las trayectorias 2 y 3 (fallo orgánico y fragilidad), donde las escalas oncológicas son menos precisas.</p>
+
+  <div class="callout" style="background:rgba(78,141,160,0.08);border-left:3px solid var(--teal-600);padding:1rem 1.2rem;border-radius:var(--radius);margin:1rem 0;font-size:0.85rem;">
+    <strong style="color:var(--teal-600);">Fuente:</strong> Proceso Asistencial Integrado — Atención a Pacientes Pluripatológicos, 3.ª ed. Consejería de Salud, Junta de Andalucía (2018). Coord.: Manuel Ollero Baturone.
+  </div>
+
+  <div class="tabs" style="overflow-x:auto;">
+    <button class="tab-btn active" onclick="switchTab('profund',this)">PROFUND</button>
+    <button class="tab-btn" onclick="switchTab('paliar',this)">PALIAR</button>
+    <button class="tab-btn" onclick="switchTab('profunction',this)">PROFUNCTION</button>
+    <button class="tab-btn" onclick="switchTab('ifvig',this)">IF-VIG (Frágil-VIG)</button>
+  </div>
+
+  <!-- ═══ PROFUND ═══ -->
+  <div class="tab-content active" id="tab-profund">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice PROFUND — Mortalidad en pluripatológicos</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;">Índice pronóstico específico para pacientes pluripatológicos. Validado en población hospitalaria y de AP española. Marque las características presentes.</p>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.2rem;font-style:italic;">9 dimensiones dicotómicas · Rango 0–30 puntos · 4 grupos de riesgo</p>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:0.8rem 0 0.4rem;padding-left:0.3rem;">Demografía</div>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-age" value="3"><span class="check-box"></span><span class="check-text">≥ 85 años<span class="check-pts">+3</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características clínicas</div>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-neo" value="6"><span class="check-box"></span><span class="check-text">Neoplasia activa<span class="check-pts">+6</span></span></label>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-dem" value="3"><span class="check-box"></span><span class="check-text">Demencia<span class="check-pts">+3</span></span></label>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-nyha" value="3"><span class="check-box"></span><span class="check-text">Clase funcional III–IV NYHA y/o mMRC<span class="check-pts">+3</span></span></label>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-del" value="3"><span class="check-box"></span><span class="check-text">Delirium en el último ingreso<span class="check-pts">+3</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Parámetros analíticos</div>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-hb" value="3"><span class="check-box"></span><span class="check-text">Hemoglobina &lt; 10 g/dL<span class="check-pts">+3</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características funcionales-sociofamiliares</div>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-bar" value="4"><span class="check-box"></span><span class="check-text">Índice de Barthel &lt; 60<span class="check-pts">+4</span></span></label>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-cui" value="2"><span class="check-box"></span><span class="check-text">Ausencia de cuidador o cuidador no cónyuge<span class="check-pts">+2</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características asistenciales</div>
+        <label class="check-item" onclick="calcProfund()"><input type="checkbox" id="pf-hosp" value="3"><span class="check-box"></span><span class="check-text">≥ 4 ingresos hospitalarios en últimos 12 meses<span class="check-pts">+3</span></span></label>
+
+        <div class="result-panel" id="profundResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="profundScore">0</div><div class="result-label">PROFUND Score (0–30)</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="profundBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="profundInterp" style="display:none;"></div>
+        </div>
+
+        <table class="styled-table" style="margin-top:1.2rem;font-size:0.78rem;">
+          <thead><tr><th>Grupo</th><th>Score</th><th>Mort. 12 m (hosp.)</th><th>Mort. 4 años</th><th>Mort. 2 años (AP)</th></tr></thead>
+          <tbody>
+            <tr><td>Bajo riesgo</td><td>0–2 pts</td><td>12,1–14,6 %</td><td>52 %</td><td>8,5–11 %</td></tr>
+            <tr><td>Bajo-intermedio</td><td>3–6 pts</td><td>21,5–31,5 %</td><td>73,5 %</td><td>18–21,6 %</td></tr>
+            <tr><td>Intermedio-alto</td><td>7–10 pts</td><td>45–50 %</td><td>85 %</td><td>26,8–29,5 %</td></tr>
+            <tr><td>Alto riesgo</td><td>≥ 11 pts</td><td>68–61,3 %</td><td>92 %</td><td>41,8–43,7 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PALIAR ═══ -->
+  <div class="tab-content" id="tab-paliar">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice PALIAR — Fase final de vida en enfermedad médica</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;">Para pacientes con enfermedades médicas en los que el clínico se pregunta si la persona está entrando en fase de final de vida. Marque las características presentes.</p>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.2rem;font-style:italic;">6 dimensiones dicotómicas · Rango 0–21 puntos · 4 grupos de riesgo · Pronóstico a 6 meses</p>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:0.8rem 0 0.4rem;padding-left:0.3rem;">Demografía</div>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-age" value="3"><span class="check-box"></span><span class="check-text">≥ 85 años<span class="check-pts">+3</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características clínicas</div>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-anx" value="3.5"><span class="check-box"></span><span class="check-text">Anorexia<span class="check-pts">+3,5</span></span></label>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-nyha" value="3.5"><span class="check-box"></span><span class="check-text">Clase funcional IV de NYHA y/o MRC<span class="check-pts">+3,5</span></span></label>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-upp" value="3"><span class="check-box"></span><span class="check-text">Presencia de úlceras por presión<span class="check-pts">+3</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Parámetros analíticos</div>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-alb" value="4"><span class="check-box"></span><span class="check-text">Albúmina &lt; 2,5 g/dL<span class="check-pts">+4</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características funcionales</div>
+        <label class="check-item" onclick="calcPaliar()"><input type="checkbox" id="pl-ecog" value="4"><span class="check-box"></span><span class="check-text">ECOG-PS ≥ III<span class="check-pts">+4</span></span></label>
+
+        <div class="result-panel" id="paliarResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="paliarScore">0</div><div class="result-label">PALIAR Score (0–21)</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="paliarBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="paliarInterp" style="display:none;"></div>
+        </div>
+
+        <table class="styled-table" style="margin-top:1.2rem;font-size:0.78rem;">
+          <thead><tr><th>Grupo</th><th>PALIAR Score</th><th>Probabilidad de fallecimiento a 6 meses</th></tr></thead>
+          <tbody>
+            <tr><td>Bajo riesgo</td><td>0 pts</td><td>20–21,5 %</td></tr>
+            <tr><td>Bajo-intermedio</td><td>3–3,5 pts</td><td>30,5–33,5 %</td></tr>
+            <tr><td>Intermedio-alto</td><td>6–7 pts</td><td>43–46 %</td></tr>
+            <tr><td>Alto riesgo</td><td>≥ 7,5 pts</td><td>61–67 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PROFUNCTION ═══ -->
+  <div class="tab-content" id="tab-profunction">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice PROFUNCTION — Declinar funcional</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;">Pronostica una caída ≥ 20 puntos en el Índice de Barthel en los próximos 12 meses. Identificar subgrupos en riesgo de la «cascada de la dependencia» permite establecer intervenciones preventivas.</p>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:1.2rem;font-style:italic;">7 dimensiones dicotómicas · Rango 0–7 puntos · 3 grupos de riesgo</p>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-500);font-weight:600;margin:0.8rem 0 0.4rem;padding-left:0.3rem;">Demografía</div>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-age" value="1"><span class="check-box"></span><span class="check-text">≥ 85 años<span class="check-pts">+1</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-500);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características clínicas</div>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-neuro" value="1"><span class="check-box"></span><span class="check-text">Enfermedad neurológica crónica *<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-osteo" value="1"><span class="check-box"></span><span class="check-text">Enfermedad osteoarticular crónica<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-disnea" value="1"><span class="check-box"></span><span class="check-text">Disnea clase III–IV de la NYHA y/o mMRC<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-cat" value="1"><span class="check-box"></span><span class="check-text">≥ 4 categorías de pluripatología<span class="check-pts">+1</span></span></label>
+
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-500);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">Características funcionales-sociofamiliares</div>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-bar" value="1"><span class="check-box"></span><span class="check-text">Índice de Barthel basal &lt; 60 puntos<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcProfunction()"><input type="checkbox" id="pfn-soc" value="1"><span class="check-box"></span><span class="check-text">Riesgo social o problema social establecido (escala de Gijón)<span class="check-pts">+1</span></span></label>
+
+        <p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-top:0.8rem;">* Enfermedad cerebrovascular y/o cualquier otra enfermedad neurológica con deterioro funcional/cognitivo.</p>
+
+        <div class="result-panel" id="profunctionResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="profunctionScore">0</div><div class="result-label">PROFUNCTION Score (0–7)</div></div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="profunctionBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="profunctionInterp" style="display:none;"></div>
+        </div>
+
+        <table class="styled-table" style="margin-top:1.2rem;font-size:0.78rem;">
+          <thead><tr><th>Grupo</th><th>PROFUNCTION Score</th><th>Prob. deterioro funcional a 12 meses</th></tr></thead>
+          <tbody>
+            <tr><td>Bajo riesgo</td><td>0 pts</td><td>21–24 %</td></tr>
+            <tr><td>Riesgo intermedio</td><td>1–3 pts</td><td>30–34 %</td></tr>
+            <tr><td>Riesgo alto</td><td>≥ 4 pts</td><td>38–46 %</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout" style="background:rgba(91,171,122,0.08);border-left:3px solid var(--green-500,#5BAB7A);padding:1rem 1.2rem;border-radius:var(--radius);margin:1.2rem 0;font-size:0.85rem;">
+          <strong style="color:#5BAB7A;">💡 Perspectiva investigativa:</strong> El PROFUNCTION se desarrolló en cohorte multicéntrica de hospitales españoles. No existen validaciones en Latinoamérica. La «cascada de la dependencia» en contextos rurales colombianos — donde los servicios de rehabilitación son escasos — podría tener dinámicas distintas. Oportunidad directa para un estudio de cohorte prospectivo.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ IF-VIG (Frágil-VIG) ═══ -->
+  <div class="tab-content" id="tab-ifvig">
+    <div class="tool-box">
+      <div class="tool-top"><h3>Índice Frágil-VIG — Fragilidad basada en la VIG</h3><span class="tool-badge">Interactivo</span></div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;">Índice de fragilidad basado en la Valoración Integral Geriátrica (VIG). Mide la <strong>edad biológica</strong> mediante acumulación de déficits. Diseñado y validado en España (Hospital Universitari de Vic, 2014). AUC-ROC a 12 meses: <strong>0,90</strong> (0,88–0,92).</p>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;font-style:italic;">25 déficits en 22 preguntas · Rango 0–1 · Administración &lt; 10 min · Amblàs-Novellas et al., Rev Esp Geriatr Gerontol 2017;52(3):119–127</p>
+
+        <div class="callout" style="background:rgba(78,141,160,0.08);border-left:3px solid var(--teal-600);padding:0.8rem 1rem;border-radius:var(--radius);margin:0.8rem 0 1.2rem;font-size:0.8rem;">
+          <strong style="color:var(--teal-600);">📐 Fórmula:</strong> IF-VIG = Σ déficits acumulados ÷ 25 déficits totales posibles. Resultado entre 0 (sin déficits) y 1 (todos los déficits). Frágil ≥ 0,20. Límite submáximo ≈ 0,70.
+        </div>
+
+        <!-- FUNCIONAL: AIVDs -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:0.8rem 0 0.4rem;padding-left:0.3rem;">🔧 Funcional — Actividades instrumentales (AIVD)</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-dinero" value="1"><span class="check-box"></span><span class="check-text">¿Necesita ayuda para gestionar asuntos económicos?<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-telefono" value="1"><span class="check-box"></span><span class="check-text">¿Necesita ayuda para utilizar el teléfono?<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-medicacion" value="1"><span class="check-box"></span><span class="check-text">¿Necesita ayuda para preparación/administración de medicación?<span class="check-pts">+1</span></span></label>
+
+        <!-- FUNCIONAL: ABVDs (Barthel) -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--teal-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🚶 Funcional — Actividades básicas (Índice de Barthel)</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.6rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;" class="vig-radio-label">
+            <input type="radio" name="vig-barthel" value="0" onchange="calcIFVIG()" checked> <span>IB ≥ 95 <em style="color:var(--text-muted);font-size:0.7rem;">(sin depend.)</em> <strong style="color:var(--green-500,#5BAB7A);">+0</strong></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;" class="vig-radio-label">
+            <input type="radio" name="vig-barthel" value="1" onchange="calcIFVIG()"> <span>IB 90–65 <em style="color:var(--text-muted);font-size:0.7rem;">(leve-mod.)</em> <strong style="color:var(--warm-600);">+1</strong></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;" class="vig-radio-label">
+            <input type="radio" name="vig-barthel" value="2" onchange="calcIFVIG()"> <span>IB 60–25 <em style="color:var(--text-muted);font-size:0.7rem;">(mod.-grave)</em> <strong style="color:#c47050;">+2</strong></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;" class="vig-radio-label">
+            <input type="radio" name="vig-barthel" value="3" onchange="calcIFVIG()"> <span>IB ≤ 20 <em style="color:var(--text-muted);font-size:0.7rem;">(absoluta)</em> <strong style="color:var(--red-500,#BF7680);">+3</strong></span>
+          </label>
+        </div>
+
+        <!-- NUTRICIONAL -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🍽️ Nutricional</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-nutri" value="1"><span class="check-box"></span><span class="check-text">¿Ha perdido ≥ 5 % de peso en los últimos 6 meses?<span class="check-pts">+1</span></span></label>
+
+        <!-- COGNITIVO -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--warm-600);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🧠 Cognitivo (GDS de Reisberg)</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.6rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;" class="vig-radio-label">
+            <input type="radio" name="vig-cogni" value="0" onchange="calcIFVIG()" checked> <span>Sin deterioro cognitivo <strong style="color:var(--green-500,#5BAB7A);">+0</strong></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;" class="vig-radio-label">
+            <input type="radio" name="vig-cogni" value="1" onchange="calcIFVIG()"> <span>Leve-moderado (GDS ≤ 5) <strong style="color:var(--warm-600);">+1</strong></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;" class="vig-radio-label">
+            <input type="radio" name="vig-cogni" value="2" onchange="calcIFVIG()"> <span>Grave-muy grave (GDS ≥ 6) <strong style="color:var(--red-500,#BF7680);">+2</strong></span>
+          </label>
+        </div>
+
+        <!-- EMOCIONAL -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-500,#5A8DB8);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">💙 Emocional</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-depre" value="1"><span class="check-box"></span><span class="check-text">Síndrome depresivo (requiere antidepresivos)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-insomnio" value="1"><span class="check-box"></span><span class="check-text">Insomnio/ansiedad (requiere benzodiacepinas u otros sedantes)<span class="check-pts">+1</span></span></label>
+
+        <!-- SOCIAL -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue-500,#5A8DB8);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🏠 Social</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-social" value="1"><span class="check-box"></span><span class="check-text">Percepción de vulnerabilidad social por el equipo asistencial<span class="check-pts">+1</span></span></label>
+
+        <!-- SÍNDROMES GERIÁTRICOS -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#8583B0;font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">⚕️ Síndromes geriátricos</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-delirium" value="1"><span class="check-box"></span><span class="check-text">Delirium y/o trastorno conductual con neurolépticos (últimos 6 meses)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-caidas" value="1"><span class="check-box"></span><span class="check-text">≥ 2 caídas o caída con hospitalización (últimos 6 meses)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-ulceras" value="1"><span class="check-box"></span><span class="check-text">Presencia de úlceras (por presión o vasculares, cualquier grado)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-polifar" value="1"><span class="check-box"></span><span class="check-text">Polifarmacia (≥ 5 fármacos habituales)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-disfagia" value="1"><span class="check-box"></span><span class="check-text">Disfagia (atragantamiento frecuente o broncoaspiración en 6 meses)<span class="check-pts">+1</span></span></label>
+
+        <!-- SÍNTOMAS GRAVES -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:#c47050;font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🔴 Síntomas graves</div>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-dolor" value="1"><span class="check-box"></span><span class="check-text">Dolor (requiere ≥ 2 analgésicos convencionales y/o opiáceos mayores)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcIFVIG()"><input type="checkbox" id="vig-disnea" value="1"><span class="check-box"></span><span class="check-text">Disnea basal que impide salir de casa y/o requiere opiáceos<span class="check-pts">+1</span></span></label>
+
+        <!-- ENFERMEDADES CRÓNICAS -->
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--red-500,#BF7680);font-weight:600;margin:1.2rem 0 0.4rem;padding-left:0.3rem;">🏥 Enfermedades crónicas (+2 si criterios NECPAL de enfermedad avanzada)</div>
+        <p style="font-size:0.72rem;color:var(--text-muted);margin-bottom:0.6rem;font-style:italic;">Seleccione «Presente» (+1) o «Avanzada/NECPAL+» (+2) para cada enfermedad crónica.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.5rem;margin-bottom:0.8rem;">
+          <!-- Oncológica -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Cáncer</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-onco" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-onco" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-onco" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+          <!-- Respiratoria -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Respiratoria (EPOC, restrictiva…)</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-resp" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-resp" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-resp" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+          <!-- Cardíaca -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Cardíaca (IC, isquémica, arritmia)</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-cardio" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-cardio" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-cardio" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+          <!-- Neurológica -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Neurológica (ACV, Parkinson, ELA…)</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-neuro" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-neuro" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-neuro" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+          <!-- Digestiva/Hepática -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Digestiva/Hepática (cirrosis, EII…)</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-digest" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-digest" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-digest" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+          <!-- Renal -->
+          <div style="border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.8rem;">
+            <div style="font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Renal (FG &lt; 60 mL/min)</div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-renal" value="0" onchange="calcIFVIG()" checked> Ausente</label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;"><input type="radio" name="vig-renal" value="1" onchange="calcIFVIG()"> Presente <strong>+1</strong></label>
+              <label style="font-size:0.72rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;color:var(--red-500,#BF7680);"><input type="radio" name="vig-renal" value="2" onchange="calcIFVIG()"> Avanzada <strong>+2</strong></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULTADO -->
+        <div class="result-panel" id="ifvigResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div>
+              <div class="result-score" id="ifvigScore">0,00</div>
+              <div class="result-label">IF-VIG (0–1)</div>
+            </div>
+            <div style="text-align:center;">
+              <div class="result-score" id="ifvigDeficits" style="font-size:1.6rem;">0</div>
+              <div class="result-label">Déficits / 25</div>
+            </div>
+            <div style="flex:1;min-width:200px;"><div class="progress-track"><div class="progress-fill" id="ifvigBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="ifvigInterp" style="display:none;"></div>
+        </div>
+
+        <!-- TABLA DE INTERPRETACIÓN -->
+        <table class="styled-table" style="margin-top:1.2rem;font-size:0.78rem;">
+          <thead><tr><th>IF-VIG</th><th>Grado de fragilidad</th><th>Mortalidad 12 meses</th><th>Objetivos asistenciales propuestos</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 0,20</td><td style="color:var(--green-500,#5BAB7A);font-weight:600;">No frágil</td><td>≈ 0 %</td><td>Supervivencia, funcionalidad, prevención</td></tr>
+            <tr><td>0,20–0,35</td><td style="color:var(--teal-600);font-weight:600;">Fragilidad leve</td><td>&lt; 8 %</td><td>Tratamiento específico/curativo + funcionalidad</td></tr>
+            <tr><td>0,36–0,45</td><td style="color:var(--warm-600);font-weight:600;">Fragilidad moderada</td><td>24–37 %</td><td>Tratamiento activo + inicio enfoque conservador</td></tr>
+            <tr><td>0,46–0,55</td><td style="color:#c47050;font-weight:600;">Fragilidad moderada-avanzada</td><td>57–62 %</td><td>Predominio conservador + control sintomático</td></tr>
+            <tr><td>0,56–0,65</td><td style="color:var(--red-500,#BF7680);font-weight:600;">Fragilidad avanzada</td><td>88–100 %</td><td>Bienestar y control sintomático. Planificación anticipada</td></tr>
+            <tr><td>≥ 0,64</td><td style="color:#8B3A3A;font-weight:600;">Fragilidad muy avanzada</td><td>100 %</td><td>Exclusivamente paliativo. Situación final de vida</td></tr>
+          </tbody>
+        </table>
+
+        <!-- MODELO CONCEPTUAL -->
+        <div class="callout" style="background:rgba(133,131,176,0.08);border-left:3px solid #8583B0;padding:1rem 1.2rem;border-radius:var(--radius);margin:1.2rem 0;font-size:0.85rem;">
+          <strong style="color:#8583B0;">🎯 Modelo conceptual clave (Figura 4 del artículo):</strong>
+          <p style="margin:0.3rem 0 0;font-size:0.82rem;">El IF-VIG permite superponer la <strong>curva de mortalidad</strong> con la propuesta de <strong>adecuación progresiva de la intensidad terapéutica</strong>: a medida que el IF-VIG aumenta, los objetivos transitan gradualmente desde «supervivencia y funcionalidad» hacia «bienestar y control sintomático» — lo que los autores denominan <em>«aproximación paliativa progresiva»</em>. Este modelo es directamente aplicable al concepto de <strong>trayectorias de enfermedad</strong> (Lynn & Adamson) que estudiamos en esta clase.</p>
+        </div>
+
+        <div class="callout" style="background:rgba(91,171,122,0.08);border-left:3px solid var(--green-500,#5BAB7A);padding:1rem 1.2rem;border-radius:var(--radius);margin:1.2rem 0;font-size:0.85rem;">
+          <strong style="color:#5BAB7A;">💡 Perspectiva investigativa:</strong> El IF-VIG fue validado en una UGA catalana (n = 590, edad media 86,4 años). No existen validaciones en Latinoamérica ni en Atención Primaria comunitaria de países de ingreso medio. La incorporación del dominio <strong>social</strong> — ausente en otros IF — resulta especialmente relevante para Colombia, donde las condiciones socioeconómicas pueden acelerar la acumulación de déficits. Oportunidad: validación del IF-VIG en contexto colombiano con incorporación de variables de <strong>determinantes sociales de salud</strong> y <strong>ruralidad</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" id="trayectorias">
+  <div class="section-label">06 · Modelo de Lynn & Adamson</div>
+  <h2>Trayectorias de enfermedad al final de la vida</h2>
+  <p>Tres patrones fundamentales de declive funcional. Comprender estas trayectorias es esencial para planificar el cuidado y entender por qué la predicción pronóstica es difícil en enfermedades no oncológicas.</p>
+  <div class="chart-box">
+    <div class="chart-wrap"><canvas id="trajChart"></canvas></div>
+    <div class="chart-legend">
+      <div class="legend-item" onclick="togDS(0)"><div class="legend-dot" style="background:var(--rose-500);"></div>Cáncer — Caída rápida</div>
+      <div class="legend-item" onclick="togDS(1)"><div class="legend-dot" style="background:var(--warm-600);"></div>Fallo orgánico — Declive con crisis</div>
+      <div class="legend-item" onclick="togDS(2)"><div class="legend-dot" style="background:var(--blue-500);"></div>Fragilidad/Demencia — Declive lento</div>
+    </div>
+  </div>
+  <div class="card-grid">
+    <div class="card" style="border-top:3px solid var(--rose-500);"><h4 style="color:var(--rose-500);">Trayectoria 1 — Cáncer</h4><p>Función preservada hasta declive rápido en últimas semanas. Pronóstico más predecible. Mayoría de herramientas validadas aquí.</p></div>
+    <div class="card" style="border-top:3px solid var(--warm-600);"><h4 style="color:var(--warm-600);">Trayectoria 2 — Fallo orgánico</h4><p>ICC, EPOC, IRC. Declive con crisis agudas y recuperación parcial. «Incertidumbre pronóstica inherente» (Murray et al., 2005).</p></div>
+    <div class="card" style="border-top:3px solid var(--blue-500);"><h4 style="color:var(--blue-500);">Trayectoria 3 — Fragilidad</h4><p>Declive lento y prolongado. Muerte a menudo inesperada pese a años de deterioro. Necesidades paliativas frecuentemente no reconocidas.</p></div>
+  </div>
+</section>
+
+<!-- ═══════ FASE TERMINAL ═══════ -->
+<section class="section" id="fase-terminal">
+  <div class="section-label">07 · Criterios clínicos</div>
+  <h2>Criterios de fase terminal</h2>
+  <p>Período en que la enfermedad avanzada es progresiva e irreversible, no responde a tratamiento específico, con pronóstico generalmente inferior a seis meses.</p>
+  <div class="card" style="border-left:3px solid var(--teal-600);">
+    <h4 style="color:var(--teal-600);margin-bottom:1rem;">Criterios clásicos (SECPAL)</h4>
+    <table class="styled-table"><thead><tr><th>Criterio</th><th>Descripción</th><th>Consideración en AP</th></tr></thead><tbody>
+      <tr><td>Enfermedad avanzada</td><td>Progresiva e incurable</td><td>Requiere diagnóstico especializado</td></tr>
+      <tr><td>Sin respuesta a tratamiento</td><td>Falta de respuesta razonable</td><td>Documentar intentos previos</td></tr>
+      <tr><td>Síntomas intensos</td><td>Múltiples, cambiantes, multifactoriales</td><td>ESAS u otras herramientas</td></tr>
+      <tr><td>Impacto emocional</td><td>En persona, familia, equipo</td><td>Entrevista semiestructurada</td></tr>
+      <tr><td>Pronóstico limitado</td><td>Generalmente < 6 meses</td><td>PPS + Pregunta Sorpresa + juicio</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card" style="border-left:3px solid var(--warm-600);margin-top:1rem;">
+    <h4 style="color:var(--warm-600);margin-bottom:0.6rem;">⚠ Limitación crítica</h4>
+    <p>Estos criterios fueron desarrollados primordialmente en oncología. En ICC, EPOC o demencia, la trayectoria es impredecible, las herramientas menos precisas, y la «fase terminal» puede no distinguirse del curso habitual.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN HUMANA
+     ═══════════════════════════════════════════════════ -->
+<section class="section human-section" id="humano">
+  <div class="human-bg"></div>
+  <div class="human-divider"><span>UNA PAUSA NECESARIA</span></div>
+  <div class="human-core">
+    <div class="human-poem" id="humanPoem"></div>
+    <div class="breath-box"><div class="breath-ring"></div><div class="breath-text">Respire. Este momento también es parte de la formación.</div></div>
+    <div class="human-text">Hemos hablado de escalas, puntajes y criterios. Hemos aprendido que un PPS de 30 % sugiere días a semanas, que un ECOG de 4 describe a alguien encamado más de la mitad del día, que la Pregunta Sorpresa tiene una sensibilidad del 67 %.</div>
+    <div class="human-text">Pero <span class="hl">detrás de cada puntaje hay alguien que tuvo un primer beso</span>. Alguien que una vez aprendió a montar en bicicleta y sintió el viento en la cara por primera vez. Alguien que tiene un plato favorito, una canción que le hace llorar, un recuerdo que guarda con ternura. <span class="hl">Un PPS de 30 % es Doña Carmen</span>, que todavía se preocupa más por su hija que por sí misma. Es Don José, que quiere ver una última vez el cafetal que sembró con sus manos. Es la maestra jubilada que sueña con que sus nietos recuerden su risa, no su enfermedad.</div>
+    <div class="human-text">La medicina nos enseña a medir. Los cuidados paliativos nos enseñan a <span class="hl">acompañar lo que no se puede medir</span>. La investigación que necesitamos no es solo aquella que mejora la precisión pronóstica — es también aquella que nos ayuda a entender qué significa vivir bien los últimos días, qué necesita quien cuida, qué queda cuando ya no hay más tratamiento.</div>
+    <div style="margin:2.5rem 0;">
+      <div class="voice-card"><blockquote>Yo ya sé que me voy a morir, mijo. Lo que me preocupa es Luz Marina… ella no duerme, no come, y los niños la necesitan.</blockquote><div class="voice-attr">— Doña Carmen, 74 años. EPOC GOLD IV. PPS 30 %. Municipio de Bolívar, Cauca.</div></div>
+      <div class="voice-card"><blockquote>El doctor del hospital nos dijo que ya no había más qué hacerle, que la lleváramos a la casa. Pero nadie nos dijo cómo cuidarla en la casa.</blockquote><div class="voice-attr">— Luz Marina, 46 años. Cuidadora familiar. Dejó su trabajo hace 8 meses.</div></div>
+      <div class="voice-card"><blockquote>A veces en la noche me da miedo dormirme, porque pienso que si me duermo, ella se va a ir solita, sin que yo esté ahí.</blockquote><div class="voice-attr">— Luz Marina, en consulta de seguimiento.</div></div>
+    </div>
+    <div class="human-text" style="text-align:center;font-family:var(--font-display);font-size:1.1rem;color:var(--warm-600);line-height:2.2;">
+      No investigamos sobre la muerte.<br>Investigamos sobre cómo vivir — hasta el final — con dignidad.<br>Y sobre cómo cuidar a quienes cuidan.
+    </div>
+    <div class="commitment-box">
+      <h4>Lo que la investigación puede transformar</h4>
+      <p style="color:var(--text-body);max-width:55ch;margin:0 auto 1.5rem;font-size:0.92rem;">Cada vacío de evidencia que identificamos hoy es una persona que podría ser mejor cuidada mañana.</p>
+      <div class="commitment-grid">
+        <div class="commitment-item"><strong>Dolor</strong><p>Que ninguna persona en zona rural muera con dolor no controlado por falta de acceso a opioides</p></div>
+        <div class="commitment-item"><strong>Soledad</strong><p>Que el cuidador no enferme de soledad y agotamiento mientras cuida a quien ama</p></div>
+        <div class="commitment-item"><strong>Silencio</strong><p>Que la conversación sobre el final de la vida deje de ser un tabú y se convierta en un acto de amor</p></div>
+        <div class="commitment-item"><strong>Dignidad</strong><p>Que cada persona pueda morir donde quiere, con quien quiere, como ella misma eligió</p></div>
+      </div>
+    </div>
+    <div class="human-text" style="text-align:center;margin-top:2rem;"><span style="color:var(--text-muted);font-style:italic;">Guardemos este momento. Ahora seguimos, con la ciencia y la ternura caminando juntas.</span></div>
+  </div>
+</section>
+
+<!-- ═══════ CUIDADO AL FINAL ═══════ -->
+<section class="section" id="final-vida">
+  <div class="section-label">08 · Tema 1.4</div>
+  <h2>Cuidado al final de la vida</h2>
+  <h3>Definición y diferenciación conceptual</h3>
+  <table class="styled-table"><thead><tr><th>Concepto</th><th>Definición</th><th>Temporalidad</th><th>Foco</th></tr></thead><tbody>
+    <tr><td><strong style="color:var(--teal-600);">CP generales</strong></td><td>Abordaje integral desde el diagnóstico</td><td>Meses–años</td><td>Calidad de vida</td></tr>
+    <tr><td><strong style="color:var(--warm-600);">Cuidado al final de la vida</strong></td><td>Muerte anticipada en semanas/meses</td><td>Semanas–meses</td><td>Planificación, confort</td></tr>
+    <tr><td><strong style="color:var(--rose-500);">Atención en agonía</strong></td><td>Últimos días u horas</td><td>Días–horas</td><td>Confort, síntomas refractarios</td></tr>
+  </tbody></table>
+
+  <h3>Dolor total — Cuatro dimensiones del sufrimiento</h3>
+  <div class="card-grid" style="grid-template-columns:repeat(2,1fr);">
+    <div class="card" style="border-top:3px solid var(--rose-500);"><h4 style="color:var(--rose-500);">🫀 Física</h4><p>Dolor, disnea, náuseas, delirium, fatiga. Control inadecuado prevalente en AP y zonas rurales (Knaul et al., 2018).</p></div>
+    <div class="card" style="border-top:3px solid var(--blue-500);"><h4 style="color:var(--blue-500);">💙 Emocional</h4><p>Ansiedad, depresión, miedo. No es «normal e inevitable». Evaluable con ESAS.</p></div>
+    <div class="card" style="border-top:3px solid var(--violet-400);"><h4 style="color:var(--violet-400);">✨ Espiritual</h4><p>Sentido, reconciliación, esperanza realista. Modelo FICA (Puchalski et al., 2009).</p></div>
+    <div class="card" style="border-top:3px solid var(--warm-600);"><h4 style="color:var(--warm-600);">🤝 Social</h4><p>Aislamiento, carga familiar, impacto económico. Amplificada en Colombia rural.</p></div>
+  </div>
+
+  <h3>Familia y cuidador como sujetos de cuidado</h3>
+  <div class="card" style="border-left:3px solid var(--warm-600);">
+    <p>Entre el <strong style="color:var(--rose-500);">40 % y 70 %</strong> de cuidadores principales presentan niveles clínicos de ansiedad/depresión. En América Latina, el rol del cuidador informal es particularmente crítico dada la debilidad de redes formales de apoyo (Pastrana et al., 2021).</p>
+  </div>
+
+  <h3>Barreras en contexto colombiano rural</h3>
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+    <div class="card"><h4 style="color:var(--rose-500);font-size:0.95rem;">📍 Geográficas</h4><p>Horas a centros hospitalarios, vías precarias.</p></div>
+    <div class="card"><h4 style="color:var(--warm-600);font-size:0.95rem;">💊 Farmacológicas</h4><p>Acceso limitado a opioides (Atlas ALCP, 2020).</p></div>
+    <div class="card"><h4 style="color:var(--violet-400);font-size:0.95rem;">🌍 Culturales</h4><p>Creencias sobre muerte, diversidad étnica y lingüística.</p></div>
+    <div class="card"><h4 style="color:var(--blue-500);font-size:0.95rem;">🏥 Sistémicas</h4><p>Fragmentación, trámites, falta de integración.</p></div>
+    <div class="card"><h4 style="color:var(--teal-600);font-size:0.95rem;">👩‍⚕️ Recurso humano</h4><p>Escasa formación en CP; alta rotación.</p></div>
+  </div>
+</section>
+
+<!-- ═══════ PERSPECTIVA INVESTIGATIVA ═══════ -->
+<section class="section" id="investigacion">
+  <div class="section-label">09 · Vacíos de evidencia</div>
+  <h2>¿Dónde están las oportunidades de investigación?</h2>
+  <div class="card-grid">
+    <div class="card" style="border-left:3px solid var(--teal-600);"><h4 style="color:var(--teal-600);">Pronóstico en AP</h4><p>Validación de herramientas en Latinoamérica. Precisión AP vs. especialista. Adaptación cultural de Pregunta Sorpresa.</p></div>
+    <div class="card" style="border-left:3px solid var(--warm-600);"><h4 style="color:var(--warm-600);">Cuidado al final de la vida</h4><p>Modelos domiciliarios rurales. Telesalud paliativa. Calidad de la muerte en AP.</p></div>
+    <div class="card" style="border-left:3px solid var(--rose-500);"><h4 style="color:var(--rose-500);">Cuidador y familia</h4><p>Experiencia del cuidador colombiano. Intervenciones para sobrecarga en contextos rurales.</p></div>
+    <div class="card" style="border-left:3px solid var(--violet-400);"><h4 style="color:var(--violet-400);">Acceso y equidad</h4><p>Barreras a opioides. Perspectivas culturales sobre la muerte. Competencias del profesional de AP.</p></div>
+  </div>
+</section>
+
+<!-- ═══════ CIERRE ═══════ -->
+<section class="section" id="cierre">
+  <div class="section-label">10 · Cierre</div>
+  <h2>Reflexión final</h2>
+  <div class="card" style="border:1.5px solid var(--warm-500);text-align:center;padding:3rem;">
+    <p style="font-family:var(--font-display);font-size:1.4rem;color:var(--warm-600);margin-bottom:1.2rem;">Si pudieran investigar <em>una sola cosa</em> que transformara el cuidado al final de la vida en la Atención Primaria colombiana, <strong>¿qué investigarían?</strong></p>
+    <p style="color:var(--text-muted);font-size:0.88rem;">Guarden esa pregunta. Es la semilla de su proyecto de investigación.</p>
+  </div>
+  <div style="margin-top:2rem;padding:2rem;background:var(--bg-surface);border-radius:var(--radius-lg);border:1px solid var(--border);">
+    <h3 style="color:var(--teal-600);margin:0 0 0.8rem;">Próximo paso — Semana 4</h3>
+    <p style="color:var(--text-body);">Trabajo independiente preparatorio para la <strong>Unidad 2: Niveles de evidencia y revisiones sistemáticas</strong>. Lecturas y actividades en Moodle.</p>
+  </div>
+  <div style="text-align:center;margin-top:3rem;padding:2rem;">
+    <p style="font-family:var(--font-display);font-size:1rem;color:var(--text-muted);">Maestría en Cuidados Paliativos · Universidad Antonio Nariño · Colombia<br><span style="font-size:0.85rem;">Investigación en Cuidados Paliativos · 2026</span></p>
+  </div>
+</section>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════ -->
+<script>
+// ── Nav active on scroll ──
+const secs=document.querySelectorAll('.section,.hero');
+const nls=document.querySelectorAll('.nav-link');
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){nls.forEach(l=>l.classList.remove('active'));const l=document.querySelector(`.nav-link[href="#${e.target.id}"]`);if(l)l.classList.add('active');}});},{threshold:0.25}).observe&&secs.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){nls.forEach(l=>l.classList.remove('active'));const l=document.querySelector(`.nav-link[href="#${e.target.id}"]`);if(l)l.classList.add('active');}});},{threshold:0.25}).observe(s));
+
+// ── Section reveal ──
+const obsR=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
+document.querySelectorAll('.section').forEach(s=>obsR.observe(s));
+
+// ── Collapsible sections (acordeón) ──
+function toggleCollapsible(btn){
+  const expanded = btn.getAttribute('aria-expanded') === 'true';
+  const contentId = btn.getAttribute('aria-controls');
+  const content = document.getElementById(contentId);
+  if(!content) return;
+  if(expanded){
+    btn.setAttribute('aria-expanded','false');
+    content.classList.remove('open');
+  } else {
+    btn.setAttribute('aria-expanded','true');
+    content.classList.add('open');
+  }
+}
+// Si el usuario llega por ancla (#apertura o #pronostico) desde el sidebar, abrimos automáticamente
+function openCollapsibleByHash(){
+  const hash = window.location.hash;
+  if(hash){
+    const target = document.querySelector(`${hash} .collapsible-toggle`);
+    if(target && target.getAttribute('aria-expanded') === 'false'){
+      toggleCollapsible(target);
+    }
+  }
+}
+window.addEventListener('hashchange', openCollapsibleByHash);
+document.addEventListener('DOMContentLoaded', openCollapsibleByHash);
+// Click en sidebar nav que apunte a sección colapsable → abrirla
+document.querySelectorAll('.nav-link').forEach(link=>{
+  link.addEventListener('click', ()=>{
+    const href = link.getAttribute('href');
+    if(href && href.startsWith('#')){
+      setTimeout(()=>{
+        const target = document.querySelector(`${href} .collapsible-toggle`);
+        if(target && target.getAttribute('aria-expanded') === 'false'){
+          toggleCollapsible(target);
+        }
+      }, 50);
+    }
+  });
+});
+
+// ── Tabs ──
+function switchTab(id,btn){
+  const section=btn.closest('.section')||btn.closest('section');
+  if(section){
+    section.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  } else {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  }
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// ══════════ PPS ══════════
+const ppsSel={};
+function selPPS(el){
+  const row=el.closest('.scale-row');
+  const cat=row.querySelector('.scale-options').dataset.pps;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  ppsSel[cat]=+el.dataset.value;
+  calcPPS();
+}
+function calcPPS(){
+  const keys=['amb','act','self','ing','con'];
+  const f=keys.filter(k=>ppsSel[k]!==undefined);
+  if(f.length<3)return;
+  const v=f.map(k=>ppsSel[k]);
+  const s=Math.round(v.reduce((a,b)=>a+b,0)/v.length/10)*10;
+  const sE=document.getElementById('ppsScore'),bE=document.getElementById('ppsBar'),iE=document.getElementById('ppsInterp'),pE=document.getElementById('ppsResult');
+  sE.textContent=s+' %';bE.style.width=s+'%';pE.classList.add('active');
+  let cc,bc,it;
+  if(s>=70){cc='high';bc='var(--green-500)';it={c:'green',t:`<strong>PPS ${s} %</strong> — Función conservada. Supervivencia: meses a años. Momento para planificación anticipada y evaluación paliativa temprana.`};}
+  else if(s>=40){cc='medium';bc='var(--warm-600)';it={c:'yellow',t:`<strong>PPS ${s} %</strong> — Deterioro significativo. Supervivencia: semanas a meses. Activar evaluación paliativa, revisar objetivos terapéuticos, evaluar cuidador.`};}
+  else{cc='low';bc='var(--rose-500)';it={c:'red',t:`<strong>PPS ${s} %</strong> — Deterioro severo. Supervivencia: días a semanas. Prioridad: confort, control de síntomas, acompañamiento familiar, necesidades espirituales. Considerar criterios de agonía.`};}
+  sE.className='result-score '+cc;bE.style.background=bc;iE.style.display='block';iE.className='result-interp '+it.c;iE.innerHTML=it.t;
+}
+
+// ══════════ ECOG ══════════
+const ecogD=[
+  {s:0,l:'Totalmente activo',d:'Todas las actividades sin restricción.',c:'high',i:'Estado funcional completo. Reevaluar según evolución.'},
+  {s:1,l:'Restricción vigorosa',d:'Ambulatorio, trabajo ligero.',c:'high',i:'Deterioro leve. Planificación anticipada si enfermedad avanzada.'},
+  {s:2,l:'Ambulatorio sin trabajo',d:'Autocuidado, levantado >50 % del día.',c:'medium',i:'Deterioro moderado. Evaluar necesidades paliativas y trayectoria.'},
+  {s:3,l:'Autocuidado limitado',d:'Encamado/silla >50 % del día.',c:'medium',i:'Deterioro significativo. Alta probabilidad paliativa. Complementar con PPS y Pregunta Sorpresa.'},
+  {s:4,l:'Completamente incapacitado',d:'Encamado, sin autocuidado.',c:'low',i:'Deterioro severo. Pronóstico días a semanas. Prioridad: confort, familia, considerar agonía.'},
+];
+(function(){
+  const c=document.getElementById('ecogOpts');
+  ecogD.forEach((it,i)=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.4rem;padding:0.9rem 1.2rem;';
+    d.innerHTML=`<strong style="color:var(--teal-600);">ECOG ${it.s}</strong> — ${it.l}<br><span style="font-size:0.78rem;color:var(--text-muted);">${it.d}</span>`;
+    d.onclick=()=>{
+      c.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+      d.classList.add('selected');
+      document.getElementById('ecogScore').textContent='ECOG '+it.s;
+      document.getElementById('ecogScore').className='result-score '+it.c;
+      const p=(1-it.s/4)*100;
+      const b=document.getElementById('ecogBar');b.style.width=p+'%';
+      b.style.background=it.c==='high'?'var(--green-500)':it.c==='medium'?'var(--warm-600)':'var(--rose-500)';
+      const ie=document.getElementById('ecogInterp');ie.style.display='block';
+      ie.className='result-interp '+(it.c==='high'?'green':it.c==='medium'?'yellow':'red');
+      ie.innerHTML=`<strong>ECOG ${it.s} — ${it.l}:</strong> ${it.i}`;
+      document.getElementById('ecogResult').classList.add('active');
+    };
+    c.appendChild(d);
+  });
+})();
+
+// ══════════ SURPRISE ══════════
+function surpriseAns(a){
+  document.getElementById('btnSurpNo').className='btn btn-ghost'+(a==='no'?' sel':'');
+  document.getElementById('btnSurpSi').className='btn btn-ghost'+(a==='si'?' sel':'');
+  const el=document.getElementById('surpriseResult');el.style.display='block';
+  el.innerHTML=a==='no'
+    ?`<div class="result-interp red" style="margin:1rem auto;max-width:580px;text-align:left;"><strong>«No me sorprendería»</strong> → Screening positivo. Evaluar con herramientas complementarias (PPS, NECPAL). <em>No es diagnóstico ni pronóstico — es invitación a mirar más de cerca.</em></div>`
+    :`<div class="result-interp green" style="margin:1rem auto;max-width:580px;text-align:left;"><strong>«Sí me sorprendería»</strong> → Screening negativo. Reevaluar ante cambios funcionales u hospitalizaciones. <em>La Pregunta Sorpresa es cribado, no descarta necesidades.</em></div>`;
+}
+
+// ══════════ NECPAL ══════════
+const nqData=[
+  {q:'¿Pregunta Sorpresa negativa?',c:'Cribado'},
+  {q:'¿Demanda de atención paliativa por persona, familia o equipo?',c:'Demanda'},
+  {q:'¿Indicadores nutricionales negativos? (Pérdida peso >10 %, albúmina <2.5)',c:'Nutrición'},
+  {q:'¿Deterioro funcional? (PPS ≤ 50 %, dependencia ≥ 2 ABVD)',c:'Funcional'},
+  {q:'¿Comorbilidades significativas? (≥ 2 enf. crónicas avanzadas)',c:'Comorbilidad'},
+  {q:'¿Uso frecuente de recursos? (≥ 2 ingresos urgentes en 6 meses)',c:'Recursos'},
+  {q:'¿Indicadores específicos de la patología de base?',c:'Específico'},
+];
+const nqState=new Array(7).fill(false);
+(function(){
+  const c=document.getElementById('necpalQ');
+  nqData.forEach((it,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:start;gap:1rem;padding:0.9rem;border-bottom:1px solid var(--border);cursor:pointer;transition:0.2s;border-radius:8px;';
+    d.innerHTML=`<div style="flex-shrink:0;width:28px;height:28px;border-radius:7px;border:2px solid var(--border-md);display:flex;align-items:center;justify-content:center;transition:0.3s;font-size:0.85rem;font-weight:700;" id="nk${i}"></div><div><div style="font-size:0.68rem;color:var(--teal-600);margin-bottom:0.15rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">${it.c}</div><div style="font-size:0.88rem;color:var(--text-body);">${it.q}</div></div>`;
+    d.onmouseenter=()=>d.style.background='var(--ice-50)';
+    d.onmouseleave=()=>d.style.background='transparent';
+    d.onclick=()=>{
+      nqState[i]=!nqState[i];
+      const ch=document.getElementById('nk'+i);
+      if(nqState[i]){ch.style.background='var(--teal-500)';ch.style.borderColor='var(--teal-500)';ch.textContent='✓';ch.style.color='#fff';}
+      else{ch.style.background='transparent';ch.style.borderColor='var(--border-md)';ch.textContent='';ch.style.color='';}
+      const cnt=nqState.filter(Boolean).length;
+      document.getElementById('necpalScore').textContent=cnt+' / 7';
+      document.getElementById('necpalBar').style.width=(cnt/7*100)+'%';
+      const ie=document.getElementById('necpalInterp');
+      if(!cnt){ie.style.display='none';document.getElementById('necpalBar').style.background='var(--green-500)';return;}
+      ie.style.display='block';
+      if(cnt<=2){document.getElementById('necpalBar').style.background='var(--green-500)';ie.className='result-interp green';ie.innerHTML=`<strong>${cnt} indicador(es):</strong> Baja probabilidad paliativa inmediata. Mantener vigilancia.`;}
+      else if(cnt<=4){document.getElementById('necpalBar').style.background='var(--warm-600)';ie.className='result-interp yellow';ie.innerHTML=`<strong>${cnt} indicadores:</strong> Probabilidad moderada-alta. Evaluación paliativa integral recomendada.`;}
+      else{document.getElementById('necpalBar').style.background='var(--rose-500)';ie.className='result-interp red';ie.innerHTML=`<strong>${cnt} indicadores:</strong> Alta probabilidad. Activar plan de cuidados paliativos, priorizar confort.`;}
+    };
+    c.appendChild(d);
+  });
+})();
+
+// ══════════ PPI Score ══════════
+const ppiSel={};
+function selPPI(el){
+  const row=el.closest('.scale-row');
+  const cat=row.querySelector('.scale-options').dataset.ppi;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  ppiSel[cat]=parseFloat(el.dataset.value);
+  calcPPI();
+}
+function calcPPI(){
+  const keys=['pps','oral','edema','disnea','delirium'];
+  const f=keys.filter(k=>ppiSel[k]!==undefined);
+  if(f.length<3)return;
+  const total=f.reduce((a,k)=>a+ppiSel[k],0);
+  const sE=document.getElementById('ppiScore'),bE=document.getElementById('ppiBar'),iE=document.getElementById('ppiInterp');
+  sE.textContent=total.toFixed(1);
+  document.getElementById('ppiResult').classList.add('active');
+  const pct=Math.min(total/15*100,100);
+  bE.style.width=pct+'%';
+  iE.style.display='block';
+  if(total>6){
+    sE.className='result-score low';bE.style.background='var(--rose-500)';
+    iE.className='result-interp red';
+    iE.innerHTML=`<strong>PPI ${total.toFixed(1)} (> 6):</strong> Supervivencia estimada de <strong>≈ 3 semanas</strong>. Pronóstico significativamente limitado. Priorizar confort, control de síntomas, acompañamiento familiar y planificación de últimos días.`;
+  }else if(total>4){
+    sE.className='result-score medium';bE.style.background='var(--warm-600)';
+    iE.className='result-interp yellow';
+    iE.innerHTML=`<strong>PPI ${total.toFixed(1)} (> 4):</strong> Supervivencia estimada de <strong>≈ 6 semanas</strong>. Pronóstico limitado. Revisar objetivos terapéuticos, activar evaluación paliativa integral y evaluar necesidades del cuidador.`;
+  }else{
+    sE.className='result-score high';bE.style.background='var(--green-500)';
+    iE.className='result-interp green';
+    iE.innerHTML=`<strong>PPI ${total.toFixed(1)} (≤ 4):</strong> Supervivencia estimada <strong>> 6 semanas</strong>. Pronóstico relativamente más favorable dentro del contexto paliativo. Continuar seguimiento y reevaluar periódicamente.`;
+  }
+}
+
+// ══════════ PaP Score ══════════
+const papSel={};
+function selPaP(el){
+  const row=el.closest('.scale-row');
+  const cat=row.querySelector('.scale-options').dataset.pap;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  papSel[cat]=parseFloat(el.dataset.value);
+  calcPaP();
+}
+function calcPaP(){
+  const keys=['clinica','kps','disnea','anorexia','leuco','linfo'];
+  const f=keys.filter(k=>papSel[k]!==undefined);
+  if(f.length<3)return;
+  const total=f.reduce((a,k)=>a+papSel[k],0);
+  const sE=document.getElementById('papScore'),bE=document.getElementById('papBar'),iE=document.getElementById('papInterp');
+  sE.textContent=total.toFixed(1);
+  document.getElementById('papResult').classList.add('active');
+  const pct=Math.min(total/17.5*100,100);
+  bE.style.width=pct+'%';
+  iE.style.display='block';
+  if(total<=5.5){
+    sE.className='result-score high';bE.style.background='var(--green-500)';
+    iE.className='result-interp green';
+    iE.innerHTML=`<strong>PaP ${total.toFixed(1)} (0–5.5) — Grupo A:</strong> Probabilidad de supervivencia a 30 días <strong>> 70 %</strong>. Pronóstico relativamente favorable. Continuar manejo activo de síntomas y seguimiento.`;
+  }else if(total<=11){
+    sE.className='result-score medium';bE.style.background='var(--warm-600)';
+    iE.className='result-interp yellow';
+    iE.innerHTML=`<strong>PaP ${total.toFixed(1)} (5.6–11) — Grupo B:</strong> Probabilidad de supervivencia a 30 días <strong>30–70 %</strong>. Pronóstico incierto. Momento clave para revisar objetivos de cuidado y planificación anticipada.`;
+  }else{
+    sE.className='result-score low';bE.style.background='var(--rose-500)';
+    iE.className='result-interp red';
+    iE.innerHTML=`<strong>PaP ${total.toFixed(1)} (11.5–17.5) — Grupo C:</strong> Probabilidad de supervivencia a 30 días <strong>< 30 %</strong>. Pronóstico muy limitado. Priorizar confort, acompañamiento y preparación para el final de la vida.`;
+  }
+}
+
+// ══════════ KARNOFSKY ══════════
+const kpsData=[
+  {s:100,l:'Normal, sin quejas',d:'Sin evidencia de enfermedad.',c:'high'},
+  {s:90,l:'Actividad normal',d:'Signos o síntomas menores de enfermedad.',c:'high'},
+  {s:80,l:'Actividad normal con esfuerzo',d:'Algunos signos o síntomas de enfermedad.',c:'high'},
+  {s:70,l:'Se vale por sí mismo',d:'Incapaz de actividad normal o trabajo activo.',c:'medium'},
+  {s:60,l:'Requiere asistencia ocasional',d:'Se encarga de la mayoría de sus necesidades personales.',c:'medium'},
+  {s:50,l:'Requiere asistencia considerable',d:'Requiere atención médica frecuente. KPS ≤ 50: alto riesgo de muerte en 6 meses.',c:'medium'},
+  {s:40,l:'Incapacitado',d:'Requiere cuidado y asistencia especiales.',c:'low'},
+  {s:30,l:'Severamente incapacitado',d:'Hospitalización indicada aunque la muerte no sea inminente.',c:'low'},
+  {s:20,l:'Muy enfermo',d:'Hospitalización necesaria. Tratamiento activo de soporte necesario.',c:'low'},
+  {s:10,l:'Moribundo',d:'Procesos fatales progresando rápidamente.',c:'low'},
+];
+(function(){
+  const c=document.getElementById('kpsOpts');
+  kpsData.forEach((it,i)=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.4rem;padding:0.9rem 1.2rem;';
+    const col=it.c==='high'?'var(--green-500)':it.c==='medium'?'var(--warm-600)':'var(--rose-500)';
+    d.innerHTML=`<strong style="color:${col};">KPS ${it.s}</strong> — ${it.l}<br><span style="font-size:0.78rem;color:var(--text-muted);">${it.d}</span>`;
+    d.onclick=()=>{
+      c.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+      d.classList.add('selected');
+      document.getElementById('kpsScore').textContent='KPS '+it.s;
+      document.getElementById('kpsScore').className='result-score '+it.c;
+      document.getElementById('kpsBar').style.width=it.s+'%';
+      document.getElementById('kpsBar').style.background=col;
+      const ie=document.getElementById('kpsInterp');ie.style.display='block';
+      ie.className='result-interp '+(it.c==='high'?'green':it.c==='medium'?'yellow':'red');
+      let txt=`<strong>KPS ${it.s} — ${it.l}:</strong> `;
+      if(it.s>=70)txt+='Funcionalidad conservada. La persona mantiene independencia significativa. En contexto paliativo, permite participación activa en decisiones y actividades.';
+      else if(it.s>=50)txt+='Deterioro funcional moderado. Requiere asistencia. <em>KPS ≤ 50 es predictor de elevado riesgo de muerte en 6 meses.</em> Evaluar necesidades paliativas y del cuidador.';
+      else txt+='Deterioro funcional severo. Dependencia elevada. Pronóstico muy limitado. Priorizar confort, control de síntomas y acompañamiento.';
+      ie.innerHTML=txt;
+      document.getElementById('kpsResult').classList.add('active');
+    };
+    c.appendChild(d);
+  });
+})();
+
+// ══════════ BARTHEL ══════════
+const barthelData=[
+  {n:'Alimentación',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Baño',opts:[{l:'Independiente',v:5},{l:'Dependiente',v:0}]},
+  {n:'Aseo personal',opts:[{l:'Independiente',v:5},{l:'Dependiente',v:0}]},
+  {n:'Vestirse',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Control de heces',opts:[{l:'Continente',v:10},{l:'Incontinencia ocasional',v:5},{l:'Incontinente',v:0}]},
+  {n:'Control de orina',opts:[{l:'Continente',v:10},{l:'Incontinencia ocasional',v:5},{l:'Incontinente',v:0}]},
+  {n:'Uso del retrete',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Traslado cama-silla',opts:[{l:'Independiente',v:15},{l:'Mínima ayuda',v:10},{l:'Gran ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Deambulación',opts:[{l:'Independiente',v:15},{l:'Necesita ayuda',v:10},{l:'Silla de ruedas',v:5},{l:'Dependiente',v:0}]},
+  {n:'Subir escaleras',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+];
+const barthelSel=new Array(10).fill(null);
+(function(){
+  const c=document.getElementById('barthelItems');
+  barthelData.forEach((it,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:140px 1fr;gap:0.8rem;align-items:start;padding:0.7rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:0.82rem;font-weight:600;color:var(--slate-600);padding-top:0.4rem;">${it.n}</div><div class="scale-options" id="barthOpts${i}"></div>`;
+    c.appendChild(row);
+    const optsC=document.getElementById('barthOpts'+i);
+    it.opts.forEach(opt=>{
+      const btn=document.createElement('div');
+      btn.className='scale-opt';
+      btn.textContent=`${opt.l} (${opt.v})`;
+      btn.onclick=()=>{
+        optsC.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+        btn.classList.add('selected');
+        barthelSel[i]=opt.v;
+        calcBarthel();
+      };
+      optsC.appendChild(btn);
+    });
+  });
+})();
+function calcBarthel(){
+  const filled=barthelSel.filter(v=>v!==null);
+  if(filled.length<5)return;
+  const total=barthelSel.reduce((a,v)=>a+(v||0),0);
+  document.getElementById('barthelScore').textContent=total;
+  document.getElementById('barthelBar').style.width=total+'%';
+  const ie=document.getElementById('barthelInterp');ie.style.display='block';
+  let cls,col,txt;
+  if(total>=60){cls='green';col='var(--green-500)';txt=`<strong>Barthel ${total}/100 — Dependencia leve o independencia:</strong> La persona mantiene autonomía en la mayoría de actividades básicas. En contexto paliativo, permite participación activa en su propio cuidado.`;}
+  else if(total>=40){cls='yellow';col='var(--warm-600)';txt=`<strong>Barthel ${total}/100 — Dependencia moderada:</strong> Requiere ayuda para varias actividades básicas. Evaluar necesidades del cuidador y planificar recursos de apoyo.`;}
+  else if(total>=20){cls='yellow';col='var(--warm-600)';txt=`<strong>Barthel ${total}/100 — Dependencia severa:</strong> Alta dependencia para actividades básicas. El cuidador asume carga significativa. Evaluar Zarit y planificar soporte.`;}
+  else{cls='red';col='var(--rose-500)';txt=`<strong>Barthel ${total}/100 — Dependencia total:</strong> Requiere cuidado completo. En contexto paliativo, considerar objetivos terapéuticos centrados exclusivamente en confort.`;}
+  document.getElementById('barthelScore').className='result-score '+(total>=60?'high':total>=40?'medium':'low');
+  document.getElementById('barthelBar').style.background=col;
+  ie.className='result-interp '+cls;ie.innerHTML=txt;
+}
+
+// ══════════ ESAS ══════════
+const esasSymptoms=['Dolor','Cansancio','Náuseas','Depresión','Ansiedad','Somnolencia','Apetito','Bienestar','Disnea','Insomnio'];
+const esasVals=new Array(10).fill(0);
+let esasChartObj=null;
+
+(function(){
+  const c=document.getElementById('esasSliders');
+  esasSymptoms.forEach((sym,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:110px 1fr 40px;gap:1rem;align-items:center;padding:0.5rem 0;';
+    row.innerHTML=`
+      <label style="font-size:0.82rem;font-weight:600;color:var(--slate-600);">${sym}</label>
+      <input type="range" min="0" max="10" value="0" id="esas${i}" oninput="updESAS(${i},this.value)" style="width:100%;accent-color:var(--teal-500);cursor:pointer;">
+      <span id="esasV${i}" style="font-family:var(--font-mono);font-size:0.9rem;font-weight:600;color:var(--teal-600);text-align:center;">0</span>`;
+    c.appendChild(row);
+  });
+  // Build chart after DOM ready
+  setTimeout(buildESASChart,100);
+})();
+
+function buildESASChart(){
+  const ctx=document.getElementById('esasChart');
+  if(!ctx)return;
+  esasChartObj=new Chart(ctx.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:esasSymptoms,
+      datasets:[{
+        data:esasVals,
+        backgroundColor:esasVals.map(v=>v<=3?'rgba(91,171,122,0.6)':v<=6?'rgba(184,132,90,0.6)':'rgba(191,118,128,0.6)'),
+        borderColor:esasVals.map(v=>v<=3?'#5BAB7A':v<=6?'#B8845A':'#BF7680'),
+        borderWidth:1.5,borderRadius:6,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'/10'}}},
+      scales:{
+        x:{min:0,max:10,ticks:{stepSize:2,color:'#8CA0A0'},grid:{color:'rgba(44,77,91,0.06)'}},
+        y:{ticks:{color:'#3A5F6E',font:{family:'Outfit',size:11,weight:500}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+function updESAS(i,val){
+  val=parseInt(val);
+  esasVals[i]=val;
+  document.getElementById('esasV'+i).textContent=val;
+  document.getElementById('esasV'+i).style.color=val<=3?'var(--green-500)':val<=6?'var(--warm-600)':'var(--rose-500)';
+  if(esasChartObj){
+    esasChartObj.data.datasets[0].data=[...esasVals];
+    esasChartObj.data.datasets[0].backgroundColor=esasVals.map(v=>v<=3?'rgba(91,171,122,0.6)':v<=6?'rgba(184,132,90,0.6)':'rgba(191,118,128,0.6)');
+    esasChartObj.data.datasets[0].borderColor=esasVals.map(v=>v<=3?'#5BAB7A':v<=6?'#B8845A':'#BF7680');
+    esasChartObj.update();
+  }
+  const total=esasVals.reduce((a,b)=>a+b,0);
+  document.getElementById('esasTotal').textContent=total;
+  const ie=document.getElementById('esasInterp');ie.style.display='block';
+  const high=esasSymptoms.filter((_,j)=>esasVals[j]>=7);
+  const mod=esasSymptoms.filter((_,j)=>esasVals[j]>=4&&esasVals[j]<7);
+  let txt=`<strong>Carga sintomática total: ${total}/100.</strong> `;
+  if(high.length)txt+=`<br><span style="color:var(--rose-500);">Síntomas severos (≥7):</span> ${high.join(', ')}. Requieren intervención prioritaria. `;
+  if(mod.length)txt+=`<br><span style="color:var(--warm-600);">Síntomas moderados (4–6):</span> ${mod.join(', ')}. Evaluar y ajustar manejo. `;
+  if(!high.length&&!mod.length)txt+='Todos los síntomas están en rango leve (0–3). Continuar monitoreo.';
+  ie.className='result-interp '+(high.length?'red':mod.length?'yellow':'green');
+  ie.innerHTML=txt;
+}
+
+// ══════════ ZARIT (Abreviado) ══════════
+const zaritQ=[
+  '¿Siente que su familiar le pide más ayuda de la que realmente necesita?',
+  '¿Siente que a causa del tiempo que dedica a su familiar no tiene suficiente tiempo para usted?',
+  '¿Se siente agotado/a cuando tiene que estar junto a su familiar y atender además otras responsabilidades?',
+  '¿Siente que su salud se ha visto afectada por tener que cuidar a su familiar?',
+  '¿Siente que ha perdido el control de su vida desde que comenzó la enfermedad de su familiar?',
+  '¿Desearía poder dejar el cuidado de su familiar a otra persona?',
+  '¿Se siente inseguro/a sobre qué hacer con su familiar?',
+];
+const zaritSel=new Array(7).fill(null);
+(function(){
+  const c=document.getElementById('zaritItems');
+  zaritQ.forEach((q,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='padding:1rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<p style="font-size:0.88rem;color:var(--text-body);margin-bottom:0.6rem;">${i+1}. ${q}</p><div class="scale-options" id="zaritOpts${i}"></div>`;
+    c.appendChild(row);
+    const optsC=document.getElementById('zaritOpts'+i);
+    [{l:'Nunca',v:1},{l:'Rara vez',v:2},{l:'A veces',v:3},{l:'Frecuentemente',v:4},{l:'Casi siempre',v:5}].forEach(opt=>{
+      const btn=document.createElement('div');btn.className='scale-opt';
+      btn.textContent=opt.l;
+      btn.onclick=()=>{
+        optsC.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));
+        btn.classList.add('selected');
+        zaritSel[i]=opt.v;calcZarit();
+      };
+      optsC.appendChild(btn);
+    });
+  });
+})();
+function calcZarit(){
+  const f=zaritSel.filter(v=>v!==null);
+  if(f.length<4)return;
+  const total=zaritSel.reduce((a,v)=>a+(v||0),0);
+  document.getElementById('zaritScore').textContent=total;
+  const pct=Math.min(((total-7)/(35-7))*100,100);
+  document.getElementById('zaritBar').style.width=pct+'%';
+  const ie=document.getElementById('zaritInterp');ie.style.display='block';
+  if(total<17){
+    document.getElementById('zaritScore').className='result-score high';
+    document.getElementById('zaritBar').style.background='var(--green-500)';
+    ie.className='result-interp green';ie.innerHTML=`<strong>Zarit ${total} — Sin sobrecarga:</strong> El cuidador no presenta niveles significativos de sobrecarga. Mantener seguimiento preventivo y ofrecer información sobre recursos de apoyo.`;
+  }else if(total<=24){
+    document.getElementById('zaritScore').className='result-score medium';
+    document.getElementById('zaritBar').style.background='var(--warm-600)';
+    ie.className='result-interp yellow';ie.innerHTML=`<strong>Zarit ${total} — Sobrecarga leve:</strong> El cuidador muestra signos de sobrecarga. Intervenir con apoyo psicosocial, respiro del cuidador y evaluación de necesidades. Prevenir progresión a sobrecarga intensa.`;
+  }else{
+    document.getElementById('zaritScore').className='result-score low';
+    document.getElementById('zaritBar').style.background='var(--rose-500)';
+    ie.className='result-interp red';ie.innerHTML=`<strong>Zarit ${total} — Sobrecarga intensa:</strong> El cuidador presenta niveles clínicamente significativos de sobrecarga. Requiere intervención prioritaria: apoyo psicológico, movilización de red de apoyo, evaluación de salud del cuidador, considerar alternativas de cuidado. <em>El cuidador también es sujeto de cuidado.</em>`;
+  }
+}
+
+// ══════════ TRAJECTORY CHART ══════════
+let tChart;
+(function(){
+  const ctx=document.getElementById('trajChart').getContext('2d');
+  const m=Array.from({length:37},(_,i)=>i);
+  const cancer=m.map(x=>x<=24?90-x*0.8:x<=30?70.8-(x-24)*8:Math.max(70.8-48-(x-30)*6,0));
+  const organ=m.map(x=>{let b=85-x*1.5;if(x===8)b-=20;if(x===9)b+=12;if(x===16)b-=25;if(x===17)b+=10;if(x===24)b-=30;if(x===25)b+=8;if(x===30)b-=35;if(x>=32)b=Math.max(b-(x-32)*10,0);return Math.max(b,0);});
+  const frail=m.map(x=>Math.max(75-x*2,5));
+  const mkDS=(l,d,bc,bgc)=>({label:l,data:d,borderColor:bc,backgroundColor:bgc,fill:true,tension:0.3,pointRadius:0,borderWidth:2.5});
+  tChart=new Chart(ctx,{
+    type:'line',
+    data:{labels:m.map(x=>x+'m'),datasets:[
+      mkDS('Cáncer',cancer,'#BF7680','rgba(191,118,128,0.08)'),
+      mkDS('Fallo orgánico',organ,'#B8845A','rgba(184,132,90,0.08)'),
+      mkDS('Fragilidad',frail,'#5A8DB8','rgba(90,141,184,0.08)'),
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'rgba(26,47,56,0.95)',borderColor:'rgba(91,171,163,0.3)',borderWidth:1,
+        titleFont:{family:'Outfit'},bodyFont:{family:'Outfit'},
+        callbacks:{label:c=>c.dataset.label+': '+Math.round(c.raw)+'% funcional'}
+      }},
+      scales:{
+        x:{title:{display:true,text:'Tiempo (meses)',color:'#8CA0A0',font:{family:'Outfit',size:12}},ticks:{color:'#8CA0A0',font:{size:10},maxTicksLimit:12},grid:{color:'rgba(44,77,91,0.06)'}},
+        y:{title:{display:true,text:'Estado funcional (%)',color:'#8CA0A0',font:{family:'Outfit',size:12}},min:0,max:100,ticks:{color:'#8CA0A0',font:{size:10}},grid:{color:'rgba(44,77,91,0.06)'}}
+      }
+    }
+  });
+})();
+function togDS(i){const m=tChart.getDatasetMeta(i);m.hidden=!m.hidden;tChart.update();}
+
+// ══════════ CASE SIMULATOR ══════════
+
+// ══════════ HUMAN POEM ══════════
+(function(){
+  const lines=['Detrás de cada puntaje','hay alguien que una vez','aprendió a caminar,','dijo su primera palabra,','se enamoró,','sostuvo a un hijo en sus brazos.','','Un PPS de 30 %','no es un número.','Es una persona que todavía sueña.'];
+  const c=document.getElementById('humanPoem');
+  lines.forEach((l,i)=>{const s=document.createElement('span');s.className='line';s.style.animationDelay=(i*0.3)+'s';s.innerHTML=l||'<br>';c.appendChild(s);});
+  new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.3}).observe(c);
+})();
+
+// ═══ PROFUND CALCULATOR ═══
+function calcProfund(){
+  setTimeout(()=>{
+    const ids=['pf-age','pf-neo','pf-dem','pf-nyha','pf-del','pf-hb','pf-bar','pf-cui','pf-hosp'];
+    let total=0;
+    ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseFloat(el.value);});
+    document.getElementById('profundScore').textContent=total;
+    const bar=document.getElementById('profundBar');
+    bar.style.width=(total/30*100)+'%';
+    bar.style.background=total<=2?'var(--green-500,#5BAB7A)':total<=6?'var(--warm-500,#CFA377)':total<=10?'#c47050':'var(--rose-500)';
+    const interp=document.getElementById('profundInterp');
+    interp.style.display='block';
+    let grp,mort12,mort4,mortAP,color;
+    if(total<=2){grp='Bajo riesgo';mort12='12,1–14,6 %';mort4='52 %';mortAP='8,5–11 %';color='var(--green-500,#5BAB7A)';}
+    else if(total<=6){grp='Riesgo bajo-intermedio';mort12='21,5–31,5 %';mort4='73,5 %';mortAP='18–21,6 %';color='var(--warm-500,#CFA377)';}
+    else if(total<=10){grp='Riesgo intermedio-alto';mort12='45–50 %';mort4='85 %';mortAP='26,8–29,5 %';color='#c47050';}
+    else{grp='Alto riesgo';mort12='68–61,3 %';mort4='92 %';mortAP='41,8–43,7 %';color='var(--rose-500)';}
+    interp.innerHTML=`<strong style="color:${color}">${grp} — ${total}/30 puntos</strong><br>Mortalidad 12 meses (hosp.): ${mort12}<br>Mortalidad 4 años: ${mort4}<br>Mortalidad 2 años (AP): ${mortAP}`;
+  },50);
+}
+
+// ═══ PALIAR CALCULATOR ═══
+function calcPaliar(){
+  setTimeout(()=>{
+    const ids=['pl-age','pl-anx','pl-nyha','pl-upp','pl-alb','pl-ecog'];
+    let total=0;
+    ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseFloat(el.value);});
+    document.getElementById('paliarScore').textContent=total%1===0?total:total.toFixed(1);
+    const bar=document.getElementById('paliarBar');
+    bar.style.width=(total/21*100)+'%';
+    bar.style.background=total===0?'var(--green-500,#5BAB7A)':total<=3.5?'var(--warm-500,#CFA377)':total<=7?'#c47050':'var(--rose-500)';
+    const interp=document.getElementById('paliarInterp');
+    interp.style.display='block';
+    let grp,mort6,color;
+    if(total===0){grp='Bajo riesgo';mort6='20–21,5 %';color='var(--green-500,#5BAB7A)';}
+    else if(total<=3.5){grp='Riesgo bajo-intermedio';mort6='30,5–33,5 %';color='var(--warm-500,#CFA377)';}
+    else if(total<=7){grp='Riesgo intermedio-alto';mort6='43–46 %';color='#c47050';}
+    else{grp='Alto riesgo';mort6='61–67 %';color='var(--rose-500)';}
+    interp.innerHTML=`<strong style="color:${color}">${grp} — ${total%1===0?total:total.toFixed(1)}/21 puntos</strong><br>Probabilidad de fallecimiento a 6 meses: ${mort6}<br><em style="font-size:0.82rem;">Considerar inicio formal de cuidados paliativos y planificación anticipada.</em>`;
+  },50);
+}
+
+// ═══ PROFUNCTION CALCULATOR ═══
+function calcProfunction(){
+  setTimeout(()=>{
+    const ids=['pfn-age','pfn-neuro','pfn-osteo','pfn-disnea','pfn-cat','pfn-bar','pfn-soc'];
+    let total=0;
+    ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseFloat(el.value);});
+    document.getElementById('profunctionScore').textContent=total;
+    const bar=document.getElementById('profunctionBar');
+    bar.style.width=(total/7*100)+'%';
+    bar.style.background=total===0?'var(--green-500,#5BAB7A)':total<=3?'var(--warm-500,#CFA377)':'var(--rose-500)';
+    const interp=document.getElementById('profunctionInterp');
+    interp.style.display='block';
+    let grp,prob,color;
+    if(total===0){grp='Bajo riesgo';prob='21–24 %';color='var(--green-500,#5BAB7A)';}
+    else if(total<=3){grp='Riesgo intermedio';prob='30–34 %';color='var(--warm-500,#CFA377)';}
+    else{grp='Riesgo alto';prob='38–46 %';color='var(--rose-500)';}
+    interp.innerHTML=`<strong style="color:${color}">${grp} — ${total}/7 puntos</strong><br>Probabilidad de deterioro funcional (≥20 pts Barthel) a 12 meses: ${prob}<br><em style="font-size:0.82rem;">Considerar intervenciones preventivas: rehabilitación, soporte social, revisión farmacológica.</em>`;
+  },50);
+}
+
+function calcIFVIG(){
+  setTimeout(()=>{
+    let deficits=0;
+    // Binary checkboxes (13 items = 13 potential deficits)
+    const checkIds=['vig-dinero','vig-telefono','vig-medicacion','vig-nutri','vig-depre','vig-insomnio','vig-social','vig-delirium','vig-caidas','vig-ulceras','vig-polifar','vig-disfagia','vig-dolor','vig-disnea'];
+    checkIds.forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)deficits+=1;});
+    // Barthel ordinal (0-3 deficits)
+    const barthel=document.querySelector('input[name="vig-barthel"]:checked');
+    if(barthel) deficits+=parseInt(barthel.value);
+    // Cognitive ordinal (0-2 deficits)
+    const cogni=document.querySelector('input[name="vig-cogni"]:checked');
+    if(cogni) deficits+=parseInt(cogni.value);
+    // Chronic diseases (each 0, 1, or 2 if advanced/NECPAL)
+    const diseases=['vig-onco','vig-resp','vig-cardio','vig-neuro','vig-digest','vig-renal'];
+    diseases.forEach(name=>{const el=document.querySelector('input[name="'+name+'"]:checked');if(el)deficits+=parseInt(el.value);});
+    // Calculate IF-VIG = deficits / 25
+    const ifvig = deficits / 25;
+    document.getElementById('ifvigScore').textContent = ifvig.toFixed(2).replace('.',',');
+    document.getElementById('ifvigDeficits').textContent = deficits;
+    const bar=document.getElementById('ifvigBar');
+    const pct = Math.min(ifvig / 0.7 * 100, 100); // scale to 0.7 submaximal
+    bar.style.width = pct + '%';
+    // Color by frailty grade
+    let color;
+    if(ifvig < 0.20) color='var(--green-500,#5BAB7A)';
+    else if(ifvig <= 0.35) color='var(--teal-600,#4E8DA0)';
+    else if(ifvig <= 0.45) color='var(--warm-500,#CFA377)';
+    else if(ifvig <= 0.55) color='#c47050';
+    else color='var(--red-500,#BF7680)';
+    bar.style.background = color;
+    // Interpretation
+    const interp=document.getElementById('ifvigInterp');
+    interp.style.display='block';
+    let grp, mort, obj;
+    if(ifvig < 0.20){grp='No frágil';mort='≈ 0 %';obj='Supervivencia, funcionalidad, prevención';}
+    else if(ifvig <= 0.35){grp='Fragilidad leve';mort='< 8 %';obj='Tratamiento específico/curativo + funcionalidad';}
+    else if(ifvig <= 0.45){grp='Fragilidad moderada';mort='24–37 %';obj='Tratamiento activo + inicio enfoque conservador';}
+    else if(ifvig <= 0.55){grp='Fragilidad moderada-avanzada';mort='57–62 %';obj='Predominio conservador + control sintomático';}
+    else if(ifvig <= 0.65){grp='Fragilidad avanzada';mort='88–100 %';obj='Bienestar / control sintomático. Planificación anticipada';}
+    else{grp='Fragilidad muy avanzada (≥ 0,64 = 100 % mortalidad 12m)';mort='100 %';obj='Exclusivamente paliativo. Situación final de vida';}
+    interp.innerHTML=`<strong style="color:${color}">${grp}</strong> — IF-VIG: ${ifvig.toFixed(2).replace('.',',')} (${deficits}/25 déficits)<br>Mortalidad estimada a 12 meses: <strong>${mort}</strong><br>Objetivos asistenciales: <em>${obj}</em><br><span style="font-size:0.78rem;color:var(--text-muted);">Aproximación paliativa progresiva · Amblàs-Novellas et al., 2017 · AUC-ROC 12m: 0,90</span>`;
+  },50);
+}
+</script>
+</body>
+</html>
