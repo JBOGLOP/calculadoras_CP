@@ -1742,3 +1742,800 @@ function renderSintesis(json) {
       </table>
     </div>`;
 }
+  async function buildDownloads() {
+  const sintesis = STATE.results.sintesis;
+  if (!sintesis) {
+    $('downloads-body').innerHTML = '<div class="alert alert-err">No se pudo construir documentos: falta síntesis.</div>';
+    return;
+  }
+
+  const itemsOf = extractItemsOficiales(STATE.results);
+  const obsConsolidadas = sintesis.observaciones_consolidadas_por_item || {};
+  const formatoHtml = buildFormatoUanHtml(itemsOf, obsConsolidadas, sintesis);
+  const devolucionMd = sintesis.devolucion_pedagogica_md || '(no generada)';
+  const resumenMd = sintesis.resumen_ejecutivo_md || '(no generado)';
+
+  STATE.finalDocs = {
+    formatoHtml,
+    devolucionMd,
+    resumenMd,
+    itemsOf,
+    obsConsolidadas,
+    sintesis
+  };
+
+  $('downloads-body').innerHTML = `
+    <div class="downloads-grid">
+      <div class="download-card" onclick="downloadFormatoDocx()">
+        <div class="download-card-letter">A</div>
+        <div class="download-card-title">Formato Oficial UAN</div>
+        <div class="download-card-desc">Diligenciado con las 20 calificaciones, observaciones y concepto final. Editable antes de firmar.</div>
+        <div class="download-card-format">Word · .docx</div>
+      </div>
+      <div class="download-card" onclick="downloadFormatoHtml()">
+        <div class="download-card-letter">A'</div>
+        <div class="download-card-title">Formato Oficial UAN</div>
+        <div class="download-card-desc">Misma plantilla en HTML para visualizar e imprimir directamente desde el navegador.</div>
+        <div class="download-card-format">HTML imprimible · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadDevolucion()">
+        <div class="download-card-letter">B</div>
+        <div class="download-card-title">Devolución pedagógica</div>
+        <div class="download-card-desc">Documento formativo para el estudiante. Reconoce fortalezas y orienta mejoras.</div>
+        <div class="download-card-format">Markdown · .md / HTML · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadResumen()">
+        <div class="download-card-letter">C</div>
+        <div class="download-card-title">Resumen ejecutivo</div>
+        <div class="download-card-desc">Para coordinación del programa: 1-2 páginas con tabla compacta y banderas.</div>
+        <div class="download-card-format">Markdown · .md / HTML · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadJsonCompleto()">
+        <div class="download-card-letter">JSON</div>
+        <div class="download-card-title">Evaluación completa</div>
+        <div class="download-card-desc">JSON con todas las respuestas estructuradas (uso interno del jurado / archivo).</div>
+        <div class="download-card-format">JSON · .json</div>
+      </div>
+    </div>`;
+
+  setStatus('downloads', 'done');
+}
+
+const ITEM_DEF = [
+  { n: 1,  bloque: 'TÍTULO', txt: 'Título: incluye un título claro y coherente con la investigación.' },
+  { n: 2,  bloque: 'MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL', txt: 'Descripción del problema: Se presentan los antecedentes, derivados de la revisión de literatura científica, que demuestran la necesidad de la investigación.' },
+  { n: 3,  txt: 'La pregunta de investigación es relevante, contextualizada y coherente.' },
+  { n: 4,  txt: 'En la Justificación de la investigación se plantea la relevancia social, práctica y aportes al conocimiento científico.' },
+  { n: 5,  txt: 'Los objetivos planteados son claros, precisos, viables y coherentes con el problema de investigación.' },
+  { n: 6,  txt: 'El Marco conceptual y/o teórico se presenta de manera coherente, integrado y articulado que da sustento a la investigación.' },
+  { n: 7,  bloque: 'MARCO METODOLÓGICO', txt: 'Se identifica el diseño de la investigación que es coherente con la pregunta y los objetivos planteados.' },
+  { n: 8,  txt: 'En el diseño metodológico se describe la selección de los participantes, criterios de inclusión y de exclusión.' },
+  { n: 9,  txt: 'La muestra y el tipo de muestreo corresponde al diseño seleccionado.' },
+  { n: 10, txt: 'Se realiza una descripción de las variables del estudio y el proceso de recolección de datos y plan de análisis, según el tipo de estudio.' },
+  { n: 11, txt: 'Se hace explícito el rigor metodológico y control de sesgos según el tipo de estudio.' },
+  { n: 12, bloque: 'CONSIDERACIONES ÉTICAS', txt: 'Se describen los aspectos y principios éticos a partir de las declaraciones internacionales y nacionales respecto a la investigación en salud, junto con la legislación sobre derechos de autor, y propiedad intelectual (plagio).' },
+  { n: 13, txt: 'Incluye el aval ético de la universidad y de las instituciones o comunidades donde se realizó el estudio, el consentimiento y/o asentimiento en el caso de investigación en que participan menores de edad. Además de la autorización para el uso de instrumentos de medición cuando sea el caso.' },
+  { n: 14, bloque: 'RESULTADOS', txt: 'Se presentan los resultados en coherencia con los objetivos propuestos.' },
+  { n: 15, txt: 'Interpreta los resultados del estudio de manera adecuada en coherencia con el método.' },
+  { n: 16, bloque: 'DISCUSIÓN', txt: 'La discusión de los resultados muestra la articulación y contraste con la literatura científica y con la postura del autor en relación a los resultados obtenidos del proceso investigativo.' },
+  { n: 17, txt: 'Las conclusiones derivadas del proyecto de investigación son coherentes con los objetivos planteados.' },
+  { n: 18, txt: 'Incluye las recomendaciones y las limitaciones derivadas del proceso investigativo.' },
+  { n: 19, bloque: 'ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO', txt: 'Dentro del texto se utiliza el estilo Vancouver para las citas y referencias bibliográficas. La propuesta contiene mínimo 20 referencias de artículos científicos.' },
+  { n: 20, txt: 'Cumple con la norma ICONTEC para la presentación de trabajos escritos.' }
+];
+
+function buildFormatoUanHtml(items, obs, sintesis) {
+  const fechaHoy = new Date().toLocaleDateString('es-CO', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const ident = STATE.identificacion;
+  const j = STATE.jurado;
+
+  const calCols = ['Cumple', 'Cumple Parcial', 'No Cumple', 'No Aplica'];
+  const isMatch = (cal, col) => String(cal || '').toLowerCase() === col.toLowerCase();
+
+  const itemRows = [];
+  ITEM_DEF.forEach(d => {
+    const k = String(d.n).padStart(2,'0');
+    const it = items[k] || {};
+    const cal = it.calificacion || '';
+    const observ = obs[k] || it.observaciones || '';
+
+    if (d.bloque) {
+      itemRows.push(`<tr class="bloque-row"><td colspan="6"><strong>${escHtml(d.bloque)}</strong></td></tr>`);
+    }
+    itemRows.push(`
+      <tr>
+        <td>${escHtml(d.txt)}</td>
+        ${calCols.map(c => `<td class="center">${isMatch(cal, c) ? '<strong>X</strong>' : ''}</td>`).join('')}
+        <td>${escHtml(observ)}</td>
+      </tr>
+    `);
+  });
+
+  const conceptoVal = sintesis.concepto_final || '';
+  const pa = sintesis.preguntas_adicionales || {};
+  let preguntasExtra = '';
+  if (conceptoVal === 'Aprobado') {
+    preguntasExtra = `
+      <p><strong>En caso de que su concepto sea "Aprobado":</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado es merecedor de recibir alguna distinción como trabajo de grado meritorio o laureado?: <strong>Sí ${pa.merece_distincion_meritorio_laureado ? 'X' : '___'} No: ${!pa.merece_distincion_meritorio_laureado ? 'X' : '___'}</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: <strong>Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'} No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}</strong></p>`;
+  } else if (conceptoVal === 'Aprobado con condicionamiento') {
+    preguntasExtra = `
+      <p><strong>En caso de que su concepto sea "Aprobado con condicionamiento":</strong></p>
+      <p>· ¿Requiere el envío del informe final para adelantar segunda lectura del mismo, una vez el o los estudiantes hayan efectuado los ajustes bajo la orientación y con aval de su tutor?: <strong>Sí: ${pa.requiere_segunda_lectura ? 'X' : '___'} No: ${!pa.requiere_segunda_lectura ? 'X' : '___'}</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: <strong>Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'} No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}</strong></p>`;
+  } else if (conceptoVal === 'No aprobado') {
+    preguntasExtra = `<p><strong>En caso de que su concepto sea "No aprobado":</strong> Recibirá una segunda versión del informe final de trabajo de grado ajustada por el o los estudiantes, bajo la orientación y con aval de su tutor, para adelantar la segunda lectura del mismo.</p>`;
+  }
+
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8" /><title>Formato Evaluación Tesis · UAN</title>
+<style>
+@page { size: letter; margin: 2cm 2cm 2.5cm 2cm; }
+body { font-family: 'Times New Roman', serif; font-size: 11pt; color: #000; line-height: 1.4; }
+h1, h2, h3 { text-align: center; }
+h1 { font-size: 14pt; margin-bottom: 4pt; }
+h2 { font-size: 12pt; margin-bottom: 2pt; }
+h3 { font-size: 11pt; margin-bottom: 14pt; }
+table { width: 100%; border-collapse: collapse; margin: 8pt 0; }
+th, td { border: 1px solid #000; padding: 5pt 6pt; vertical-align: top; font-size: 10pt; }
+th { background: #ddd; font-weight: bold; text-align: center; }
+.center { text-align: center; }
+.bloque-row td { background: #f0f0f0; font-weight: bold; }
+.intro { text-align: justify; margin: 12pt 0; font-size: 10.5pt; }
+.note { font-size: 9.5pt; }
+@media print { body { margin: 0; } }
+</style></head><body>
+<h1>UNIVERSIDAD ANTONIO NARIÑO</h1>
+<h2>FACULTAD DE ENFERMERÍA</h2>
+<h2>PROGRAMAS MAESTRÍAS EN INVESTIGACIÓN</h2>
+<h3>FORMATO DE EVALUACIÓN TESIS</h3>
+
+<p class="intro">El documento propuesto permite la evaluación de tesis. El proceso evaluativo se basa en los principios de equidad e imparcialidad y en los criterios de calidad, pertinencia y eficiencia. Esta evaluación consta de dos componentes, el primero corresponde a la revisión de la tesis por parte de los jurados y el segundo a la sustentación pública de la tesis. La Facultad de Enfermería de la Universidad Antonio Nariño agradece a usted su participación en este proceso académico e investigativo.</p>
+
+<p class="intro">Para la revisión del documento escrito de tesis se solicita que realice su evaluación de acuerdo a los parámetros que se describen a continuación, adicionalmente emitir sus observaciones y recomendaciones frente al documento.</p>
+
+<table>
+<tr><th style="width:35%; text-align:left;">Nombre del estudiante</th><td>${escHtml(ident.estudiantes || '')}</td></tr>
+<tr><th style="text-align:left;">Nombre del director de tesis</th><td>${escHtml(ident.director || '')}</td></tr>
+<tr><th style="text-align:left;">Título de la tesis</th><td>${escHtml(ident.titulo || '')}</td></tr>
+<tr><th colspan="2" style="text-align:center;">INFORMACIÓN DEL JURADO EVALUADOR</th></tr>
+<tr><th style="text-align:left;">Nombre del jurado</th><td>${escHtml(j.nombre || '')}</td></tr>
+<tr><th style="text-align:left;">Tipo de documento de identificación y número de identificación</th><td>${escHtml(j.documento || '')}</td></tr>
+<tr><th style="text-align:left;">Datos de contacto teléfono – Email</th><td>${escHtml(j.email || '')}</td></tr>
+<tr><th style="text-align:left;">País y ciudad de residencia</th><td>${escHtml(j.pais_ciudad || '')}</td></tr>
+<tr><th style="text-align:left;">Institución de filiación</th><td>${escHtml(j.institucion || '')}</td></tr>
+</table>
+
+<p class="intro">De acuerdo con su evaluación en cada criterio marque con una X si cumple, cumple parcialmente, no cumple o no aplica según corresponda y relacione sus observaciones.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:32%;">CRITERIOS DE EVALUACIÓN</th>
+      <th style="width:8%;">CUMPLE</th>
+      <th style="width:9%;">CUMPLE PARCIAL</th>
+      <th style="width:9%;">NO CUMPLE</th>
+      <th style="width:8%;">NO APLICA</th>
+      <th>OBSERVACIONES Y RECOMENDACIONES</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${itemRows.join('')}
+  </tbody>
+</table>
+
+<p class="intro">A continuación, seleccione con una (X) el concepto de acuerdo con la revisión adelantada:</p>
+<table>
+<tr>
+  <td class="center" style="width:33%;">Aprobado*: ${conceptoVal === 'Aprobado' ? '<strong>X</strong>' : '____'}</td>
+  <td class="center" style="width:34%;">Aprobado con condicionamiento**: ${conceptoVal === 'Aprobado con condicionamiento' ? '<strong>X</strong>' : '____'}</td>
+  <td class="center" style="width:33%;">No aprobado***: ${conceptoVal === 'No aprobado' ? '<strong>X</strong>' : '____'}</td>
+</tr>
+</table>
+
+${preguntasExtra}
+
+<p class="note"><em>Justificación del concepto:</em> ${escHtml(sintesis.justificacion_concepto || '')}</p>
+
+<table style="margin-top:20pt;">
+<tr><th style="width:35%; text-align:left;">Nombre del jurado evaluador</th><td>${escHtml(j.nombre || '')}</td></tr>
+<tr><th style="text-align:left;">Firma del jurado evaluador</th><td style="height:50pt;">&nbsp;</td></tr>
+<tr><th style="text-align:left;">Fecha del envío de la evaluación (dd/mm/aaaa)</th><td>${escHtml(fechaHoy)}</td></tr>
+</table>
+
+<p class="note" style="margin-top:30pt; text-align:center; font-style:italic; color:#555;">
+Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴<br>
+Asistido por herramienta Evaluador de Tesis CP v0.2 · Modelo ${STATE.model} · Fecha ${fechaHoy}
+</p>
+</body></html>`;
+}
+
+async function generateFormatoDocx() {
+  const D = window.docx;
+  if (!D) throw new Error('Librería docx no cargada');
+
+  const sintesis = STATE.finalDocs.sintesis;
+  const items = STATE.finalDocs.itemsOf;
+  const obs = STATE.finalDocs.obsConsolidadas;
+  const ident = STATE.identificacion;
+  const j = STATE.jurado;
+  const fechaHoy = new Date().toLocaleDateString('es-CO');
+
+  const cell = (text, opts = {}) => new D.TableCell({
+    width: { size: opts.width || 1500, type: D.WidthType.DXA },
+    borders: {
+      top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+    },
+    margins: { top: 80, bottom: 80, left: 120, right: 120 },
+    shading: opts.shading ? { fill: opts.shading, type: D.ShadingType.CLEAR } : undefined,
+    children: Array.isArray(text)
+      ? text
+      : [new D.Paragraph({
+          alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT,
+          children: [new D.TextRun({ text: String(text || ''), bold: !!opts.bold, size: 18 })]
+        })]
+  });
+
+  const titleP = (txt, size = 24, bold = true) => new D.Paragraph({
+    alignment: D.AlignmentType.CENTER,
+    spacing: { before: 120, after: 60 },
+    children: [new D.TextRun({ text: txt, bold, size, font: 'Times New Roman' })]
+  });
+
+  const para = (txt, opts = {}) => new D.Paragraph({
+    alignment: opts.center ? D.AlignmentType.CENTER : (opts.justify ? D.AlignmentType.JUSTIFIED : D.AlignmentType.LEFT),
+    spacing: { before: opts.before || 80, after: opts.after || 80 },
+    children: [new D.TextRun({ text: txt, bold: opts.bold, italics: opts.italic, size: opts.size || 20, font: 'Times New Roman' })]
+  });
+
+  const identRows = [];
+  [
+    ['Nombre del estudiante', ident.estudiantes || ''],
+    ['Nombre del director de tesis', ident.director || ''],
+    ['Título de la tesis', ident.titulo || '']
+  ].forEach(r => identRows.push(new D.TableRow({
+    children: [ cell(r[0], { width: 3700, bold: true, shading: 'EEEEEE' }), cell(r[1], { width: 5660 }) ]
+  })));
+
+  identRows.push(new D.TableRow({
+    children: [
+      new D.TableCell({
+        width: { size: 9360, type: D.WidthType.DXA },
+        columnSpan: 2,
+        borders: {
+          top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+        },
+        shading: { fill: 'CCCCCC', type: D.ShadingType.CLEAR },
+        margins: { top: 80, bottom: 80, left: 120, right: 120 },
+        children: [new D.Paragraph({
+          alignment: D.AlignmentType.CENTER,
+          children: [new D.TextRun({ text: 'INFORMACIÓN DEL JURADO EVALUADOR', bold: true, size: 18 })]
+        })]
+      })
+    ]
+  }));
+
+  [
+    ['Nombre del jurado', j.nombre || ''],
+    ['Tipo de documento de identificación y número de identificación', j.documento || ''],
+    ['Datos de contacto teléfono – Email', j.email || ''],
+    ['País y ciudad de residencia', j.pais_ciudad || ''],
+    ['Institución de filiación', j.institucion || '']
+  ].forEach(r => identRows.push(new D.TableRow({
+    children: [ cell(r[0], { width: 3700, bold: true, shading: 'EEEEEE' }), cell(r[1], { width: 5660 }) ]
+  })));
+
+  const identTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3700, 5660],
+    rows: identRows
+  });
+
+  const critWidths = [3300, 900, 1100, 950, 950, 2160];
+
+  const headerRow = new D.TableRow({
+    tableHeader: true,
+    children: [
+      cell('CRITERIOS DE EVALUACIÓN', { width: critWidths[0], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('CUMPLE', { width: critWidths[1], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('CUMPLE PARCIAL', { width: critWidths[2], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('NO CUMPLE', { width: critWidths[3], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('NO APLICA', { width: critWidths[4], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('OBSERVACIONES Y RECOMENDACIONES', { width: critWidths[5], bold: true, center: true, shading: 'CCCCCC' })
+    ]
+  });
+
+  const critRows = [headerRow];
+  ITEM_DEF.forEach(d => {
+    if (d.bloque) {
+      critRows.push(new D.TableRow({
+        children: [
+          new D.TableCell({
+            width: { size: 9360, type: D.WidthType.DXA },
+            columnSpan: 6,
+            borders: {
+              top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+            },
+            shading: { fill: 'F0F0F0', type: D.ShadingType.CLEAR },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new D.Paragraph({
+              alignment: D.AlignmentType.LEFT,
+              children: [new D.TextRun({ text: d.bloque, bold: true, size: 18 })]
+            })]
+          })
+        ]
+      }));
+    }
+    const k = String(d.n).padStart(2,'0');
+    const it = items[k] || {};
+    const cal = (it.calificacion || '').toLowerCase();
+    const observ = obs[k] || it.observaciones || '';
+
+    const mark = (target) => {
+      if (target === 'cumple' && cal === 'cumple') return 'X';
+      if (target === 'parcial' && cal.includes('cumple parcial')) return 'X';
+      if (target === 'no' && cal.includes('no cumple')) return 'X';
+      if (target === 'na' && cal.includes('no aplica')) return 'X';
+      return '';
+    };
+
+    critRows.push(new D.TableRow({
+      children: [
+        cell(d.txt, { width: critWidths[0] }),
+        cell(mark('cumple'),  { width: critWidths[1], center: true, bold: true }),
+        cell(mark('parcial'), { width: critWidths[2], center: true, bold: true }),
+        cell(mark('no'),      { width: critWidths[3], center: true, bold: true }),
+        cell(mark('na'),      { width: critWidths[4], center: true, bold: true }),
+        cell(observ,          { width: critWidths[5] })
+      ]
+    }));
+  });
+
+  const critTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: critWidths,
+    rows: critRows
+  });
+
+  const conceptoVal = sintesis.concepto_final || '';
+  const conceptoTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3120, 3120, 3120],
+    rows: [new D.TableRow({
+      children: [
+        cell(`Aprobado*: ${conceptoVal === 'Aprobado' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true }),
+        cell(`Aprobado con condicionamiento**: ${conceptoVal === 'Aprobado con condicionamiento' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true }),
+        cell(`No aprobado***: ${conceptoVal === 'No aprobado' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true })
+      ]
+    })]
+  });
+
+  const pa = sintesis.preguntas_adicionales || {};
+  const preguntasParas = [];
+  if (conceptoVal === 'Aprobado') {
+    preguntasParas.push(para('En caso de que su concepto sea "Aprobado":', { bold: true, before: 200 }));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado es merecedor de recibir alguna distinción como trabajo de grado meritorio o laureado?: Sí ${pa.merece_distincion_meritorio_laureado ? 'X' : '___'}   No: ${!pa.merece_distincion_meritorio_laureado ? 'X' : '___'}`));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'}   No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}`));
+  } else if (conceptoVal === 'Aprobado con condicionamiento') {
+    preguntasParas.push(para('En caso de que su concepto sea "Aprobado con condicionamiento":', { bold: true, before: 200 }));
+    preguntasParas.push(para(`· ¿Requiere el envío del informe final para adelantar segunda lectura del mismo, una vez el o los estudiantes hayan efectuado los ajustes bajo la orientación y con aval de su tutor?: Sí: ${pa.requiere_segunda_lectura ? 'X' : '___'}   No: ${!pa.requiere_segunda_lectura ? 'X' : '___'}`));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'}   No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}`));
+  } else if (conceptoVal === 'No aprobado') {
+    preguntasParas.push(para('En caso de que su concepto sea "No aprobado":', { bold: true, before: 200 }));
+    preguntasParas.push(para('Recibirá una segunda versión del informe final de trabajo de grado ajustada por el o los estudiantes, bajo la orientación y con aval de su tutor, para adelantar la segunda lectura del mismo.', { italic: true }));
+  }
+
+  const cierreTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3700, 5660],
+    rows: [
+      new D.TableRow({ children: [ cell('Nombre del jurado evaluador', { width: 3700, bold: true, shading: 'EEEEEE' }), cell(j.nombre || '', { width: 5660 }) ] }),
+      new D.TableRow({ children: [ cell('Firma del jurado evaluador', { width: 3700, bold: true, shading: 'EEEEEE' }), cell([new D.Paragraph({ children: [new D.TextRun({ text: ' ', size: 20 })], spacing: { before: 200, after: 200 } })], { width: 5660 }) ] }),
+      new D.TableRow({ children: [ cell('Fecha del envío de la evaluación (dd/mm/aaaa)', { width: 3700, bold: true, shading: 'EEEEEE' }), cell(fechaHoy, { width: 5660 }) ] })
+    ]
+  });
+
+  const doc = new D.Document({
+    styles: {
+      default: {
+        document: {
+          run: { font: 'Times New Roman', size: 22 },
+          paragraph: { spacing: { line: 280 } }
+        }
+      }
+    },
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 12240, height: 15840 },
+          margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+        }
+      },
+      children: [
+        titleP('UNIVERSIDAD ANTONIO NARIÑO', 28, true),
+        titleP('FACULTAD DE ENFERMERÍA', 24, true),
+        titleP('PROGRAMAS MAESTRÍAS EN INVESTIGACIÓN', 24, true),
+        titleP('FORMATO DE EVALUACIÓN TESIS', 22, true),
+        para('El documento propuesto permite la evaluación de tesis. El proceso evaluativo se basa en los principios de equidad e imparcialidad y en los criterios de calidad, pertinencia y eficiencia. Esta evaluación consta de dos componentes, el primero corresponde a la revisión de la tesis por parte de los jurados y el segundo a la sustentación pública de la tesis. La Facultad de Enfermería de la Universidad Antonio Nariño agradece a usted su participación en este proceso académico e investigativo.', { justify: true, before: 200 }),
+        para('Para la revisión del documento escrito de tesis se solicita que realice su evaluación de acuerdo a los parámetros que se describen a continuación, adicionalmente emitir sus observaciones y recomendaciones frente al documento.', { justify: true }),
+        identTable,
+        para('De acuerdo con su evaluación en cada criterio marque con una X si cumple, cumple parcialmente, no cumple o no aplica según corresponda y relacione sus observaciones.', { justify: true, before: 200, after: 200 }),
+        critTable,
+        para('A continuación, seleccione con una (X) el concepto de acuerdo con la revisión adelantada:', { before: 200, after: 100 }),
+        conceptoTable,
+        ...preguntasParas,
+        para(`Justificación del concepto: ${sintesis.justificacion_concepto || ''}`, { italic: true, before: 200, justify: true, size: 18 }),
+        para(' ', { before: 100 }),
+        cierreTable,
+        para('Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia', { center: true, italic: true, before: 400, size: 18 }),
+        para(`Asistido por herramienta Evaluador de Tesis CP v0.2 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
+      ]
+    }]
+  });
+
+  const blob = await D.Packer.toBlob(doc);
+  return blob;
+}
+
+async function downloadFormatoDocx() {
+  try {
+    toast('Generando DOCX...', '');
+    const blob = await generateFormatoDocx();
+    const fileName = `Formato_UAN_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.docx`;
+    saveAs(blob, fileName);
+    toast('DOCX descargado', 'ok');
+  } catch (err) {
+    console.error(err);
+    toast('Error al generar DOCX: ' + err.message, 'err');
+  }
+}
+
+function downloadFormatoHtml() {
+  const fileName = `Formato_UAN_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.html`;
+  const blob = new Blob([STATE.finalDocs.formatoHtml], { type: 'text/html;charset=utf-8' });
+  saveAs(blob, fileName);
+  toast('HTML descargado', 'ok');
+}
+
+function downloadDevolucion() {
+  const md = STATE.finalDocs.devolucionMd;
+  const html = mdToHtml(md, 'Devolución pedagógica');
+  const baseName = `Devolucion_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}`;
+  saveAs(new Blob([md], { type: 'text/markdown;charset=utf-8' }), baseName + '.md');
+  saveAs(new Blob([html], { type: 'text/html;charset=utf-8' }), baseName + '.html');
+  toast('Devolución descargada', 'ok');
+}
+
+function downloadResumen() {
+  const md = STATE.finalDocs.resumenMd;
+  const html = mdToHtml(md, 'Resumen ejecutivo');
+  const baseName = `Resumen_Ejecutivo_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}`;
+  saveAs(new Blob([md], { type: 'text/markdown;charset=utf-8' }), baseName + '.md');
+  saveAs(new Blob([html], { type: 'text/html;charset=utf-8' }), baseName + '.html');
+  toast('Resumen descargado', 'ok');
+}
+
+function downloadJsonCompleto() {
+  const fullPayload = buildFullPayload();
+  const fileName = `Evaluacion_completa_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.json`;
+  saveAs(new Blob([JSON.stringify(fullPayload, null, 2)], { type: 'application/json' }), fileName);
+  toast('JSON descargado', 'ok');
+}
+
+function buildFullPayload() {
+  return {
+    metadata: {
+      app: 'Evaluador_Tesis_CP_UAN',
+      version: '0.2',
+      timestamp: new Date().toISOString(),
+      modelo: STATE.model,
+      tokens_input: STATE.metadata.tokensIn,
+      tokens_output: STATE.metadata.tokensOut,
+      tokens_cache_create: STATE.metadata.tokensCacheCreate,
+      tokens_cache_read: STATE.metadata.tokensCacheRead,
+      duracion_segundos: STATE.metadata.duracionSegundos,
+      costo_usd_estimado: Number(STATE.metadata.costoUsd.toFixed(4))
+    },
+    identificacion: STATE.identificacion,
+    jurado: STATE.jurado,
+    bloques_oficiales: {
+      block_1: STATE.results.block_1,
+      block_2: STATE.results.block_2,
+      block_3: STATE.results.block_3,
+      block_4: STATE.results.block_4,
+      block_5: STATE.results.block_5,
+      block_6: STATE.results.block_6,
+      block_7: STATE.results.block_7
+    },
+    items_oficiales: extractItemsOficiales(STATE.results),
+    anexos_complementarios: {
+      A: STATE.results.anexo_A,
+      B: STATE.results.anexo_B,
+      C: STATE.results.anexo_C
+    },
+    sintesis: STATE.results.sintesis
+  };
+}
+
+function mdToHtml(md, title) {
+  const body = (window.marked && window.marked.parse) ? window.marked.parse(md) : `<pre>${escHtml(md)}</pre>`;
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>${escHtml(title)}</title>
+<style>
+body { font-family: Georgia, 'Times New Roman', serif; max-width: 740px; margin: 40px auto; padding: 0 20px; line-height: 1.65; color: #2C2018; }
+h1, h2, h3 { color: #6B2D3E; font-family: 'Cormorant Garamond', Georgia, serif; }
+h1 { border-bottom: 2px solid #D4A24C; padding-bottom: 6px; }
+blockquote { border-left: 3px solid #D4A24C; padding-left: 14px; margin-left: 0; color: #5A4A3E; font-style: italic; }
+code { background: #FAF6EE; padding: 2px 5px; border-radius: 3px; font-size: 0.9em; }
+.footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #E8DDC8; font-size: 0.82rem; color: #8A7868; text-align: center; font-style: italic; }
+@media print { body { margin: 0; max-width: 100%; } }
+</style></head><body>
+${body}
+<div class="footer">Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴</div>
+</body></html>`;
+}
+
+function slugify(s) {
+  return String(s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
+    .slice(0, 60) || 'sin_nombre';
+}
+
+function dateSlug() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function persistirEnSheets() {
+  if (!STATE.appsScriptUrl) return;
+  try {
+    const sintesis = STATE.results.sintesis || {};
+    const items = extractItemsOficiales(STATE.results);
+    const anexos = {
+      a_pertinencia_alertas: (STATE.results.anexo_A || {}).aporte_vacios_estructurales || '',
+      b_estandar_cumplimiento: (STATE.results.anexo_B || {}).cumplimiento_estandar || '',
+      c_probabilidad_ia: (STATE.results.anexo_C || {}).probabilidad_ia_no_declarada || '',
+      error_normativo_1216_2015: !!((STATE.results.anexo_A || {}).error_normativo_1216_2015)
+    };
+
+    const items_oficiales = {};
+    Object.keys(items).forEach(k => { items_oficiales[k] = items[k].calificacion || ''; });
+
+    const payload = {
+      action: 'guardar_evaluacion',
+      data: {
+        identificacion: {
+          titulo_tesis: STATE.identificacion.titulo,
+          estudiantes: STATE.identificacion.estudiantes,
+          director: STATE.identificacion.director,
+          modalidad: STATE.identificacion.modalidad,
+          tipologia_estudio: STATE.identificacion.tipologia,
+          estandar_reporte_aplicable: (STATE.results.anexo_B || {}).estandar_aplicable || ''
+        },
+        jurado: STATE.jurado,
+        items_oficiales,
+        concepto_final: {
+          concepto: sintesis.concepto_final,
+          merece_distincion_meritorio_laureado: (sintesis.preguntas_adicionales || {}).merece_distincion_meritorio_laureado,
+          calidad_aceptable_sustentacion: (sintesis.preguntas_adicionales || {}).calidad_aceptable_sustentacion,
+          requiere_segunda_lectura: (sintesis.preguntas_adicionales || {}).requiere_segunda_lectura
+        },
+        anexos_complementarios: anexos,
+        metadatos: {
+          modelo: STATE.model,
+          tokens_input: STATE.metadata.tokensIn,
+          tokens_output: STATE.metadata.tokensOut,
+          duracion_segundos: STATE.metadata.duracionSegundos,
+          costo_usd_estimado: Number(STATE.metadata.costoUsd.toFixed(4))
+        },
+        full: buildFullPayload()
+      }
+    };
+
+    const resp = await fetch(STATE.appsScriptUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    const txt = await resp.text();
+    let parsed = null;
+    try { parsed = JSON.parse(txt); } catch(e) {}
+
+    if (parsed && parsed.ok) {
+      toast(`Guardado en Sheets (fila ${parsed.fila})`, 'ok');
+    } else {
+      toast('Sheets respondió, pero sin confirmación. Revise el libro.', 'warn');
+    }
+  } catch (err) {
+    console.error('Error en persistencia:', err);
+    toast('No se pudo guardar en Sheets: ' + err.message, 'warn');
+  }
+}
+
+async function pingAppsScript() {
+  if (!STATE.appsScriptUrl) {
+    toast('Falta URL del Apps Script', 'warn');
+    return;
+  }
+  try {
+    const resp = await fetch(STATE.appsScriptUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    const txt = await resp.text();
+    const parsed = JSON.parse(txt);
+    if (parsed.ok) toast('Apps Script responde correctamente', 'ok');
+    else toast('Apps Script respondió pero con error: ' + parsed.error, 'err');
+  } catch (err) {
+    toast('No se pudo conectar al Apps Script: ' + err.message, 'err');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedKey = sessionStorage.getItem('anth_api_key') || '';
+  const savedUrl = sessionStorage.getItem('apps_script_url') || '';
+  const savedModel = sessionStorage.getItem('claude_model') || 'claude-sonnet-4-5';
+  if (savedKey) $('apiKey').value = savedKey;
+  if (savedUrl) $('appsScriptUrl').value = savedUrl;
+  if (savedModel) $('modelSelect').value = savedModel;
+  STATE.apiKey = savedKey;
+  STATE.appsScriptUrl = savedUrl;
+  STATE.model = savedModel;
+
+  $('btnSave').addEventListener('click', () => {
+    STATE.apiKey = $('apiKey').value.trim();
+    STATE.appsScriptUrl = $('appsScriptUrl').value.trim();
+    STATE.model = $('modelSelect').value;
+    sessionStorage.setItem('anth_api_key', STATE.apiKey);
+    sessionStorage.setItem('apps_script_url', STATE.appsScriptUrl);
+    sessionStorage.setItem('claude_model', STATE.model);
+    toast('Configuración guardada en sessionStorage', 'ok');
+    refreshRunButton();
+  });
+
+  $('btnPing').addEventListener('click', () => {
+    STATE.appsScriptUrl = $('appsScriptUrl').value.trim();
+    pingAppsScript();
+  });
+
+  const fz = $('fileZone');
+  const fi = $('fileInput');
+  fz.addEventListener('click', () => fi.click());
+  fz.addEventListener('dragover', e => { e.preventDefault(); fz.classList.add('dragover'); });
+  fz.addEventListener('dragleave', () => fz.classList.remove('dragover'));
+  fz.addEventListener('drop', e => {
+    e.preventDefault();
+    fz.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fi.addEventListener('change', e => {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  ['i_titulo','i_estudiantes','i_director','i_modalidad','i_tipologia',
+   'j_nombre','j_documento','j_email','j_pais_ciudad','j_institucion'].forEach(id => {
+    $(id).addEventListener('change', () => {
+      STATE.identificacion = {
+        titulo: $('i_titulo').value.trim(),
+        estudiantes: $('i_estudiantes').value.trim(),
+        director: $('i_director').value.trim(),
+        modalidad: $('i_modalidad').value,
+        tipologia: $('i_tipologia').value
+      };
+      STATE.jurado = {
+        nombre: $('j_nombre').value.trim(),
+        documento: $('j_documento').value.trim(),
+        email: $('j_email').value.trim(),
+        pais_ciudad: $('j_pais_ciudad').value.trim(),
+        institucion: $('j_institucion').value.trim()
+      };
+      sessionStorage.setItem('jurado', JSON.stringify(STATE.jurado));
+      $('dot-ident').classList.remove('pending');
+      $('dot-ident').classList.add(STATE.jurado.nombre ? 'done' : 'pending');
+    });
+  });
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('jurado') || 'null');
+    if (saved) {
+      $('j_nombre').value = saved.nombre || '';
+      $('j_documento').value = saved.documento || '';
+      $('j_email').value = saved.email || '';
+      $('j_pais_ciudad').value = saved.pais_ciudad || '';
+      $('j_institucion').value = saved.institucion || '';
+      STATE.jurado = saved;
+      $('dot-ident').classList.remove('pending');
+      $('dot-ident').classList.add('done');
+    }
+  } catch(e) {}
+
+  $$('.sidebar-nav li').forEach(li => {
+    li.addEventListener('click', () => {
+      const target = li.dataset.target;
+      const el = document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const sections = $$('section[id]');
+  const navItems = $$('.sidebar-nav li');
+  window.addEventListener('scroll', () => {
+    let activeId = '';
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      if (r.top <= 80 && r.bottom > 80) activeId = s.id;
+    });
+    navItems.forEach(li => {
+      li.classList.toggle('active', li.dataset.target === activeId);
+    });
+  });
+
+  $('btnRun').addEventListener('click', runEvaluation);
+  $('btnReset').addEventListener('click', () => {
+    if (confirm('¿Reiniciar la evaluación? Se perderán los resultados.')) {
+      STATE.results = {};
+      STATE.metadata = { tokensIn:0, tokensOut:0, tokensCacheCreate:0, tokensCacheRead:0, duracionSegundos:0, costoUsd:0, timestampInicio:null, timestampFin:null };
+      updateTokenDisplay();
+      updateProgress();
+      TASKS.forEach(t => setStatus(t.id, 'pending'));
+      $$('section[id^="block-"], section[id^="anexo-"], #sintesis, #downloads').forEach(s => {
+        const body = s.querySelector('[id$="-body"]');
+        if (body) body.innerHTML = '';
+      });
+      $('downloads-body').innerHTML = '<div class="alert alert-info">Los documentos se generarán al completar la síntesis final.</div>';
+      $('evalStatusLabel').textContent = 'Listo para iniciar';
+      $('progressFill').style.width = '0%';
+      $('tiempoEval').textContent = '00:00';
+      toast('Reiniciado', 'ok');
+    }
+  });
+
+  refreshRunButton();
+});
+
+function handleFile(file) {
+  if (file.type !== 'application/pdf') {
+    toast('Solo se aceptan archivos PDF', 'err');
+    return;
+  }
+  if (file.size > 32 * 1024 * 1024) {
+    toast('El archivo excede 32 MB. Comprímalo antes de cargar.', 'err');
+    return;
+  }
+  STATE.pdfFile = file;
+  fileToBase64(file).then(b64 => {
+    STATE.pdfBase64 = b64;
+    const sizeMb = (file.size / (1024*1024)).toFixed(2);
+    $('fileInfo').textContent = `✓ ${file.name} · ${sizeMb} MB`;
+    $('fileZone').classList.add('has-file');
+    $('dot-upload').classList.remove('pending');
+    $('dot-upload').classList.add('done');
+    toast('PDF cargado correctamente', 'ok');
+    refreshRunButton();
+  }).catch(err => {
+    toast('Error al leer el PDF: ' + err.message, 'err');
+  });
+}
+
+function refreshRunButton() {
+  STATE.apiKey = $('apiKey').value.trim();
+  const ready = !!(STATE.apiKey && STATE.pdfBase64);
+  $('btnRun').disabled = !ready;
+}
+</script>
+</body>
+</html>
