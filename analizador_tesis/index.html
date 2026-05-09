@@ -482,7 +482,7 @@ textarea { resize: vertical; min-height: 70px; }
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-brand">Evaluador de Tesis CP</div>
-    <div class="sidebar-sub">UAN · Maestría en CP · v0.3</div>
+    <div class="sidebar-sub">UAN · Maestría en CP · v0.5</div>
 
     <div class="sidebar-section-title">Inicio</div>
     <ul class="sidebar-nav">
@@ -524,7 +524,7 @@ textarea { resize: vertical; min-height: 70px; }
   <main class="main">
     <h1 class="page-title">Evaluador de Trabajos de Grado</h1>
     <p class="page-subtitle">Asistente del jurado · Maestría en Investigación en Cuidados Paliativos</p>
-    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.3</p>
+    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.5</p>
 
     <section id="config">
       <h2 class="section-title"><span class="section-num">§01</span>Configuración</h2>
@@ -725,17 +725,17 @@ const STATE = {
 };
 
 const TASKS = [
-  { id: 'block_1', label: 'Bloque 1 · Título',                kind: 'oficial', maxTokens: 4000 },
-  { id: 'block_2', label: 'Bloque 2 · Marco de Referencia',   kind: 'oficial', maxTokens: 8000 },
-  { id: 'block_3', label: 'Bloque 3 · Marco Metodológico',    kind: 'oficial', maxTokens: 8000 },
-  { id: 'block_4', label: 'Bloque 4 · Consideraciones Éticas',kind: 'oficial', maxTokens: 6000 },
-  { id: 'block_5', label: 'Bloque 5 · Resultados',            kind: 'oficial', maxTokens: 6000 },
-  { id: 'block_6', label: 'Bloque 6 · Discusión',             kind: 'oficial', maxTokens: 6000 },
-  { id: 'block_7', label: 'Bloque 7 · Estructura y Normas',   kind: 'oficial', maxTokens: 5000 },
-  { id: 'anexo_A', label: 'Anexo A · Pertinencia colombiana', kind: 'anexo',   maxTokens: 6000 },
-  { id: 'anexo_B', label: 'Anexo B · Estándar de reporte',    kind: 'anexo',   maxTokens: 6000 },
-  { id: 'anexo_C', label: 'Anexo C · Integridad académica',   kind: 'anexo',   maxTokens: 5000 },
-  { id: 'sintesis',label: 'Síntesis · concepto y documentos', kind: 'sintesis',maxTokens: 12000 }
+  { id: 'block_1', label: 'Bloque 1 · Título',                kind: 'oficial', maxTokens: 6000 },
+  { id: 'block_2', label: 'Bloque 2 · Marco de Referencia',   kind: 'oficial', maxTokens: 16000 },
+  { id: 'block_3', label: 'Bloque 3 · Marco Metodológico',    kind: 'oficial', maxTokens: 16000 },
+  { id: 'block_4', label: 'Bloque 4 · Consideraciones Éticas',kind: 'oficial', maxTokens: 10000 },
+  { id: 'block_5', label: 'Bloque 5 · Resultados',            kind: 'oficial', maxTokens: 10000 },
+  { id: 'block_6', label: 'Bloque 6 · Discusión',             kind: 'oficial', maxTokens: 12000 },
+  { id: 'block_7', label: 'Bloque 7 · Estructura y Normas',   kind: 'oficial', maxTokens: 8000 },
+  { id: 'anexo_A', label: 'Anexo A · Pertinencia colombiana', kind: 'anexo',   maxTokens: 8000 },
+  { id: 'anexo_B', label: 'Anexo B · Estándar de reporte',    kind: 'anexo',   maxTokens: 8000 },
+  { id: 'anexo_C', label: 'Anexo C · Integridad académica',   kind: 'anexo',   maxTokens: 7000 },
+  { id: 'sintesis',label: 'Síntesis · concepto y documentos', kind: 'sintesis',maxTokens: 18000 }
 ];
 
 const PRICING = {
@@ -897,14 +897,20 @@ Tu tarea es leer el PDF de un trabajo de grado completo y producir una evaluaci�
 
 REGLAS ABSOLUTAS:
 
-1. Idioma de salida: español de Colombia, registro académico.
-2. Citas textuales del PDF: máximo 15 palabras consecutivas (regla de derechos de autor).
-3. Si un dato no aparece en el PDF, escribe "no reportado". NUNCA inventes.
-4. La rúbrica oficial UAN tiene escala TERNARIA con cuatro etiquetas: "Cumple", "Cumple Parcial", "No Cumple", "No Aplica". NO uses puntajes 1-5 ni adjetivos distintos en bloques oficiales.
-5. Los anexos complementarios A, B, C son insumos NO oficiales del jurado. Etiquétalos siempre como "Anexo complementario no oficial · Uso interno del jurado".
-6. NO acuses al estudiante de plagio ni de uso de IA. Solo identifica señales objetivas con tono neutral.
-7. Tono: respetuoso, formativo, equilibrado. Reconoce fortalezas reales.
-8. Si te quedas sin espacio, acorta el Markdown explicativo pero NUNCA omitas el bloque JSON final.
+1. **TU RESPUESTA DEBE SER ÚNICAMENTE EL BLOQUE JSON ENTRE TRIPLE BACKTICKS. NO ESCRIBAS NADA ANTES NI DESPUÉS DEL JSON. NI INTRODUCCIÓN, NI HEADERS, NI MARKDOWN EXPLICATIVO, NI SALUDOS, NI CONCLUSIONES.** El campo "justificacion" del JSON es donde va tu análisis. Si quieres ser detallado, sé detallado dentro de "justificacion" y "observaciones_recomendaciones", PERO NO FUERA DEL JSON.
+
+2. Idioma de salida: español de Colombia, registro académico.
+3. Citas textuales del PDF: máximo 15 palabras consecutivas (regla de derechos de autor).
+4. Si un dato no aparece en el PDF, escribe "no reportado". NUNCA inventes.
+5. La rúbrica oficial UAN tiene escala TERNARIA con cuatro etiquetas: "Cumple", "Cumple Parcial", "No Cumple", "No Aplica". NO uses puntajes 1-5 ni adjetivos distintos en bloques oficiales.
+6. Los anexos complementarios A, B, C son insumos NO oficiales del jurado. Etiquétalos siempre como "Anexo complementario no oficial · Uso interno del jurado".
+7. NO acuses al estudiante de plagio ni de uso de IA. Solo identifica señales objetivas con tono neutral.
+8. Tono: respetuoso, formativo, equilibrado. Reconoce fortalezas reales.
+9. **LÍMITES DE EXTENSIÓN POR CAMPO (estrictos):**
+   - "justificacion": máximo 4 frases, máximo 100 palabras.
+   - "observaciones_recomendaciones": máximo 3 frases, máximo 80 palabras.
+   - "evidencia_textual": máximo 15 palabras del PDF.
+   Sé denso, no extenso. Cada frase debe aportar información distinta.
 
 MARCO NORMATIVO COLOMBIANO DE REFERENCIA (cita cuando aplique):
 - Ley 1733/2014: servicios de CP en enfermedades terminales/crónicas/degenerativas/irreversibles.
@@ -924,7 +930,7 @@ Si el trabajo de grado cita la Resolución 1216/2015 como vigente, marca error n
 ESTÁNDARES DE REPORTE POR DISEÑO:
 ECA→CONSORT 2010; cuasi-experimental→TREND; observacional→STROBE; serie de casos→STROBE/CARE; revisión sistemática→PRISMA 2020 + AMSTAR-2; scoping→PRISMA-ScR + JBI; cualitativo→COREQ/SRQR; fenomenológico→COREQ + criterios del autor (Van Manen, Heidegger, Husserl, IPA Smith); IAP→CONSIDER; validación→COSMIN; Delphi→CREDES; pruebas diagnósticas→STARD; costo-efectividad→CHEERS 2022; modelo pronóstico→TRIPOD + PROBAST; mixto→GRAMMS.
 
-FORMATO DE SALIDA: Markdown explicativo + bloque JSON final obligatorio entre triple backticks con la etiqueta "json".`;
+FORMATO DE SALIDA: ÚNICAMENTE un bloque JSON válido entre triple backticks con la etiqueta "json". CERO texto fuera del bloque JSON. Tu respuesta empieza con \`\`\`json y termina con \`\`\`.`;
 
 function promptForBlock(blockId, identificacion) {
   const ctx = `\n\n## Contexto ya capturado por el jurado\n- Título declarado: ${identificacion.titulo || '(no declarado)'}\n- Estudiante(s): ${identificacion.estudiantes || '(no declarado)'}\n- Director(a): ${identificacion.director || '(no declarado)'}\n- Modalidad: ${identificacion.modalidad || '(por detectar)'}\n- Tipología declarada: ${identificacion.tipologia || '(por detectar)'}\n`;
@@ -1504,8 +1510,9 @@ async function runEvaluation() {
 
       if (!json) {
         setStatus(task.id, 'error');
-        renderError(task, 'No se pudo extraer JSON estructurado de la respuesta. Texto recibido:', result.text);
-        throw new Error(`Tarea "${task.label}" devolvió respuesta sin JSON parseable`);
+        const debugInfo = `Tokens generados: ${result.usage?.output_tokens || '?'} de ${task.maxTokens} máx. Stop reason: ${result.raw?.stop_reason || '?'}.`;
+        renderError(task, `No se pudo extraer JSON estructurado de la respuesta. ${debugInfo} Texto recibido:`, result.text);
+        throw new Error(`Tarea "${task.label}" devolvió respuesta sin JSON parseable. ${debugInfo}`);
       }
 
       STATE.results[task.id] = json;
@@ -1955,7 +1962,7 @@ ${preguntasExtra}
 
 <p class="note" style="margin-top:30pt; text-align:center; font-style:italic; color:#555;">
 Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴<br>
-Asistido por herramienta Evaluador de Tesis CP v0.3 · Modelo ${STATE.model} · Fecha ${fechaHoy}
+Asistido por herramienta Evaluador de Tesis CP v0.5 · Modelo ${STATE.model} · Fecha ${fechaHoy}
 </p>
 </body></html>`;
 }
@@ -2187,7 +2194,7 @@ async function generateFormatoDocx() {
         para(' ', { before: 100 }),
         cierreTable,
         para('Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia', { center: true, italic: true, before: 400, size: 18 }),
-        para(`Asistido por herramienta Evaluador de Tesis CP v0.3 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
+        para(`Asistido por herramienta Evaluador de Tesis CP v0.5 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
       ]
     }]
   });
