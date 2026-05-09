@@ -1,1 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Evaluador de Trabajos de Grado · Maestría en Investigación en CP · UAN</title>
+<meta name="description" content="Asistente del jurado evaluador para tesis de Maestría en Investigación en Cuidados Paliativos · UAN · Bogotá" />
 
+<!-- Tipografía -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Librerías CDN -->
+<script src="https://unpkg.com/docx@9.6.1/build/index.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@13.0.2/marked.min.js"></script>
+
+<style>
+:root {
+  --burgundy:        #6B2D3E;
+  --burgundy-soft:   #8E4253;
+  --burgundy-deep:   #4A1E2A;
+  --terracotta:      #C9663F;
+  --amber:           #D4A24C;
+  --amber-soft:      #E8C77A;
+  --sage:            #7FA88D;
+  --sage-deep:       #5A8470;
+  --cream:           #FAF6EE;
+  --cream-warm:      #F5EFE0;
+  --paper:           #FFFCF5;
+  --ink:             #2C2018;
+  --ink-soft:        #5A4A3E;
+  --ink-mute:        #8A7868;
+  --line:            #E8DDC8;
+  --line-soft:       #F0E6D2;
+  --ok:              #5A8470;
+  --warn:            #D4A24C;
+  --err:             #B33A3A;
+  --info:            #5A7BA8;
+  --cal-cumple:      #5A8470;
+  --cal-parcial:     #D4A24C;
+  --cal-no:          #B33A3A;
+  --cal-na:          #8A7868;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:     'JetBrains Mono', Menlo, monospace;
+  --sidebar-w: 290px;
+  --content-max: 980px;
+  --radius: 6px;
+  --radius-lg: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  background-image:
+    radial-gradient(circle at 5% 10%, rgba(212, 162, 76, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 95% 90%, rgba(127, 168, 141, 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--line);
+  z-index: 1000;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--burgundy) 0%, var(--terracotta) 50%, var(--amber) 100%);
+  transition: width 0.5s ease;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, var(--burgundy-deep) 0%, var(--burgundy) 100%);
+  color: var(--cream);
+  padding: 28px 22px;
+  border-right: 1px solid var(--burgundy-deep);
+}
+.sidebar-brand {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.sidebar-sub {
+  font-size: 0.72rem;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 28px;
+}
+.sidebar-section-title {
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+  margin: 22px 0 10px 0;
+}
+.sidebar-nav { list-style: none; }
+.sidebar-nav li {
+  font-size: 0.85rem;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+  opacity: 0.75;
+}
+.sidebar-nav li:hover { background: rgba(255,255,255,0.06); }
+.sidebar-nav li.active {
+  background: rgba(212, 162, 76, 0.18);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  flex-shrink: 0;
+}
+.status-dot.pending { background: rgba(255,255,255,0.25); }
+.status-dot.running { background: var(--amber); animation: pulse 1.2s ease-in-out infinite; }
+.status-dot.done   { background: var(--sage); }
+.status-dot.error  { background: var(--err); }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.sidebar-footer {
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.7rem;
+  opacity: 0.55;
+  line-height: 1.5;
+}
+
+.main {
+  padding: 50px 60px 80px 60px;
+  max-width: var(--content-max);
+}
+h1.page-title {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--burgundy-deep);
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+.page-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.page-meta {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  margin-bottom: 36px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--line);
+}
+
+section {
+  margin-bottom: 44px;
+  scroll-margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+h2.section-title .section-num {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--terracotta);
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+}
+.section-intro {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  margin-bottom: 22px;
+}
+h3 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin: 22px 0 12px 0;
+}
+h4 {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 18px 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+p { margin-bottom: 12px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 22px;
+  margin-bottom: 18px;
+}
+.form-grid.full { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-full { grid-column: 1 / -1; }
+
+label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+label .req { color: var(--terracotta); margin-left: 3px; }
+
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], select, textarea {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--burgundy);
+  background: #fff;
+}
+textarea { resize: vertical; min-height: 70px; }
+
+.file-zone {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  background: var(--cream);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.file-zone:hover, .file-zone.dragover { border-color: var(--burgundy); background: var(--cream-warm); }
+.file-zone.has-file { border-style: solid; border-color: var(--sage); background: rgba(127, 168, 141, 0.08); }
+.file-zone .icon { font-size: 2.4rem; margin-bottom: 8px; font-family: var(--serif); font-style: italic; color: var(--burgundy); }
+.file-zone .label { font-family: var(--serif); font-size: 1.15rem; color: var(--burgundy); }
+.file-zone .hint { font-size: 0.82rem; color: var(--ink-mute); margin-top: 6px; }
+.file-zone .file-info { margin-top: 12px; font-family: var(--mono); font-size: 0.82rem; color: var(--sage-deep); }
+
+.btn {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 11px 22px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--burgundy); color: var(--cream); }
+.btn-primary:hover:not(:disabled) { background: var(--burgundy-deep); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107, 45, 62, 0.25); }
+.btn-primary:disabled { background: var(--ink-mute); cursor: not-allowed; opacity: 0.6; }
+.btn-secondary { background: transparent; color: var(--burgundy); border: 1px solid var(--burgundy); }
+.btn-secondary:hover:not(:disabled) { background: var(--burgundy); color: var(--cream); }
+.btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--cream-warm); border-color: var(--ink-mute); }
+
+.eval-status {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 26px;
+}
+.eval-status-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.eval-status-label { font-family: var(--serif); font-size: 1.1rem; font-style: italic; color: var(--burgundy); }
+.eval-status-meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+.token-bar { margin-top: 12px; display: flex; gap: 22px; flex-wrap: wrap; font-size: 0.78rem; color: var(--ink-soft); }
+.token-bar .num { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+
+.block-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 2px rgba(44, 32, 24, 0.03);
+}
+.block-card.pending { opacity: 0.5; }
+.block-card.running { border-color: var(--amber); background: linear-gradient(135deg, #fff 0%, rgba(232, 199, 122, 0.05) 100%); }
+.block-card.done { border-color: var(--sage); }
+.block-card.error { border-color: var(--err); background: rgba(179, 58, 58, 0.03); }
+
+.block-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); }
+.block-name { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; color: var(--burgundy); }
+.block-sub { font-size: 0.78rem; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); }
+.block-body { font-size: 0.95rem; color: var(--ink-soft); }
+.block-body p { margin-bottom: 10px; }
+.block-body h4 { color: var(--burgundy-soft); margin: 16px 0 8px 0; }
+.block-body ul, .block-body ol { margin: 8px 0 12px 22px; }
+.block-body li { margin-bottom: 4px; }
+.block-body code { font-family: var(--mono); font-size: 0.85em; background: var(--cream); padding: 1px 5px; border-radius: 3px; }
+.block-body blockquote { border-left: 3px solid var(--amber); padding: 4px 14px; margin: 12px 0; background: rgba(212, 162, 76, 0.05); font-style: italic; color: var(--ink-soft); }
+
+.items-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
+.items-table th { background: var(--burgundy); color: var(--cream); padding: 10px 8px; text-align: left; font-family: var(--serif); font-weight: 500; font-size: 0.85rem; }
+.items-table th.center { text-align: center; }
+.items-table td { padding: 12px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.items-table td.center { text-align: center; }
+.items-table tr:hover { background: var(--cream); }
+
+.cal-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cal-cumple   { background: rgba(90, 132, 112, 0.15); color: var(--cal-cumple); }
+.cal-parcial  { background: rgba(212, 162, 76, 0.18); color: #8B6914; }
+.cal-no       { background: rgba(179, 58, 58, 0.12); color: var(--cal-no); }
+.cal-na       { background: rgba(138, 120, 104, 0.15); color: var(--cal-na); }
+
+.evidencia { font-family: var(--serif); font-style: italic; color: var(--ink-soft); font-size: 0.92rem; border-left: 2px solid var(--amber); padding: 4px 12px; margin: 8px 0; }
+.evidencia::before { content: '"'; }
+.evidencia::after  { content: '"'; }
+
+.anexo-card {
+  background: linear-gradient(135deg, rgba(212, 162, 76, 0.04) 0%, rgba(127, 168, 141, 0.04) 100%);
+  border: 1px dashed var(--amber);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+}
+.anexo-tag { display: inline-block; background: var(--amber); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+
+.concepto-final {
+  background: var(--burgundy-deep);
+  color: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 30px 36px;
+  margin: 30px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.concepto-final::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(212, 162, 76, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(201, 102, 63, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.concepto-final-label { position: relative; font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+.concepto-final-value { position: relative; font-family: var(--serif); font-size: 2.6rem; font-weight: 600; margin-bottom: 12px; line-height: 1.1; }
+.concepto-final-just { position: relative; font-size: 0.95rem; opacity: 0.9; max-width: 660px; margin: 0 auto; line-height: 1.6; }
+
+.alert { padding: 12px 16px; border-radius: var(--radius); margin: 12px 0; font-size: 0.9rem; border-left: 3px solid; }
+.alert-info  { background: rgba(90, 123, 168, 0.08); border-color: var(--info); color: #2E4A7A; }
+.alert-warn  { background: rgba(212, 162, 76, 0.10); border-color: var(--warn); color: #8B6914; }
+.alert-err   { background: rgba(179, 58, 58, 0.08);  border-color: var(--err);  color: var(--err); }
+.alert-ok    { background: rgba(90, 132, 112, 0.08); border-color: var(--ok);   color: var(--ok); }
+
+.toast-stack { position: fixed; bottom: 22px; right: 22px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; max-width: 360px; }
+.toast { background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: var(--radius); box-shadow: 0 6px 20px rgba(0,0,0,0.18); font-size: 0.88rem; animation: slideIn 0.25s ease; }
+.toast.ok { background: var(--sage-deep); }
+.toast.err { background: var(--burgundy-deep); }
+.toast.warn { background: #8B6914; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+.loader-line {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--line);
+  border-top-color: var(--burgundy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: -2px;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.downloads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.download-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.download-card:hover { border-color: var(--burgundy); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(107, 45, 62, 0.1); }
+.download-card-letter { font-family: var(--serif); font-size: 2.4rem; font-style: italic; color: var(--terracotta); font-weight: 600; line-height: 1; }
+.download-card-title { font-family: var(--serif); font-size: 1.1rem; color: var(--burgundy); font-weight: 600; }
+.download-card-desc { font-size: 0.82rem; color: var(--ink-soft); flex-grow: 1; }
+.download-card-format { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .main { padding: 30px 22px; }
+  h1.page-title { font-size: 2.1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .downloads-grid { grid-template-columns: 1fr; }
+  .concepto-final-value { font-size: 1.8rem; }
+}
+
+@media print {
+  .sidebar, .progress-bar, .no-print { display: none !important; }
+  .main { padding: 0; max-width: 100%; }
+  .app { grid-template-columns: 1fr; }
+  body { background: white; }
+  .block-card, .anexo-card { break-inside: avoid; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">Evaluador de Tesis CP</div>
+    <div class="sidebar-sub">UAN · Maestría en CP · v0.2</div>
+
+    <div class="sidebar-section-title">Inicio</div>
+    <ul class="sidebar-nav">
+      <li data-target="config"><span class="status-dot done"></span>Configuración</li>
+      <li data-target="upload"><span class="status-dot pending" id="dot-upload"></span>Trabajo de grado</li>
+      <li data-target="ident"><span class="status-dot pending" id="dot-ident"></span>Identificación</li>
+    </ul>
+
+    <div class="sidebar-section-title">Bloques oficiales UAN</div>
+    <ul class="sidebar-nav">
+      <li data-target="block-1"><span class="status-dot pending" id="dot-block-1"></span>1 · Título</li>
+      <li data-target="block-2"><span class="status-dot pending" id="dot-block-2"></span>2 · Marco de Referencia</li>
+      <li data-target="block-3"><span class="status-dot pending" id="dot-block-3"></span>3 · Marco Metodológico</li>
+      <li data-target="block-4"><span class="status-dot pending" id="dot-block-4"></span>4 · Consideraciones Éticas</li>
+      <li data-target="block-5"><span class="status-dot pending" id="dot-block-5"></span>5 · Resultados</li>
+      <li data-target="block-6"><span class="status-dot pending" id="dot-block-6"></span>6 · Discusión</li>
+      <li data-target="block-7"><span class="status-dot pending" id="dot-block-7"></span>7 · Estructura y Normas</li>
+    </ul>
+
+    <div class="sidebar-section-title">Anexos no oficiales</div>
+    <ul class="sidebar-nav">
+      <li data-target="anexo-A"><span class="status-dot pending" id="dot-anexo-A"></span>A · Pertinencia colombiana</li>
+      <li data-target="anexo-B"><span class="status-dot pending" id="dot-anexo-B"></span>B · Estándar de reporte</li>
+      <li data-target="anexo-C"><span class="status-dot pending" id="dot-anexo-C"></span>C · Integridad académica</li>
+    </ul>
+
+    <div class="sidebar-section-title">Síntesis</div>
+    <ul class="sidebar-nav">
+      <li data-target="sintesis"><span class="status-dot pending" id="dot-sintesis"></span>Concepto y documentos</li>
+      <li data-target="downloads"><span class="status-dot pending" id="dot-downloads"></span>Descargas</li>
+    </ul>
+
+    <div class="sidebar-footer">
+      Mg. Jorge Bogoya López · 2026<br>
+      Universidad Antonio Nariño · Colombia 🇨🇴
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Evaluador de Trabajos de Grado</h1>
+    <p class="page-subtitle">Asistente del jurado · Maestría en Investigación en Cuidados Paliativos</p>
+    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.2</p>
+
+    <section id="config">
+      <h2 class="section-title"><span class="section-num">§01</span>Configuración</h2>
+      <p class="section-intro">Conexión con Anthropic API y persistencia opcional en Google Sheets.</p>
+
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>API Key de Anthropic <span class="req">*</span></label>
+          <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" />
+        </div>
+        <div class="field field-full">
+          <label>URL del Apps Script Web App (opcional)</label>
+          <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/..." />
+        </div>
+        <div class="field">
+          <label>Modelo Claude</label>
+          <select id="modelSelect">
+            <option value="claude-sonnet-4-5" selected>Claude Sonnet 4.5 (recomendado)</option>
+            <option value="claude-opus-4-7">Claude Opus 4.7 (mayor profundidad, +costo)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Acciones</label>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary" id="btnPing" type="button">Probar conexión</button>
+            <button class="btn btn-ghost" id="btnSave" type="button">Guardar config</button>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info">
+        La API Key se guarda en <code>sessionStorage</code> y se borra al cerrar el navegador. Nunca se envía al Apps Script ni queda en GitHub.
+      </div>
+    </section>
+
+    <section id="upload">
+      <h2 class="section-title"><span class="section-num">§02</span>Trabajo de grado</h2>
+      <p class="section-intro">Cargue el PDF completo del trabajo de grado (proyecto o informe final, hasta 32 MB).</p>
+      <div class="file-zone" id="fileZone">
+        <div class="icon">↥</div>
+        <div class="label">Arrastre el PDF aquí o haga clic para seleccionar</div>
+        <div class="hint">Tesis completa en formato PDF · máximo 32 MB</div>
+        <div class="file-info" id="fileInfo"></div>
+      </div>
+      <input type="file" id="fileInput" accept="application/pdf" style="display:none;" />
+    </section>
+
+    <section id="ident">
+      <h2 class="section-title"><span class="section-num">§03</span>Identificación</h2>
+      <p class="section-intro">Datos del estudiante, director, jurado y tipología de la tesis. Lo que no conozca puede dejarlo en blanco; la herramienta intentará extraerlo del PDF.</p>
+
+      <h3>Datos de la tesis</h3>
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>Título de la tesis</label>
+          <input type="text" id="i_titulo" />
+        </div>
+        <div class="field">
+          <label>Estudiante(s) · separe con punto y coma</label>
+          <input type="text" id="i_estudiantes" placeholder="Apellidos Nombres" />
+        </div>
+        <div class="field">
+          <label>Director(a) de tesis</label>
+          <input type="text" id="i_director" />
+        </div>
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="i_modalidad">
+            <option value="">— por detectar —</option>
+            <option value="individual">Individual</option>
+            <option value="grupal">Grupal</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tipología del estudio</label>
+          <select id="i_tipologia">
+            <option value="">— por detectar —</option>
+            <option value="ECA">Ensayo clínico aleatorizado (CONSORT)</option>
+            <option value="cuasi">Cuasi-experimental (TREND)</option>
+            <option value="observacional">Observacional analítico (STROBE)</option>
+            <option value="descriptivo">Descriptivo / serie de casos (STROBE/CARE)</option>
+            <option value="RS_meta">Revisión sistemática + metaanálisis (PRISMA + AMSTAR-2)</option>
+            <option value="RS_no_meta">Revisión sistemática sin metaanálisis (PRISMA + SWiM)</option>
+            <option value="scoping">Scoping review (PRISMA-ScR + JBI)</option>
+            <option value="umbrella">Umbrella review (PRIOR)</option>
+            <option value="cualitativo">Cualitativo general (COREQ/SRQR)</option>
+            <option value="etnografico">Etnográfico (COREQ)</option>
+            <option value="fenomenologico">Fenomenológico (Van Manen, Heidegger, IPA)</option>
+            <option value="IAP">Investigación-acción participativa (CONSIDER)</option>
+            <option value="validacion">Validación de instrumento (COSMIN)</option>
+            <option value="delphi">Delphi de consenso (CREDES)</option>
+            <option value="diagnostica">Pruebas diagnósticas (STARD)</option>
+            <option value="bibliometrico">Bibliométrico</option>
+            <option value="costo_efectividad">Costo-efectividad (CHEERS 2022)</option>
+            <option value="prediccion">Modelo pronóstico (TRIPOD + PROBAST)</option>
+            <option value="mixto">Mixto (GRAMMS)</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>Datos del jurado evaluador</h3>
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>Nombre completo del jurado</label>
+          <input type="text" id="j_nombre" placeholder="Mg. Jorge Bogoya López" />
+        </div>
+        <div class="field">
+          <label>Tipo y número de identificación</label>
+          <input type="text" id="j_documento" placeholder="CC 1.234.567" />
+        </div>
+        <div class="field">
+          <label>Email · teléfono</label>
+          <input type="text" id="j_email" />
+        </div>
+        <div class="field">
+          <label>País y ciudad de residencia</label>
+          <input type="text" id="j_pais_ciudad" placeholder="Colombia · Bogotá" />
+        </div>
+        <div class="field">
+          <label>Institución de filiación</label>
+          <input type="text" id="j_institucion" placeholder="Universidad Antonio Nariño" />
+        </div>
+      </div>
+    </section>
+
+    <section id="run">
+      <h2 class="section-title"><span class="section-num">§04</span>Ejecutar evaluación</h2>
+      <div class="eval-status">
+        <div class="eval-status-row">
+          <div class="eval-status-label" id="evalStatusLabel">Listo para iniciar</div>
+          <div class="eval-status-meta" id="evalStatusMeta">— / 11 llamadas</div>
+        </div>
+        <div class="token-bar">
+          <div>Tokens entrada: <span class="num" id="tokIn">0</span></div>
+          <div>Tokens salida: <span class="num" id="tokOut">0</span></div>
+          <div>Caché ahorrado: <span class="num" id="tokCache">0</span></div>
+          <div>Costo estimado: <span class="num" id="costoEst">USD 0.00</span></div>
+          <div>Tiempo: <span class="num" id="tiempoEval">00:00</span></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-primary" id="btnRun" type="button" disabled>Iniciar evaluación</button>
+        <button class="btn btn-ghost" id="btnReset" type="button">Reiniciar</button>
+      </div>
+    </section>
+
+    <section id="block-1"><h2 class="section-title"><span class="section-num">B1</span>Título</h2><div id="block-1-body"></div></section>
+    <section id="block-2"><h2 class="section-title"><span class="section-num">B2</span>Marco de referencia, teórico y/o conceptual</h2><div id="block-2-body"></div></section>
+    <section id="block-3"><h2 class="section-title"><span class="section-num">B3</span>Marco metodológico</h2><div id="block-3-body"></div></section>
+    <section id="block-4"><h2 class="section-title"><span class="section-num">B4</span>Consideraciones éticas</h2><div id="block-4-body"></div></section>
+    <section id="block-5"><h2 class="section-title"><span class="section-num">B5</span>Resultados</h2><div id="block-5-body"></div></section>
+    <section id="block-6"><h2 class="section-title"><span class="section-num">B6</span>Discusión</h2><div id="block-6-body"></div></section>
+    <section id="block-7"><h2 class="section-title"><span class="section-num">B7</span>Estructura y normas para la presentación</h2><div id="block-7-body"></div></section>
+
+    <section id="anexo-A"><h2 class="section-title"><span class="section-num">A</span>Anexo · Pertinencia colombiana y normativa</h2><div id="anexo-A-body"></div></section>
+    <section id="anexo-B"><h2 class="section-title"><span class="section-num">B</span>Anexo · Estándar de reporte aplicable</h2><div id="anexo-B-body"></div></section>
+    <section id="anexo-C"><h2 class="section-title"><span class="section-num">C</span>Anexo · Integridad académica e IA</h2><div id="anexo-C-body"></div></section>
+
+    <section id="sintesis">
+      <h2 class="section-title"><span class="section-num">§Σ</span>Síntesis y concepto final</h2>
+      <div id="sintesis-body"></div>
+    </section>
+
+    <section id="downloads">
+      <h2 class="section-title"><span class="section-num">§↓</span>Descargas</h2>
+      <p class="section-intro">Tres documentos independientes: el formato oficial UAN diligenciado, la devolución pedagógica al estudiante y el resumen ejecutivo.</p>
+      <div id="downloads-body" class="alert alert-info">
+        Los documentos se generarán al completar la síntesis final.
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
