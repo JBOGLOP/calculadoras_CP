@@ -482,7 +482,7 @@ textarea { resize: vertical; min-height: 70px; }
 <div class="app">
   <aside class="sidebar">
     <div class="sidebar-brand">Evaluador de Tesis CP</div>
-    <div class="sidebar-sub">UAN · Maestría en CP · v0.2</div>
+    <div class="sidebar-sub">UAN · Maestría en CP · v0.3</div>
 
     <div class="sidebar-section-title">Inicio</div>
     <ul class="sidebar-nav">
@@ -524,7 +524,7 @@ textarea { resize: vertical; min-height: 70px; }
   <main class="main">
     <h1 class="page-title">Evaluador de Trabajos de Grado</h1>
     <p class="page-subtitle">Asistente del jurado · Maestría en Investigación en Cuidados Paliativos</p>
-    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.2</p>
+    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.3</p>
 
     <section id="config">
       <h2 class="section-title"><span class="section-num">§01</span>Configuración</h2>
@@ -1421,18 +1421,18 @@ async function callAnthropic(taskId, userText, maxTokens) {
         body: JSON.stringify(body)
       });
 
-if (!resp.ok) {
+      if (!resp.ok) {
         const errText = await resp.text();
         if (resp.status === 429 || resp.status === 529) {
-          // Respetar retry-after del header si existe; si no, escala 60/120/180s
+          // Respetar retry-after del header si existe; si no, escala 60/120/180/240/300s
           const retryAfterHeader = resp.headers.get('retry-after');
           let wait;
           if (retryAfterHeader) {
             wait = (parseInt(retryAfterHeader, 10) + 5) * 1000; // +5s de margen
           } else {
-            wait = [60000, 120000, 180000][attempt - 1] || 180000;
+            wait = [60000, 120000, 180000, 240000, 300000][attempt - 1] || 300000;
           }
-          toast(`API saturada (${resp.status}). Reintento en ${wait/1000}s...`, 'warn');
+          toast(`API saturada (${resp.status}). Reintento en ${Math.round(wait/1000)}s...`, 'warn');
           await sleep(wait);
           continue;
         }
@@ -1528,9 +1528,9 @@ async function runEvaluation() {
       setStatus(task.id, 'done');
       updateProgress();
 
-   if (i < TASKS.length - 1) {
+      if (i < TASKS.length - 1) {
         // Throttling adaptado a Tier 1: 60s entre llamadas para que la cuota se reponga
-        toast(`Esperando 60s para respetar rate limit (Tier 1)...`, '');
+        $('evalStatusLabel').innerHTML = `<span class="loader-line"></span>Esperando 60s para respetar rate limit...`;
         await sleep(60000);
       }
     }
@@ -1630,7 +1630,7 @@ function renderOficialBlock(task, json) {
     <div class="block-card done">
       <div class="block-header">
         <div class="block-name">${escHtml(json.nombre_bloque)}</div>
-      <div class="block-sub">Bloque ${json.bloque || task.id.replace('block_','')} · oficial UAN</div>
+        <div class="block-sub">Bloque ${json.bloque || task.id.replace('block_','')} · oficial UAN</div>
       </div>
       <div class="block-body">
         <table class="items-table">
@@ -1751,7 +1751,7 @@ function renderSintesis(json) {
       </table>
     </div>`;
 }
-  async function buildDownloads() {
+async function buildDownloads() {
   const sintesis = STATE.results.sintesis;
   if (!sintesis) {
     $('downloads-body').innerHTML = '<div class="alert alert-err">No se pudo construir documentos: falta síntesis.</div>';
@@ -1955,7 +1955,7 @@ ${preguntasExtra}
 
 <p class="note" style="margin-top:30pt; text-align:center; font-style:italic; color:#555;">
 Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴<br>
-Asistido por herramienta Evaluador de Tesis CP v0.2 · Modelo ${STATE.model} · Fecha ${fechaHoy}
+Asistido por herramienta Evaluador de Tesis CP v0.3 · Modelo ${STATE.model} · Fecha ${fechaHoy}
 </p>
 </body></html>`;
 }
@@ -2187,7 +2187,7 @@ async function generateFormatoDocx() {
         para(' ', { before: 100 }),
         cierreTable,
         para('Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia', { center: true, italic: true, before: 400, size: 18 }),
-        para(`Asistido por herramienta Evaluador de Tesis CP v0.2 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
+        para(`Asistido por herramienta Evaluador de Tesis CP v0.3 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
       ]
     }]
   });
