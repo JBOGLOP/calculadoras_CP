@@ -270,11 +270,11 @@ details.help > div{padding:.8rem 1rem;border-top:1px solid var(--line);font-size
     <div class="field">
       <label>Modelo de Claude</label>
       <select id="modelo">
-        <option value="claude-sonnet-4-5">Claude Sonnet 4.5 — Equilibrio costo/calidad (recomendado)</option>
-        <option value="claude-opus-4-7">Claude Opus 4.7 — Máximo rigor (más costoso, más lento)</option>
-        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — Económico (uso de tanteo)</option>
+        <option value="claude-sonnet-4-5" selected>Claude Sonnet 4.5 — Recomendado para análisis crítico</option>
+        <option value="claude-opus-4-7">Claude Opus 4.7 — Máximo rigor (publicación, journal club)</option>
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — ⚠ Económico, riesgo de no respetar formato JSON</option>
       </select>
-      <div class="field-hint">Sonnet 4.5 es la mejor opción para análisis crítico habitual. Opus 4.7 si vas a publicar el análisis.</div>
+      <div class="field-hint">Sonnet 4.5 es la mejor opción para análisis crítico. Opus 4.7 para análisis publicables. <strong>Evita Haiku</strong> para análisis estructurados: en pruebas omitió bloques JSON en varias dimensiones.</div>
     </div>
 
     <div class="field">
@@ -379,7 +379,7 @@ details.help > div{padding:.8rem 1rem;border-top:1px solid var(--line);font-size
  * ======================================================================== */
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
-const MAX_TOKENS_POR_DIMENSION = 4000;
+const MAX_TOKENS_POR_DIMENSION = 8000;
 
 /* ----- Estado global ----- */
 const Estado = {
@@ -424,6 +424,19 @@ REGLAS DE ESTILO Y RIGOR:
 - Si un dato no aparece en el artículo, dilo explícitamente. NO inventes valores numéricos, autores, DOIs ni cifras de IC.
 - Usa formato Markdown: encabezados ## y ###, listas con guion, tablas Markdown, énfasis con **negrita**.
 - Cuando haya incertidumbre, dilo explícitamente.
+
+INSTRUCCIÓN OBLIGATORIA SOBRE FORMATO JSON:
+- Cada dimensión TERMINA con un bloque JSON delimitado por triple backtick más la palabra json. Esto NO es opcional.
+- Formato exacto requerido al final de cada respuesta:
+
+\`\`\`json
+{ "campo1": "valor1", "campo2": "valor2" }
+\`\`\`
+
+- Si te quedas sin espacio, ACORTA el análisis Markdown pero NUNCA omitas el bloque JSON final.
+- El bloque JSON debe estar bien cerrado (con triple backtick al final).
+- No incluyas comentarios dentro del JSON (no usa // ni /* */).
+- Usa null (no "null" como string) para valores faltantes.
 
 DMCI (DIFERENCIAS MÍNIMAS CLÍNICAMENTE IMPORTANTES) DE REFERENCIA:
 - EORTC QLQ-C30: 5–10 puntos en escala 0–100 (Osoba 1998, Maringwa 2011)
@@ -1098,7 +1111,11 @@ async function probarAppsScript() {
   }
   mostrarMensaje('configMsg', 'info', '<span class="spinner"></span> Probando Apps Script...');
   try {
-    const r = await fetch(url, { method: 'GET' });
+    const r = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      // Sin headers explícitos: garantiza que sea "simple request" CORS
+    });
     const data = await r.json();
     if (data.ok) {
       mostrarMensaje('configMsg', 'success', `✓ Apps Script responde · ${data.servicio} v${data.version}`);
@@ -1449,14 +1466,52 @@ function construirMensajeUsuario(prompt) {
  * ======================================================================== */
 
 function extraerJSON(texto) {
+  // Estrategia 1: bloque ```json ... ``` cerrado correctamente
   const match = texto.match(/```json\s*([\s\S]*?)```/);
-  if (!match) return null;
-  try {
-    return JSON.parse(match[1].trim());
-  } catch (e) {
-    console.warn('JSON malformado:', match[1].substring(0, 200));
-    return null;
+  if (match) {
+    try { return JSON.parse(match[1].trim()); }
+    catch (e) { console.warn('JSON cerrado pero malformado, intento siguiente estrategia'); }
   }
+
+  // Estrategia 2: bloque ```json sin cerrar (truncado al final)
+  const matchAbierto = texto.match(/```json\s*([\s\S]*?)$/);
+  if (matchAbierto) {
+    try { return JSON.parse(matchAbierto[1].trim()); }
+    catch (e) { /* intento siguiente */ }
+  }
+
+  // Estrategia 3: último objeto JSON balanceado del texto
+  // Buscamos el último '{' y emparejamos hasta encontrar el '}' que lo cierra
+  const lastOpen = texto.lastIndexOf('{');
+  if (lastOpen === -1) return null;
+  let depth = 0;
+  for (let i = lastOpen; i < texto.length; i++) {
+    if (texto[i] === '{') depth++;
+    else if (texto[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        try { return JSON.parse(texto.substring(lastOpen, i + 1)); }
+        catch (e) { /* siguió */ }
+      }
+    }
+  }
+
+  // Estrategia 4: primer { ... } balanceado al inicio del texto
+  const firstOpen = texto.indexOf('{');
+  if (firstOpen >= 0) {
+    let d = 0;
+    for (let i = firstOpen; i < texto.length; i++) {
+      if (texto[i] === '{') d++;
+      else if (texto[i] === '}') {
+        d--;
+        if (d === 0) {
+          try { return JSON.parse(texto.substring(firstOpen, i + 1)); }
+          catch (e) { return null; }
+        }
+      }
+    }
+  }
+  return null;
 }
 
 function renderMarkdown(md) {
@@ -1762,7 +1817,6 @@ async function guardarEnSheets() {
   try {
     const res = await fetch(Estado.appsScriptUrl, {
       method: 'POST',
-      mode: 'cors',
       redirect: 'follow',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: payload
