@@ -1405,7 +1405,7 @@ async function callAnthropic(taskId, userText, maxTokens) {
   };
 
   const url = 'https://api.anthropic.com/v1/messages';
-  const maxRetries = 3;
+  const maxRetries = 5;
   let lastError = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -1421,10 +1421,17 @@ async function callAnthropic(taskId, userText, maxTokens) {
         body: JSON.stringify(body)
       });
 
-      if (!resp.ok) {
+if (!resp.ok) {
         const errText = await resp.text();
         if (resp.status === 429 || resp.status === 529) {
-          const wait = [15000, 30000, 60000][attempt - 1] || 60000;
+          // Respetar retry-after del header si existe; si no, escala 60/120/180s
+          const retryAfterHeader = resp.headers.get('retry-after');
+          let wait;
+          if (retryAfterHeader) {
+            wait = (parseInt(retryAfterHeader, 10) + 5) * 1000; // +5s de margen
+          } else {
+            wait = [60000, 120000, 180000][attempt - 1] || 180000;
+          }
           toast(`API saturada (${resp.status}). Reintento en ${wait/1000}s...`, 'warn');
           await sleep(wait);
           continue;
@@ -1521,8 +1528,10 @@ async function runEvaluation() {
       setStatus(task.id, 'done');
       updateProgress();
 
-      if (i < TASKS.length - 1) {
-        await sleep(3500);
+   if (i < TASKS.length - 1) {
+        // Throttling adaptado a Tier 1: 60s entre llamadas para que la cuota se reponga
+        toast(`Esperando 60s para respetar rate limit (Tier 1)...`, '');
+        await sleep(60000);
       }
     }
 
@@ -1621,7 +1630,7 @@ function renderOficialBlock(task, json) {
     <div class="block-card done">
       <div class="block-header">
         <div class="block-name">${escHtml(json.nombre_bloque)}</div>
-        <div class="block-sub">Bloque ${json.bloque} · oficial UAN</div>
+      <div class="block-sub">Bloque ${json.bloque || task.id.replace('block_','')} · oficial UAN</div>
       </div>
       <div class="block-body">
         <table class="items-table">
