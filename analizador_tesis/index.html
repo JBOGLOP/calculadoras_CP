@@ -698,3 +698,1047 @@ textarea { resize: vertical; min-height: 70px; }
 </div>
 
 <div class="toast-stack" id="toastStack"></div>
+<script>
+'use strict';
+
+const STATE = {
+  apiKey: '',
+  appsScriptUrl: '',
+  model: 'claude-sonnet-4-5',
+  pdfFile: null,
+  pdfBase64: '',
+  identificacion: {},
+  jurado: {},
+  results: {},
+  metadata: {
+    tokensIn: 0,
+    tokensOut: 0,
+    tokensCacheCreate: 0,
+    tokensCacheRead: 0,
+    duracionSegundos: 0,
+    costoUsd: 0,
+    timestampInicio: null,
+    timestampFin: null
+  },
+  running: false,
+  finalDocs: null
+};
+
+const TASKS = [
+  { id: 'block_1', label: 'Bloque 1 · Título',                kind: 'oficial', maxTokens: 4000 },
+  { id: 'block_2', label: 'Bloque 2 · Marco de Referencia',   kind: 'oficial', maxTokens: 8000 },
+  { id: 'block_3', label: 'Bloque 3 · Marco Metodológico',    kind: 'oficial', maxTokens: 8000 },
+  { id: 'block_4', label: 'Bloque 4 · Consideraciones Éticas',kind: 'oficial', maxTokens: 6000 },
+  { id: 'block_5', label: 'Bloque 5 · Resultados',            kind: 'oficial', maxTokens: 6000 },
+  { id: 'block_6', label: 'Bloque 6 · Discusión',             kind: 'oficial', maxTokens: 6000 },
+  { id: 'block_7', label: 'Bloque 7 · Estructura y Normas',   kind: 'oficial', maxTokens: 5000 },
+  { id: 'anexo_A', label: 'Anexo A · Pertinencia colombiana', kind: 'anexo',   maxTokens: 6000 },
+  { id: 'anexo_B', label: 'Anexo B · Estándar de reporte',    kind: 'anexo',   maxTokens: 6000 },
+  { id: 'anexo_C', label: 'Anexo C · Integridad académica',   kind: 'anexo',   maxTokens: 5000 },
+  { id: 'sintesis',label: 'Síntesis · concepto y documentos', kind: 'sintesis',maxTokens: 12000 }
+];
+
+const PRICING = {
+  'claude-sonnet-4-5': { in: 3.00, out: 15.00, cacheWrite: 3.75, cacheRead: 0.30 },
+  'claude-opus-4-7':   { in: 15.00, out: 75.00, cacheWrite: 18.75, cacheRead: 1.50 }
+};
+
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function toast(msg, kind = '') {
+  const stack = $('toastStack');
+  const t = document.createElement('div');
+  t.className = 'toast ' + kind;
+  t.textContent = msg;
+  stack.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; }, 3500);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function setStatus(taskId, status) {
+  const dot = $('dot-' + taskId.replace('_','-'));
+  if (dot) {
+    dot.classList.remove('pending', 'running', 'done', 'error');
+    dot.classList.add(status);
+  }
+  const section = $(taskId.replace('_','-'));
+  if (section) {
+    const card = section.querySelector('.block-card, .anexo-card');
+    if (card) {
+      card.classList.remove('pending', 'running', 'done', 'error');
+      card.classList.add(status);
+    }
+  }
+}
+
+function updateProgress() {
+  const total = TASKS.length;
+  const done = TASKS.filter(t => STATE.results[t.id]).length;
+  const pct = (done / total) * 100;
+  $('progressFill').style.width = pct + '%';
+  $('evalStatusMeta').textContent = `${done} / ${total} llamadas`;
+}
+
+function fmtTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateTokenDisplay() {
+  $('tokIn').textContent  = STATE.metadata.tokensIn.toLocaleString('es-CO');
+  $('tokOut').textContent = STATE.metadata.tokensOut.toLocaleString('es-CO');
+  $('tokCache').textContent = STATE.metadata.tokensCacheRead.toLocaleString('es-CO');
+  $('costoEst').textContent = `USD ${STATE.metadata.costoUsd.toFixed(2)}`;
+}
+
+function calcularCosto(usage, model) {
+  const p = PRICING[model] || PRICING['claude-sonnet-4-5'];
+  const inT = (usage.input_tokens || 0);
+  const outT = (usage.output_tokens || 0);
+  const cWrite = (usage.cache_creation_input_tokens || 0);
+  const cRead = (usage.cache_read_input_tokens || 0);
+  return (
+    (inT * p.in / 1e6) +
+    (outT * p.out / 1e6) +
+    (cWrite * p.cacheWrite / 1e6) +
+    (cRead * p.cacheRead / 1e6)
+  );
+}
+
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      const b64 = result.split(',')[1];
+      resolve(b64);
+    };
+    reader.onerror = () => reject(new Error('Lectura del archivo falló'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function balanceJSON(s) {
+  let depth = 0, start = -1, inStr = false, esc = false, lastOK = -1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { esc = false; continue; }
+    if (c === '\\') { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === '{') { if (start < 0) start = i; depth++; }
+    else if (c === '}') { depth--; if (depth === 0 && start >= 0) lastOK = i; }
+  }
+  if (start >= 0 && lastOK >= 0) return s.slice(start, lastOK + 1);
+  return null;
+}
+
+function findLastBalancedJSON(s) {
+  let lastClose = s.lastIndexOf('}');
+  while (lastClose > 0) {
+    let depth = 0, inStr = false, esc = false;
+    for (let i = lastClose; i >= 0; i--) {
+      const c = s[i];
+      if (esc) { esc = false; continue; }
+      if (c === '\\') { esc = true; continue; }
+      if (c === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (c === '}') depth++;
+      else if (c === '{') {
+        depth--;
+        if (depth === 0) return s.slice(i, lastClose + 1);
+      }
+    }
+    lastClose = s.lastIndexOf('}', lastClose - 1);
+  }
+  return null;
+}
+
+function extractJSON(text) {
+  if (!text) return null;
+  let m = text.match(/```json\s*([\s\S]*?)\s*```/);
+  if (m) {
+    try { return JSON.parse(m[1]); } catch(e) {}
+  }
+  m = text.match(/```json\s*([\s\S]*)$/);
+  if (m) {
+    const candidate = balanceJSON(m[1]);
+    if (candidate) {
+      try { return JSON.parse(candidate); } catch(e) {}
+    }
+  }
+  const last = findLastBalancedJSON(text);
+  if (last) {
+    try { return JSON.parse(last); } catch(e) {}
+  }
+  const first = balanceJSON(text);
+  if (first) {
+    try { return JSON.parse(first); } catch(e) {}
+  }
+  return null;
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const SYSTEM_PROMPT = `Eres asistente experto del jurado evaluador de la Maestría en Investigación en Cuidados Paliativos de la Universidad Antonio Nariño (UAN), Facultad de Enfermería, Bogotá, Colombia.
+
+Tu tarea es leer el PDF de un trabajo de grado completo y producir una evaluación rigurosa, pedagógica y ajustada a la rúbrica oficial UAN.
+
+REGLAS ABSOLUTAS:
+
+1. Idioma de salida: español de Colombia, registro académico.
+2. Citas textuales del PDF: máximo 15 palabras consecutivas (regla de derechos de autor).
+3. Si un dato no aparece en el PDF, escribe "no reportado". NUNCA inventes.
+4. La rúbrica oficial UAN tiene escala TERNARIA con cuatro etiquetas: "Cumple", "Cumple Parcial", "No Cumple", "No Aplica". NO uses puntajes 1-5 ni adjetivos distintos en bloques oficiales.
+5. Los anexos complementarios A, B, C son insumos NO oficiales del jurado. Etiquétalos siempre como "Anexo complementario no oficial · Uso interno del jurado".
+6. NO acuses al estudiante de plagio ni de uso de IA. Solo identifica señales objetivas con tono neutral.
+7. Tono: respetuoso, formativo, equilibrado. Reconoce fortalezas reales.
+8. Si te quedas sin espacio, acorta el Markdown explicativo pero NUNCA omitas el bloque JSON final.
+
+MARCO NORMATIVO COLOMBIANO DE REFERENCIA (cita cuando aplique):
+- Ley 1733/2014: servicios de CP en enfermedades terminales/crónicas/degenerativas/irreversibles.
+- Ley 2241/2022: educación en CP, telemedicina; modifica art. 7 de Ley 1733.
+- Ley 1996/2019: capacidad legal y ajustes razonables para personas con discapacidad.
+- Ley 1581/2012: habeas data.
+- Ley 70/1993: comunidades negras. Convenio 169 OIT (Ley 21/1991): pueblos indígenas.
+- Resolución 8430/1993: investigación en salud (clasificación de riesgo, consentimiento).
+- Resolución 971/2021: atención integral de CP en SGSSS (DEROGÓ a la Resolución 1216/2015).
+- Resolución 813/2026: procedimiento unificado eutanasia/AET/CP (deroga 971/2021).
+- Resolución 2654/2019: telesalud.
+- GPC No. 58/2016: Guía de Práctica Clínica de CP del MinSalud.
+
+BANDERA NORMATIVA CRÍTICA:
+Si el trabajo de grado cita la Resolución 1216/2015 como vigente, marca error normativo de alta gravedad: fue derogada por Resolución 971/2021.
+
+ESTÁNDARES DE REPORTE POR DISEÑO:
+ECA→CONSORT 2010; cuasi-experimental→TREND; observacional→STROBE; serie de casos→STROBE/CARE; revisión sistemática→PRISMA 2020 + AMSTAR-2; scoping→PRISMA-ScR + JBI; cualitativo→COREQ/SRQR; fenomenológico→COREQ + criterios del autor (Van Manen, Heidegger, Husserl, IPA Smith); IAP→CONSIDER; validación→COSMIN; Delphi→CREDES; pruebas diagnósticas→STARD; costo-efectividad→CHEERS 2022; modelo pronóstico→TRIPOD + PROBAST; mixto→GRAMMS.
+
+FORMATO DE SALIDA: Markdown explicativo + bloque JSON final obligatorio entre triple backticks con la etiqueta "json".`;
+
+function promptForBlock(blockId, identificacion) {
+  const ctx = `\n\n## Contexto ya capturado por el jurado\n- Título declarado: ${identificacion.titulo || '(no declarado)'}\n- Estudiante(s): ${identificacion.estudiantes || '(no declarado)'}\n- Director(a): ${identificacion.director || '(no declarado)'}\n- Modalidad: ${identificacion.modalidad || '(por detectar)'}\n- Tipología declarada: ${identificacion.tipologia || '(por detectar)'}\n`;
+
+  const PROMPTS = {
+    block_1: `**BLOQUE 1 OFICIAL UAN · TÍTULO**${ctx}
+
+Lee el PDF adjunto y evalúa el ÚNICO ítem 1 de la rúbrica oficial UAN.
+
+## Ítem 1 (literal de la rúbrica)
+"Título: incluye un título claro y coherente con la investigación."
+
+### Verificación específica
+- ¿El título refleja claramente la pregunta de investigación, los participantes y el contexto?
+- ¿Es conciso y específico, sin redundancias ni siglas no estándar?
+- ¿Coincide el título de la portada con el de la página de aceptación y la cita de la base de datos?
+- ¿Es coherente con los objetivos efectivamente desarrollados en el trabajo?
+
+### Adicional: extracción de identificación
+Extrae también: título completo (literal), estudiante(s), director(a), modalidad detectada, tipología detectada.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 1,
+  "nombre_bloque": "TÍTULO",
+  "identificacion_extraida": {
+    "titulo": "...",
+    "estudiantes": ["..."],
+    "director": "...",
+    "modalidad": "individual | grupal | no detectada",
+    "tipologia_detectada": "..."
+  },
+  "items": [
+    {
+      "numero": 1,
+      "criterio": "Título: incluye un título claro y coherente con la investigación.",
+      "calificacion": "Cumple | Cumple Parcial | No Cumple | No Aplica",
+      "justificacion": "...",
+      "evidencia_textual": "...",
+      "pagina_aproximada": 0,
+      "observaciones_recomendaciones": "..."
+    }
+  ]
+}
+\`\`\``,
+
+    block_2: `**BLOQUE 2 OFICIAL UAN · MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL**${ctx}
+
+Evalúa los ítems 2, 3, 4, 5 y 6 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 2.** "Descripción del problema: Se presentan los antecedentes, derivados de la revisión de literatura científica, que demuestran la necesidad de la investigación."
+- **Ítem 3.** "La pregunta de investigación es relevante, contextualizada y coherente."
+- **Ítem 4.** "En la Justificación de la investigación se plantea la relevancia social, práctica y aportes al conocimiento científico."
+- **Ítem 5.** "Los objetivos planteados son claros, precisos, viables y coherentes con el problema de investigación."
+- **Ítem 6.** "El Marco conceptual y/o teórico se presenta de manera coherente, integrado y articulado que da sustento a la investigación."
+
+### Verificación específica por ítem
+- Ítem 2: ¿hay datos epidemiológicos colombianos? ¿vacío de conocimiento explícito? ¿conexión con vacíos estructurales colombianos en CP?
+- Ítem 3: ¿formato PICO/PICo/SPIDER/CoCoPop/SPICE/PCC adecuado al diseño?
+- Ítem 4: ¿relevancia para SGSSS, EPS/IPS de mediana y baja complejidad, comunidades PDET/indígenas/afrocolombianas?
+- Ítem 5: ¿objetivo general + específicos? ¿mensurables y coherentes con la pregunta?
+- Ítem 6: ¿modelos teóricos pertinentes (Calman, Murray-Lynn, Trauma de Pérdida, etc.)? ¿integración crítica vs. compilación?
+
+Para cada uno de los 5 ítems: calificación oficial (escala ternaria), justificación 3-5 frases, evidencia textual ≤15 palabras, página aproximada, recomendaciones para casilla de observaciones.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 2,
+  "nombre_bloque": "MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL",
+  "items": [
+    { "numero": 2, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 3, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 4, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 5, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 6, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_3: `**BLOQUE 3 OFICIAL UAN · MARCO METODOLÓGICO**${ctx}
+
+Evalúa los ítems 7, 8, 9, 10 y 11 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 7.** "Se identifica el diseño de la investigación que es coherente con la pregunta y los objetivos planteados."
+- **Ítem 8.** "En el diseño metodológico se describe la selección de los participantes, criterios de inclusión y de exclusión."
+- **Ítem 9.** "La muestra y el tipo de muestreo corresponde al diseño seleccionado."
+- **Ítem 10.** "Se realiza una descripción de las variables del estudio y el proceso de recolección de datos y plan de análisis, según el tipo de estudio."
+- **Ítem 11.** "Se hace explícito el rigor metodológico y control de sesgos según el tipo de estudio."
+
+### Verificación específica
+- Ítem 7: ¿enfoque (cuantitativo/cualitativo/mixto) coherente con la pregunta? ¿diseño bien especificado?
+- Ítem 8: ¿criterios de inclusión y exclusión completos y operacionalizables?
+- Ítem 9: ¿cálculo muestral o saturación teórica justificados?
+- Ítem 10: ¿instrumentos validados con propiedades psicométricas? ¿plan de análisis explícito?
+- Ítem 11: ¿estándar de reporte aplicable mencionado? Para CP: ¿manejo de atrición por muerte, MNAR, sesgo de supervivencia, gatekeeping clínico, Hawthorne, definición operativa de fin de vida? Para cualitativos: ¿criterios de Lincoln & Guba o equivalentes?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 3,
+  "nombre_bloque": "MARCO METODOLÓGICO",
+  "items": [
+    { "numero": 7,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 8,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 9,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 10, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 11, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_4: `**BLOQUE 4 OFICIAL UAN · CONSIDERACIONES ÉTICAS**${ctx}
+
+Evalúa los ítems 12 y 13 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 12.** "Se describen los aspectos y principios éticos a partir de las declaraciones internacionales y nacionales respecto a la investigación en salud, junto con la legislación sobre derechos de autor, y propiedad intelectual (plagio)."
+- **Ítem 13.** "Incluye el aval ético de la universidad y de las instituciones o comunidades donde se realizó el estudio, el consentimiento y/o asentimiento en el caso de investigación en que participan menores de edad. Además de la autorización para el uso de instrumentos de medición cuando sea el caso."
+
+### Verificación específica
+- Ítem 12: ¿Helsinki/CIOMS/Belmont mencionadas? ¿Resolución 8430/1993 con clasificación de riesgo? ¿derechos de autor y plagio? ¿reflexividad ética en estudios cualitativos?
+- Ítem 13: ¿aval ético UAN con número y fecha? ¿aval institucional adicional si recolección externa? ¿consentimiento informado completo? ¿asentimiento+consentimiento parental para menores (Ley 1098/2006)? ¿consulta previa para comunidades indígenas (Convenio 169 OIT)? ¿protocolos de no-revictimización para víctimas? ¿autorización del autor del instrumento?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 4,
+  "nombre_bloque": "CONSIDERACIONES ÉTICAS",
+  "items": [
+    { "numero": 12, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 13, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_5: `**BLOQUE 5 OFICIAL UAN · RESULTADOS**${ctx}
+
+Evalúa los ítems 14 y 15 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 14.** "Se presentan los resultados en coherencia con los objetivos propuestos."
+- **Ítem 15.** "Interpreta los resultados del estudio de manera adecuada en coherencia con el método."
+
+### Verificación específica
+- Ítem 14: ¿un bloque de resultados por objetivo específico o por categoría de análisis? ¿tablas y figuras numeradas, tituladas y referenciadas en texto?
+- Ítem 15: cuantitativos: ¿estadística descriptiva apropiada + IC 95%? cualitativos: ¿categorías + sub-categorías + verbatims con código del informante? mixtos: ¿integración de hallazgos? ¿hay interpretación indebida en este capítulo (que debería ir en discusión)?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 5,
+  "nombre_bloque": "RESULTADOS",
+  "items": [
+    { "numero": 14, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 15, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_6: `**BLOQUE 6 OFICIAL UAN · DISCUSIÓN**${ctx}
+
+Evalúa los ítems 16, 17 y 18 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 16.** "La discusión de los resultados muestra la articulación y contraste con la literatura científica y con la postura del autor en relación a los resultados obtenidos del proceso investigativo."
+- **Ítem 17.** "Las conclusiones derivadas del proyecto de investigación son coherentes con los objetivos planteados."
+- **Ítem 18.** "Incluye las recomendaciones y las limitaciones derivadas del proceso investigativo."
+
+### Verificación específica
+- Ítem 16: ¿contraste sustantivo (no solo "coincide con X")? ¿postura del autor explícita? ¿implicaciones para SGSSS y política pública en CP?
+- Ítem 17: ¿una conclusión por cada objetivo específico? ¿sin información nueva?
+- Ítem 18: ¿limitaciones explícitas (incluyendo sesgos paliativos: supervivencia, atrición, gatekeeping, Hawthorne, definición operativa)? ¿recomendaciones operativas? ¿culturalmente situadas (PDET, indígenas, afrocolombianos cuando aplica)?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 6,
+  "nombre_bloque": "DISCUSIÓN",
+  "items": [
+    { "numero": 16, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 17, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 18, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_7: `**BLOQUE 7 OFICIAL UAN · ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO**${ctx}
+
+Evalúa los ítems 19 y 20 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 19.** "Dentro del texto se utiliza el estilo Vancouver para las citas y referencias bibliográficas. La propuesta contiene mínimo 20 referencias de artículos científicos."
+- **Ítem 20.** "Cumple con la norma ICONTEC para la presentación de trabajos escritos."
+
+### Verificación específica
+- Ítem 19: ¿Vancouver consistente en texto y bibliografía? ¿al menos 20 referencias de artículos científicos (no contar libros, capítulos, normas)? ¿errores de citación cruzada (texto cita ref X pero bibliografía la lista como ref Y)?
+- Ítem 20: ¿márgenes, tipografía, interlineado, paginación, numeración de capítulos? ¿estructura ICONTEC: portada, agradecimientos, contenido, listas de tablas/figuras/abreviaturas, resumen, abstract, cuerpo, bibliografía, anexos?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 7,
+  "nombre_bloque": "ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO",
+  "items": [
+    { "numero": 19, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "...", "conteo_referencias_articulos_cientificos": 0 },
+    { "numero": 20, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    anexo_A: `**ANEXO COMPLEMENTARIO A · USO INTERNO DEL JURADO · PERTINENCIA COLOMBIANA Y MARCO NORMATIVO**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado para alimentar (a su discreción) las observaciones de los ítems oficiales 4 (justificación), 11 (rigor), 13 (aval ético), 16 (discusión), 18 (recomendaciones).
+
+## A.1 Aplicabilidad al SGSSS
+- ¿Implementable en EPS/IPS de mediana y baja complejidad?
+- ¿Pertinencia para municipios PDET, comunidades indígenas y afrocolombianas?
+
+## A.2 Aporte a vacíos estructurales colombianos
+- Cero ECAs sobre integración paliativa en patologías no-oncológicas en Colombia.
+- Sub-representación étnica (afrocolombianos, indígenas) en investigación en CP.
+- Ausencia de instrumentos COSMIN-validados para población adulta colombiana.
+- Ausencia de estudios interventivos en zonas rurales/PDET.
+
+## A.3 Compatibilidad normativa (BANDERA CRÍTICA si error 1216/2015)
+- ¿Cita Resolución 1216/2015 como vigente? Si sí → ERROR de alta gravedad (derogada por 971/2021).
+- ¿Si la tesis es posterior a marzo 2026, considera Resolución 813/2026?
+- ¿Incluye Ley 1733/2014 cuando aplica?
+- ¿Considera Ley 1996/2019 para participantes con capacidad fluctuante?
+- ¿Considera Convenio 169 OIT y Ley 70/1993 si involucra comunidades étnicas?
+- ¿Considera Ley 1581/2012 sobre habeas data para datos sensibles?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "A",
+  "nombre_anexo": "Pertinencia colombiana y marco normativo",
+  "aplicabilidad_sgsss": "alta | media | baja",
+  "viabilidad_eps_ips_mediana_baja": "alta | media | baja",
+  "pertinencia_pdet_indigenas_afro": "alta | media | baja | no_aplica",
+  "aporte_vacios_estructurales": "...",
+  "error_normativo_1216_2015": true,
+  "normas_correctamente_citadas": ["..."],
+  "normas_omitidas_pertinentes": ["..."],
+  "recomendaciones_jurado_observaciones_oficiales": {
+    "item_4": "...",
+    "item_11": "...",
+    "item_13": "...",
+    "item_16": "...",
+    "item_18": "..."
+  }
+}
+\`\`\``,
+
+    anexo_B: `**ANEXO COMPLEMENTARIO B · USO INTERNO DEL JURADO · ESTÁNDAR DE REPORTE APLICABLE Y RIGOR**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado para alimentar (a su discreción) las observaciones del ítem oficial 11 (rigor metodológico y control de sesgos).
+
+## B.1 Detección de tipología
+Identifica explícitamente la tipología y el estándar de reporte aplicable.
+
+## B.2 Cumplimiento del estándar
+Para el estándar identificado, evalúa cumplimiento de los puntos centrales (no exhaustivo, los más relevantes).
+
+## B.3 Sesgos específicos del campo paliativo (cuando aplique)
+- Manejo planeado de atrición por muerte.
+- Tratamiento de datos faltantes no aleatorios (MNAR).
+- Sesgo de supervivencia.
+- Gatekeeping clínico.
+- Hawthorne en intervenciones.
+- Definición operativa de "fin de vida" / "fase terminal".
+
+## B.4 Estudios cualitativos
+- Criterios de Lincoln & Guba (credibilidad, transferibilidad, dependibilidad, confirmabilidad).
+- Si fenomenológico: coherencia con la tradición filosófica del autor de referencia (Van Manen, Heidegger, Husserl, Smith).
+- Reflexividad explícita del investigador.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "B",
+  "nombre_anexo": "Estándar de reporte aplicable y rigor",
+  "tipologia_detectada": "...",
+  "estandar_aplicable": "...",
+  "cumplimiento_estandar": "alto | medio | bajo",
+  "puntos_estandar_no_cumplidos": ["..."],
+  "sesgos_paliativos_relevantes": ["..."],
+  "sesgos_paliativos_abordados": ["..."],
+  "criterios_cualitativos_aplicados": ["..."],
+  "recomendaciones_jurado_observaciones_item_11": "..."
+}
+\`\`\``,
+
+    anexo_C: `**ANEXO COMPLEMENTARIO C · USO INTERNO DEL JURADO · INTEGRIDAD ACADÉMICA Y SEÑALES DE IA**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado. NO acuses al estudiante de uso de IA. Solo identifica señales objetivas y emite probabilidad orientativa para verificación oral en sustentación.
+
+## C.1 Declaración explícita
+- ¿El estudiante declara haber usado IA generativa? (Sí / No / Parcial)
+- Si declara: ¿en qué fases (búsqueda / redacción / análisis / traducción)? ¿es coherente con la política UAN?
+
+## C.2 Uniformidad de tono y estilo
+- ¿Variaciones naturales de estilo entre capítulos?
+- ¿Marcadores de "voz" personal del estudiante?
+- ¿Capítulos parecen escritos por la misma persona o como pegado de fragmentos heterogéneos?
+
+## C.3 Frecuencia de marcadores lingüísticos sobre-presentes en LLMs en español
+Buscar y estimar frecuencia (alta/media/baja): "es fundamental destacar", "cabe resaltar", "en este sentido", "por otro lado", "asimismo", "no obstante", "aporta valiosos insights", "visión integral", "holística", "robusta evidencia", "subraya la importancia", "es importante señalar", "en la actualidad".
+
+## C.4 Análisis de citaciones
+- ¿Las referencias citadas en texto existen en la bibliografía?
+- ¿Los DOIs son verificables y reales (estimación)?
+- ¿Hay referencias que NO corresponden al contenido citado?
+- ¿La distribución temporal de las referencias es plausible?
+
+## C.5 Probabilidad orientativa
+- Baja (0–30%) / Moderada (30–70%) / Alta (>70%).
+- Justifica con señales específicas observadas.
+- Recomienda acción al jurado:
+  * Baja: ninguna acción adicional.
+  * Moderada: preguntas orales específicas en sustentación.
+  * Alta: entrevista preliminar antes de sustentación, revisión de versiones previas.
+
+## SALVAGUARDAS OBLIGATORIAS
+- La probabilidad es ORIENTATIVA y no constituye prueba.
+- Uso de IA puede ser legítimo si se declara y se enmarca en política UAN.
+- La verificación final corresponde al jurado humano en sustentación oral.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "C",
+  "nombre_anexo": "Integridad académica y señales de IA",
+  "ia_declarada_estudiante": "si | no | parcial",
+  "ia_declaracion_coherente_politica_uan": "si | no | no_aplica",
+  "uniformidad_tono": "alta | moderada | baja",
+  "frecuencia_marcadores_llm": "alta | moderada | baja",
+  "marcadores_detectados": ["..."],
+  "doi_verificables_estimado": "100% | 80-99% | <80%",
+  "probabilidad_ia_no_declarada": "baja | moderada | alta",
+  "justificacion_probabilidad": "...",
+  "recomendacion_accion_jurado": "ninguna | preguntas_orales | entrevista_preliminar",
+  "preguntas_sugeridas_sustentacion": ["..."]
+}
+\`\`\``
+  };
+
+  return PROMPTS[blockId];
+}
+
+function extractItemsOficiales(results) {
+  const items = {};
+  ['block_1','block_2','block_3','block_4','block_5','block_6','block_7'].forEach(b => {
+    const r = results[b];
+    if (!r || !r.items) return;
+    r.items.forEach(it => {
+      const k = String(it.numero).padStart(2,'0');
+      items[k] = {
+        criterio: it.criterio,
+        calificacion: it.calificacion,
+        justificacion: it.justificacion,
+        evidencia_textual: it.evidencia_textual,
+        pagina_aproximada: it.pagina_aproximada,
+        observaciones: it.observaciones_recomendaciones
+      };
+    });
+  });
+  return items;
+}
+
+function promptForSintesis(allResults, identificacion, jurado) {
+  const summary = JSON.stringify({
+    identificacion,
+    jurado,
+    items_oficiales: extractItemsOficiales(allResults),
+    anexos: {
+      A: allResults.anexo_A,
+      B: allResults.anexo_B,
+      C: allResults.anexo_C
+    }
+  }, null, 2);
+
+  return `**SÍNTESIS FINAL · CONCEPTO Y GENERACIÓN DE DOCUMENTOS**
+
+Has completado los 7 bloques oficiales (20 ítems) y los 3 anexos complementarios. Resumen de calificaciones e insumos:
+
+\`\`\`json
+${summary}
+\`\`\`
+
+## Paso 1 · Concepto final oficial UAN
+
+Decide UNO de tres conceptos según la escala oficial UAN:
+
+- **Aprobado:** ningún ítem en "No Cumple"; ítems en "Cumple Parcial" son menores y subsanables sin cambios estructurales.
+- **Aprobado con condicionamiento:** hay ítems en "Cumple Parcial" o "No Cumple" que requieren ajustes con orientación del tutor antes de sustentación o segunda lectura.
+- **No aprobado:** múltiples ítems en "No Cumple" o ítems críticos (12, 13, 7, 11) en "No Cumple" que comprometen la integridad del trabajo.
+
+Justifica el concepto en 5-8 frases.
+
+## Paso 2 · Preguntas adicionales según concepto
+
+- Si "Aprobado": ¿Merece distinción meritorio o laureado? Sí/No + justificación. ¿Calidad aceptable para sustentación? Sí/No.
+- Si "Aprobado con condicionamiento": ¿Requiere segunda lectura? Sí/No + justificación. ¿Calidad aceptable para sustentación? Sí/No.
+- Si "No aprobado": (sin preguntas adicionales).
+
+## Paso 3 · Generar tres documentos
+
+### A) Devolución pedagógica al estudiante (Markdown formativo)
+- Saludo respetuoso.
+- Reconocimiento de fortalezas concretas y citables.
+- Áreas de mejora ordenadas por prioridad, con sugerencias accionables.
+- Bibliografía complementaria recomendada (DOIs verificables).
+- Cierre alentador.
+NO incluye concepto final, calificaciones por ítem, ni anexos C (IA).
+
+### B) Resumen ejecutivo para coordinación (Markdown breve, 1-2 páginas)
+- Datos identificadores.
+- Tabla compacta de los 20 ítems con calificación.
+- Concepto final.
+- Banderas críticas (errores normativos, IA alta probabilidad, etc.).
+- Tiempo estimado de evaluación y modelo usado.
+
+### C) Texto consolidado para casillas "Observaciones" del Formato UAN
+Para cada uno de los 20 ítems, redacta un texto de 1-3 frases (máximo 60 palabras) que el jurado pueda copiar a la columna "Observaciones y recomendaciones" del Formato UAN oficial. Tono académico, formativo, sin jerga de IA. Si un ítem fue calificado "Cumple", la observación reconoce la fortaleza brevemente.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "concepto_final": "Aprobado | Aprobado con condicionamiento | No aprobado",
+  "justificacion_concepto": "...",
+  "preguntas_adicionales": {
+    "merece_distincion_meritorio_laureado": true,
+    "calidad_aceptable_sustentacion": true,
+    "requiere_segunda_lectura": false
+  },
+  "observaciones_consolidadas_por_item": {
+    "01": "...", "02": "...", "03": "...", "04": "...", "05": "...",
+    "06": "...", "07": "...", "08": "...", "09": "...", "10": "...",
+    "11": "...", "12": "...", "13": "...", "14": "...", "15": "...",
+    "16": "...", "17": "...", "18": "...", "19": "...", "20": "..."
+  },
+  "devolucion_pedagogica_md": "...",
+  "resumen_ejecutivo_md": "..."
+}
+\`\`\``;
+}
+
+async function callAnthropic(taskId, userText, maxTokens) {
+  const systemBlocks = [
+    { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }
+  ];
+
+  const content = [
+    {
+      type: 'document',
+      source: {
+        type: 'base64',
+        media_type: 'application/pdf',
+        data: STATE.pdfBase64
+      },
+      cache_control: { type: 'ephemeral' }
+    },
+    { type: 'text', text: userText }
+  ];
+
+  const body = {
+    model: STATE.model,
+    max_tokens: maxTokens,
+    system: systemBlocks,
+    messages: [
+      { role: 'user', content }
+    ]
+  };
+
+  const url = 'https://api.anthropic.com/v1/messages';
+  const maxRetries = 3;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': STATE.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        if (resp.status === 429 || resp.status === 529) {
+          const wait = [15000, 30000, 60000][attempt - 1] || 60000;
+          toast(`API saturada (${resp.status}). Reintento en ${wait/1000}s...`, 'warn');
+          await sleep(wait);
+          continue;
+        }
+        throw new Error(`HTTP ${resp.status}: ${errText.slice(0, 300)}`);
+      }
+
+      const data = await resp.json();
+      const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+      const fullText = textBlocks.join('\n\n');
+
+      const usage = data.usage || {};
+      STATE.metadata.tokensIn += usage.input_tokens || 0;
+      STATE.metadata.tokensOut += usage.output_tokens || 0;
+      STATE.metadata.tokensCacheCreate += usage.cache_creation_input_tokens || 0;
+      STATE.metadata.tokensCacheRead += usage.cache_read_input_tokens || 0;
+      STATE.metadata.costoUsd += calcularCosto(usage, STATE.model);
+      updateTokenDisplay();
+
+      return { text: fullText, usage, raw: data };
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        const wait = [5000, 15000, 30000][attempt - 1];
+        toast(`Error de red. Reintento ${attempt+1}/${maxRetries} en ${wait/1000}s...`, 'warn');
+        await sleep(wait);
+      }
+    }
+  }
+  throw lastError || new Error('Falló después de varios reintentos');
+}
+
+async function runEvaluation() {
+  if (STATE.running) return;
+  if (!STATE.apiKey) { toast('Falta la API Key de Anthropic', 'err'); return; }
+  if (!STATE.pdfBase64) { toast('Falta cargar el PDF de la tesis', 'err'); return; }
+
+  STATE.running = true;
+  $('btnRun').disabled = true;
+  STATE.metadata.timestampInicio = Date.now();
+  STATE.results = {};
+  TASKS.forEach(t => {
+    const id = t.id.replace('_','-');
+    const body = $(id + '-body');
+    if (body) body.innerHTML = '';
+  });
+
+  const timer = setInterval(() => {
+    const sec = Math.floor((Date.now() - STATE.metadata.timestampInicio)/1000);
+    STATE.metadata.duracionSegundos = sec;
+    $('tiempoEval').textContent = fmtTime(sec);
+  }, 500);
+
+  try {
+    for (let i = 0; i < TASKS.length; i++) {
+      const task = TASKS[i];
+      $('evalStatusLabel').innerHTML = `<span class="loader-line"></span>Procesando: ${task.label}`;
+      setStatus(task.id, 'running');
+      renderPlaceholder(task);
+
+      let userText;
+      if (task.kind === 'sintesis') {
+        userText = promptForSintesis(STATE.results, STATE.identificacion, STATE.jurado);
+      } else {
+        userText = promptForBlock(task.id, STATE.identificacion);
+      }
+
+      const result = await callAnthropic(task.id, userText, task.maxTokens);
+      const json = extractJSON(result.text);
+
+      if (!json) {
+        setStatus(task.id, 'error');
+        renderError(task, 'No se pudo extraer JSON estructurado de la respuesta. Texto recibido:', result.text);
+        throw new Error(`Tarea "${task.label}" devolvió respuesta sin JSON parseable`);
+      }
+
+      STATE.results[task.id] = json;
+
+      if (task.id === 'block_1' && json.identificacion_extraida) {
+        const ie = json.identificacion_extraida;
+        if (!STATE.identificacion.titulo) STATE.identificacion.titulo = ie.titulo || '';
+        if (!STATE.identificacion.estudiantes && Array.isArray(ie.estudiantes)) {
+          STATE.identificacion.estudiantes = ie.estudiantes.join('; ');
+        }
+        if (!STATE.identificacion.director) STATE.identificacion.director = ie.director || '';
+        if (!STATE.identificacion.modalidad) STATE.identificacion.modalidad = ie.modalidad || '';
+        if (!STATE.identificacion.tipologia) STATE.identificacion.tipologia = ie.tipologia_detectada || '';
+        if (ie.titulo && !$('i_titulo').value) $('i_titulo').value = ie.titulo;
+        if (Array.isArray(ie.estudiantes) && !$('i_estudiantes').value) $('i_estudiantes').value = ie.estudiantes.join('; ');
+        if (ie.director && !$('i_director').value) $('i_director').value = ie.director;
+      }
+
+      renderTaskResult(task, json, result.text);
+      setStatus(task.id, 'done');
+      updateProgress();
+
+      if (i < TASKS.length - 1) {
+        await sleep(3500);
+      }
+    }
+
+    STATE.metadata.timestampFin = Date.now();
+    $('evalStatusLabel').textContent = 'Evaluación completa';
+    toast('Evaluación completada con éxito', 'ok');
+
+    await buildDownloads();
+
+    if (STATE.appsScriptUrl) {
+      await persistirEnSheets();
+    }
+
+  } catch (err) {
+    console.error(err);
+    $('evalStatusLabel').innerHTML = `<span style="color:var(--err)">Error: ${escHtml(err.message)}</span>`;
+    toast('Error en evaluación: ' + err.message, 'err');
+  } finally {
+    clearInterval(timer);
+    STATE.running = false;
+    $('btnRun').disabled = false;
+  }
+}
+
+function renderPlaceholder(task) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="block-card running">
+      <div class="block-header">
+        <div class="block-name">${escHtml(task.label)}</div>
+        <div class="block-sub"><span class="loader-line"></span>Procesando...</div>
+      </div>
+      <div class="block-body">
+        <p style="color: var(--ink-mute); font-style: italic;">El modelo está evaluando este bloque. Tiempo estimado: 20-50 segundos.</p>
+      </div>
+    </div>`;
+}
+
+function renderError(task, msg, raw) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="block-card error">
+      <div class="block-header">
+        <div class="block-name">${escHtml(task.label)} · error</div>
+      </div>
+      <div class="block-body">
+        <div class="alert alert-err">${escHtml(msg)}</div>
+        <pre style="white-space:pre-wrap; font-family:var(--mono); font-size:0.78rem; background:var(--cream); padding:12px; border-radius:6px; max-height:300px; overflow:auto;">${escHtml(raw || '').slice(0,4000)}</pre>
+      </div>
+    </div>`;
+}
+
+function calBadgeHtml(cal) {
+  const c = String(cal || '').toLowerCase();
+  let cls = 'cal-na', label = cal || 'No reportado';
+  if (c === 'cumple') { cls = 'cal-cumple'; label = 'Cumple'; }
+  else if (c.includes('cumple parcial')) { cls = 'cal-parcial'; label = 'Cumple Parcial'; }
+  else if (c.includes('no cumple')) { cls = 'cal-no'; label = 'No Cumple'; }
+  else if (c.includes('no aplica')) { cls = 'cal-na'; label = 'No Aplica'; }
+  return `<span class="cal-badge ${cls}">${escHtml(label)}</span>`;
+}
+
+function renderTaskResult(task, json, rawText) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+
+  if (task.kind === 'oficial') {
+    body.innerHTML = renderOficialBlock(task, json);
+  } else if (task.kind === 'anexo') {
+    body.innerHTML = renderAnexoBlock(task, json);
+  } else if (task.kind === 'sintesis') {
+    body.innerHTML = renderSintesis(json);
+  }
+}
+
+function renderOficialBlock(task, json) {
+  const items = (json.items || []).map(it => `
+    <tr>
+      <td class="center" style="font-family:var(--mono); font-weight:600; color:var(--burgundy);">${it.numero}</td>
+      <td>${escHtml(it.criterio)}</td>
+      <td class="center">${calBadgeHtml(it.calificacion)}</td>
+      <td>
+        <div>${escHtml(it.justificacion || '')}</div>
+        ${it.evidencia_textual ? `<div class="evidencia">${escHtml(it.evidencia_textual)}${it.pagina_aproximada ? ` (p. ${it.pagina_aproximada})` : ''}</div>` : ''}
+        <div style="margin-top:8px; font-size:0.85rem;"><strong style="color:var(--burgundy);">Observación:</strong> ${escHtml(it.observaciones_recomendaciones || '')}</div>
+      </td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="block-card done">
+      <div class="block-header">
+        <div class="block-name">${escHtml(json.nombre_bloque)}</div>
+        <div class="block-sub">Bloque ${json.bloque} · oficial UAN</div>
+      </div>
+      <div class="block-body">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th class="center" style="width:6%;">#</th>
+              <th style="width:30%;">Criterio (literal)</th>
+              <th class="center" style="width:14%;">Calificación</th>
+              <th>Justificación, evidencia y observación</th>
+            </tr>
+          </thead>
+          <tbody>${items}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderAnexoBlock(task, json) {
+  let body = '';
+  if (task.id === 'anexo_A') {
+    body = `
+      <p><strong>Aplicabilidad SGSSS:</strong> ${escHtml(json.aplicabilidad_sgsss)}</p>
+      <p><strong>Viabilidad EPS/IPS mediana y baja complejidad:</strong> ${escHtml(json.viabilidad_eps_ips_mediana_baja)}</p>
+      <p><strong>Pertinencia PDET / indígenas / afro:</strong> ${escHtml(json.pertinencia_pdet_indigenas_afro)}</p>
+      <p><strong>Aporte a vacíos estructurales:</strong> ${escHtml(json.aporte_vacios_estructurales)}</p>
+      ${json.error_normativo_1216_2015 ? '<div class="alert alert-err"><strong>BANDERA CRÍTICA:</strong> El trabajo cita la Resolución 1216/2015 como vigente. Esta fue derogada por Resolución 971/2021. Error normativo de alta gravedad.</div>' : ''}
+      <h4>Normas correctamente citadas</h4>
+      <ul>${(json.normas_correctamente_citadas || []).map(n => `<li>${escHtml(n)}</li>`).join('')}</ul>
+      <h4>Normas pertinentes que se omitieron</h4>
+      <ul>${(json.normas_omitidas_pertinentes || []).map(n => `<li>${escHtml(n)}</li>`).join('')}</ul>
+      <h4>Recomendaciones para casillas de observaciones del Formato UAN</h4>
+      ${Object.entries(json.recomendaciones_jurado_observaciones_oficiales || {}).map(([k,v]) => `<p><strong>${k.toUpperCase()}:</strong> ${escHtml(v)}</p>`).join('')}
+    `;
+  } else if (task.id === 'anexo_B') {
+    body = `
+      <p><strong>Tipología detectada:</strong> ${escHtml(json.tipologia_detectada)}</p>
+      <p><strong>Estándar de reporte aplicable:</strong> ${escHtml(json.estandar_aplicable)}</p>
+      <p><strong>Cumplimiento del estándar:</strong> ${escHtml(json.cumplimiento_estandar)}</p>
+      <h4>Puntos del estándar no cumplidos</h4>
+      <ul>${(json.puntos_estandar_no_cumplidos || []).map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>
+      <h4>Sesgos paliativos relevantes</h4>
+      <p>Relevantes: ${(json.sesgos_paliativos_relevantes || []).map(escHtml).join(', ') || '—'}</p>
+      <p>Abordados en el trabajo: ${(json.sesgos_paliativos_abordados || []).map(escHtml).join(', ') || '—'}</p>
+      <h4>Criterios cualitativos aplicados</h4>
+      <ul>${(json.criterios_cualitativos_aplicados || []).map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>
+      <h4>Recomendación para observaciones del ítem 11</h4>
+      <p>${escHtml(json.recomendaciones_jurado_observaciones_item_11)}</p>
+    `;
+  } else if (task.id === 'anexo_C') {
+    const probClass = json.probabilidad_ia_no_declarada === 'alta' ? 'alert-err' :
+                      json.probabilidad_ia_no_declarada === 'moderada' ? 'alert-warn' : 'alert-ok';
+    body = `
+      <div class="alert ${probClass}">
+        <strong>Probabilidad de IA no declarada: ${escHtml(json.probabilidad_ia_no_declarada)}.</strong> Recomendación: ${escHtml(json.recomendacion_accion_jurado)}.
+      </div>
+      <p><strong>Declaración explícita del estudiante:</strong> ${escHtml(json.ia_declarada_estudiante)}</p>
+      <p><strong>Coherencia con política UAN:</strong> ${escHtml(json.ia_declaracion_coherente_politica_uan)}</p>
+      <p><strong>Uniformidad de tono:</strong> ${escHtml(json.uniformidad_tono)}</p>
+      <p><strong>Frecuencia de marcadores LLM:</strong> ${escHtml(json.frecuencia_marcadores_llm)}</p>
+      <p><strong>DOIs verificables (estimado):</strong> ${escHtml(json.doi_verificables_estimado)}</p>
+      <h4>Marcadores detectados</h4>
+      <ul>${(json.marcadores_detectados || []).map(m => `<li><code>${escHtml(m)}</code></li>`).join('')}</ul>
+      <h4>Justificación</h4>
+      <p>${escHtml(json.justificacion_probabilidad)}</p>
+      <h4>Preguntas sugeridas para sustentación</h4>
+      <ol>${(json.preguntas_sugeridas_sustentacion || []).map(q => `<li>${escHtml(q)}</li>`).join('')}</ol>
+    `;
+  }
+
+  return `
+    <div class="anexo-card">
+      <span class="anexo-tag">Anexo no oficial · uso interno del jurado</span>
+      <h3 style="margin-top:6px;">${escHtml(json.nombre_anexo || task.label)}</h3>
+      ${body}
+    </div>`;
+}
+
+function renderSintesis(json) {
+  const conceptoColor = json.concepto_final === 'Aprobado' ? 'var(--sage-deep)' :
+                        json.concepto_final === 'No aprobado' ? 'var(--burgundy-deep)' :
+                        'var(--terracotta)';
+
+  const obs = json.observaciones_consolidadas_por_item || {};
+  const obsRows = [];
+  for (let i = 1; i <= 20; i++) {
+    const k = String(i).padStart(2,'0');
+    obsRows.push(`<tr><td class="center" style="font-family:var(--mono); font-weight:600; width:8%;">${i}</td><td>${escHtml(obs[k] || '')}</td></tr>`);
+  }
+
+  let preguntas = '';
+  const pa = json.preguntas_adicionales || {};
+  if (json.concepto_final === 'Aprobado') {
+    preguntas = `
+      <h4>Preguntas adicionales (Aprobado)</h4>
+      <p>¿Merece distinción meritorio o laureado? <strong>${pa.merece_distincion_meritorio_laureado ? 'Sí' : 'No'}</strong></p>
+      <p>¿Calidad aceptable para sustentación? <strong>${pa.calidad_aceptable_sustentacion ? 'Sí' : 'No'}</strong></p>`;
+  } else if (json.concepto_final === 'Aprobado con condicionamiento') {
+    preguntas = `
+      <h4>Preguntas adicionales (Aprobado con condicionamiento)</h4>
+      <p>¿Requiere segunda lectura? <strong>${pa.requiere_segunda_lectura ? 'Sí' : 'No'}</strong></p>
+      <p>¿Calidad aceptable para sustentación? <strong>${pa.calidad_aceptable_sustentacion ? 'Sí' : 'No'}</strong></p>`;
+  }
+
+  return `
+    <div class="concepto-final" style="background: ${conceptoColor};">
+      <div class="concepto-final-label">Concepto final del jurado</div>
+      <div class="concepto-final-value">${escHtml(json.concepto_final)}</div>
+      <div class="concepto-final-just">${escHtml(json.justificacion_concepto)}</div>
+    </div>
+
+    <div class="block-card done">
+      ${preguntas}
+      <h4>Observaciones consolidadas para casillas del Formato UAN</h4>
+      <p style="color: var(--ink-mute); font-size: 0.88rem;">Texto sugerido para cada ítem; el jurado puede ajustarlo en el documento descargable.</p>
+      <table class="items-table">
+        <thead><tr><th class="center">#</th><th>Observación sugerida</th></tr></thead>
+        <tbody>${obsRows.join('')}</tbody>
+      </table>
+    </div>`;
+}
