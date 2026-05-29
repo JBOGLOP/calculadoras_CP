@@ -1,120 +1,127 @@
-# 🧠 Revisión de Temas — Neuropaliativos y ACV Agudo
+# Herramientas Educativas en Cuidados Paliativos 🩺
 
-**Recurso educativo interactivo** para estudiantes y profesionales de la salud  
-Maestría en Investigación en Cuidados Paliativos · Facultad de Enfermería  
-Universidad Antonio Nariño 🇨🇴
+Colección de recursos web gratuitos para estudiantes y profesionales de la salud, desarrollados para el contexto colombiano.
 
----
-
-## 📄 Contenido de esta carpeta
-
-| Archivo | Descripción |
-|---|---|
-| [`neuropaliativos_acv.html`](./neuropaliativos_acv.html) | Recurso HTML5 interactivo sobre neuropaliativos y ACV agudo |
+**Autor:** Dr. Jorge Bogoya López · Docente Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño 🇨🇴
 
 ---
 
-## 🌐 Uso directo en el navegador
-
-El archivo es **autocontenido** (no requiere instalación ni conexión):
-
-> **[→ Abrir neuropaliativos_acv.html](./neuropaliativos_acv.html)**
-
-O desde GitHub Pages (si está habilitado):  
-`https://jboglop.github.io/calculadoras_CP/Revision_temas/neuropaliativos_acv.html`
-
----
-
-## 🩺 ¿Qué cubre el recurso?
-
-Síntesis de evidencia actualizada (2014–2025) sobre **pacientes en condición paliativa con ACV en fase aguda**, estructurada en 10 secciones navegables:
-
-| # | Sección | Contenido destacado |
-|---|---|---|
-| 1 | **Neuropaliativos como campo** | Cuarta trayectoria (Creutzfeldt 2015), INPCS, guías AHA/ASA 2014 y 2025 |
-| 2 | **Control sintomático** | Estertores (81%), disfagia (46,6%), dolor central post-ictus (8–46%) |
-| 3 | **Síntomas ocultos** | Jerarquía de evaluación IASP; NCS-R-I, CPOT-Neuro, PAINAD-Sp |
-| 4 | **CNHA — nutrición e hidratación** | FOOD trial; cribado disfagia (GUSS, TOR-BSST); equivalencia ética withdrawing/withholding |
-| 5 | **Trayectorias y pronóstico** | ICH score vs. max-ICH score; pronóstico en HIC, isquémico y HSA |
-| 6 | **Profecías autocumplidas** | Sesgo WLST; Zahuranec 2007; Morgenstern 2015; recomendación diferir techos 24–72 h |
-| 7 | **Comunicación y decisiones** | Afasia y Ley 1996/2019; modelos de comunicación pronóstica |
-| 8 | **Instrumentos validados** | NECPAL 4.0, SPICT-ES™, HRQOLISP-40 (validación colombiana), scores pronósticos |
-| 9 | **Marco normativo colombiano** | Ley 1733/2014, Ley 2241/2022, Ley 1996/2019, **Res. 971/2021**, Sentencia C-233/2021 |
-| 10 | **Vacíos e investigación** | 10 vacíos identificados; 5 líneas de investigación para la Maestría |
-
----
-
-## 📊 Cifras clave incluidas
-
-| Síntoma / Hallazgo | Dato | Fuente |
-|---|---|---|
-| Estertores en fase final | ~81% | Mazzocato 2010 |
-| Disfagia post-ACV | 46,6% | Song et al. 2024 |
-| Dolor general en ACV | ~69% | Ntlholang 2016 |
-| Dolor central post-ictus | 8–46% | Klit, *Lancet Neurol* 2009 |
-| Convulsiones subclínicas en HIC | hasta 30% | PEACH trial, *Lancet Neurol* 2022 |
-| Mortalidad real HIC sin DNR temprano | 20,2% vs. 50% predicha | Morgenstern 2015 |
-
----
-
-## ⚠️ Alerta normativa
-
-> **La Resolución 1216 de 2015 fue derogada por el artículo 36 de la Resolución 971 de 2021.**  
-> Este recurso cita exclusivamente normativa vigente.
-
----
-
-## 🔬 Fuentes principales
-
-- Holloway et al. — Guía AHA/ASA 2014 (PMID 24676781)
-- Creutzfeldt — *BMJ* 2015 (cuarta trayectoria)
-- Actualización AHA/ASA 2025 (DOI 10.1161/STR.0000000000000479)
-- AAN Position Statement 2022 (PMID 35256519)
-- FOOD trial — Dennis et al., *Lancet* 2005 (DOI 10.1016/S0140-6736(05)17983-5)
-- Raja et al. — Definición dolor IASP, *Pain* 2020 (DOI 10.1097/j.pain.0000000000001939)
-- max-ICH score — Sembill 2017 (PMID 28679602)
-- NCS-R-I español 2025 (DOI 10.3390/nursrep15080278)
-- CPOT-Neuro — Gélinas 2021 (PMID 33849619)
-- HRQOLISP-40 validación colombiana (DOI 10.1186/s12883-016-0770-5)
-
----
-
-## 🗂️ Contexto del repositorio
-
-Este recurso forma parte de [`calculadoras_CP`](https://github.com/JBOGLOP/calculadoras_CP), una colección de herramientas educativas web para cuidados paliativos:
+## 🗂️ Estructura del repositorio
 
 ```
 calculadoras_CP/
-├── Calculadora_Opioides.html    # Equianalgesia y rotación opioide (11 opioides)
-├── Pronosticos_CP.html          # PPS, PPI, PaP, NECPAL, PROFUND y otras escalas
-└── Revision_temas/
-    └── neuropaliativos_acv.html # ← Este recurso
+├── Calculadora_Opioides.html    # Calculadora de equianalgesia opioide
+├── Pronosticos_CP.html          # Calculadoras pronósticas y clase interactiva
+└── Revision_temas/              # Recursos de síntesis temática
+    └── neuropaliativos_acv.html # Neuropaliativos y ACV agudo
 ```
 
 ---
 
-## ⚠️ Advertencia académica
+## 🌐 Acceso directo
 
-> Este recurso es de carácter **educativo**. No reemplaza el juicio clínico ni las guías institucionales vigentes.  
-> Las cifras epidemiológicas y recomendaciones deben verificarse contra las fuentes primarias antes de aplicación clínica directa.
+Todos los recursos funcionan directamente en el navegador, sin instalación:
+
+### 💊 Calculadoras clínicas
+
+| Herramienta | Enlace |
+|---|---|
+| **Calculadora de Equianalgesia Opioide** | [Abrir Calculadora_Opioides.html](./Calculadora_Opioides.html) |
+| **Calculadoras Pronósticas y Clase Interactiva** | [Abrir Pronosticos_CP.html](./Pronosticos_CP.html) |
+
+### 🧠 Revisión de temas
+
+| Recurso | Enlace |
+|---|---|
+| **Neuropaliativos y ACV Agudo** | [Abrir neuropaliativos_acv.html](./Revision_temas/neuropaliativos_acv.html) |
 
 ---
 
-## 🤝 Contacto
+## 📊 ¿Qué incluye cada herramienta?
+
+### 1. `Calculadora_Opioides.html` — Equianalgesia y rotación opioide
+
+Calculadora de Dosis Equivalente de Morfina Oral (DEMO):
+
+- Conversión entre **11 opioides** (codeína, tramadol, morfina, oxicodona, hidromorfona, fentanilo, buprenorfina, tapentadol, metadona)
+- Vías: oral, IV, SC, transdérmica, sublingual
+- Soporte para **morfina solución oral 3% en gotas** (presentación colombiana)
+- Tablas de rotación a metadona (Ripamonti y Ayonrinde)
+- Alertas clínicas automáticas y niveles de evidencia GRADE
+
+### 2. `Pronosticos_CP.html` — Factores pronósticos y cuidado al final de la vida
+
+Clase interactiva con calculadoras pronósticas en tiempo real:
+
+- **PPS** — Palliative Performance Scale
+- **PPI** — Palliative Prognostic Index
+- **PaP** — Palliative Prognostic Score
+- **NECPAL CCOMS-ICO**
+- **La Pregunta Sorpresa**
+- **PROFUND** para pacientes pluripatológicos
+- Escalas de valoración: Karnofsky, Barthel, ESAS, Zarit
+- Modelo de trayectorias de Lynn & Adamson
+
+### 3. `Revision_temas/neuropaliativos_acv.html` — Neuropaliativos y ACV Agudo
+
+Síntesis de evidencia interactiva (2014–2025) en 10 secciones navegables:
+
+- Campo de neuropaliativos y cuarta trayectoria (Creutzfeldt 2015)
+- Control sintomático y síntomas ocultos (disfagia, dolor, estertores, convulsiones subclínicas)
+- Nutrición e hidratación clínicamente asistidas (FOOD trial; equivalencia ética withdrawing/withholding)
+- Profecías autocumplidas en HIC: sesgo WLST, max-ICH score
+- Instrumentos validados: NCS-R-I, CPOT-Neuro, HRQOLISP-40 (validación colombiana)
+- Marco normativo colombiano vigente (Ley 1733/2014, Ley 1996/2019, Res. 971/2021, Sentencia C-233/2021)
+- Vacíos de investigación y 5 líneas propuestas para la Maestría
+
+---
+
+## ⚠️ Advertencias clínicas importantes
+
+> **Estas herramientas son EDUCATIVAS.** No reemplazan el juicio clínico ni las guías institucionales.
+
+- Las escalas pronósticas son **orientativas**, no son sentencias.
+- Toda rotación opioide requiere **reducción del 25–50 %** por tolerancia cruzada incompleta.
+- La **rotación a metadona** siempre requiere supervisión de un especialista.
+- La respuesta a opioides varía según genética, función renal/hepática e interacciones.
+- Regla de oro: *«titular según respuesta, no según tabla»*.
+
+Todos los recursos se alinean con la **Ley 1733 de 2014** (derecho a cuidados paliativos en Colombia).
+
+---
+
+## 📚 Fuentes principales
+
+- **EAPC 2012** — European Association for Palliative Care
+- **WHO 2018** — Cancer Pain Guidelines
+- **CDC 2022** — Clinical Practice Guideline for Prescribing Opioids
+- **ANZCA 2025** — Opioid Dose Equivalence Calculation Table
+- **AHA/ASA 2014 y 2025** — Guías de cuidados paliativos en ACV (Holloway et al.)
+- **Busse et al. 2017** — CMAJ Opioid Therapy Guideline
+- **SECPAL** — Guía de Práctica Clínica sobre Cuidados Paliativos
+- Escalas validadas: Morita (PPI), Pirovano (PaP), Anderson (PPS), Gómez-Batiste (NECPAL), Bernabeu-Wittel (PROFUND)
+
+---
+
+## 🤝 Contribuciones y contacto
 
 **Dr. Jorge Bogoya López**  
-Docente · Maestría en Investigación en Cuidados Paliativos  
-Universidad Antonio Nariño · Colombia  
-Hospital Regional de Moniquirá E.S.E. · Boyacá
+Hospital Regional de Moniquirá E.S.E. · Boyacá, Colombia
 
-Para reportar errores, sugerencias o colaboraciones: abre un [**Issue**](https://github.com/JBOGLOP/calculadoras_CP/issues) en el repositorio.
+Para reportar errores clínicos, sugerencias o colaboraciones, abre un [**Issue**](https://github.com/JBOGLOP/calculadoras_CP/issues) en este repositorio.
+
+---
+
+## 📄 Licencia
+
+Este proyecto se distribuye bajo **licencia MIT** — uso libre con reconocimiento del autor. Ver archivo [LICENSE](./LICENSE).
 
 ---
 
 <div align="center">
 
-*«El ACV no es solo una emergencia neurológica. Es también, con frecuencia, el inicio de una trayectoria que requiere presencia paliativa desde el primer día.»*
+*«La medicina nos enseña a medir. Los cuidados paliativos nos enseñan a acompañar lo que no se puede medir.»*
 
-**Dr. Jorge Bogoya · Maestría en Investigación en Cuidados Paliativos · UAN · 2026 🇨🇴**
+**Dr. Jorge Bogoya · 2026 🇨🇴**
 
 </div>
