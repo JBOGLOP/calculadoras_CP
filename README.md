@@ -15,7 +15,8 @@ Todos los recursos funcionan directamente en el navegador, sin instalación:
 | Herramienta | Enlace |
 |---|---|
 | **Calculadora de Equianalgesia Opioide** | [Abrir Calculadora_Opioides](./Calculadora_Opioides.html) |
-| **Calculadoras Pronósticas y Clase Interactiva** | [Abrir Pronosticos](./Escalas_CP_Clinico.html) |
+| **Calculadoras Pronósticas** | [Abrir Pronosticos](./Escalas_CP_Clinico.html) |
+| **Calculadoras NeuroPaliativos** | [Abrir NeuroPaliativos](./Neuropaliativos_Escalas_ACV.html) |
 
 ### 🧠 Revisión de temas
 
