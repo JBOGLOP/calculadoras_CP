@@ -79,20 +79,6 @@ Síntesis de evidencia actualizada (2014–2025) sobre **pacientes en condición
 
 ---
 
-## 🗂️ Contexto del repositorio
-
-Este recurso forma parte de [`calculadoras_CP`](https://github.com/JBOGLOP/calculadoras_CP), una colección de herramientas educativas web para cuidados paliativos:
-
-```
-calculadoras_CP/
-├── Calculadora_Opioides.html    # Equianalgesia y rotación opioide (11 opioides)
-├── Pronosticos_CP.html          # PPS, PPI, PaP, NECPAL, PROFUND y otras escalas
-└── Revision_temas/
-    └── neuropaliativos_acv.html # ← Este recurso
-```
-
----
-
 ## ⚠️ Advertencia académica
 
 > Este recurso es de carácter **educativo**. No reemplaza el juicio clínico ni las guías institucionales vigentes.  
