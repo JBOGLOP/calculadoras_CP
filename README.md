@@ -6,18 +6,6 @@ Colección de recursos web gratuitos para estudiantes y profesionales de la salu
 
 ---
 
-## 🗂️ Estructura del repositorio
-
-```
-calculadoras_CP/
-├── Calculadora_Opioides.html    # Calculadora de equianalgesia opioide
-├── Pronosticos_CP.html          # Calculadoras pronósticas y clase interactiva
-└── Revision_temas/              # Recursos de síntesis temática
-    └── neuropaliativos_acv.html # Neuropaliativos y ACV agudo
-```
-
----
-
 ## 🌐 Acceso directo
 
 Todos los recursos funcionan directamente en el navegador, sin instalación:
