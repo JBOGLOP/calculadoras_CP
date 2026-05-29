@@ -22,7 +22,7 @@ Todos los recursos funcionan directamente en el navegador, sin instalación:
 
 | Recurso | Enlace |
 |---|---|
-| **Neuropaliativos y ACV Agudo** | [Abrir neuropaliativos_acv.html](./Revision_temas/neuropaliativos_acv.html) |
+| **Neuropaliativos y ACV Agudo** | [Abrir Neuropaliativos](./Revision_temas/neuropaliativos_acv.html) |
 
 ---
 
