@@ -100,7 +100,7 @@ Para reportar errores, sugerencias o colaboraciones: abre un [**Issue**](https:/
 <div align="center">
 
 *«El ACV no es solo una emergencia neurológica. Es también, con frecuencia, el inicio de una trayectoria que requiere presencia paliativa desde el primer día.»*
-
+---
 **Dr. Jorge Bogoya · Maestría en Investigación en Cuidados Paliativos · UAN · 2026 🇨🇴**
 
 </div>
