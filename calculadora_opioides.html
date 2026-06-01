@@ -129,6 +129,35 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 .type-strong{color:var(--teal-700);font-weight:600;}
 .changed{background:#FFF4DD!important;}
 
+/* ── INFUSION HELPER ── */
+.infusion-panel{background:linear-gradient(135deg,var(--indigo-100) 0%,#EAEFF8 100%);border:1.5px solid var(--indigo-600);border-radius:var(--radius);padding:1rem 1.2rem;margin:0.8rem 0;display:none;}
+.infusion-panel.show{display:block;animation:fadeUp 0.3s ease;}
+.infusion-panel h4{font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--indigo-600);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;}
+.infusion-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:0.6rem;align-items:end;}
+.infusion-grid input{padding:0.5rem 0.7rem;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.88rem;background:var(--surface);width:100%;}
+.infusion-grid input:focus{outline:none;border-color:var(--indigo-600);box-shadow:0 0 0 3px var(--indigo-100);}
+.infusion-grid label{font-size:0.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:0.2rem;}
+.infusion-result{background:var(--surface);border:1px dashed var(--indigo-600);border-radius:6px;padding:0.6rem 0.8rem;margin-top:0.6rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.88rem;color:var(--indigo-600);font-weight:600;}
+
+/* ── RESCUE DOSE ── */
+.rescue-box{background:linear-gradient(135deg,var(--rose-100) 0%,#FFE8EB 100%);border:1.5px solid var(--rose-500);border-radius:var(--radius);padding:1rem 1.2rem;margin-top:1rem;}
+.rescue-box .rescue-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--rose-500);margin-bottom:0.5rem;}
+.rescue-box .rescue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.6rem;margin-bottom:0.5rem;}
+.rescue-box .rescue-card{background:var(--surface);border:1px solid var(--rose-500);border-left:3px solid var(--rose-500);border-radius:6px;padding:0.5rem 0.8rem;}
+.rescue-box .rescue-label{font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--rose-500);}
+.rescue-box .rescue-value{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);line-height:1.2;margin-top:0.1rem;}
+.rescue-box .rescue-route{font-size:0.7rem;color:var(--text-muted);}
+.rescue-box .rescue-detail{font-size:0.76rem;color:var(--text);margin-top:0.4rem;line-height:1.5;}
+
+/* ── INFUSION EQUIVALENTS ── */
+.infusion-eq-box{background:var(--surface-alt);border:1px solid var(--indigo-600);border-radius:var(--radius);padding:1rem 1.2rem;margin-top:1rem;}
+.infusion-eq-box .eq-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--indigo-600);margin-bottom:0.5rem;}
+.infusion-eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.6rem;}
+.infusion-eq-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--indigo-600);border-radius:6px;padding:0.6rem 0.8rem;}
+.infusion-eq-card .eq-name{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--indigo-600);}
+.infusion-eq-card .eq-rate{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--text);margin-top:0.15rem;}
+.infusion-eq-card .eq-conc{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic;line-height:1.4;}
+
 /* ── PHENOTYPE BAR (Pharmacogenetics) ── */
 .phen-bar{display:flex;height:32px;border-radius:6px;overflow:hidden;margin:0.8rem 0;border:1px solid var(--border);}
 .phen-segment{display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.25);}
@@ -157,7 +186,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 <header class="header">
   <h1>💊 Calculadora de Equianalgesia Opioide</h1>
   <p class="subtitle">Dosis Equivalente de Morfina Oral (DEMO) · Rotación de Opioides</p>
-  <div class="version">v5 · Mayo 2026 · Revisión sistemática 2024–2026</div>
+  <div class="version">v5.1 · Mayo 2026 · Infusiones IV/SC + bolos de rescate</div>
   <div class="badge-row">
     <span class="badge">MASCC-ASCO 2025</span>
     <span class="badge">ANZCA Oct 2025</span>
@@ -241,8 +270,28 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
           <option value="1_24">Cada 24 horas (×1/día)</option>
           <option value="1_72">Cada 72 horas (parche)</option>
           <option value="1_168">Cada 7 días (parche semanal)</option>
+          <option value="infusion">⚙ Infusión continua IV/SC</option>
         </select>
       </div>
+    </div>
+
+    <!-- Infusion helper (visible when freq=infusion) -->
+    <div class="infusion-panel" id="infusionPanel">
+      <h4>⚙ Calculadora auxiliar de infusión continua</h4>
+      <p style="font-size:0.78rem;color:var(--text);margin-bottom:0.6rem;line-height:1.5;">Workflow de orden médica colombiana: <strong>velocidad (mL/h) × concentración (mg/mL)</strong> → dosis horaria. El resultado se transfiere al campo "Dosis" automáticamente y se interpreta como dosis por hora.</p>
+      <div class="infusion-grid">
+        <div>
+          <label>Concentración (<span id="concUnit">mg/mL</span>)</label>
+          <input type="number" id="concInput" min="0" step="any" placeholder="Ej: 1" oninput="updateInfusionCalc()" />
+        </div>
+        <div>
+          <label>Velocidad (mL/h)</label>
+          <input type="number" id="rateInput" min="0" step="any" placeholder="Ej: 3" oninput="updateInfusionCalc()" />
+        </div>
+        <button class="btn btn-secondary" onclick="applyInfusion()" style="padding:0.55rem 1rem;font-size:0.78rem;white-space:nowrap;">Aplicar →</button>
+      </div>
+      <div class="infusion-result" id="infusionResult">Ingrese concentración y velocidad para calcular dosis horaria</div>
+      <p style="font-size:0.7rem;color:var(--text-muted);font-style:italic;margin-top:0.5rem;line-height:1.5;"><strong>🇨🇴 Ejemplos típicos de preparación en Colombia:</strong> morfina 1 mg/mL (10 mg en 10 mL SSN); hidromorfona 0,2–1 mg/mL; fentanilo 10–50 mcg/mL; tramadol 4 mg/mL (400 mg en 100 mL); oxicodona 1 mg/mL.</p>
     </div>
 
     <div class="form-row" id="hmFactorRow" style="display:none;">
@@ -277,6 +326,12 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 
     <!-- Alerts container -->
     <div id="alertsContainer"></div>
+
+    <!-- Rescue dose box (always visible) -->
+    <div id="rescueContainer"></div>
+
+    <!-- Infusion equivalents (only when freq=infusion or route IV/SC) -->
+    <div id="infusionEqContainer"></div>
 
     <!-- Conversion cards -->
     <h3 style="font-family:'DM Serif Display',serif;color:var(--teal-700);margin:1rem 0 0.5rem;">Equivalencias en otros opioides (dosis/24h)</h3>
@@ -830,7 +885,8 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 
     <details class="changelog">
       <summary>📋 Registro de cambios (changelog)</summary>
-      <p style="margin-top:0.5rem;"><strong>v5 — Mayo 2026:</strong> Revisión sistemática 2024–2026 de guías nacionales e internacionales. Cambios numéricos: (1) hidromorfona IV/SC ×15 → <strong>×11,5</strong> (Reddy 2017, MD Anderson, ratio PO:IV 2,5:1) con ANZCA ×15 como opción seleccionable; (2) tapentadol ×0,4 → <strong>×0,3</strong> (ratio 3,3:1, Mercadante 2013 + Imanaka 2014 + ANZCA 2025); (3) buprenorfina SL ×37,5 → <strong>×30</strong> (concordancia CDC/Nielsen 2016). Cambios estructurales: nueva sección de farmacogenética (CYP2D6 colombiano 18,4% UM, CYP2B6 metadona CPIC 2024); nueva sección Colombia con disponibilidad detallada por presentación y marco normativo; reglas absolutas para metadona (tope inicial 30–40 mg, ECG obligatorio, titulación c/5–7d); alerta asimetría bidireccional MASCC 2025; alerta caquexia/fentanilo TD. <strong>49 referencias verificadas DOI/PMID</strong>, &gt;60% del periodo 2022–2026.</p>
+      <p style="margin-top:0.5rem;"><strong>v5.1 — Mayo 2026:</strong> Nueva funcionalidad de <strong>infusiones continuas IV/SC</strong> para los 5 opioides inyectables disponibles en Colombia (morfina, hidromorfona, fentanilo IV/SC, tramadol, oxicodona). Calculadora auxiliar con workflow clínico colombiano <strong>velocidad (mL/h) × concentración (mg/mL)</strong> → dosis horaria. <strong>Dosis de rescate automática</strong> (10–15 % de dosis diaria) calculada en dos formatos: opioide actual (mismo o equivalente apropiado) y morfina oral equivalente (DEMO + gotas FNE). Reglas inteligentes: para metadona advierte que NUNCA usar como rescate (vida media larga). Nuevo panel de <strong>equivalencias entre infusiones</strong> — muestra tasas de los 5 opioides inyectables con concentraciones típicas colombianas y mL/h calculados. Alertas específicas de modo infusión (obstrucción de línea, errores de bomba).</p>
+      <p><strong>v5 — Mayo 2026:</strong> Revisión sistemática 2024–2026 de guías nacionales e internacionales. Cambios numéricos: (1) hidromorfona IV/SC ×15 → <strong>×11,5</strong> (Reddy 2017, MD Anderson, ratio PO:IV 2,5:1) con ANZCA ×15 como opción seleccionable; (2) tapentadol ×0,4 → <strong>×0,3</strong> (ratio 3,3:1, Mercadante 2013 + Imanaka 2014 + ANZCA 2025); (3) buprenorfina SL ×37,5 → <strong>×30</strong> (concordancia CDC/Nielsen 2016). Cambios estructurales: nueva sección de farmacogenética (CYP2D6 colombiano 18,4% UM, CYP2B6 metadona CPIC 2024); nueva sección Colombia con disponibilidad detallada por presentación y marco normativo; reglas absolutas para metadona (tope inicial 30–40 mg, ECG obligatorio, titulación c/5–7d); alerta asimetría bidireccional MASCC 2025; alerta caquexia/fentanilo TD. <strong>49 referencias verificadas DOI/PMID</strong>, &gt;60% del periodo 2022–2026.</p>
       <p><strong>v4 — Abril 2026:</strong> Corrección crítica: parches TD ya no dividen dosis por frecuencia. Morfina solución oral 3% (Colombia): acepta gotas (1 gota = 1,25 mg). Nota colombiana sobre presentación FNE.</p>
       <p><strong>v3 — Abril 2026:</strong> Revisión basada en evidencia ANZCA 2025, Busse 2017, Nielsen 2016, CDC 2022. Factores actualizados: hidromorfona IV ×20→×15, fentanilo IV ÷10→×0,15, buprenorfina TD ×1,7→×2,0, buprenorfina SL en ×37,5. Sección nueva de buprenorfina. Alertas inteligentes. GRADE en tarjetas de conversión.</p>
       <p><strong>v2 — Abril 2026:</strong> Parches de buprenorfina 7 días (BuTrans/Norspan 5–20 mcg/h). Notas sobre presentaciones TD. Buprenorfina SL en tarjetas de salida.</p>
@@ -850,6 +906,76 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 </footer>
 
 <script>
+/* ══════════ INFUSION MODE HELPERS ══════════ */
+const INJECTABLE_OPIOIDS=['morfina','hidromorfona','fentanilo_iv','tramadol','oxicodona'];
+
+function isInfusionEligible(opioid,route){
+  return INJECTABLE_OPIOIDS.includes(opioid) && ['iv','sc'].includes(route);
+}
+
+function updateInfusionCalc(){
+  const conc=parseFloat(document.getElementById('concInput').value);
+  const rate=parseFloat(document.getElementById('rateInput').value);
+  const opioid=document.getElementById('opioidSelect').value;
+  const unit=(opioid==='fentanilo_iv')?'mcg/h':'mg/h';
+  const resultEl=document.getElementById('infusionResult');
+  
+  if(!isNaN(conc)&&!isNaN(rate)&&conc>0&&rate>0){
+    const hourly=conc*rate;
+    resultEl.innerHTML=`${conc} × ${rate} = <strong>${hourly.toFixed(2)} ${unit}</strong> · 24h: ${(hourly*24).toFixed(1)} ${unit.replace('/h','/día')}`;
+  } else {
+    resultEl.textContent='Ingrese concentración y velocidad para calcular dosis horaria';
+  }
+}
+
+function applyInfusion(){
+  const conc=parseFloat(document.getElementById('concInput').value);
+  const rate=parseFloat(document.getElementById('rateInput').value);
+  if(isNaN(conc)||isNaN(rate)||conc<=0||rate<=0){
+    alert('Ingrese concentración y velocidad válidas (> 0).');
+    return;
+  }
+  const hourly=conc*rate;
+  document.getElementById('doseInput').value=hourly.toFixed(3);
+  document.getElementById('freqSelect').value='infusion';
+  handleFreqChange();
+}
+
+function handleFreqChange(){
+  const freq=document.getElementById('freqSelect').value;
+  const opioid=document.getElementById('opioidSelect').value;
+  const route=document.getElementById('routeSelect').value;
+  const panel=document.getElementById('infusionPanel');
+  const concUnit=document.getElementById('concUnit');
+  const doseLabel=document.getElementById('doseLabel');
+  const doseHint=document.getElementById('doseHint');
+  
+  if(freq==='infusion'){
+    if(!isInfusionEligible(opioid,route)){
+      alert('La infusión continua solo aplica a opioides inyectables IV/SC: morfina, hidromorfona, fentanilo IV/SC, tramadol, oxicodona. Verifique que la vía sea IV o SC.');
+      document.getElementById('freqSelect').value='24';
+      panel.classList.remove('show');
+      return;
+    }
+    panel.classList.add('show');
+    if(opioid==='fentanilo_iv'){
+      concUnit.textContent='mcg/mL';
+      doseLabel.textContent='Dosis (mcg/h)';
+      doseHint.textContent='Dosis horaria de la infusión en mcg/h (use la calculadora auxiliar arriba)';
+    } else {
+      concUnit.textContent='mg/mL';
+      doseLabel.textContent='Dosis (mg/h)';
+      doseHint.textContent='Dosis horaria de la infusión en mg/h (use la calculadora auxiliar arriba)';
+    }
+    updateInfusionCalc();
+  } else {
+    panel.classList.remove('show');
+    // Restore standard labels - re-run updateRoutes logic via route change
+    const routeSel=document.getElementById('routeSelect');
+    if(routeSel.onchange) routeSel.onchange.call(routeSel);
+  }
+}
+
 /* ══════════ NAVIGATION ══════════ */
 function showSection(id,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -939,8 +1065,19 @@ function updateRoutes(){
     } else if(opioid==='hidromorfona'&&this.value==='oral'){
       hmFactorRow.style.display='none';
     }
+    // If freq=infusion is currently selected, re-validate
+    if(document.getElementById('freqSelect').value==='infusion'){
+      handleFreqChange();
+    }
   };
+  // Reset infusion panel when opioid changes (to avoid stale state)
+  if(document.getElementById('freqSelect').value==='infusion'){
+    handleFreqChange();
+  }
 }
+
+/* Attach freq change listener after DOM is ready */
+document.getElementById('freqSelect').addEventListener('change',handleFreqChange);
 
 /* ══════════ CALCULATE DEMO ══════════ */
 function calculate(){
@@ -959,10 +1096,18 @@ function calculate(){
   // CRITICAL: For patches (TD), dose is in mcg/h = continuous rate.
   const patchOpioids=['fentanilo_td','buprenorfina_td','buprenorfina_td7'];
   let dailyDose;
+  let isInfusion=(freq==='infusion');
   if(patchOpioids.includes(opioid)){
     dailyDose=dose;
   } else if(freq==='24'){
     dailyDose=dose;
+  } else if(freq==='infusion'){
+    // Infusion: dose is per hour (mg/h or mcg/h), multiply by 24h
+    if(!isInfusionEligible(opioid,route)){
+      alert('La infusión continua solo aplica a opioides inyectables IV/SC.');
+      return;
+    }
+    dailyDose=dose*24;
   } else {
     const parts=freq.split('_');
     const hours=parseFloat(parts[1]);
@@ -982,6 +1127,8 @@ function calculate(){
       demo=dailyDose/5;
       if(route==='oral'){
         explanation=`Tramadol oral ${dailyDose} mg/día ÷ 5 = ${demo.toFixed(1)} mg DEMO (ANZCA + CDC 2022)`;
+      } else if(isInfusion){
+        explanation=`Tramadol infusión IV/SC ${dose} mg/h × 24h = ${dailyDose.toFixed(1)} mg/día ÷ 5 = ${demo.toFixed(1)} mg DEMO`;
       } else {
         explanation=`Tramadol IV/SC ${dailyDose} mg/día ÷ 5 = ${demo.toFixed(1)} mg DEMO (≈ oral, biodisp. 80–100%)`;
       }
@@ -994,6 +1141,9 @@ function calculate(){
         const dailyMg=dailyDose*1.25;
         demo=dailyMg;
         explanation=`🇨🇴 Morfina solución oral 3% FNE: ${dailyDose.toFixed(0)} gotas/día × 1,25 mg/gota = ${dailyMg.toFixed(1)} mg/día = ${demo.toFixed(1)} mg DEMO`;
+      } else if(isInfusion){
+        demo=dailyDose*3;
+        explanation=`Morfina infusión IV/SC ${dose} mg/h × 24h = ${dailyDose.toFixed(1)} mg/día × 3 = ${demo.toFixed(1)} mg DEMO (3:1 PO:IV)`;
       } else {
         demo=dailyDose*3;
         explanation=`Morfina IV/SC ${dailyDose} mg/día × 3 = ${demo.toFixed(1)} mg DEMO (3:1 PO:IV; MASCC 2025 acepta 2:1–3:1)`;
@@ -1003,6 +1153,9 @@ function calculate(){
       if(route==='oral'){
         demo=dailyDose*1.5;
         explanation=`Oxicodona oral ${dailyDose} mg/día × 1,5 = ${demo.toFixed(1)} mg DEMO`;
+      } else if(isInfusion){
+        demo=dailyDose*3;
+        explanation=`Oxicodona infusión IV/SC ${dose} mg/h × 24h = ${dailyDose.toFixed(1)} mg/día × 3 = ${demo.toFixed(1)} mg DEMO`;
       } else {
         demo=dailyDose*3;
         explanation=`Oxicodona IV/SC ${dailyDose} mg/día × 3 = ${demo.toFixed(1)} mg DEMO (×1,5 potencia oral × 2 ratio oral:parenteral)`;
@@ -1015,7 +1168,11 @@ function calculate(){
       } else {
         demo=dailyDose*hmFactor;
         const factorSource=(hmFactor===11.5)?'Reddy 2017, MD Anderson, ratio PO:IV 2,5:1':'ANZCA 2025, ratio PO:IV 3:1, conservador';
-        explanation=`Hidromorfona IV/SC ${dailyDose} mg/día × ${hmFactor} = ${demo.toFixed(1)} mg DEMO (${factorSource})`;
+        if(isInfusion){
+          explanation=`Hidromorfona infusión IV/SC ${dose} mg/h × 24h = ${dailyDose.toFixed(2)} mg/día × ${hmFactor} = ${demo.toFixed(1)} mg DEMO (${factorSource})`;
+        } else {
+          explanation=`Hidromorfona IV/SC ${dailyDose} mg/día × ${hmFactor} = ${demo.toFixed(1)} mg DEMO (${factorSource})`;
+        }
       }
       break;
     case 'fentanilo_td':
@@ -1025,7 +1182,11 @@ function calculate(){
     case 'fentanilo_iv':
       const dailyMcg=dailyDose;
       demo=dailyMcg*0.15;
-      explanation=`Fentanilo IV/SC ${dailyMcg.toFixed(0)} mcg/día × 0,15 = ${demo.toFixed(1)} mg DEMO (midpoint educativo entre CDC ×0,1 y ANZCA ×0,2)`;
+      if(isInfusion){
+        explanation=`Fentanilo infusión IV/SC ${dose} mcg/h × 24h = ${dailyMcg.toFixed(0)} mcg/día × 0,15 = ${demo.toFixed(1)} mg DEMO (midpoint educativo entre CDC ×0,1 y ANZCA ×0,2)`;
+      } else {
+        explanation=`Fentanilo IV/SC ${dailyMcg.toFixed(0)} mcg/día × 0,15 = ${demo.toFixed(1)} mg DEMO (midpoint educativo entre CDC ×0,1 y ANZCA ×0,2)`;
+      }
       break;
     case 'buprenorfina_td':
       demo=dailyDose*2.0;
@@ -1066,6 +1227,13 @@ function calculate(){
   const alertsHtml=generateAlerts(demo,opioid,dailyDose);
   document.getElementById('alertsContainer').innerHTML=alertsHtml;
   
+  // Generate rescue dose
+  document.getElementById('rescueContainer').innerHTML=generateRescueDose(demo,opioid,route,isInfusion);
+  
+  // Generate infusion equivalents (only for IV/SC routes or current infusion)
+  const showInfusionEq=['iv','sc'].includes(route)||isInfusion;
+  document.getElementById('infusionEqContainer').innerHTML=showInfusionEq?generateInfusionEquivalents(demo,opioid):'';
+  
   // Generate conversion cards
   generateConversions(demo,opioid);
   
@@ -1073,9 +1241,238 @@ function calculate(){
   panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+/* ══════════ RESCUE DOSE (v5.1) ══════════ */
+function generateRescueDose(demo,opioid,route,isInfusion){
+  // Rescue dose = 10-15% of 24h dose
+  // Standard practice: PRN q1h for IV/SC, q1-4h for oral
+  const lowPct=demo*0.10;
+  const highPct=demo*0.15;
+  
+  // Compute rescue in same opioid as basal (more practical)
+  let sameOpioidLow='—';
+  let sameOpioidHigh='—';
+  let sameOpioidUnit='mg';
+  let sameOpioidRoute=route;
+  let sameOpioidLabel='';
+  let intervalPrn='q1h PRN';
+  
+  // Determine same-opioid rescue
+  switch(opioid){
+    case 'morfina':
+      if(route==='oral'){
+        sameOpioidLow=(demo*0.10).toFixed(1);
+        sameOpioidHigh=(demo*0.15).toFixed(1);
+        sameOpioidLabel='Morfina oral LI';
+        intervalPrn='c/1–4 h PRN';
+      } else if(route==='oral_sol'){
+        const gotasLow=(demo*0.10/1.25).toFixed(0);
+        const gotasHigh=(demo*0.15/1.25).toFixed(0);
+        sameOpioidLow=gotasLow;
+        sameOpioidHigh=gotasHigh;
+        sameOpioidUnit='gotas';
+        sameOpioidLabel='Morfina sol. 3 % FNE 🇨🇴';
+        intervalPrn='c/1–4 h PRN';
+      } else {
+        // IV/SC
+        sameOpioidLow=(demo*0.10/3).toFixed(1);
+        sameOpioidHigh=(demo*0.15/3).toFixed(1);
+        sameOpioidLabel='Morfina '+(route==='iv'?'IV':'SC')+' bolo';
+        intervalPrn=isInfusion?'c/15–30 min PRN (bolo PCA)':'c/1 h PRN';
+      }
+      break;
+    case 'oxicodona':
+      if(route==='oral'){
+        sameOpioidLow=(demo*0.10/1.5).toFixed(1);
+        sameOpioidHigh=(demo*0.15/1.5).toFixed(1);
+        sameOpioidLabel='Oxicodona oral LI';
+        intervalPrn='c/1–4 h PRN';
+      } else {
+        sameOpioidLow=(demo*0.10/3).toFixed(1);
+        sameOpioidHigh=(demo*0.15/3).toFixed(1);
+        sameOpioidLabel='Oxicodona '+(route==='iv'?'IV':'SC')+' bolo';
+        intervalPrn=isInfusion?'c/15–30 min PRN':'c/1 h PRN';
+      }
+      break;
+    case 'hidromorfona':
+      const hmF=parseFloat(document.getElementById('hmFactor').value);
+      if(route==='oral'){
+        sameOpioidLow=(demo*0.10/5).toFixed(2);
+        sameOpioidHigh=(demo*0.15/5).toFixed(2);
+        sameOpioidLabel='Hidromorfona oral LI';
+        intervalPrn='c/1–4 h PRN';
+      } else {
+        sameOpioidLow=(demo*0.10/hmF).toFixed(2);
+        sameOpioidHigh=(demo*0.15/hmF).toFixed(2);
+        sameOpioidLabel='Hidromorfona '+(route==='iv'?'IV':'SC')+' bolo';
+        intervalPrn=isInfusion?'c/15–30 min PRN':'c/1 h PRN';
+      }
+      break;
+    case 'fentanilo_iv':
+      sameOpioidLow=(demo*0.10/0.15).toFixed(0);
+      sameOpioidHigh=(demo*0.15/0.15).toFixed(0);
+      sameOpioidUnit='mcg';
+      sameOpioidLabel='Fentanilo '+(route==='iv'?'IV':'SC')+' bolo';
+      intervalPrn=isInfusion?'c/10–15 min PRN (bolo PCA)':'c/30 min PRN';
+      break;
+    case 'fentanilo_td':
+      // For TD fentanyl, rescue is typically in PO morphine (or PO oxycodone)
+      sameOpioidLow=(demo*0.10).toFixed(1);
+      sameOpioidHigh=(demo*0.15).toFixed(1);
+      sameOpioidLabel='Morfina oral LI (rescate parche TD)';
+      intervalPrn='c/1–2 h PRN';
+      break;
+    case 'tramadol':
+      if(route==='oral'){
+        sameOpioidLow=(demo*0.10*5).toFixed(0);
+        sameOpioidHigh=(demo*0.15*5).toFixed(0);
+        sameOpioidLabel='Tramadol oral';
+        intervalPrn='c/4–6 h PRN (techo 400 mg/día)';
+      } else {
+        sameOpioidLow=(demo*0.10*5).toFixed(0);
+        sameOpioidHigh=(demo*0.15*5).toFixed(0);
+        sameOpioidLabel='Tramadol '+(route==='iv'?'IV':'SC')+' bolo';
+        intervalPrn=isInfusion?'c/30 min PRN (techo 400 mg/día)':'c/4–6 h PRN';
+      }
+      break;
+    case 'buprenorfina_td':
+    case 'buprenorfina_td7':
+      // Rescue typically as additional buprenorphine SL or morphine PO
+      sameOpioidLow=(demo*0.10).toFixed(1);
+      sameOpioidHigh=(demo*0.15).toFixed(1);
+      sameOpioidLabel='Morfina oral LI (rescate buprenorfina TD)';
+      intervalPrn='c/1–4 h PRN';
+      break;
+    case 'buprenorfina_sl':
+      sameOpioidLow=(demo*0.10/30).toFixed(3);
+      sameOpioidHigh=(demo*0.15/30).toFixed(3);
+      sameOpioidLabel='Buprenorfina SL';
+      intervalPrn='c/2–4 h PRN';
+      break;
+    case 'tapentadol':
+      sameOpioidLow=(demo*0.10/0.3).toFixed(0);
+      sameOpioidHigh=(demo*0.15/0.3).toFixed(0);
+      sameOpioidLabel='Tapentadol LI';
+      intervalPrn='c/4 h PRN (techo 500 mg/día)';
+      break;
+    case 'metadona':
+      // Rescue NEVER given as methadone (long half-life). Use morphine PO/IV
+      sameOpioidLow=(demo*0.10).toFixed(1);
+      sameOpioidHigh=(demo*0.15).toFixed(1);
+      sameOpioidLabel='Morfina oral LI ⚠ (NUNCA usar metadona de rescate)';
+      intervalPrn='c/1–4 h PRN';
+      break;
+    default:
+      sameOpioidLow=(demo*0.10).toFixed(1);
+      sameOpioidHigh=(demo*0.15).toFixed(1);
+      sameOpioidLabel='Morfina oral equivalente';
+  }
+  
+  // Morphine oral equivalent (universal)
+  const moeLow=(demo*0.10).toFixed(1);
+  const moeHigh=(demo*0.15).toFixed(1);
+  const gotasLow=(demo*0.10/1.25).toFixed(0);
+  const gotasHigh=(demo*0.15/1.25).toFixed(0);
+  
+  let html=`<div class="rescue-box">
+    <div class="rescue-title">💊 Dosis de rescate (10–15 % de dosis diaria)</div>
+    <div class="rescue-grid">
+      <div class="rescue-card">
+        <div class="rescue-label">${sameOpioidLabel}</div>
+        <div class="rescue-value">${sameOpioidLow}–${sameOpioidHigh} <span style="font-size:0.85rem;color:var(--text-muted);">${sameOpioidUnit}</span></div>
+        <div class="rescue-route">${intervalPrn}</div>
+      </div>
+      <div class="rescue-card">
+        <div class="rescue-label">Morfina oral equiv. (DEMO)</div>
+        <div class="rescue-value">${moeLow}–${moeHigh} <span style="font-size:0.85rem;color:var(--text-muted);">mg PO</span></div>
+        <div class="rescue-route">≈ ${gotasLow}–${gotasHigh} gotas sol. 3 % FNE 🇨🇴</div>
+      </div>
+    </div>
+    <div class="rescue-detail">
+      <strong>Reglas prácticas:</strong> Si requiere &gt;3 rescates/24 h → reevaluar dosis basal (incrementar 25–50 %). Reducir rescate 25–50 % en ancianos frágiles, insuficiencia renal/hepática o paciente naïve. ${opioid==='metadona'?'<strong style="color:var(--red-600);">⚠ NUNCA usar metadona como rescate</strong> — su vida media larga (8–130 h) hace impredecible la concentración pico; usar morfina LI.':''}
+    </div>
+  </div>`;
+  return html;
+}
+
+/* ══════════ INFUSION EQUIVALENTS (v5.1) ══════════ */
+function generateInfusionEquivalents(demo,currentOpioid){
+  // Calculate equivalent infusion rates for all injectable opioids
+  const hmF=parseFloat(document.getElementById('hmFactor').value);
+  
+  // Daily IV doses (computed from DEMO using each factor)
+  const morfinaIVday=demo/3;
+  const hidromorfonaIVday=demo/hmF;
+  const fentaniloIVday=demo/0.15;
+  const tramadolIVday=demo*5;
+  const oxicodonaIVday=demo/3;
+  
+  // Convert to hourly rates
+  const morfinaHr=morfinaIVday/24;
+  const hidromorfonaHr=hidromorfonaIVday/24;
+  const fentaniloHr=fentaniloIVday/24;
+  const tramadolHr=tramadolIVday/24;
+  const oxicodonaHr=oxicodonaIVday/24;
+  
+  // For each, suggest a typical concentration and the rate (mL/h)
+  // morfina: 1 mg/mL → mL/h = mg/h
+  // hidromorfona: 0.5 mg/mL → mL/h = mg/h / 0.5
+  // fentanilo: 20 mcg/mL → mL/h = mcg/h / 20
+  // tramadol: 4 mg/mL → mL/h = mg/h / 4
+  // oxicodona: 1 mg/mL → mL/h = mg/h
+  
+  const tramadolWarn=(tramadolIVday>400)?' <span style="color:var(--red-600);">⚠ &gt;400 mg/día</span>':'';
+  
+  let html=`<div class="infusion-eq-box">
+    <div class="eq-title">⚙ Equivalencias en infusión continua IV/SC</div>
+    <p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.5rem;font-style:italic;">Tasas equivalentes a la DEMO calculada, con concentraciones típicas en Colombia. Reducir 25–50 % al rotar entre infusiones por tolerancia cruzada incompleta. Apto solo para pacientes ya en tratamiento opioide estable.</p>
+    <div class="infusion-eq-grid">
+      <div class="infusion-eq-card" ${currentOpioid==='morfina'?'style="background:var(--teal-100);"':''}>
+        <div class="eq-name">Morfina IV/SC <span class="ev-badge ev-C">C</span></div>
+        <div class="eq-rate">${morfinaHr.toFixed(2)} mg/h</div>
+        <div class="eq-conc">${morfinaIVday.toFixed(1)} mg/día · Conc. 1 mg/mL → ${morfinaHr.toFixed(1)} mL/h</div>
+      </div>
+      <div class="infusion-eq-card" ${currentOpioid==='hidromorfona'?'style="background:var(--teal-100);"':''}>
+        <div class="eq-name">Hidromorfona IV/SC <span class="ev-badge ev-C">C</span></div>
+        <div class="eq-rate">${hidromorfonaHr.toFixed(3)} mg/h</div>
+        <div class="eq-conc">${hidromorfonaIVday.toFixed(2)} mg/día · Conc. 0,5 mg/mL → ${(hidromorfonaHr/0.5).toFixed(2)} mL/h${hmF===11.5?' · Reddy 2017':' · ANZCA'}</div>
+      </div>
+      <div class="infusion-eq-card" ${currentOpioid==='fentanilo_iv'?'style="background:var(--teal-100);"':''}>
+        <div class="eq-name">Fentanilo IV/SC <span class="ev-badge ev-D">D</span></div>
+        <div class="eq-rate">${fentaniloHr.toFixed(1)} mcg/h</div>
+        <div class="eq-conc">${fentaniloIVday.toFixed(0)} mcg/día · Conc. 20 mcg/mL → ${(fentaniloHr/20).toFixed(2)} mL/h</div>
+      </div>
+      <div class="infusion-eq-card" ${currentOpioid==='oxicodona'?'style="background:var(--teal-100);"':''}>
+        <div class="eq-name">Oxicodona IV/SC <span class="ev-badge ev-D">D</span></div>
+        <div class="eq-rate">${oxicodonaHr.toFixed(2)} mg/h</div>
+        <div class="eq-conc">${oxicodonaIVday.toFixed(1)} mg/día · Conc. 1 mg/mL → ${oxicodonaHr.toFixed(1)} mL/h · 🇨🇴 limitada</div>
+      </div>
+      <div class="infusion-eq-card" ${currentOpioid==='tramadol'?'style="background:var(--teal-100);"':''}>
+        <div class="eq-name">Tramadol IV/SC <span class="ev-badge ev-D">D</span></div>
+        <div class="eq-rate">${tramadolHr.toFixed(1)} mg/h${tramadolWarn}</div>
+        <div class="eq-conc">${tramadolIVday.toFixed(0)} mg/día · Conc. 4 mg/mL → ${(tramadolHr/4).toFixed(2)} mL/h · Techo 400 mg/día</div>
+      </div>
+    </div>
+    <p style="font-size:0.7rem;color:var(--text-muted);font-style:italic;margin-top:0.5rem;">⚠ Las concentraciones mostradas son ejemplos típicos en Colombia. Verificar siempre la concentración preparada en la institución antes de programar bomba. Las infusiones de tramadol con techo 400 mg/día se vuelven impracticables a DEMO altos.</p>
+  </div>`;
+  return html;
+}
+
 /* ══════════ ALERTS (v5 expanded) ══════════ */
 function generateAlerts(demo,currentOpioid,dailyDose){
   let html='';
+  const isInfusionMode=document.getElementById('freqSelect').value==='infusion';
+  
+  // Infusion-mode alert (priority — shown first when active)
+  if(isInfusionMode){
+    const route=document.getElementById('routeSelect').value;
+    const conc=parseFloat(document.getElementById('concInput').value);
+    const rate=parseFloat(document.getElementById('rateInput').value);
+    let infoStr='';
+    if(!isNaN(conc)&&!isNaN(rate)&&conc>0&&rate>0){
+      infoStr=` Preparación: <strong>${conc} ${currentOpioid==='fentanilo_iv'?'mcg':'mg'}/mL × ${rate} mL/h</strong> en ${route.toUpperCase()}.`;
+    }
+    html+=`<div class="alert alert-indigo"><strong>⚙ Modo infusión continua IV/SC:</strong>${infoStr} La dosis horaria se proyecta a 24 h asumiendo administración constante. Para infusiones intermitentes o ciclos &lt;24 h, ajustar manualmente. <strong>Vigilar:</strong> obstrucción/desconexión de la línea (pérdida brusca de analgesia) y errores de programación de bomba (causa frecuente de sobredosis hospitalaria).</div>`;
+  }
   
   // High dose alert
   if(demo>=200){
