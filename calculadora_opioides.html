@@ -158,6 +158,22 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 .infusion-eq-card .eq-rate{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--text);margin-top:0.15rem;}
 .infusion-eq-card .eq-conc{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic;line-height:1.4;}
 
+/* ── FRASCOS FNE (v5.2) ── */
+.frascos-box{background:linear-gradient(135deg,var(--warm-100) 0%,#F8EFDF 100%);border:1.5px solid var(--warm-600);border-radius:var(--radius);padding:1.2rem;margin-top:1rem;}
+.frascos-box .frascos-title{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--warm-700);margin-bottom:0.6rem;}
+.frascos-headline{display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.8rem;background:var(--surface);border-radius:8px;border:2px solid var(--warm-600);margin-bottom:0.8rem;}
+.frascos-icons{display:flex;gap:0.15rem;flex-wrap:wrap;justify-content:center;max-width:60%;}
+.frascos-icon{font-size:1.8rem;line-height:1;}
+.frascos-number{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--warm-700);line-height:1;}
+.frascos-number .unit{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text-muted);font-weight:500;}
+.frascos-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.5rem;margin:0.6rem 0;}
+.frascos-detail-card{background:var(--surface);border:1px solid var(--warm-600);border-left:3px solid var(--warm-600);border-radius:6px;padding:0.6rem 0.8rem;}
+.frascos-detail-card .fd-label{font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--warm-700);}
+.frascos-detail-card .fd-value{font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:600;color:var(--text);margin-top:0.15rem;}
+.frascos-detail-card .fd-extra{font-size:0.7rem;color:var(--text-muted);margin-top:0.15rem;}
+.frascos-breakdown{font-family:'JetBrains Mono',monospace;font-size:0.78rem;background:var(--surface);border:1px dashed var(--warm-600);border-radius:6px;padding:0.7rem 0.9rem;line-height:1.7;color:var(--text);}
+.frascos-breakdown .label{color:var(--warm-700);font-weight:700;}
+
 /* ── PHENOTYPE BAR (Pharmacogenetics) ── */
 .phen-bar{display:flex;height:32px;border-radius:6px;overflow:hidden;margin:0.8rem 0;border:1px solid var(--border);}
 .phen-segment{display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.25);}
@@ -186,7 +202,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 <header class="header">
   <h1>💊 Calculadora de Equianalgesia Opioide</h1>
   <p class="subtitle">Dosis Equivalente de Morfina Oral (DEMO) · Rotación de Opioides</p>
-  <div class="version">v5.1 · Mayo 2026 · Infusiones IV/SC + bolos de rescate</div>
+  <div class="version">v5.2 · Mayo 2026 · Cálculo de frascos FNE para prescripción</div>
   <div class="badge-row">
     <span class="badge">MASCC-ASCO 2025</span>
     <span class="badge">ANZCA Oct 2025</span>
@@ -210,6 +226,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
   <button class="pill" onclick="showSection('farma',this)">🧬 Farmacogenética</button>
   <button class="pill" onclick="showSection('rotacion',this)">🔄 Rotación</button>
   <button class="pill" onclick="showSection('colombia',this)">🇨🇴 Colombia</button>
+  <button class="pill" onclick="showSection('frascos',this)">💊 Frascos FNE</button>
   <button class="pill" onclick="showSection('refs',this)">📚 Referencias</button>
 </nav>
 
@@ -329,6 +346,9 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 
     <!-- Rescue dose box (always visible) -->
     <div id="rescueContainer"></div>
+
+    <!-- Frascos FNE box (auto-display when route=oral_sol) -->
+    <div id="frascosAutoContainer"></div>
 
     <!-- Infusion equivalents (only when freq=infusion or route IV/SC) -->
     <div id="infusionEqContainer"></div>
@@ -809,6 +829,106 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 </div>
 
 <!-- ═══════════════════════════════════════ -->
+<!-- SECTION: FRASCOS FNE (v5.2)            -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-frascos">
+  <div class="card">
+    <h2>💊 Cálculo de Frascos — Morfina Solución 3 % FNE</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Calcular cuántos frascos de morfina solución oral 3 % del FNE (Fondo Nacional de Estupefacientes) se requieren para una prescripción, según dosis basal + rescates × periodo de validez de la fórmula. Específico del contexto colombiano por el monopolio del Estado sobre estupefacientes (Resolución 1478/2006).</p>
+
+    <h3 style="margin:0.8rem 0 0.5rem;">📦 Datos de la presentación FNE</h3>
+    <table class="ref-table">
+      <thead><tr><th>Parámetro</th><th>Valor</th><th>Equivalencia</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Concentración</strong></td><td>30 mg/mL (3 %)</td><td>—</td></tr>
+        <tr><td><strong>Volumen por frasco</strong></td><td>30 mL</td><td>≈ 720 gotas</td></tr>
+        <tr style="background:var(--warm-100);"><td><strong>Morfina total por frasco</strong></td><td><strong>900 mg</strong></td><td>1 frasco = 900 mg morfina oral</td></tr>
+        <tr><td><strong>1 gota</strong></td><td>1,25 mg morfina</td><td>≈ 0,042 mL</td></tr>
+        <tr><td><strong>1 mL</strong></td><td>30 mg morfina</td><td>≈ 24 gotas</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">💧 Dosis basal (mantenimiento)</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dosis por toma</label>
+        <input type="number" id="basalDose" min="0" step="any" placeholder="Ej: 16">
+        <span class="hint">Cantidad administrada en cada toma programada</span>
+      </div>
+      <div class="form-group">
+        <label>Unidad</label>
+        <select id="basalUnit">
+          <option value="gotas">gotas</option>
+          <option value="mg">mg</option>
+          <option value="mL">mL</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Frecuencia</label>
+        <select id="basalFreq">
+          <option value="4" selected>Cada 4 h (×6/día)</option>
+          <option value="6">Cada 6 h (×4/día)</option>
+          <option value="8">Cada 8 h (×3/día)</option>
+          <option value="12">Cada 12 h (×2/día)</option>
+          <option value="24">Cada 24 h (×1/día)</option>
+        </select>
+      </div>
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">🆘 Dosis de rescate</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dosis por rescate</label>
+        <input type="number" id="rescueDoseFr" min="0" step="any" placeholder="Ej: 8">
+        <span class="hint">Típicamente 10–15 % de la dosis diaria total</span>
+      </div>
+      <div class="form-group">
+        <label>Unidad</label>
+        <select id="rescueUnitFr">
+          <option value="gotas">gotas</option>
+          <option value="mg">mg</option>
+          <option value="mL">mL</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Rescates esperados/día</label>
+        <input type="number" id="rescueCountFr" min="0" max="10" step="1" value="3">
+        <span class="hint">⚠ &gt; 4/día sugiere dosis basal insuficiente</span>
+      </div>
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">📅 Periodo de prescripción</h3>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:span 2;">
+        <label>Días que debe cubrir la fórmula</label>
+        <input type="number" id="periodDays" min="1" max="30" step="1" value="30">
+        <span class="hint">🇨🇴 Vigencia máxima de la fórmula oficial FNE: 30 días. Algunas EPS limitan a 15 días.</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:1rem;">
+      <button class="btn btn-primary" onclick="calculateFrascos()">💊 Calcular frascos a prescribir</button>
+      <button class="btn btn-secondary" onclick="resetFrascos()">↺ Limpiar</button>
+    </div>
+
+    <!-- Result panel -->
+    <div id="frascosResult"></div>
+
+    <div class="alert alert-info" style="margin-top:1.2rem;">
+      <strong>📋 Prescripción FNE en Colombia:</strong> La morfina solución oral 3 % se prescribe en formulario oficial controlado (recipe oficial, en duplicado o triplicado según jurisdicción). La fórmula tiene vigencia máxima de 30 días. Algunas EPS y aseguradoras limitan a 15 días. La dispensación se realiza únicamente en farmacias autorizadas FNE o Fondos Rotatorios de Estupefacientes departamentales. <strong>Anticipar 24–72 h</strong> el trámite de renovación para evitar interrupción del tratamiento.
+    </div>
+
+    <div class="alert alert-warning" style="margin-top:0.5rem;">
+      <strong>⚠ Desabastecimiento intermitente:</strong> El FNE tiene historial de desabastecimiento, particularmente en zonas rurales, PDET y municipios pequeños. Si la disponibilidad es incierta, considerar prescripción conjunta de un opioide alternativo (oxicodona LP comercial, fentanilo TD) como respaldo, o coordinar con la farmacia institucional la reserva del medicamento.
+    </div>
+
+    <div class="alert alert-purple" style="margin-top:0.5rem;">
+      <strong>📌 Almacenamiento y vida útil:</strong> Conservar a temperatura ambiente (15–25 °C), protegido de la luz. La solución abierta mantiene estabilidad química durante el periodo etiquetado por el fabricante (típicamente 4–6 semanas tras apertura). Educar al paciente/cuidador sobre: (a) técnica de goteo correcta (frasco invertido, gotero perpendicular), (b) almacenamiento seguro fuera del alcance de niños, (c) devolución del frasco vacío a la farmacia FNE (algunas jurisdicciones lo exigen).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
 <!-- SECTION 5: REFERENCIAS                 -->
 <!-- ═══════════════════════════════════════ -->
 <div class="section" id="sec-refs">
@@ -885,7 +1005,8 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 
     <details class="changelog">
       <summary>📋 Registro de cambios (changelog)</summary>
-      <p style="margin-top:0.5rem;"><strong>v5.1 — Mayo 2026:</strong> Nueva funcionalidad de <strong>infusiones continuas IV/SC</strong> para los 5 opioides inyectables disponibles en Colombia (morfina, hidromorfona, fentanilo IV/SC, tramadol, oxicodona). Calculadora auxiliar con workflow clínico colombiano <strong>velocidad (mL/h) × concentración (mg/mL)</strong> → dosis horaria. <strong>Dosis de rescate automática</strong> (10–15 % de dosis diaria) calculada en dos formatos: opioide actual (mismo o equivalente apropiado) y morfina oral equivalente (DEMO + gotas FNE). Reglas inteligentes: para metadona advierte que NUNCA usar como rescate (vida media larga). Nuevo panel de <strong>equivalencias entre infusiones</strong> — muestra tasas de los 5 opioides inyectables con concentraciones típicas colombianas y mL/h calculados. Alertas específicas de modo infusión (obstrucción de línea, errores de bomba).</p>
+      <p style="margin-top:0.5rem;"><strong>v5.2 — Mayo 2026:</strong> Nueva funcionalidad de <strong>cálculo de frascos FNE</strong> para prescripción de morfina solución oral 3 % (30 mL · 900 mg · monopolio FNE). Sección dedicada "💊 Frascos FNE" con inputs flexibles (gotas / mg / mL) para basal y rescate, frecuencia configurable, número estimado de rescates/día, y periodo de prescripción (max 30 días por vigencia FNE). Resultado con visualización gráfica (🧴), desglose completo del consumo diario y total, frascos requeridos redondeados al alza, y cobertura adicional del último frasco. Auto-cálculo integrado en el panel principal cuando se selecciona morfina sol 3 % gotas (asumiendo rescate de 12,5 % × 3 episodios/día, periodo de 30 días). Alertas inteligentes: consumo &gt;1 frasco/día, rescates &gt;50 % de basal (indicando basal insuficiente), almacenamiento y vida útil del frasco abierto.</p>
+      <p><strong>v5.1 — Mayo 2026:</strong> Nueva funcionalidad de <strong>infusiones continuas IV/SC</strong> para los 5 opioides inyectables disponibles en Colombia (morfina, hidromorfona, fentanilo IV/SC, tramadol, oxicodona). Calculadora auxiliar con workflow clínico colombiano <strong>velocidad (mL/h) × concentración (mg/mL)</strong> → dosis horaria. <strong>Dosis de rescate automática</strong> (10–15 % de dosis diaria) calculada en dos formatos: opioide actual (mismo o equivalente apropiado) y morfina oral equivalente (DEMO + gotas FNE). Reglas inteligentes: para metadona advierte que NUNCA usar como rescate (vida media larga). Nuevo panel de <strong>equivalencias entre infusiones</strong> — muestra tasas de los 5 opioides inyectables con concentraciones típicas colombianas y mL/h calculados. Alertas específicas de modo infusión (obstrucción de línea, errores de bomba).</p>
       <p><strong>v5 — Mayo 2026:</strong> Revisión sistemática 2024–2026 de guías nacionales e internacionales. Cambios numéricos: (1) hidromorfona IV/SC ×15 → <strong>×11,5</strong> (Reddy 2017, MD Anderson, ratio PO:IV 2,5:1) con ANZCA ×15 como opción seleccionable; (2) tapentadol ×0,4 → <strong>×0,3</strong> (ratio 3,3:1, Mercadante 2013 + Imanaka 2014 + ANZCA 2025); (3) buprenorfina SL ×37,5 → <strong>×30</strong> (concordancia CDC/Nielsen 2016). Cambios estructurales: nueva sección de farmacogenética (CYP2D6 colombiano 18,4% UM, CYP2B6 metadona CPIC 2024); nueva sección Colombia con disponibilidad detallada por presentación y marco normativo; reglas absolutas para metadona (tope inicial 30–40 mg, ECG obligatorio, titulación c/5–7d); alerta asimetría bidireccional MASCC 2025; alerta caquexia/fentanilo TD. <strong>49 referencias verificadas DOI/PMID</strong>, &gt;60% del periodo 2022–2026.</p>
       <p><strong>v4 — Abril 2026:</strong> Corrección crítica: parches TD ya no dividen dosis por frecuencia. Morfina solución oral 3% (Colombia): acepta gotas (1 gota = 1,25 mg). Nota colombiana sobre presentación FNE.</p>
       <p><strong>v3 — Abril 2026:</strong> Revisión basada en evidencia ANZCA 2025, Busse 2017, Nielsen 2016, CDC 2022. Factores actualizados: hidromorfona IV ×20→×15, fentanilo IV ÷10→×0,15, buprenorfina TD ×1,7→×2,0, buprenorfina SL en ×37,5. Sección nueva de buprenorfina. Alertas inteligentes. GRADE en tarjetas de conversión.</p>
@@ -906,6 +1027,155 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 </footer>
 
 <script>
+/* ══════════ FRASCOS FNE — Morfina Solución 3 % (v5.2) ══════════ */
+/* Datos clave:
+   - 1 frasco = 30 mL = 900 mg morfina = ~720 gotas
+   - 1 gota = 1,25 mg morfina ≈ 0,0417 mL
+   - 1 mL = 30 mg morfina ≈ 24 gotas
+   - 1 mg = 0,8 gotas ≈ 0,0333 mL
+*/
+const FRASCO_VOL_ML=30;
+const FRASCO_MG=900;
+const MG_PER_GOTA=1.25;
+const MG_PER_ML=30;
+const GOTAS_PER_ML=24;
+
+function convertToMg(value,unit){
+  if(isNaN(value)||value<=0) return 0;
+  switch(unit){
+    case 'gotas': return value*MG_PER_GOTA;
+    case 'mg': return value;
+    case 'mL': return value*MG_PER_ML;
+  }
+  return 0;
+}
+
+function mgToGotas(mg){return mg/MG_PER_GOTA;}
+function mgToMl(mg){return mg/MG_PER_ML;}
+
+function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context){
+  // context: 'main' (auto-display) or 'dedicated' (full section)
+  const totalMgPerDay=basalMgPerDay+rescueMgPerDay;
+  const totalGotasPerDay=mgToGotas(totalMgPerDay);
+  const totalMlPerDay=mgToMl(totalMgPerDay);
+  
+  const totalMgPeriod=totalMgPerDay*periodDays;
+  const totalMlPeriod=mgToMl(totalMgPeriod);
+  
+  const frascosNeeded=Math.ceil(totalMgPeriod/FRASCO_MG);
+  const totalMgDelivered=frascosNeeded*FRASCO_MG;
+  const totalMlDelivered=frascosNeeded*FRASCO_VOL_ML;
+  const extraMg=totalMgDelivered-totalMgPeriod;
+  const extraDays=totalMgPerDay>0?(extraMg/totalMgPerDay).toFixed(1):'0';
+  
+  // Bottle icons (max 30 for visual sanity)
+  let bottleIcons='';
+  const iconCount=Math.min(frascosNeeded,30);
+  for(let i=0;i<iconCount;i++) bottleIcons+='🧴';
+  if(frascosNeeded>30) bottleIcons+=` <span style="font-size:1rem;color:var(--warm-700);font-weight:600;">+ ${frascosNeeded-30} más</span>`;
+  
+  // Warnings
+  let warnings='';
+  if(totalMgPerDay>FRASCO_MG){
+    warnings+=`<div class="alert alert-danger" style="margin-top:0.6rem;"><strong>🚨 Consumo &gt; 1 frasco/día (${totalMgPerDay.toFixed(0)} mg/día):</strong> Revisar dosis basal. A dosis tan altas, considerar opioide alternativo (fentanilo TD, hidromorfona, rotación a metadona con supervisión especializada). El volumen requerido (${totalMlPerDay.toFixed(0)} mL/día) puede ser práctico de administrar oralmente con dificultad.</div>`;
+  } else if(totalMgPerDay>450){
+    warnings+=`<div class="alert alert-warning" style="margin-top:0.6rem;"><strong>⚠ Consumo &gt; ½ frasco/día (${totalMgPerDay.toFixed(0)} mg/día):</strong> DEMO elevada; descartar hiperalgesia inducida por opioides, revisar adherencia y considerar coadyuvantes.</div>`;
+  }
+  if(rescueMgPerDay>basalMgPerDay*0.5&&basalMgPerDay>0){
+    warnings+=`<div class="alert alert-warning" style="margin-top:0.6rem;"><strong>⚠ Rescates representan &gt; 50 % de la dosis basal:</strong> Dosis basal probablemente insuficiente. Incrementar dosis basal en 25–50 % y reevaluar.</div>`;
+  }
+  
+  // Breakdown depending on context
+  let breakdown='';
+  if(context==='dedicated'){
+    breakdown=`<div class="frascos-breakdown">
+<span class="label">DOSIS BASAL:</span>     ${basalMgPerDay.toFixed(1)} mg/día = ${mgToGotas(basalMgPerDay).toFixed(0)} gotas/día = ${mgToMl(basalMgPerDay).toFixed(2)} mL/día
+<span class="label">DOSIS RESCATE:</span>   ${rescueMgPerDay.toFixed(1)} mg/día = ${mgToGotas(rescueMgPerDay).toFixed(0)} gotas/día = ${mgToMl(rescueMgPerDay).toFixed(2)} mL/día
+<span class="label">TOTAL DIARIO:</span>    ${totalMgPerDay.toFixed(1)} mg/día = ${totalGotasPerDay.toFixed(0)} gotas/día = ${totalMlPerDay.toFixed(2)} mL/día
+
+<span class="label">PARA ${periodDays} DÍAS:</span>
+  • Morfina requerida:    ${totalMgPeriod.toFixed(0)} mg
+  • Volumen requerido:    ${totalMlPeriod.toFixed(1)} mL
+  • Frascos necesarios:   ⌈${totalMgPeriod.toFixed(0)} / 900⌉ = <span class="label">${frascosNeeded} frascos</span>
+  • Morfina entregada:    ${totalMgDelivered} mg (${totalMlDelivered} mL)
+  • Excedente:            ${extraMg.toFixed(0)} mg ≈ ${extraDays} días adicionales</div>`;
+  }
+  
+  // Detail cards
+  const detailCards=`<div class="frascos-detail-grid">
+      <div class="frascos-detail-card">
+        <div class="fd-label">Dosis diaria total</div>
+        <div class="fd-value">${totalMgPerDay.toFixed(1)} mg</div>
+        <div class="fd-extra">${totalGotasPerDay.toFixed(0)} gotas · ${totalMlPerDay.toFixed(2)} mL</div>
+      </div>
+      <div class="frascos-detail-card">
+        <div class="fd-label">Total ${periodDays} días</div>
+        <div class="fd-value">${totalMgPeriod.toFixed(0)} mg</div>
+        <div class="fd-extra">${totalMlPeriod.toFixed(1)} mL</div>
+      </div>
+      <div class="frascos-detail-card">
+        <div class="fd-label">Cobertura del último frasco</div>
+        <div class="fd-value">+${extraDays} días</div>
+        <div class="fd-extra">excedente: ${extraMg.toFixed(0)} mg</div>
+      </div>
+    </div>`;
+  
+  return `<div class="frascos-box">
+    <div class="frascos-title">💊 Prescripción FNE — Frascos requeridos para ${periodDays} días</div>
+    <div class="frascos-headline">
+      <div class="frascos-icons">${bottleIcons}</div>
+      <div style="text-align:center;">
+        <div class="frascos-number">${frascosNeeded}<span class="unit"> frascos</span></div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem;">de morfina sol. 3 % FNE (30 mL c/u)</div>
+      </div>
+    </div>
+    ${detailCards}
+    ${breakdown}
+    ${warnings}
+  </div>`;
+}
+
+function calculateFrascos(){
+  const basalDose=parseFloat(document.getElementById('basalDose').value);
+  const basalUnit=document.getElementById('basalUnit').value;
+  const basalFreqHrs=parseFloat(document.getElementById('basalFreq').value);
+  const rescueDose=parseFloat(document.getElementById('rescueDoseFr').value);
+  const rescueUnit=document.getElementById('rescueUnitFr').value;
+  const rescueCount=parseFloat(document.getElementById('rescueCountFr').value)||0;
+  const periodDays=parseFloat(document.getElementById('periodDays').value);
+  
+  if(isNaN(basalDose)||basalDose<=0){
+    alert('Ingrese una dosis basal válida (mayor que 0).');
+    return;
+  }
+  if(isNaN(periodDays)||periodDays<=0||periodDays>30){
+    alert('El periodo debe estar entre 1 y 30 días (vigencia máxima FNE).');
+    return;
+  }
+  
+  const basalMgPerDose=convertToMg(basalDose,basalUnit);
+  const dosesPerDay=24/basalFreqHrs;
+  const basalMgPerDay=basalMgPerDose*dosesPerDay;
+  
+  let rescueMgPerDay=0;
+  if(!isNaN(rescueDose)&&rescueDose>0&&rescueCount>0){
+    rescueMgPerDay=convertToMg(rescueDose,rescueUnit)*rescueCount;
+  }
+  
+  const html=buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,'dedicated');
+  const result=document.getElementById('frascosResult');
+  result.innerHTML=html;
+  result.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function resetFrascos(){
+  document.getElementById('basalDose').value='';
+  document.getElementById('rescueDoseFr').value='';
+  document.getElementById('rescueCountFr').value='3';
+  document.getElementById('periodDays').value='30';
+  document.getElementById('frascosResult').innerHTML='';
+}
+
 /* ══════════ INFUSION MODE HELPERS ══════════ */
 const INJECTABLE_OPIOIDS=['morfina','hidromorfona','fentanilo_iv','tramadol','oxicodona'];
 
@@ -1229,6 +1499,22 @@ function calculate(){
   
   // Generate rescue dose
   document.getElementById('rescueContainer').innerHTML=generateRescueDose(demo,opioid,route,isInfusion);
+  
+  // Auto-display frascos FNE when morfina sol 3% is the current opioid
+  const frascosAuto=document.getElementById('frascosAutoContainer');
+  if(opioid==='morfina'&&route==='oral_sol'){
+    // dailyDose is in gotas; convert to mg
+    const basalMg=dailyDose*1.25;
+    // Estimate rescue: 12.5% of daily dose per episode × 3 episodes/day (conservative middle estimate)
+    const rescuePerEpisodeMg=basalMg*0.125;
+    const rescueMgPerDay=rescuePerEpisodeMg*3;
+    let autoHtml=buildFrascosBox(basalMg,rescueMgPerDay,30,'main');
+    // Add note explaining the assumptions
+    autoHtml+=`<p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-top:0.5rem;line-height:1.5;">📌 Estimación automática: basal = dosis ingresada; rescate asumido en 12,5 % de dosis diaria × 3 episodios/día (estimación clínica intermedia); periodo = 30 días (vigencia FNE estándar). Para cálculo preciso con tu propio escenario de rescates, usar la pestaña <strong>💊 Frascos FNE</strong>.</p>`;
+    frascosAuto.innerHTML=autoHtml;
+  } else {
+    frascosAuto.innerHTML='';
+  }
   
   // Generate infusion equivalents (only for IV/SC routes or current infusion)
   const showInfusionEq=['iv','sc'].includes(route)||isInfusion;
