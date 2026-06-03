@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movilización segura del paciente con hueso frágil · Síntesis de evidencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lila:#6b5b95;          /* lila institucional */
+  --lila-claro:#9d8fc7;
+  --lila-muy-claro:#efeaf6;
+  --azul:#3a6ea5;          /* azul */
+  --azul-claro:#6fa3d2;
+  --azul-muy-claro:#e7f0f8;
+  --verde:#4a8b6f;         /* verde */
+  --verde-claro:#7fc0a3;
+  --verde-muy-claro:#e6f3ed;
+  --tinta:#26242e;
+  --tinta-suave:#54505e;
+  --papel:#faf8f5;
+  --papel-2:#f3f0ec;
+  --linea:#e0dad2;
+  --ambar:#c2861f;
+  --rojo:#b5443a;
+  --rojo-muy-claro:#fbeae8;
+  --sombra:0 1px 2px rgba(38,36,46,.04),0 8px 28px rgba(38,36,46,.07);
+  --sombra-fuerte:0 4px 12px rgba(38,36,46,.08),0 18px 50px rgba(38,36,46,.12);
+  --serif-display:'Cormorant Garamond',Georgia,serif;
+  --serif-cuerpo:'Libre Baskerville',Georgia,serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--serif-cuerpo);
+  color:var(--tinta);
+  background:var(--papel);
+  line-height:1.75;
+  font-size:16.5px;
+  -webkit-font-smoothing:antialiased;
+}
+/* ---- Barra de progreso ---- */
+#barra-progreso{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--lila),var(--azul),var(--verde));
+  z-index:1000;transition:width .1s linear;
+}
+/* ---- Layout ---- */
+.envoltura{display:flex;max-width:1500px;margin:0 auto;}
+/* ---- Sidebar ---- */
+#sidebar{
+  width:310px;flex-shrink:0;position:sticky;top:0;height:100vh;
+  overflow-y:auto;padding:34px 26px 60px;border-right:1px solid var(--linea);
+  background:linear-gradient(180deg,#fbfaf8,#f4f1ec);
+}
+#sidebar .marca{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--lila);font-weight:700;margin-bottom:6px;}
+#sidebar .marca-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  color:var(--tinta-suave);margin-bottom:26px;line-height:1.5;}
+#sidebar h2{font-family:var(--serif-display);font-size:25px;font-weight:600;
+  line-height:1.15;margin-bottom:4px;color:var(--tinta);}
+#sidebar .h2-it{font-family:var(--serif-display);font-style:italic;font-weight:500;
+  color:var(--lila);}
+.nav-titulo{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--tinta-suave);margin:30px 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--linea);}
+nav ul{list-style:none}
+nav li{margin:1px 0}
+nav a{
+  display:flex;align-items:baseline;gap:10px;text-decoration:none;
+  color:var(--tinta-suave);font-size:13.5px;line-height:1.35;padding:7px 10px;
+  border-radius:7px;border-left:2px solid transparent;transition:all .18s ease;
+}
+nav a .num{font-family:var(--mono);font-size:10px;color:var(--lila-claro);
+  font-weight:500;flex-shrink:0;width:18px;}
+nav a:hover{background:var(--lila-muy-claro);color:var(--lila);}
+nav a.activo{background:#fff;color:var(--lila);font-weight:700;
+  border-left:2px solid var(--lila);box-shadow:var(--sombra);}
+nav a.activo .num{color:var(--lila);}
+/* ---- Contenido ---- */
+main{flex:1;min-width:0;padding:0 0 120px;}
+.portada{
+  padding:80px 64px 56px;
+  background:
+    radial-gradient(900px 400px at 88% -8%,rgba(107,91,149,.10),transparent),
+    radial-gradient(700px 380px at 10% 110%,rgba(74,139,111,.10),transparent),
+    linear-gradient(135deg,#fbfaf8,#f3eef7 60%,#eaf1f6);
+  border-bottom:1px solid var(--linea);position:relative;overflow:hidden;
+}
+.portada .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--azul);font-weight:700;margin-bottom:20px;
+  display:flex;align-items:center;gap:12px;}
+.portada .kicker::before{content:"";width:34px;height:2px;background:var(--azul);}
+.portada h1{font-family:var(--serif-display);font-size:60px;font-weight:700;
+  line-height:1.02;letter-spacing:-.01em;margin-bottom:22px;color:var(--tinta);max-width:18ch;}
+.portada h1 em{font-style:italic;font-weight:500;
+  background:linear-gradient(120deg,var(--lila),var(--azul));-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent;}
+.portada .bajada{font-size:18px;line-height:1.7;color:var(--tinta-suave);
+  max-width:62ch;font-style:italic;}
+.portada .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px;}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;
+  background:#fff;border:1px solid var(--linea);border-radius:30px;
+  padding:7px 15px;color:var(--tinta-suave);box-shadow:var(--sombra);}
+.chip b{color:var(--lila);}
+/* secciones */
+section{padding:58px 64px;border-bottom:1px solid var(--linea);scroll-margin-top:10px;}
+.sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  color:var(--lila);font-weight:700;margin-bottom:12px;display:block;}
+section h2{font-family:var(--serif-display);font-size:39px;font-weight:600;
+  line-height:1.1;margin-bottom:10px;letter-spacing:-.01em;max-width:24ch;}
+section h2 em{font-style:italic;color:var(--azul);}
+.lede{font-size:18px;font-style:italic;color:var(--tinta-suave);
+  max-width:64ch;margin-bottom:34px;line-height:1.7;
+  padding-left:18px;border-left:3px solid var(--lila-claro);}
+section h3{font-family:var(--serif-display);font-size:25px;font-weight:600;
+  margin:36px 0 12px;color:var(--tinta);}
+section h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--azul);margin:26px 0 10px;font-weight:700;}
+p{max-width:70ch;margin-bottom:16px;}
+strong{font-weight:700;color:var(--tinta);}
+em{font-style:italic;}
+a.ref{color:var(--azul);text-decoration:none;border-bottom:1px dotted var(--azul-claro);
+  font-family:var(--mono);font-size:.82em;padding:0 1px;}
+a.ref:hover{background:var(--azul-muy-claro);}
+.mono{font-family:var(--mono);font-size:.88em;}
+/* ---- KPI / cifras ---- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:16px;margin:30px 0;}
+.kpi{background:#fff;border:1px solid var(--linea);border-radius:14px;
+  padding:22px 20px;box-shadow:var(--sombra);position:relative;overflow:hidden;}
+.kpi::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;
+  background:var(--lila);}
+.kpi.azul::before{background:var(--azul);}
+.kpi.verde::before{background:var(--verde);}
+.kpi.rojo::before{background:var(--rojo);}
+.kpi .cifra{font-family:var(--serif-display);font-size:40px;font-weight:700;
+  line-height:1;color:var(--tinta);}
+.kpi .cifra small{font-size:18px;font-weight:500;color:var(--tinta-suave);}
+.kpi .et{font-size:13px;color:var(--tinta-suave);margin-top:8px;line-height:1.45;}
+/* ---- Canvas prevalencia ---- */
+.viz-caja{background:#fff;border:1px solid var(--linea);border-radius:16px;
+  padding:28px;margin:30px 0;box-shadow:var(--sombra);}
+.viz-caja .viz-tit{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--tinta-suave);margin-bottom:6px;}
+.viz-caja .viz-fuente{font-family:var(--mono);font-size:10px;color:var(--lila-claro);
+  margin-top:14px;}
+/* ---- Tablas ---- */
+.tabla-envoltura{overflow-x:auto;margin:24px 0;border-radius:14px;
+  border:1px solid var(--linea);box-shadow:var(--sombra);}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px;min-width:520px;}
+caption{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--tinta-suave);text-align:left;
+  padding:16px 18px 8px;caption-side:top;}
+th{background:var(--lila-muy-claro);color:var(--lila);font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;
+  text-align:left;padding:13px 16px;border-bottom:2px solid var(--lila-claro);}
+td{padding:12px 16px;border-bottom:1px solid var(--linea);vertical-align:top;line-height:1.5;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--papel-2);}
+td .badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 9px;
+  border-radius:20px;white-space:nowrap;}
+.b-verde{background:var(--verde-muy-claro);color:var(--verde);}
+.b-ambar{background:#fbf2dd;color:var(--ambar);}
+.b-rojo{background:var(--rojo-muy-claro);color:var(--rojo);}
+.b-azul{background:var(--azul-muy-claro);color:var(--azul);}
+/* ---- Acordeones ---- */
+.acordeon{border:1px solid var(--linea);border-radius:13px;margin-bottom:12px;
+  overflow:hidden;background:#fff;box-shadow:var(--sombra);}
+.acordeon-cab{display:flex;align-items:center;gap:16px;padding:18px 22px;
+  cursor:pointer;user-select:none;transition:background .18s ease;}
+.acordeon-cab:hover{background:var(--lila-muy-claro);}
+.acordeon-cab .ac-num{font-family:var(--mono);font-size:12px;font-weight:700;
+  color:#fff;background:var(--lila);width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.acordeon-cab .ac-tit{font-family:var(--serif-display);font-size:21px;font-weight:600;flex:1;}
+.acordeon-cab .ac-min{font-family:var(--mono);font-size:10px;color:var(--tinta-suave);
+  background:var(--papel-2);padding:4px 10px;border-radius:20px;white-space:nowrap;}
+.acordeon-cab .flecha{font-size:14px;color:var(--lila);transition:transform .25s ease;
+  flex-shrink:0;}
+.acordeon.abierto .flecha{transform:rotate(90deg);}
+.acordeon-cuerpo{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.acordeon-cuerpo-int{padding:4px 22px 24px 68px;}
+.acordeon-cuerpo-int ol{margin:8px 0 8px 18px;}
+.acordeon-cuerpo-int ul{margin:8px 0 8px 18px;}
+.acordeon-cuerpo-int li{margin-bottom:7px;max-width:66ch;}
+.pasos{counter-reset:paso;list-style:none;margin-left:0!important;}
+.pasos li{counter-increment:paso;position:relative;padding-left:38px;margin-bottom:11px;}
+.pasos li::before{content:counter(paso);position:absolute;left:0;top:0;
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--azul);
+  background:var(--azul-muy-claro);width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;}
+/* ---- Callouts ---- */
+.callout{border-radius:13px;padding:20px 24px;margin:24px 0;border:1px solid;
+  display:flex;gap:16px;align-items:flex-start;max-width:74ch;}
+.callout .ico{font-family:var(--mono);font-weight:700;font-size:13px;flex-shrink:0;
+  width:30px;height:30px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;color:#fff;}
+.callout .ct{flex:1;}
+.callout .ct b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:6px;}
+.callout p{margin-bottom:0;max-width:none;}
+.c-alerta{background:var(--rojo-muy-claro);border-color:#e7b8b2;}
+.c-alerta .ico{background:var(--rojo);}.c-alerta b{color:var(--rojo);}
+.c-norma{background:#fbf2dd;border-color:#e6cf95;}
+.c-norma .ico{background:var(--ambar);}.c-norma b{color:var(--ambar);}
+.c-evidencia{background:var(--verde-muy-claro);border-color:#a8d4bf;}
+.c-evidencia .ico{background:var(--verde);}.c-evidencia b{color:var(--verde);}
+.c-consenso{background:var(--azul-muy-claro);border-color:#a9cae6;}
+.c-consenso .ico{background:var(--azul);}.c-consenso b{color:var(--azul);}
+/* ---- Grado de evidencia inline ---- */
+.grado{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.05em;
+  padding:2px 8px;border-radius:5px;vertical-align:middle;margin-left:4px;
+  white-space:nowrap;}
+.g-alta{background:var(--verde);color:#fff;}
+.g-mod{background:var(--azul);color:#fff;}
+.g-baja{background:var(--ambar);color:#fff;}
+.g-cons{background:var(--lila);color:#fff;}
+/* ---- Principios grid ---- */
+.principios{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;margin:26px 0;}
+.principio{background:#fff;border:1px solid var(--linea);border-radius:13px;
+  padding:20px;box-shadow:var(--sombra);border-top:3px solid var(--verde);}
+.principio .pn{font-family:var(--mono);font-size:10px;color:var(--verde);
+  font-weight:700;margin-bottom:8px;}
+.principio .pt{font-family:var(--serif-display);font-size:19px;font-weight:600;
+  margin-bottom:6px;line-height:1.2;}
+.principio .pd{font-size:13.5px;color:var(--tinta-suave);line-height:1.55;}
+/* ---- Criterios suspensión ---- */
+.banderas{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:24px 0;}
+.bandera{background:var(--rojo-muy-claro);border:1px solid #e7b8b2;border-radius:11px;
+  padding:15px 18px;display:flex;gap:12px;align-items:center;}
+.bandera .bx{color:var(--rojo);font-weight:700;font-family:var(--mono);font-size:16px;}
+.bandera .bt{font-size:14px;line-height:1.4;}
+/* ---- Gaps ---- */
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:26px 0;}
+.gap{background:#fff;border:1px dashed var(--lila-claro);border-radius:13px;padding:20px;
+  position:relative;}
+.gap .gn{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--lila);
+  margin-bottom:8px;}
+.gap .gt{font-size:14.5px;line-height:1.55;}
+/* ---- Capas conclusión ---- */
+.capas{counter-reset:capa;margin:30px 0;}
+.capa{display:flex;gap:20px;align-items:flex-start;padding:22px 24px;background:#fff;
+  border:1px solid var(--linea);border-radius:14px;margin-bottom:12px;box-shadow:var(--sombra);
+  counter-increment:capa;position:relative;}
+.capa .cap-n{font-family:var(--serif-display);font-size:42px;font-weight:700;
+  color:var(--lila-claro);line-height:1;flex-shrink:0;width:50px;}
+.capa .cap-c h4{margin-top:0;color:var(--lila);}
+.capa .cap-c p{margin-bottom:0;font-size:15px;}
+/* ---- Bibliografía ---- */
+.biblio{font-size:13.5px;line-height:1.6;}
+.biblio ol{margin-left:22px;}
+.biblio li{margin-bottom:11px;max-width:78ch;padding-left:6px;}
+.biblio .doi{font-family:var(--mono);font-size:11.5px;color:var(--azul);word-break:break-all;}
+.biblio .pmid{font-family:var(--mono);font-size:11px;color:var(--verde);}
+/* ---- pie ---- */
+.pie{padding:44px 64px;background:linear-gradient(135deg,#26242e,#3a3550);color:#cfc9da;
+  font-size:13px;line-height:1.7;}
+.pie b{color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;display:block;margin-bottom:10px;}
+.pie .leyenda-grados{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.pie a{color:var(--lila-claro);}
+/* ---- Botón volver arriba ---- */
+#arriba{position:fixed;bottom:26px;right:26px;width:46px;height:46px;border-radius:50%;
+  background:var(--lila);color:#fff;border:none;cursor:pointer;font-size:18px;
+  box-shadow:var(--sombra-fuerte);opacity:0;pointer-events:none;transition:all .3s ease;z-index:900;}
+#arriba.visible{opacity:1;pointer-events:auto;}
+#arriba:hover{background:var(--azul);transform:translateY(-3px);}
+/* menú móvil */
+#abrir-menu{display:none;}
+/* ---- Responsive ---- */
+@media(max-width:1080px){
+  .portada h1{font-size:46px;}
+  section{padding:48px 40px;}
+  .portada{padding:64px 40px 48px;}
+}
+@media(max-width:860px){
+  #sidebar{position:fixed;left:-330px;z-index:1100;transition:left .3s ease;
+    box-shadow:var(--sombra-fuerte);}
+  #sidebar.abierto{left:0;}
+  #abrir-menu{display:flex;position:fixed;top:14px;left:14px;z-index:1050;
+    width:46px;height:46px;border-radius:12px;background:var(--lila);color:#fff;
+    border:none;cursor:pointer;align-items:center;justify-content:center;font-size:20px;
+    box-shadow:var(--sombra-fuerte);}
+  .portada{padding:80px 24px 40px;}
+  .portada h1{font-size:36px;}
+  .portada .bajada{font-size:16px;}
+  section{padding:42px 24px;}
+  section h2{font-size:30px;}
+  p,.lede{max-width:none;}
+  .acordeon-cuerpo-int{padding:4px 20px 22px 22px;}
+  .capa .cap-n{font-size:32px;width:36px;}
+}
+/* ---- Impresión ---- */
+@media print{
+  #sidebar,#arriba,#abrir-menu,#barra-progreso{display:none!important;}
+  .envoltura{display:block;}
+  main{padding:0;}
+  section{padding:24px 0;page-break-inside:avoid;border-bottom:1px solid #ccc;}
+  .portada{background:#fff!important;padding:0 0 24px;}
+  .portada h1 em,section h2 em{-webkit-text-fill-color:var(--lila);}
+  .acordeon-cuerpo{max-height:none!important;}
+  .acordeon-cuerpo-int{padding:4px 0 18px 0;}
+  .flecha{display:none;}
+  body{font-size:11pt;}
+  .viz-caja,.kpi,.acordeon,table{box-shadow:none;}
+  a.ref{color:#000;}
+}
+</style>
+</head>
+<body>
+<div id="barra-progreso"></div>
+<button id="abrir-menu" aria-label="Abrir menú">☰</button>
+
+<div class="envoltura">
+<!-- ===================== SIDEBAR ===================== -->
+<aside id="sidebar">
+  <div class="marca">Maestría · Investigación en Cuidados Paliativos</div>
+  <div class="marca-sub">Universidad Antonio Nariño<br>Síntesis de evidencia · 2026</div>
+  <h2>Movilización del<br><span class="h2-it">hueso frágil</span></h2>
+  <nav>
+    <div class="nav-titulo">Contenido</div>
+    <ul>
+      <li><a href="#magnitud"><span class="num">01</span>Magnitud del problema</a></li>
+      <li><a href="#estratificacion"><span class="num">02</span>Estratificación del riesgo</a></li>
+      <li><a href="#sphm"><span class="num">03</span>Marco SPHM</a></li>
+      <li><a href="#preparacion"><span class="num">04</span>Preparación previa</a></li>
+      <li><a href="#tecnicas"><span class="num">05</span>Técnicas paso a paso</a></li>
+      <li><a href="#principios"><span class="num">06</span>Principios y suspensión</a></li>
+      <li><a href="#educacion"><span class="num">07</span>Educación y capacitación</a></li>
+      <li><a href="#indicadores"><span class="num">08</span>Indicadores y normativa</a></li>
+      <li><a href="#brechas"><span class="num">09</span>Brechas de evidencia</a></li>
+      <li><a href="#conclusion"><span class="num">10</span>Procedimiento defendible</a></li>
+      <li><a href="#biblio"><span class="num">★</span>Referencias</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+  <!-- PORTADA -->
+  <header class="portada">
+    <div class="kicker">Síntesis de evidencia independiente · Foco en técnica</div>
+    <h1>Movilización segura del paciente con <em>alto riesgo de fractura o refractura patológica</em></h1>
+    <p class="bajada">Una intervención de alta consecuencia y baja evidencia formal: cómo movilizar, transferir y trasladar al paciente con hueso frágil oncológico, mielomatoso u osteoporótico — distinguiendo con honestidad lo que sostiene la evidencia robusta de lo que sostiene el consenso de expertos.</p>
+    <div class="meta">
+      <span class="chip"><b>Población:</b> oncológica · mieloma · osteoporosis severa · refractura</span>
+      <span class="chip"><b>Marco:</b> SPHM · NICE NG234 · GRADE</span>
+      <span class="chip"><b>Contexto:</b> 2.º nivel · Colombia</span>
+      <span class="chip"><b>Umbral clave:</b> 15,9 kg (Waters)</span>
+    </div>
+  </header>
+
+  <!-- 01 MAGNITUD -->
+  <section id="magnitud">
+    <span class="sec-num">01 · MAGNITUD</span>
+    <h2>Por qué la <em>técnica</em> importa</h2>
+    <p class="lede">La fragilidad ósea es frecuente en el paciente avanzado, la fractura iatrogénica es catastrófica e irreversible, y el riesgo recae simultáneamente sobre el paciente y sobre el trabajador que lo moviliza.</p>
+
+    <p>La enfermedad ósea metastásica (MBD) afecta a una proporción mayoritaria de pacientes oncológicos avanzados: en estudios de autopsia, hasta <strong>70%</strong> de quienes fallecen por cáncer presentan metástasis óseas. Los tumores con mayor tropismo óseo son mama, próstata, pulmón y mieloma múltiple (70–95% con lesiones líticas). Sin terapia ósea dirigida, <strong>≥50%</strong> de los pacientes con MBD presenta al menos un evento esquelético relacionado (SRE) en los primeros dos años <a class="ref" href="#r-saad">[Saad 2007]</a>.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="cifra">70<small>%</small></div><div class="et">Metástasis óseas en autopsias de muertes por cáncer</div></div>
+      <div class="kpi azul"><div class="cifra">43<small>%</small></div><div class="et">Fractura patológica en mieloma múltiple (vs. 35% mama, 19% próstata)</div></div>
+      <div class="kpi verde"><div class="cifra">2,5–10<small>%</small></div><div class="et">Compresión medular metastásica (MSCC) en pacientes oncológicos</div></div>
+      <div class="kpi rojo"><div class="cifra">45,8<small>%</small></div><div class="et">Traslados intrahospitalarios de críticos con algún evento adverso</div></div>
+    </div>
+
+    <div class="viz-caja">
+      <div class="viz-tit">Prevalencia de metástasis óseas por tumor primario (enfermedad avanzada)</div>
+      <canvas id="canvas-prevalencia" height="280"></canvas>
+      <div class="viz-fuente">Rangos agregados de la literatura · DiCaprio (Ann Joint), StatPearls NBK507911, Saad 2007 DOI 10.1002/cncr.22991</div>
+    </div>
+
+    <h3>El doble riesgo: paciente y trabajador</h3>
+    <p>Entre 21–42% de pacientes oncológicos hospitalizados sufren caídas <a class="ref" href="#r-zhao">[Zhao 2022]</a>, y el 45,8% de los traslados intrahospitalarios de críticos generan algún evento adverso (16,8% serios) <a class="ref" href="#r-schwebel">[Schwebel 2013]</a>. En paralelo, las lesiones musculoesqueléticas del personal por manejo manual alcanzan 30–60% de lumbalgia ocupacional en enfermería; en Colombia, Muñoz et al. documentaron <strong>67,8%</strong> de prevalencia en personal de Manizales <a class="ref" href="#r-munoz">[Muñoz 2011]</a>.</p>
+
+    <div class="callout c-norma">
+      <div class="ico">CO</div>
+      <div class="ct"><b>Brecha epidemiológica colombiana</b>
+      <p>Mama (40,2/100.000) y próstata (46,5/100.000) son las dos primeras causas de MBD a nivel mundial y dominan la incidencia oncológica colombiana, pero <strong>no existe registro nacional</strong> de SRE, fracturas patológicas ni MSCC. La osteoporosis añade ~1,42 millones de mujeres afectadas y 8.000–10.000 fracturas de cadera/año <a class="ref" href="#r-consenso">[II Consenso, 2018]</a>.</p></div>
+    </div>
+  </section>
+
+  <!-- 02 ESTRATIFICACIÓN -->
+  <section id="estratificacion">
+    <span class="sec-num">02 · ESTRATIFICACIÓN</span>
+    <h2>Estratificar el riesgo: <em>prerrequisito ineludible</em></h2>
+    <p class="lede">Toda decisión técnica de movilización debe estar precedida por una estratificación documentada del riesgo de fractura. Sin ella, la “movilización segura” es un eslogan.</p>
+
+    <h3>Huesos largos — Mirels y reglas corticales</h3>
+    <p>La <strong>puntuación de Mirels</strong> <a class="ref" href="#r-mirels">[Mirels 1989]</a> combina cuatro variables en una escala de 4–12. Su sensibilidad agregada es alta (≈91%) pero su <strong>especificidad es pobre (≈35%)</strong>, particularmente en húmero y mieloma, con concordancia interobservador solo moderada (κ 0,35–0,61).</p>
+
+    <div class="tabla-envoltura">
+      <table>
+        <caption>Puntuación de Mirels — riesgo de fractura patológica a 6 meses</caption>
+        <thead><tr><th>Variable</th><th>1 punto</th><th>2 puntos</th><th>3 puntos</th></tr></thead>
+        <tbody>
+          <tr><td>Localización</td><td>Miembro superior</td><td>Miembro inferior</td><td>Región peritrocantérea</td></tr>
+          <tr><td>Dolor</td><td>Leve</td><td>Moderado</td><td>Mecánico (funcional)</td></tr>
+          <tr><td>Lesión radiográfica</td><td>Blástica</td><td>Mixta</td><td>Lítica</td></tr>
+          <tr><td>Tamaño (Ø cortical)</td><td>&lt;1/3</td><td>1/3–2/3</td><td>&gt;2/3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tabla-envoltura">
+      <table>
+        <thead><tr><th>Puntaje total</th><th>Riesgo de fractura</th><th>Conducta</th></tr></thead>
+        <tbody>
+          <tr><td><b>≤7</b></td><td>0–4%</td><td><span class="badge b-verde">Carga según tolerancia · radioterapia</span></td></tr>
+          <tr><td><b>=8</b></td><td>~15% (zona gris)</td><td><span class="badge b-ambar">Decisión individualizada</span></td></tr>
+          <tr><td><b>≥9</b></td><td>~33%</td><td><span class="badge b-rojo">Fijación profiláctica antes de cargar</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Complementan al Mirels la <strong>regla de Van der Linden</strong> (destrucción cortical axial &gt;30 mm o circunferencial &gt;50%) <a class="ref" href="#r-vdl">[Van der Linden 2004]</a> y los <strong>criterios de Harrington</strong> (cortical &gt;50%, lesión lítica &gt;2,5 cm, avulsión del trocánter menor, dolor mecánico persistente tras radioterapia) <a class="ref" href="#r-harrington">[Harrington 1986]</a>. El <em>CT-based rigidity analysis</em> es superior (AUC 0,80) pero prácticamente inaccesible en Colombia.</p>
+
+    <h3>Columna — Spinal Instability Neoplastic Score (SINS)</h3>
+    <p>El <strong>SINS</strong> del Spine Oncology Study Group <a class="ref" href="#r-sins">[Fisher 2010]</a> genera un puntaje 0–18 en tres categorías operativas. Fiabilidad global buena (ICC 0,846; sensibilidad 95,7% para inestabilidad), recomendado formalmente por NICE NG234.</p>
+    <div class="tabla-envoltura">
+      <table>
+        <caption>SINS — categorías de estabilidad espinal neoplásica</caption>
+        <thead><tr><th>Puntaje</th><th>Categoría</th><th>Implicación para movilización</th></tr></thead>
+        <tbody>
+          <tr><td><b>0–6</b></td><td><span class="badge b-verde">Estable</span></td><td>Movilización con precauciones generales</td></tr>
+          <tr><td><b>7–12</b></td><td><span class="badge b-ambar">Potencialmente inestable</span></td><td>Valoración por columna · 40–50% de pacientes, sin algoritmo definitivo</td></tr>
+          <tr><td><b>13–18</b></td><td><span class="badge b-rojo">Inestable</span></td><td>Inmovilización · preferir lift-and-slide o grúa supina sobre log-roll</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-evidencia">
+      <div class="ico">✓</div>
+      <div class="ct"><b>Consecuencia operativa</b>
+      <p>Antes de cualquier transferencia o cambio de decúbito, la historia clínica debe registrar <strong>Mirels y/o SINS</strong>, el tipo lítico/blástico/mixto, el estatus de carga prescrito (NWB/TTWB/PWB/WBAT/FWB) y los decúbitos permitidos.</p></div>
+    </div>
+  </section>
+
+  <!-- 03 SPHM -->
+  <section id="sphm">
+    <span class="sec-num">03 · MARCO TÉCNICO</span>
+    <h2>Safe Patient Handling and Mobility <em>(SPHM)</em></h2>
+    <p class="lede">El principio rector internacional: eliminar el levantamiento manual del paciente siempre que el peso a manipular supere el umbral seguro. En el hueso frágil, la tecnología SPHM no es un lujo: es la conducta éticamente defendible.</p>
+
+    <p>El conjunto normativo dominante —<strong>OSHA, NIOSH (Waters 2007), VHA Directive 1611</strong> y los 8 estándares interprofesionales de la <strong>ANA</strong>— converge en eliminar el levantamiento manual cuando el peso exceda los <strong>15,9 kg (35 lb)</strong> que Waters identificó como límite seguro bajo condiciones ideales <a class="ref" href="#r-waters">[Waters 2007]</a>. En condiciones reales (torsión, brazos extendidos, jornadas largas) el límite es <em>menor</em>.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="cifra">15,9<small>kg</small></div><div class="et">Límite máximo de levantamiento manual (Waters/NIOSH)</div></div>
+      <div class="kpi verde"><div class="cifra">57<small>%</small></div><div class="et">Reducción de lesiones del trabajador tras SPHM nacional (VHA)</div></div>
+      <div class="kpi azul"><div class="cifra">80–90<small>%</small></div><div class="et">Reducción de fuerza de tracción con dispositivos air-assisted</div></div>
+      <div class="kpi"><div class="cifra">≥4</div><div class="et">SPHM Score VHA → paciente dependiente: grúa + 2–4 cuidadores</div></div>
+    </div>
+
+    <div class="callout c-evidencia">
+      <div class="ico">✓</div>
+      <div class="ct"><b>Matiz Cochrane importante</b>
+      <p>El entrenamiento en mecánica corporal <strong>aislado</strong> NO previene la lumbalgia ocupacional <a class="ref" href="#r-verbeek">[Verbeek/Martimo CD005958]</a>. Solo los <strong>programas SPHM integrales</strong> (cultura, equipos, algoritmos, política, liderazgo, formación continua) producen el efecto. <span class="grado g-mod">Evidencia moderada</span></p></div>
+    </div>
+
+    <h3>Jerarquía de ayudas mecánicas</h3>
+    <div class="tabla-envoltura">
+      <table>
+        <caption>Ayudas técnicas en el paciente con fractura patológica — evidencia y aplicación</caption>
+        <thead><tr><th>Dispositivo</th><th>Efecto</th><th>Uso en hueso frágil</th></tr></thead>
+        <tbody>
+          <tr><td>Transferencia lateral por aire (HoverMatt/MaxiAir)</td><td>↓80–90% tracción; “cradling”, minimiza shear y torsión</td><td><span class="badge b-verde">1.ª elección transferencia lateral</span></td></tr>
+          <tr><td>Grúa de techo (ceiling lift)</td><td>↓~60% fuerzas lumbares del cuidador; mayor adopción</td><td><span class="badge b-verde">Ideal (paciente dependiente)</span></td></tr>
+          <tr><td>Sábana deslizante (slide sheet)</td><td>↓ cizallamiento cutáneo y fuerza de tracción</td><td><span class="badge b-azul">Estándar factible / bajo costo</span></td></tr>
+          <tr><td>Eslinga de soporte de extremidad</td><td>Sostiene el miembro sin tracción manual</td><td><span class="badge b-azul">Útil en metástasis de miembro</span></td></tr>
+          <tr><td>Cinturón de marcha (gait belt)</td><td>Control del tronco</td><td><span class="badge b-rojo">Contraindicado si mtx costal/esternal/vertebral</span></td></tr>
+          <tr><td>Trapecio de cama</td><td>Autoincorporación</td><td><span class="badge b-rojo">Contraindicado si mtx húmero/clavícula/escápula/costilla/columna alta</span></td></tr>
+          <tr><td>Sit-to-stand</td><td>Bipedestación asistida</td><td><span class="badge b-rojo">Contraindic. relativa si Mirels ≥8 femoral</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 PREPARACIÓN -->
+  <section id="preparacion">
+    <span class="sec-num">04 · PREPARACIÓN</span>
+    <h2>La fase que más <em>eventos previene</em></h2>
+    <p class="lede">Frecuentemente despachada en un párrafo, la preparación previa es donde se previenen la mayoría de incidentes. Analgesia preventiva, no reactiva.</p>
+    <ol class="pasos" style="max-width:72ch;margin-left:0;list-style:none;">
+      <li><strong>Doble identificación activa</strong> — nombre completo + fecha de nacimiento o número de historia (Joint Commission NPSG.01.01.01).</li>
+      <li><strong>Estabilidad hemodinámica</strong> — TA, FC, FR, SpO₂, conciencia; búsqueda activa de hipotensión ortostática (NICE NG234 §1.6.3).</li>
+      <li><strong>Dolor con escala validada</strong> — NRS/EVA o ESAS-r en el comunicativo; <strong>PAINAD o Abbey</strong> si hay deterioro cognitivo <a class="ref" href="#r-painad">[Warden 2003]</a>.</li>
+      <li><strong>Revisión documentada de restricciones</strong> — carga permitida, decúbitos, ortesis, Mirels y SINS.</li>
+      <li><strong>Coordinación explícita del personal</strong> — líder único en la cabeza, conteo verbal cerrado (closed-loop).</li>
+      <li><strong>Verificación de ayudas técnicas</strong> disponibles antes de iniciar.</li>
+      <li><strong>Analgesia preventiva</strong> — bolo de rescate 20–30 min antes de la movilización planeada, especialmente con dolor incidental documentado.</li>
+    </ol>
+    <div class="callout c-consenso">
+      <div class="ico">i</div>
+      <div class="ct"><b>Principio</b><p>La analgesia debe titularse al esquema basal del paciente paliativo y anticiparse al movimiento. El dolor incidental no controlado es a la vez una contraindicación relativa y un criterio de suspensión.</p></div>
+    </div>
+  </section>
+
+  <!-- 05 TÉCNICAS -->
+  <section id="tecnicas">
+    <span class="sec-num">05 · TÉCNICA</span>
+    <h2>Técnicas específicas <em>paso a paso</em></h2>
+    <p class="lede">Despliegue cada técnica. El color del grado indica la solidez de la evidencia que la respalda. Casi toda la elección entre técnicas específicas opera por consenso, no por ensayos clínicos.</p>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">A</span><span class="ac-tit">Movilización en cama y log-roll</span><span class="ac-min">≥4 personas</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>Movilización en bloque manteniendo el eje occipucio–hombros–pelvis–rodillas. Estándar para sospecha o confirmación de inestabilidad espinal, fractura vertebral patológica o MSCC. <span class="grado g-cons">Consenso</span></p>
+        <ol class="pasos">
+          <li>Colocar la cama a la <strong>altura del codo del operador</strong> (las posiciones bajas elevan la carga en L4-S1) <a class="ref" href="#r-larson">[Larson 2022]</a>.</li>
+          <li>Cabecera <strong>plana</strong>; cualquier elevación introduce flexión lateral.</li>
+          <li>Cruzar los brazos del paciente sobre el tórax; almohada entre las rodillas.</li>
+          <li>Interponer <strong>sábana deslizante</strong> para reducir cizallamiento.</li>
+          <li><strong>Mínimo 4 personas</strong> (ideal 5); líder en la cabeza con estabilización manual en línea.</li>
+          <li>Rotación simultánea 30–90° al conteo, manteniendo el eje rígido.</li>
+        </ol>
+        <div class="callout c-baja" style="background:#fbf2dd;border-color:#e6cf95;">
+          <div class="ico" style="background:var(--ambar)">!</div>
+          <div class="ct"><b style="color:var(--ambar)">Debate biomecánico contemporáneo</b>
+          <p>Trabajos cadavéricos (Conrad, Horodyski, Rechtine) muestran que el log-roll <strong>genera más desplazamiento</strong> en columna inestable que el lift-and-slide o el scoop stretcher <a class="ref" href="#r-conrad">[Conrad 2012]</a>. Evidencia indirecta y de baja calidad, pero justifica preferir lift-and-slide o grúa supina en SINS ≥13. <span class="grado g-baja">Evidencia baja</span></p></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">B</span><span class="ac-tit">Cambio de decúbito y reposicionamiento</span><span class="ac-min">individualizado</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>El paradigma de “cambio cada 2 horas” está <strong>formalmente abandonado</strong>. La actualización EPUAP/NPIAP/PPPIA 2019 recomienda <strong>individualizar</strong> la frecuencia según movilidad, tolerancia tisular, superficie y objetivos. <span class="grado g-mod">Evidencia moderada (B1)</span></p>
+        <ul>
+          <li>Intervalo orientativo <strong>2–4 h</strong> en superficie estándar, ampliable en superficies dinámicas.</li>
+          <li>Posición lateral a <strong>30° (no 90°)</strong> para evitar presión trocantérea.</li>
+          <li>Apósitos profilácticos multicapa de espuma de silicona en sacro y talones <span class="grado g-alta">Evidencia alta (A)</span></li>
+          <li>Soportes <strong>proximal y distal</strong> a la lesión, nunca sobre ella; evitar carga directa sobre lesiones líticas.</li>
+          <li>Semi-Fowler ≤30° preferible, salvo MSCC pre-estabilización (NICE NG234 §1.4.3 → supino con elevación parcial mínima).</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">C</span><span class="ac-tit">Transferencia cama–camilla</span><span class="ac-min">3–4 personas</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>El <strong>lift-and-slide con tabla o dispositivo de fricción reducida / cojín de aire</strong> es biomecánicamente superior al log-roll en columna inestable y debe ser la técnica preferida <a class="ref" href="#r-rechtine">[Rechtine 2004]</a>. <span class="grado g-baja">Evidencia baja (biomecánica)</span></p>
+        <ol class="pasos">
+          <li>Verificar frenos de cama y camilla.</li>
+          <li>Ubicar la camilla paralela, ~10 cm por debajo de la superficie origen (aprovechar gravedad).</li>
+          <li>Colocar tabla de transferencia o, idealmente, dispositivo air-assisted.</li>
+          <li><strong>Mínimo 3–4 cuidadores</strong> (cabeza, tórax, pelvis, piernas); 5–6 si &gt;100 kg o lesión torácica inestable.</li>
+          <li>Trasladar en bloque al conteo cerrado del líder, sin tracción.</li>
+          <li>Verificar alineación anatómica; elevar barandas.</li>
+        </ol>
+        <p class="mono">Dispositivos air-assisted de un solo uso ≈ US$150–300: primera elección documentada cuando estén disponibles.</p>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">D</span><span class="ac-tit">Transferencia cama–silla</span><span class="ac-min">grúa si Mirels ≥8</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>En metástasis femoral (Mirels ≥8) o húmero con compromiso prensil, la transferencia activa debe sustituirse por <strong>grúa mecánica con eslinga</strong>. <span class="grado g-cons">Consenso</span></p>
+        <ol class="pasos">
+          <li>Colocar la silla con frenos activados.</li>
+          <li>Si hay transferencia activa: cinturón de marcha para control del tronco — <strong>nunca si hay mtx costal/esternal/vertebral</strong>.</li>
+          <li>Proteger el segmento comprometido; la extremidad afectada <strong>no es punto de apoyo ni pivote</strong>.</li>
+          <li>Respetar el estatus de carga documentado (ver tabla inferior).</li>
+          <li>Supervisar durante todo el procedimiento.</li>
+        </ol>
+        <div class="tabla-envoltura">
+          <table>
+            <caption>Definición operativa del estatus de carga (weight-bearing)</caption>
+            <thead><tr><th>Sigla</th><th>Significado</th><th>Carga aproximada</th></tr></thead>
+            <tbody>
+              <tr><td><b>NWB</b></td><td>Sin apoyo (non-weight-bearing)</td><td>0% — sin contacto</td></tr>
+              <tr><td><b>TTWB</b></td><td>Toque de dedos (toe-touch)</td><td>~10% — solo equilibrio <span class="badge b-ambar">def. inconsistente</span></td></tr>
+              <tr><td><b>PWB</b></td><td>Parcial</td><td>20–50% prescrito</td></tr>
+              <tr><td><b>WBAT</b></td><td>Según tolerancia</td><td>variable</td></tr>
+              <tr><td><b>FWB</b></td><td>Completa</td><td>100%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">E</span><span class="ac-tit">Deambulación asistida</span><span class="ac-min">orden médica</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>Requiere autorización médica documentada con estatus de carga, ayudas autorizadas y criterios de suspensión. NICE NG234 §1.6.4: monitoreo continuo de síntomas neurológicos y dolor, con <strong>retorno inmediato a la posición previa</strong> si aumentan.</p>
+        <div class="callout c-baja" style="background:#fbf2dd;border-color:#e6cf95;">
+          <div class="ico" style="background:var(--ambar)">!</div>
+          <div class="ct"><b style="color:var(--ambar)">El cumplimiento real es deficiente</b>
+          <p>53% de pacientes es incapaz de cumplir las restricciones de carga <a class="ref" href="#r-braun">[Braun 2017]</a>; 27,5% incumple el NWB <a class="ref" href="#r-chiodo">[Chiodo 2016]</a>. En paliativos el problema se agrava por dolor incidental, fatiga y deterioro cognitivo. → Prescribir el <strong>régimen menos restrictivo compatible con seguridad</strong> y apoyarse en ayudas mecánicas, no en órdenes verbales.</p></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">F</span><span class="ac-tit">Fractura vertebral y sospecha de MSCC</span><span class="ac-min">NICE NG234</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>La guía dominante es <strong>NICE NG234 (2023)</strong>, que reemplaza a la CG75 (2008) y representa el cambio paradigmático más importante de la última década <a class="ref" href="#r-nice234">[NICE NG234]</a>.</p>
+        <ul>
+          <li><strong>Inmovilización inmediata</strong> ante MSCC con signos de inestabilidad (§1.4.1).</li>
+          <li><strong>Supino con elevación parcial permitida</strong> — se abandona explícitamente el dogma del “flat bed rest” rígido; se ajusta si el paciente no tolera el supino (§1.4.3).</li>
+          <li><strong>Consulta experta &lt;24 h</strong> para minimizar la duración de la inmovilización (§1.4.4).</li>
+          <li><strong>Sedestación graduada y carga progresiva</strong> en cuanto la imagen sugiera estabilidad (§1.6.1–1.6.3).</li>
+          <li><strong>Movilizar aun en paliativos sin tratamiento oncológico activo</strong> (§1.6.5) — crítico para el contexto del docente.</li>
+        </ul>
+        <div class="callout c-consenso">
+          <div class="ico">i</div>
+          <div class="ct"><b>El vacío de evidencia es explícito</b>
+          <p>La revisión Cochrane sobre posición y bracing en MSCC <strong>no identificó ningún estudio elegible</strong> <a class="ref" href="#r-cochrane-mscc">[Lee CD007609]</a>. Tratamiento de soporte: dexametasona 16 mg inmediata; radioterapia 8 Gy fracción única no-inferior <a class="ref" href="#r-scorad">[SCORAD, JAMA 2019]</a>; cirugía descompresiva en candidatos <a class="ref" href="#r-patchell">[Patchell 2005]</a>.</p></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="acordeon" data-ac>
+      <div class="acordeon-cab"><span class="ac-num">G</span><span class="ac-tit">Traslado intra e interinstitucional</span><span class="ac-min">SBAR / I-PASS</span><span class="flecha">▶</span></div>
+      <div class="acordeon-cuerpo"><div class="acordeon-cuerpo-int">
+        <p>Camilla con barandas y almohadillado de prominencias; inmovilización ajustada al SINS. Monitoreo de signos vitales, dolor y <strong>función neurológica</strong> (fuerza, sensibilidad, esfínteres).</p>
+        <ul>
+          <li>Transferencia de información con herramienta estructurada: <strong>SBAR</strong> (estándar Joint Commission/AHRQ/IHI) o <strong>I-PASS</strong> (↓23% errores médicos) <a class="ref" href="#r-ipass">[Starmer 2014]</a>.</li>
+          <li>Para MSCC documentar: SINS, restricciones de carga, último estado neurológico, analgesia y hora de radioterapia/cirugía.</li>
+        </ul>
+        <div class="callout c-norma">
+          <div class="ico">CO</div>
+          <div class="ct"><b>Traslado rural prolongado (Bajo Ricaurte / Vélez)</b>
+          <p>Alineado con la <strong>Resolución 3047 de 2008</strong> (referencia y contrarreferencia) y el SEM (Res. 926 de 2017): inmovilización en bloque con colchón de vacío si está disponible, analgesia opioide titulada antes del traslado con rescate en trayecto (acceso garantizado por la <strong>Ley 1733 de 2014</strong>), acompañamiento entrenado y comunicación previa con el CRUE departamental.</p></div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- 06 PRINCIPIOS -->
+  <section id="principios">
+    <span class="sec-num">06 · PRINCIPIOS</span>
+    <h2>Principios biomecánicos y <em>criterios de suspensión</em></h2>
+    <p class="lede">Seis principios atraviesan todas las técnicas. Cuando aparece una bandera roja, se suspende — sin excepción.</p>
+
+    <div class="principios">
+      <div class="principio"><div class="pn">01</div><div class="pt">Alineación neutra</div><div class="pd">Mantener el eje anatómico en todo momento.</div></div>
+      <div class="principio"><div class="pn">02</div><div class="pt">Sin torsión axial</div><div class="pd">El vector que más estresa segmentos vertebrales inestables.</div></div>
+      <div class="principio"><div class="pn">03</div><div class="pt">Sin tracción</div><div class="pd">Sobre extremidades con mtx líticas o Mirels ≥8.</div></div>
+      <div class="principio"><div class="pn">04</div><div class="pt">Distribuir la carga</div><div class="pd">Slide sheets y dispositivos mecánicos, no fuerza manual.</div></div>
+      <div class="principio"><div class="pn">05</div><div class="pt">Líder único</div><div class="pd">Conteo verbal cerrado (closed-loop).</div></div>
+      <div class="principio"><div class="pn">06</div><div class="pt">Suspender</div><div class="pd">Ante cualquier signo de alarma, detener de inmediato.</div></div>
+    </div>
+
+    <h4>Criterios de suspensión inmediata</h4>
+    <div class="banderas">
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Dolor súbito intenso (NRS ≥7 nuevo)</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Crepitación ósea</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Deformidad visible o palpable</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Pérdida de fuerza o sensibilidad</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Deterioro neurológico</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Hipotensión ortostática (↓TAS &gt;20 mmHg)</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Disnea o desaturación</span></div>
+      <div class="bandera"><span class="bx">✕</span><span class="bt">Incontinencia nueva (¿progresión de MSCC?)</span></div>
+    </div>
+
+    <div class="callout c-alerta">
+      <div class="ico">⚠</div>
+      <div class="ct"><b>Contraindicaciones para movilización activa</b>
+      <p>Fractura inestable no inmovilizada (SINS ≥13) · dolor severo no controlado · MSCC sospechada sin estabilización ni evaluación experta · inestabilidad hemodinámica · deterioro neurológico agudo en progresión · Mirels ≥9 en miembro inferior sin fijación profiláctica · hipercalcemia sintomática severa.</p></div>
+    </div>
+
+    <h4>Manejo del evento adverso</h4>
+    <p>Estabilización clínica e imágenes → notificación al equipo → <strong>disclosure abierta al paciente y familia</strong> (estándar del Manual de Acreditación, Res. 5095 de 2018) → reporte al Programa de Seguridad del Paciente en 24–72 h → <strong>análisis con Protocolo de Londres / causa-raíz</strong> → plan de mejora → reporte agregado al SISPRO (Res. 256 de 2016). Una fractura iatrogénica en metástasis óseas conocidas debe analizarse como <strong>evento centinela</strong>.</p>
+  </section>
+
+  <!-- 07 EDUCACIÓN -->
+  <section id="educacion">
+    <span class="sec-num">07 · EDUCACIÓN</span>
+    <h2>Educación y <em>capacitación</em></h2>
+    <p class="lede">Educar al paciente y al cuidador es una intervención clínica, no un trámite. Capacitar al personal con “mecánica corporal” sola es insuficiente.</p>
+
+    <h3>Paciente y familia</h3>
+    <ul style="max-width:72ch;">
+      <li>Restricciones de carga con lenguaje concreto (kg, prohibición de cargar &gt;2–5 kg según localización, evitar rotación y flexión vertebral).</li>
+      <li>Prevención de caídas domiciliarias: retiro de tapetes, iluminación nocturna, barras de apoyo, calzado cerrado antideslizante, silla de ducha.</li>
+      <li>Movilización doméstica segura con <strong>demostración + teach-back</strong>.</li>
+      <li>Signos de alarma (dolor súbito, deformidad, pérdida de fuerza, incontinencia nueva).</li>
+      <li>Planeación anticipada (voluntad anticipada) y lugar preferido de cuidado.</li>
+      <li>Material adaptado a alfabetización en salud rural boyacense (≤6.º grado, pictogramas) y canal telefónico para dudas.</li>
+    </ul>
+
+    <div class="callout c-norma">
+      <div class="ico">CO</div>
+      <div class="ct"><b>Flag de integridad normativa</b>
+      <p>La planeación anticipada (voluntad anticipada) se rige hoy por la <strong>Resolución 971 de 2021</strong>. La <strong>Resolución 1216 de 2015 fue derogada</strong> (Art. 36 de la Res. 971/2021) y <strong>no debe citarse como vigente</strong> en material académico ni clínico.</p></div>
+    </div>
+
+    <h3>Personal asistencial</h3>
+    <p>Abandonar el modelo exclusivo de “mecánica corporal” —insuficiente según Hignett <a class="ref" href="#r-hignett">[Hignett 2003]</a> y la actualización Cochrane— y migrar a <strong>programas SPHM integrales</strong>: mínimo 8 h anuales con componente práctico, algoritmo de decisión previo a cada transferencia, <strong>coordinadores SPHM (champions) por turno</strong>, política escrita de manejo mínimo manual y sistema de reporte de lesiones del personal.</p>
+    <div class="callout c-norma">
+      <div class="ico">CO</div>
+      <div class="ct"><b>Marco SST colombiano que lo sostiene</b>
+      <p><strong>Decreto 1072 de 2015</strong> (DUR Sector Trabajo) · <strong>Resolución 0312 de 2019</strong> (Estándares Mínimos SG-SST) · <strong>GATISO</strong> sobre DME laborales. Las ARL pueden cofinanciar capacitación y equipo. El currículo <span class="mono">NIOSH 2009-127</span> es gratuito y traducible.</p></div>
+    </div>
+  </section>
+
+  <!-- 08 INDICADORES -->
+  <section id="indicadores">
+    <span class="sec-num">08 · CALIDAD Y NORMATIVA</span>
+    <h2>Indicadores de calidad y <em>arquitectura colombiana</em></h2>
+    <p class="lede">Combinar indicadores de resultado y de proceso, alineados con la Resolución 256 de 2016 (PISIS-SISPRO) y los benchmarks internacionales.</p>
+
+    <div class="tabla-envoltura">
+      <table>
+        <caption>Indicadores recomendados</caption>
+        <thead><tr><th>Indicador</th><th>Meta / benchmark</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td>Tasa de caídas intrahospitalarias (×1.000 días-paciente)</td><td>&lt;3,0 (NDNQI)</td><td><span class="badge b-azul">Resultado</span></td></tr>
+          <tr><td>Caídas con lesión</td><td>&lt;0,6–1,0 / 1.000 días</td><td><span class="badge b-azul">Resultado</span></td></tr>
+          <tr><td>Úlceras por presión adquiridas (HAPI) estadio 2–4</td><td>&lt;2% (acreditados)</td><td><span class="badge b-azul">Resultado</span></td></tr>
+          <tr><td>Refracturas / fracturas iatrogénicas</td><td>Evento centinela</td><td><span class="badge b-rojo">Centinela</span></td></tr>
+          <tr><td>Eventos adversos en traslado intrahospitalario</td><td>Dominio seguridad (Res. 256)</td><td><span class="badge b-azul">Resultado</span></td></tr>
+          <tr><td>Lesiones osteomusculares del personal</td><td>SG-SST (Res. 0312)</td><td><span class="badge b-azul">Resultado</span></td></tr>
+          <tr><td>Valoración de riesgo de caída documentada (Morse)</td><td>≈100%</td><td><span class="badge b-verde">Proceso</span></td></tr>
+          <tr><td>Plan individualizado de movilización documentado</td><td>≈100%</td><td><span class="badge b-verde">Proceso</span></td></tr>
+          <tr><td>Personal capacitado anualmente en SPHM</td><td>≈100%</td><td><span class="badge b-verde">Proceso</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout c-alerta">
+      <div class="ico">⚠</div>
+      <div class="ct"><b>Dos límites del marco colombiano</b>
+      <p>(1) <strong>No existe normativa específica equivalente a SPHM</strong> (a diferencia de OSHA, HSE o las leyes de 11 estados de EE.UU.). (2) La <strong>Resolución 3100 de 2019</strong> (mod. 544 de 2023) <strong>no exige grúas mecánicas hospitalarias en 2.º nivel</strong> → brecha de seguridad a cubrir por iniciativa institucional.</p></div>
+    </div>
+
+    <div class="callout c-norma">
+      <div class="ico">CO</div>
+      <div class="ct"><b>Precisión sobre el Hospital Regional de Moniquirá</b>
+      <p>Moniquirá <strong>no</strong> figura en la lista oficial de 170 municipios PDET (Decreto-Ley 893 de 2017). El análisis de barreras de traslado debe encuadrarse en términos de <strong>ruralidad dispersa y barreras geográficas</strong>, no en clasificación PDET.</p></div>
+    </div>
+
+    <h4>Jerarquía pragmática de implementación en 2.º nivel rural</h4>
+    <p>En orden de costo creciente, cuando las grúas de techo son inaccesibles: política institucional “no-lift” escrita → algoritmos VHA traducidos → camas con ajuste de altura usadas correctamente → <strong>slide sheets</strong> (incluso de bajo costo) → tablas de transferencia → gait belts con restricciones claras → equipos de 2–4 cuidadores organizados → módulo NIOSH 2009-127 traducido → al menos <strong>una grúa móvil compartida</strong> por unidad oncológica/paliativa → escalamiento ideal a dispositivos air-assisted de un solo uso y ceiling lifts en remodelaciones.</p>
+  </section>
+
+  <!-- 09 BRECHAS -->
+  <section id="brechas">
+    <span class="sec-num">09 · HONESTIDAD EPISTÉMICA</span>
+    <h2>Brechas de <em>evidencia</em></h2>
+    <p class="lede">Una síntesis académica honesta explicita dónde el rey va desnudo. Estas brechas no invalidan la práctica recomendada; la justifican como consenso defensivo ante un riesgo asimétrico — y son terreno fértil para investigación clínica original colombiana.</p>
+
+    <div class="gaps">
+      <div class="gap"><div class="gn">GAP 01</div><div class="gt">Ningún RCT compara reposo en cama vs. movilización temprana en MSCC o metástasis espinal sintomática (NICE 2023, Evidence Review H).</div></div>
+      <div class="gap"><div class="gn">GAP 02</div><div class="gt">Ningún RCT compara regímenes de carga (NWB/PWB/WBAT/FWB) en hueso largo con metástasis estabilizada o no.</div></div>
+      <div class="gap"><div class="gn">GAP 03</div><div class="gt">No hay estudios clínicos que comparen log-roll vs. lift-and-slide en desenlaces (solo biomecánica cadavérica).</div></div>
+      <div class="gap"><div class="gn">GAP 04</div><div class="gt">Sin evidencia robusta sobre la frecuencia óptima de cambios posicionales en metástasis óseas (“cada 2 h” descartado, no reemplazado por RCT).</div></div>
+      <div class="gap"><div class="gn">GAP 05</div><div class="gt">El cumplimiento real con restricciones de carga es deficiente y no estudiado específicamente en oncología paliativa.</div></div>
+      <div class="gap"><div class="gn">GAP 06</div><div class="gt">La categoría SINS 7–12 (40–50% de pacientes) carece de algoritmo definitivo.</div></div>
+      <div class="gap"><div class="gn">GAP 07</div><div class="gt">Mirels mantiene baja especificidad; no validado prospectivamente para lesiones blásticas puras ni supervivencia &lt;3 meses.</div></div>
+      <div class="gap"><div class="gn">GAP 08</div><div class="gt">ESMO, ASCO y AAOS no incluyen recomendaciones específicas de rehabilitación, posicionamiento o restricción de carga.</div></div>
+      <div class="gap"><div class="gn">GAP 09</div><div class="gt">Colombia carece de datos propios sobre SRE, MSCC y fracturas patológicas, y de registro nacional de eventos adversos por movilización.</div></div>
+    </div>
+  </section>
+
+  <!-- 10 CONCLUSIÓN -->
+  <section id="conclusion">
+    <span class="sec-num">10 · SÍNTESIS</span>
+    <h2>Un procedimiento <em>defendible bajo incertidumbre</em></h2>
+    <p class="lede">La movilización del hueso frágil opera bajo certeza biomecánica e incertidumbre clínica. La incertidumbre no es excusa para la pasividad: es razón para la rigurosa intencionalidad de cada movimiento.</p>
+
+    <div class="tabla-envoltura">
+      <table>
+        <caption>Qué respalda la evidencia vs. qué opera por consenso</caption>
+        <thead><tr><th>Respaldado por evidencia</th><th>Operado por consenso (enseñar como tal)</th></tr></thead>
+        <tbody>
+          <tr><td>Estratificación previa (Mirels, SINS) <span class="grado g-mod">mod</span></td><td>Elección entre técnicas específicas de transferencia</td></tr>
+          <tr><td>SPHM: eliminar levantamiento manual &gt;15,9 kg <span class="grado g-mod">mod</span></td><td>Frecuencia exacta de cambios de decúbito</td></tr>
+          <tr><td>Escalas de dolor apropiadas al estado cognitivo <span class="grado g-alta">alta</span></td><td>Duración óptima de la inmovilización post-MSCC</td></tr>
+          <tr><td>Prevención individualizada de UPP, sin frecuencia fija <span class="grado g-mod">mod</span></td><td>Umbrales precisos de carga por tipo de lesión</td></tr>
+          <tr><td>Abandono del flat bed rest dogmático en MSCC <span class="grado g-mod">mod</span></td><td>Protocolos detallados de log-roll en paliativo no traumático</td></tr>
+          <tr><td>Comunicación estructurada (SBAR/I-PASS) <span class="grado g-mod">mod</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Las cinco capas del procedimiento</h3>
+    <div class="capas">
+      <div class="capa"><div class="cap-n">1</div><div class="cap-c"><h4>Estratificación documentada</h4><p>Mirels y/o SINS, tipo de lesión, carga y decúbitos permitidos — antes de cada movilización.</p></div></div>
+      <div class="capa"><div class="cap-n">2</div><div class="cap-c"><h4>Política no-lift con jerarquía factible</h4><p>Eliminación del levantamiento manual con la mejor ayuda mecánica disponible en el recurso real.</p></div></div>
+      <div class="capa"><div class="cap-n">3</div><div class="cap-c"><h4>Técnica por algoritmo VHA adaptado</h4><p>Biomecánica conservadora, ≥3–4 operadores, líder único y conteo cerrado.</p></div></div>
+      <div class="capa"><div class="cap-n">4</div><div class="cap-c"><h4>Educación estructurada</h4><p>Paciente, familia y personal — con teach-back y capacitación SPHM continua.</p></div></div>
+      <div class="capa"><div class="cap-n">5</div><div class="cap-c"><h4>Indicadores de calidad</h4><p>Alineados con la Resolución 256 de 2016 y el Manual de Acreditación ICONTEC.</p></div></div>
+    </div>
+
+    <div class="callout c-evidencia">
+      <div class="ico">✓</div>
+      <div class="ct"><b>Tres principios éticos rectores</b>
+      <p><strong>No maleficencia</strong> (evitar la fractura iatrogénica catastrófica) · <strong>beneficencia</strong> (preservar movilidad y calidad de vida en el tiempo que resta) · <strong>justicia</strong> (proteger al trabajador sanitario expuesto a riesgo biomecánico ocupacional documentado).</p></div>
+    </div>
+  </section>
+
+  <!-- BIBLIO -->
+  <section id="biblio">
+    <span class="sec-num">★ · REFERENCIAS</span>
+    <h2>Referencias <em>verificables</em></h2>
+    <p class="lede">Referencias clave con DOI/PMID. Por la naturaleza de consenso del tema, varias recomendaciones provienen de guías de práctica clínica y revisiones sistemáticas que declaran ausencia de ensayos.</p>
+    <div class="biblio">
+      <ol>
+        <li id="r-saad">Saad F, et al. Pathologic fractures correlate with reduced survival in patients with malignant bone disease. <em>Cancer.</em> 2007. <span class="doi">DOI 10.1002/cncr.22991</span></li>
+        <li id="r-zhao">Zhao Y, et al. Falls in hospitalized cancer patients. <em>Asia Pac J Oncol Nurs.</em> 2022. <span class="pmid">PMID 36033969</span></li>
+        <li id="r-schwebel">Schwebel C, et al. Adverse events during intrahospital transport of critically ill patients. <em>Ann Intensive Care.</em> 2013. <span class="doi">DOI 10.1186/2110-5820-3-10</span> · PMC3639083</li>
+        <li id="r-munoz">Muñoz Muñoz CF, et al. Prevalencia de lumbalgia y factores de riesgo en enfermeros y auxiliares (Manizales). <em>Hacia la Promoción de la Salud.</em> 2011.</li>
+        <li id="r-consenso">II Consenso Colombiano para el manejo de la osteoporosis. <em>Rev Colomb Reumatol.</em> 2018. <span class="doi">DOI 10.1016/j.rcreu.2018.02.006</span></li>
+        <li id="r-clark">Clark P, et al. (LAVOS) Prevalencia de fractura vertebral en Latinoamérica. <em>Osteoporos Int.</em> 2009. <span class="doi">DOI 10.1007/s00198-008-0657-4</span></li>
+        <li id="r-mirels">Mirels H. Metastatic disease in long bones: a proposed scoring system. <em>Clin Orthop Relat Res.</em> 1989. <span class="pmid">PMID 2684463</span></li>
+        <li id="r-vdl">Van der Linden YM, et al. Comparative analysis of risk factors for pathological fracture with femoral metastases. <em>JBJS Br.</em> 2004. <span class="doi">DOI 10.1302/0301-620X.86B4.14703</span></li>
+        <li id="r-harrington">Harrington KD. Impending pathologic fractures from metastatic malignancy. <em>Instr Course Lect.</em> 1986. <span class="pmid">PMID 3819423</span></li>
+        <li id="r-damron">Damron TA, et al. CT-based structural rigidity analysis vs. Mirels. <em>Clin Orthop Relat Res.</em> 2016. <span class="doi">DOI 10.1007/s11999-015-4453-0</span></li>
+        <li id="r-sins">Fisher CG, et al. A novel classification system for spinal instability in neoplastic disease: SINS. <em>Spine.</em> 2010. <span class="doi">DOI 10.1097/BRS.0b013e3181e16ae2</span></li>
+        <li id="r-fourney">Fourney DR, et al. SINS validation from the Spine Oncology Study Group. <em>J Clin Oncol.</em> 2011. <span class="pmid">PMID 21709187</span></li>
+        <li id="r-nesms">Schoenfeld AJ, et al. New England Spinal Metastasis Score (NESMS). <em>Spine J.</em> 2020. <span class="doi">DOI 10.1016/j.spinee.2020.02.009</span></li>
+        <li id="r-waters">Waters TR. When is it safe to manually lift a patient? <em>Am J Nurs.</em> 2007. <span class="pmid">PMID 17667392</span></li>
+        <li id="r-verbeek">Martimo KP, Verbeek J, et al. Manual material handling advice and assistive devices for back pain in workers. <em>Cochrane.</em> 2007. <span class="doi">DOI 10.1002/14651858.CD005958.pub2</span></li>
+        <li id="r-marras">Marras WS, et al. Patient-handling devices and spine loading. <em>Ergonomics.</em> 2009. <span class="doi">DOI 10.1080/00140130802376075</span></li>
+        <li id="r-larson">Larson, et al. Healthcare worker bed height choice and low back force when boosting a patient. 2022. <span class="pmid">PMID 35084296</span></li>
+        <li id="r-rechtine">Rechtine GR, Conrad BP, Horodyski M, et al. Motion generated in the unstable spine during log-roll and lift-and-slide. <em>J Trauma.</em> 2004. <span class="doi">DOI 10.1097/01.ta.0000144508.06413.a9</span></li>
+        <li id="r-conrad">Conrad BP, et al. Eliminating log rolling as a spine trauma order / unacceptable motion in unstable spine. <em>Surg Neurol Int.</em> 2012. PMC3422095 · <span class="pmid">PMID 22905325</span></li>
+        <li id="r-painad">Warden V, Hurley AC, Volicer L. PAINAD scale. <em>J Am Med Dir Assoc.</em> 2003.</li>
+        <li id="r-braun">Braun BJ, et al. Patient compliance with weight-bearing restrictions. <em>Int Orthop.</em> 2017. <span class="pmid">PMID 28421239</span></li>
+        <li id="r-chiodo">Chiodo CP, et al. Patient compliance with postoperative lower-extremity non-weight-bearing restrictions. <em>JBJS Am.</em> 2016. <span class="pmid">PMID 27655986</span></li>
+        <li id="r-nice234">NICE NG234. Spinal metastases and metastatic spinal cord compression. 2023. <span class="doi">nice.org.uk/guidance/ng234</span> · Evidence Review (immobilisation) NBK602874</li>
+        <li id="r-cochrane-mscc">Lee L, et al. Position and spinal bracing for pain relief in MSCC. <em>Cochrane.</em> 2015. CD007609 · <span class="pmid">PMID 26400848</span></li>
+        <li id="r-scorad">Hoskin PJ, et al. (SCORAD III) Single-fraction vs. multifraction RT for MSCC. <em>JAMA.</em> 2019;322:2084–94.</li>
+        <li id="r-patchell">Patchell RA, et al. Decompressive surgery for MSCC: a randomised trial. <em>Lancet.</em> 2005;366:643–648.</li>
+        <li id="r-epuap">EPUAP/NPIAP/PPPIA. Prevention and Treatment of Pressure Ulcers/Injuries: Clinical Practice Guideline. 2019.</li>
+        <li id="r-ipass">Starmer AJ, et al. Changes in medical errors after implementation of I-PASS handoff. <em>NEJM.</em> 2014;371:1803–12.</li>
+        <li id="r-hignett">Hignett S. Intervention strategies to reduce musculoskeletal injuries associated with handling patients. <em>Occup Environ Med.</em> 2003. <span class="doi">DOI 10.1136/oem.60.9.e6</span></li>
+        <li id="r-aaos">AAOS/MSTS/ASCO/ASTRO. The Treatment of Metastatic Carcinoma and Myeloma of the Femur — CPG. 2019. <span class="pmid">PMID 36656274</span></li>
+        <li id="r-esmo">Coleman R, et al. Bone health in cancer: ESMO Clinical Practice Guidelines. <em>Ann Oncol.</em> 2020. <span class="doi">DOI 10.1016/j.annonc.2020.07.019</span></li>
+        <li id="r-hernandez">Hernandez RK, et al. Incidence of bone metastases and skeletal-related events. <em>BMC Cancer.</em> 2018. <span class="doi">DOI 10.1186/s12885-017-3922-0</span></li>
+      </ol>
+      <p style="margin-top:20px;font-size:12px;color:var(--tinta-suave);"><em>Nota de verificación bibliográfica:</em> los DOI/PMID deben confirmarse de forma independiente antes de su uso en material de evaluación. Las recomendaciones colombianas se citan según su estado normativo a junio de 2026.</p>
+    </div>
+  </section>
+
+  <!-- PIE -->
+  <footer class="pie">
+    <b>Leyenda de grados de evidencia</b>
+    <div class="leyenda-grados">
+      <span class="grado g-alta">Alta</span>
+      <span class="grado g-mod">Moderada</span>
+      <span class="grado g-baja">Baja / indirecta</span>
+      <span class="grado g-cons">Consenso de expertos</span>
+    </div>
+    <p>Síntesis de evidencia independiente · Movilización segura del paciente con alto riesgo de fractura o refractura patológica · Maestría en Investigación en Cuidados Paliativos, Universidad Antonio Nariño · Documento académico de uso pedagógico y clínico. Las recomendaciones no sustituyen el juicio clínico individual ni la valoración por especialista.</p>
+    <p style="margin-top:12px;font-family:var(--mono);font-size:10.5px;color:#9d8fc7;">Recurso interactivo · 2026 · Tipografías Cormorant Garamond · Libre Baskerville · JetBrains Mono</p>
+  </footer>
+</main>
+</div>
+
+<button id="arriba" aria-label="Volver arriba">↑</button>
+
+<script>
+/* ---- Barra de progreso ---- */
+const barra=document.getElementById('barra-progreso');
+const btnArriba=document.getElementById('arriba');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const sc=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+  barra.style.width=sc+'%';
+  btnArriba.classList.toggle('visible',h.scrollTop>500);
+});
+btnArriba.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* ---- Acordeones ---- */
+document.querySelectorAll('[data-ac]').forEach(ac=>{
+  const cab=ac.querySelector('.acordeon-cab');
+  const cuerpo=ac.querySelector('.acordeon-cuerpo');
+  cab.addEventListener('click',()=>{
+    const abierto=ac.classList.contains('abierto');
+    if(abierto){ac.classList.remove('abierto');cuerpo.style.maxHeight=null;}
+    else{ac.classList.add('abierto');cuerpo.style.maxHeight=cuerpo.scrollHeight+40+'px';}
+  });
+});
+
+/* ---- Navegación activa (IntersectionObserver) ---- */
+const enlaces=document.querySelectorAll('nav a');
+const secciones=[...enlaces].map(a=>document.querySelector(a.getAttribute('href')));
+const obs=new IntersectionObserver(entradas=>{
+  entradas.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.getAttribute('id');
+      enlaces.forEach(a=>a.classList.toggle('activo',a.getAttribute('href')==='#'+id));
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px',threshold:0});
+secciones.forEach(s=>{if(s)obs.observe(s);});
+
+/* ---- Menú móvil ---- */
+const sidebar=document.getElementById('sidebar');
+document.getElementById('abrir-menu').addEventListener('click',e=>{
+  e.stopPropagation();sidebar.classList.toggle('abierto');
+});
+document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>{
+  if(window.innerWidth<=860)sidebar.classList.remove('abierto');
+}));
+document.addEventListener('click',e=>{
+  if(window.innerWidth<=860 && sidebar.classList.contains('abierto')
+     && !sidebar.contains(e.target) && e.target.id!=='abrir-menu'){
+    sidebar.classList.remove('abierto');
+  }
+});
+
+/* ---- Canvas: prevalencia de metástasis óseas por tumor ---- */
+(function(){
+  const cv=document.getElementById('canvas-prevalencia');
+  if(!cv)return;
+  const datos=[
+    {t:'Próstata',min:65,max:90,c:'#6b5b95'},
+    {t:'Mama',min:65,max:75,c:'#3a6ea5'},
+    {t:'Mieloma múltiple',min:70,max:95,c:'#4a8b6f'},
+    {t:'Pulmón',min:30,max:40,c:'#9d8fc7'},
+    {t:'Riñón',min:20,max:35,c:'#6fa3d2'},
+    {t:'Tiroides',min:20,max:42,c:'#7fc0a3'}
+  ];
+  function dibujar(){
+    const dpr=window.devicePixelRatio||1;
+    const W=cv.clientWidth, H=280;
+    cv.width=W*dpr; cv.height=H*dpr; cv.style.height=H+'px';
+    const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+    ctx.clearRect(0,0,W,H);
+    const padL=130,padR=40,padT=18,padB=34;
+    const ancho=W-padL-padR, alto=H-padT-padB;
+    const filas=datos.length, gap=12;
+    const hFila=(alto-gap*(filas-1))/filas;
+    // eje
+    ctx.strokeStyle='#e0dad2'; ctx.lineWidth=1;
+    for(let v=0;v<=100;v+=25){
+      const x=padL+ancho*(v/100);
+      ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,padT+alto);ctx.stroke();
+      ctx.fillStyle='#9d8fc7';ctx.font='10px "JetBrains Mono",monospace';
+      ctx.textAlign='center';ctx.fillText(v+'%',x,H-12);
+    }
+    datos.forEach((d,i)=>{
+      const y=padT+i*(hFila+gap);
+      const x0=padL+ancho*(d.min/100);
+      const x1=padL+ancho*(d.max/100);
+      // pista
+      ctx.fillStyle='#f3f0ec';
+      roundRect(ctx,padL,y,ancho,hFila,5);ctx.fill();
+      // barra animada
+      const w=(x1-x0)*prog;
+      const grad=ctx.createLinearGradient(x0,0,x0+w,0);
+      grad.addColorStop(0,d.c);grad.addColorStop(1,d.c+'cc');
+      ctx.fillStyle=grad;
+      roundRect(ctx,x0,y,Math.max(w,0.1),hFila,5);ctx.fill();
+      // etiqueta tumor
+      ctx.fillStyle='#26242e';ctx.font='600 13px "Libre Baskerville",serif';
+      ctx.textAlign='right';ctx.textBaseline='middle';
+      ctx.fillText(d.t,padL-12,y+hFila/2);
+      // rango
+      if(prog>0.85){
+        ctx.fillStyle='#fff';ctx.font='700 11px "JetBrains Mono",monospace';
+        ctx.textAlign='left';
+        ctx.fillText(d.min+'–'+d.max+'%',x0+8,y+hFila/2);
+      }
+    });
+  }
+  function roundRect(ctx,x,y,w,h,r){
+    if(w<2*r)r=w/2;if(h<2*r)r=h/2;
+    ctx.beginPath();ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+  }
+  let prog=0, animado=false;
+  function animar(){
+    prog+=0.04; if(prog>1)prog=1;
+    dibujar();
+    if(prog<1)requestAnimationFrame(animar);
+  }
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting && !animado){animado=true;animar();}});
+  },{threshold:0.3});
+  io.observe(cv);
+  window.addEventListener('resize',()=>{if(animado)dibujar();});
+  dibujar();
+})();
+</script>
+</body>
+</html>
