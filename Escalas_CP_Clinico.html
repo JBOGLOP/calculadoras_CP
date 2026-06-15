@@ -414,6 +414,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
           <h3>Palliative Performance Scale (PPS v2)</h3>
           <div class="tool-when">Escala funcional paliativa 0–100 % · Base del PPI · Seleccione la opción que mejor describa al paciente en cada dimensión</div>
         </div>
+        <span class="tool-badge" style="background:rgba(91,171,122,0.15);color:var(--green-500);">✓ Verificado</span>
         <span class="tool-badge">Interactivo</span>
       </div>
       <div class="tool-inner">
@@ -433,31 +434,33 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
           <div class="scale-opt" data-value="100" onclick="selPPS(this)">Actividad normal · Sin evidencia (100)</div>
           <div class="scale-opt" data-value="90" onclick="selPPS(this)">Actividad normal · Algo de evidencia (90)</div>
           <div class="scale-opt" data-value="80" onclick="selPPS(this)">Actividad con esfuerzo · Algo evidencia (80)</div>
-          <div class="scale-opt" data-value="70" onclick="selPPS(this)">Incapaz de trabajo normal · Alguna evidencia (70)</div>
+          <div class="scale-opt" data-value="70" onclick="selPPS(this)">Incapaz de trabajo normal · Significativa (70)</div>
           <div class="scale-opt" data-value="60" onclick="selPPS(this)">Incapaz de hobby/trabajo · Significativa (60)</div>
           <div class="scale-opt" data-value="50" onclick="selPPS(this)">Incapaz de cualquier trabajo · Extensa (50)</div>
-          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Incapaz de actividad · Extensa (40)</div>
-          <div class="scale-opt" data-value="30" onclick="selPPS(this)">Incapaz de actividad · Extensa (30)</div>
-          <div class="scale-opt" data-value="20" onclick="selPPS(this)">Incapaz de actividad · Extensa (20)</div>
-          <div class="scale-opt" data-value="10" onclick="selPPS(this)">Incapaz de actividad · Extensa (10)</div>
+          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Incapaz de la mayoría de actividad · Extensa (40)</div>
+          <div class="scale-opt" data-value="30" onclick="selPPS(this)">Incapaz de cualquier actividad · Extensa (30)</div>
+          <div class="scale-opt" data-value="20" onclick="selPPS(this)">Incapaz de cualquier actividad · Extensa (20)</div>
+          <div class="scale-opt" data-value="10" onclick="selPPS(this)">Incapaz de cualquier actividad · Extensa (10)</div>
         </div></div>
         <div class="scale-row"><div class="scale-label">Autocuidado</div><div class="scale-options" data-pps="self">
           <div class="scale-opt" data-value="100" onclick="selPPS(this)">Completo (100–80)</div>
-          <div class="scale-opt" data-value="70" onclick="selPPS(this)">Completo (70–60)</div>
-          <div class="scale-opt" data-value="50" onclick="selPPS(this)">Asistencia ocasional (50)</div>
-          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Asistencia considerable (40)</div>
+          <div class="scale-opt" data-value="70" onclick="selPPS(this)">Completo (70)</div>
+          <div class="scale-opt" data-value="60" onclick="selPPS(this)">Asistencia ocasional (60)</div>
+          <div class="scale-opt" data-value="50" onclick="selPPS(this)">Asistencia considerable (50)</div>
+          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Principalmente asistencia (40)</div>
           <div class="scale-opt" data-value="30" onclick="selPPS(this)">Dependencia total (30)</div>
           <div class="scale-opt" data-value="20" onclick="selPPS(this)">Dependencia total (20–10)</div>
         </div></div>
         <div class="scale-row"><div class="scale-label">Ingesta oral</div><div class="scale-options" data-pps="ing">
-          <div class="scale-opt" data-value="100" onclick="selPPS(this)">Normal (100–80)</div>
+          <div class="scale-opt" data-value="100" onclick="selPPS(this)">Normal (100–90)</div>
+          <div class="scale-opt" data-value="80" onclick="selPPS(this)">Normal o reducida (80)</div>
           <div class="scale-opt" data-value="70" onclick="selPPS(this)">Normal o reducida (70)</div>
           <div class="scale-opt" data-value="60" onclick="selPPS(this)">Normal o reducida (60)</div>
-          <div class="scale-opt" data-value="50" onclick="selPPS(this)">Reducida (50)</div>
-          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Mínima a sorbos (40)</div>
-          <div class="scale-opt" data-value="30" onclick="selPPS(this)">Sorbos a ninguna (30)</div>
-          <div class="scale-opt" data-value="20" onclick="selPPS(this)">Sorbos a ninguna (20)</div>
-          <div class="scale-opt" data-value="10" onclick="selPPS(this)">Boca seca (10)</div>
+          <div class="scale-opt" data-value="50" onclick="selPPS(this)">Normal o reducida (50)</div>
+          <div class="scale-opt" data-value="40" onclick="selPPS(this)">Normal o reducida (40)</div>
+          <div class="scale-opt" data-value="30" onclick="selPPS(this)">Reducida (30)</div>
+          <div class="scale-opt" data-value="20" onclick="selPPS(this)">Mínima a sorbos (20)</div>
+          <div class="scale-opt" data-value="10" onclick="selPPS(this)">Solo cuidado bucal (10)</div>
         </div></div>
         <div class="scale-row"><div class="scale-label">Nivel de consciencia</div><div class="scale-options" data-pps="con">
           <div class="scale-opt" data-value="100" onclick="selPPS(this)">Alerta (100–70)</div>
@@ -483,6 +486,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
             <tr><td>10–30 %</td><td>Días a semanas</td><td>Deterioro severo · Prioridad: confort</td></tr>
           </tbody>
         </table>
+        <div class="info-box green" style="margin-top:1rem;">Verificado contra PPSv2 original · Victoria Hospice Society, <em>Medical Care of the Dying</em>, 4th ed., 2006. Correcciones aplicadas en: Actividad (PPS 70, 40), Autocuidado (PPS 60, 50, 40), Ingesta oral (PPS 50, 40, 30, 20, 10).</div>
       </div>
     </div>
   </div>
