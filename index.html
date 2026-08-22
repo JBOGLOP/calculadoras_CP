@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas Educativas en Cuidados Paliativos · Dr. Jorge Bogoya</title>
+<meta name="description" content="Calculadoras clínicas, clases interactivas y revisiones de evidencia en cuidados paliativos. Recursos libres para estudiantes y profesionales de la salud en Colombia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#faf8f5; --superficie:#ffffff; --borde:#e6ded3;
+    --tinta:#2b2520; --tinta-suave:#6b6055; --tinta-tenue:#948878;
+    --acento:#7a4b2a; --acento-claro:#a9713f; --acento-fondo:#f3ebe2;
+    --exito:#2f6b4f; --alerta:#8a6d1f;
+    --sombra:0 1px 2px rgba(43,37,32,.05), 0 8px 24px -12px rgba(43,37,32,.18);
+    --radio:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --fondo:#17140f; --superficie:#211d17; --borde:#3a332a;
+      --tinta:#f0eae1; --tinta-suave:#b8ac9c; --tinta-tenue:#8a7f70;
+      --acento:#d99b62; --acento-claro:#e8b581; --acento-fondo:#2c2419;
+      --exito:#7fc4a1; --alerta:#d6b45c;
+      --sombra:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--fondo); color:var(--tinta);
+    font-family:'Source Sans 3',system-ui,-apple-system,sans-serif;
+    font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .envoltorio{max-width:1140px; margin:0 auto; padding:0 24px}
+
+  /* Encabezado */
+  header{
+    background:linear-gradient(160deg,var(--acento-fondo) 0%,var(--fondo) 75%);
+    border-bottom:1px solid var(--borde); padding:56px 0 40px;
+  }
+  .kicker{
+    font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--acento); margin-bottom:14px;
+  }
+  h1{
+    font-family:'Crimson Pro',Georgia,serif; font-weight:700;
+    font-size:clamp(2.1rem,5vw,3.2rem); line-height:1.12; margin:0 0 14px; letter-spacing:-.02em;
+  }
+  .lede{font-size:1.12rem; color:var(--tinta-suave); max-width:58ch; margin:0 0 24px}
+  .firma{
+    display:flex; flex-wrap:wrap; gap:8px 20px; align-items:baseline;
+    font-size:.92rem; color:var(--tinta-suave); padding-top:18px; border-top:1px solid var(--borde);
+  }
+  .firma strong{color:var(--tinta); font-weight:600}
+
+  /* Controles */
+  .controles{
+    position:sticky; top:0; z-index:20; background:var(--fondo);
+    border-bottom:1px solid var(--borde); padding:14px 0;
+  }
+  .fila-controles{display:flex; flex-wrap:wrap; gap:12px; align-items:center}
+  .buscador{position:relative; flex:1 1 260px; min-width:0}
+  .buscador input{
+    width:100%; padding:11px 14px 11px 40px; font:inherit; font-size:.98rem;
+    color:var(--tinta); background:var(--superficie);
+    border:1px solid var(--borde); border-radius:10px; transition:border-color .15s,box-shadow .15s;
+  }
+  .buscador input:focus{outline:none; border-color:var(--acento); box-shadow:0 0 0 3px var(--acento-fondo)}
+  .buscador::before{content:"\1F50D"; position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:.5; font-size:.95rem}
+  .chips{display:flex; flex-wrap:wrap; gap:8px}
+  .chip{
+    font:inherit; font-size:.88rem; font-weight:500; cursor:pointer;
+    padding:8px 15px; border-radius:999px; color:var(--tinta-suave);
+    background:var(--superficie); border:1px solid var(--borde); transition:all .15s;
+  }
+  .chip:hover{border-color:var(--acento-claro); color:var(--tinta)}
+  .chip[aria-pressed="true"]{background:var(--acento); border-color:var(--acento); color:#fff}
+  @media (prefers-color-scheme: dark){ .chip[aria-pressed="true"]{color:#17140f} }
+
+  /* Secciones y tarjetas */
+  main{padding:36px 0 0}
+  .grupo{margin-bottom:44px}
+  .grupo-cabeza{display:flex; align-items:baseline; gap:12px; margin-bottom:6px}
+  .grupo-cabeza h2{
+    font-family:'Crimson Pro',Georgia,serif; font-size:1.65rem; font-weight:600; margin:0; letter-spacing:-.01em;
+  }
+  .conteo{font-size:.82rem; color:var(--tinta-tenue); font-variant-numeric:tabular-nums}
+  .grupo-desc{color:var(--tinta-suave); font-size:.95rem; margin:0 0 18px}
+  .rejilla{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:18px}
+  .tarjeta{
+    display:flex; flex-direction:column; text-decoration:none; color:inherit;
+    background:var(--superficie); border:1px solid var(--borde); border-radius:var(--radio);
+    padding:22px; box-shadow:var(--sombra); position:relative; overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .tarjeta::before{
+    content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--acento);
+    opacity:0; transition:opacity .18s;
+  }
+  .tarjeta:hover{transform:translateY(-3px); border-color:var(--acento-claro);
+    box-shadow:0 4px 8px rgba(43,37,32,.06),0 16px 32px -16px rgba(43,37,32,.28)}
+  .tarjeta:hover::before{opacity:1}
+  .tarjeta:focus-visible{outline:2px solid var(--acento); outline-offset:3px}
+  .tarjeta h3{
+    font-family:'Crimson Pro',Georgia,serif; font-size:1.28rem; font-weight:600;
+    margin:0 0 8px; line-height:1.25; letter-spacing:-.01em;
+  }
+  .tarjeta p{margin:0 0 16px; font-size:.94rem; color:var(--tinta-suave); flex:1}
+  .etiquetas{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+  .etiqueta{
+    font-size:.74rem; font-weight:600; letter-spacing:.02em; padding:3px 9px;
+    border-radius:5px; background:var(--acento-fondo); color:var(--acento);
+  }
+  .pie-tarjeta{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.85rem; font-weight:600; color:var(--acento);
+    padding-top:12px; border-top:1px solid var(--borde);
+  }
+  .version{font-weight:500; color:var(--tinta-tenue); font-variant-numeric:tabular-nums}
+  .destacado{
+    position:absolute; top:14px; right:14px; font-size:.68rem; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--exito);
+  }
+  .vacio{
+    text-align:center; padding:56px 20px; color:var(--tinta-tenue);
+    border:1px dashed var(--borde); border-radius:var(--radio);
+  }
+  .vacio code{background:var(--acento-fondo); padding:2px 6px; border-radius:4px; color:var(--acento)}
+
+  /* Aviso clínico y pie */
+  .aviso{
+    margin:8px 0 40px; padding:18px 22px; border-radius:var(--radio);
+    background:var(--acento-fondo); border-left:4px solid var(--alerta);
+    font-size:.94rem; color:var(--tinta-suave);
+  }
+  .aviso strong{color:var(--tinta)}
+  footer{
+    border-top:1px solid var(--borde); margin-top:24px; padding:36px 0 48px;
+    font-size:.9rem; color:var(--tinta-suave);
+  }
+  footer a{color:var(--acento); text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  .cita{
+    font-family:'Crimson Pro',Georgia,serif; font-style:italic; font-size:1.05rem;
+    color:var(--tinta-suave); text-align:center; margin:0 0 24px; padding:0 20px;
+  }
+  .pie-fila{display:flex; flex-wrap:wrap; gap:10px 24px; justify-content:space-between}
+</style>
+</head>
+<body data-curso="portada">
+
+<header>
+  <div class="envoltorio">
+    <div class="kicker">Universidad Antonio Nariño · Colombia</div>
+    <h1>Herramientas educativas en cuidados paliativos</h1>
+    <p class="lede">
+      Calculadoras clínicas, clases interactivas y síntesis de evidencia. Todo funciona
+      en el navegador, sin instalar nada y sin registro.
+    </p>
+    <div class="firma">
+      <span><strong>Dr. Jorge Bogoya López</strong></span>
+      <span>Maestría en Investigación en Cuidados Paliativos</span>
+      <span>Hospital Regional de Moniquirá E.S.E. · Boyacá</span>
+    </div>
+  </div>
+</header>
+
+<div class="controles">
+  <div class="envoltorio fila-controles">
+    <div class="buscador">
+      <input type="search" id="busqueda" placeholder="Buscar: opioides, PPS, ACV, fibromialgia…"
+             aria-label="Buscar herramienta" autocomplete="off">
+    </div>
+    <div class="chips" id="filtros" role="group" aria-label="Filtrar por categoría"></div>
+  </div>
+</div>
+
+<main class="envoltorio">
+  <div class="aviso">
+    <strong>Estas herramientas son educativas.</strong> No reemplazan el juicio clínico ni las guías
+    institucionales. Las escalas pronósticas son orientativas. Toda rotación opioide exige reducción
+    del 25–50 % por tolerancia cruzada incompleta. Regla de oro: <em>titular según respuesta, no según tabla</em>.
+  </div>
+  <div id="contenido"></div>
+</main>
+
+<footer>
+  <div class="envoltorio">
+    <p class="cita">«La medicina nos enseña a medir. Los cuidados paliativos nos enseñan a acompañar lo que no se puede medir.»</p>
+    <div class="pie-fila">
+      <span>© 2026 Dr. Jorge Bogoya · Licencia MIT</span>
+      <span>
+        <a href="https://github.com/JBOGLOP/calculadoras_CP">Código fuente</a> ·
+        <a href="https://github.com/JBOGLOP/calculadoras_CP/issues">Reportar un error</a> ·
+        <a href="CONTRIBUTING.md">Guía de desarrollo</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/tracker.js" data-curso="portada"></script>
+<script>
+(function(){
+  var contenido = document.getElementById('contenido');
+  var filtros   = document.getElementById('filtros');
+  var busqueda  = document.getElementById('busqueda');
+  var CAT = [], REC = [], categoriaActiva = 'todas';
+
+  fetch('datos/catalogo.json')
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){ CAT = d.categorias; REC = d.recursos; construirFiltros(); pintar(); })
+    .catch(function(){
+      contenido.innerHTML = '<div class="vacio">No se pudo cargar el catálogo.<br>' +
+        'Si abriste este archivo desde el disco, necesita un servidor local ' +
+        '(<code>python -m http.server</code>) o GitHub Pages.</div>';
+    });
+
+  function construirFiltros(){
+    var opciones = [{id:'todas', nombre:'Todas', icono:'✦'}].concat(CAT);
+    filtros.innerHTML = opciones.map(function(c){
+      return '<button class="chip" data-cat="' + c.id + '" aria-pressed="' +
+             (c.id === categoriaActiva) + '">' + c.icono + ' ' + c.nombre + '</button>';
+    }).join('');
+    filtros.addEventListener('click', function(e){
+      var b = e.target.closest('.chip'); if(!b) return;
+      categoriaActiva = b.dataset.cat;
+      filtros.querySelectorAll('.chip').forEach(function(c){
+        c.setAttribute('aria-pressed', c.dataset.cat === categoriaActiva);
+      });
+      pintar();
+    });
+  }
+
+  function normalizar(s){
+    return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  }
+
+  function coincide(r, q){
+    if(!q) return true;
+    return normalizar([r.titulo, r.resumen, (r.etiquetas||[]).join(' ')].join(' ')).indexOf(q) !== -1;
+  }
+
+  function tarjeta(r){
+    var etiquetas = (r.etiquetas||[]).map(function(t){
+      return '<span class="etiqueta">' + t + '</span>';
+    }).join('');
+    return '<a class="tarjeta" href="' + r.url + '" data-id="' + r.id + '">' +
+      (r.destacado ? '<span class="destacado">Destacado</span>' : '') +
+      '<h3>' + r.titulo + '</h3>' +
+      '<p>' + r.resumen + '</p>' +
+      (etiquetas ? '<div class="etiquetas">' + etiquetas + '</div>' : '') +
+      '<div class="pie-tarjeta"><span>Abrir &rarr;</span>' +
+      '<span class="version">' + (r.version || '') + '</span></div></a>';
+  }
+
+  function pintar(){
+    var q = normalizar(busqueda.value.trim());
+    var visibles = CAT.filter(function(c){
+      return categoriaActiva === 'todas' || c.id === categoriaActiva;
+    });
+    var html = '', total = 0;
+
+    visibles.forEach(function(c){
+      var items = REC.filter(function(r){ return r.categoria === c.id && coincide(r, q); });
+      if(!items.length) return;
+      total += items.length;
+      html += '<section class="grupo">' +
+        '<div class="grupo-cabeza"><h2>' + c.icono + ' ' + c.nombre + '</h2>' +
+        '<span class="conteo">' + items.length + ' recurso' + (items.length>1?'s':'') + '</span></div>' +
+        '<p class="grupo-desc">' + c.descripcion + '</p>' +
+        '<div class="rejilla">' + items.map(tarjeta).join('') + '</div></section>';
+    });
+
+    contenido.innerHTML = total ? html :
+      '<div class="vacio">Sin resultados para esa búsqueda.</div>';
+  }
+
+  busqueda.addEventListener('input', pintar);
+
+  // Registrar qué recurso se abre desde la portada.
+  contenido.addEventListener('click', function(e){
+    var a = e.target.closest('.tarjeta');
+    if(a && window.CP) CP.evento('abre_recurso', { datos:{ recurso: a.dataset.id } });
+  });
+})();
+</script>
+</body>
+</html>

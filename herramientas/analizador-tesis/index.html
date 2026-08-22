@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Evaluador de Trabajos de Grado · Maestría en Investigación en CP · UAN</title>
+<meta name="description" content="Asistente del jurado evaluador para tesis de Maestría en Investigación en Cuidados Paliativos · UAN · Bogotá" />
+
+<!-- Tipografía -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Librerías CDN -->
+<script src="https://unpkg.com/docx@9.6.1/build/index.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@13.0.2/marked.min.js"></script>
+
+<style>
+:root {
+  --burgundy:        #6B2D3E;
+  --burgundy-soft:   #8E4253;
+  --burgundy-deep:   #4A1E2A;
+  --terracotta:      #C9663F;
+  --amber:           #D4A24C;
+  --amber-soft:      #E8C77A;
+  --sage:            #7FA88D;
+  --sage-deep:       #5A8470;
+  --cream:           #FAF6EE;
+  --cream-warm:      #F5EFE0;
+  --paper:           #FFFCF5;
+  --ink:             #2C2018;
+  --ink-soft:        #5A4A3E;
+  --ink-mute:        #8A7868;
+  --line:            #E8DDC8;
+  --line-soft:       #F0E6D2;
+  --ok:              #5A8470;
+  --warn:            #D4A24C;
+  --err:             #B33A3A;
+  --info:            #5A7BA8;
+  --cal-cumple:      #5A8470;
+  --cal-parcial:     #D4A24C;
+  --cal-no:          #B33A3A;
+  --cal-na:          #8A7868;
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:     'JetBrains Mono', Menlo, monospace;
+  --sidebar-w: 290px;
+  --content-max: 980px;
+  --radius: 6px;
+  --radius-lg: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  background-image:
+    radial-gradient(circle at 5% 10%, rgba(212, 162, 76, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 95% 90%, rgba(127, 168, 141, 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--line);
+  z-index: 1000;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--burgundy) 0%, var(--terracotta) 50%, var(--amber) 100%);
+  transition: width 0.5s ease;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, var(--burgundy-deep) 0%, var(--burgundy) 100%);
+  color: var(--cream);
+  padding: 28px 22px;
+  border-right: 1px solid var(--burgundy-deep);
+}
+.sidebar-brand {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.sidebar-sub {
+  font-size: 0.72rem;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 28px;
+}
+.sidebar-section-title {
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+  margin: 22px 0 10px 0;
+}
+.sidebar-nav { list-style: none; }
+.sidebar-nav li {
+  font-size: 0.85rem;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+  opacity: 0.75;
+}
+.sidebar-nav li:hover { background: rgba(255,255,255,0.06); }
+.sidebar-nav li.active {
+  background: rgba(212, 162, 76, 0.18);
+  opacity: 1;
+  font-weight: 500;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ink-mute);
+  flex-shrink: 0;
+}
+.status-dot.pending { background: rgba(255,255,255,0.25); }
+.status-dot.running { background: var(--amber); animation: pulse 1.2s ease-in-out infinite; }
+.status-dot.done   { background: var(--sage); }
+.status-dot.error  { background: var(--err); }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.sidebar-footer {
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.7rem;
+  opacity: 0.55;
+  line-height: 1.5;
+}
+
+.main {
+  padding: 50px 60px 80px 60px;
+  max-width: var(--content-max);
+}
+h1.page-title {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--burgundy-deep);
+  margin-bottom: 6px;
+  line-height: 1.1;
+}
+.page-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.page-meta {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  margin-bottom: 36px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--line);
+}
+
+section {
+  margin-bottom: 44px;
+  scroll-margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2.section-title {
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+h2.section-title .section-num {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--terracotta);
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+}
+.section-intro {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  margin-bottom: 22px;
+}
+h3 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin: 22px 0 12px 0;
+}
+h4 {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 18px 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+p { margin-bottom: 12px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 22px;
+  margin-bottom: 18px;
+}
+.form-grid.full { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-full { grid-column: 1 / -1; }
+
+label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+label .req { color: var(--terracotta); margin-left: 3px; }
+
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], select, textarea {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--burgundy);
+  background: #fff;
+}
+textarea { resize: vertical; min-height: 70px; }
+
+.file-zone {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  background: var(--cream);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.file-zone:hover, .file-zone.dragover { border-color: var(--burgundy); background: var(--cream-warm); }
+.file-zone.has-file { border-style: solid; border-color: var(--sage); background: rgba(127, 168, 141, 0.08); }
+.file-zone .icon { font-size: 2.4rem; margin-bottom: 8px; font-family: var(--serif); font-style: italic; color: var(--burgundy); }
+.file-zone .label { font-family: var(--serif); font-size: 1.15rem; color: var(--burgundy); }
+.file-zone .hint { font-size: 0.82rem; color: var(--ink-mute); margin-top: 6px; }
+.file-zone .file-info { margin-top: 12px; font-family: var(--mono); font-size: 0.82rem; color: var(--sage-deep); }
+
+.btn {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.92rem;
+  padding: 11px 22px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary { background: var(--burgundy); color: var(--cream); }
+.btn-primary:hover:not(:disabled) { background: var(--burgundy-deep); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107, 45, 62, 0.25); }
+.btn-primary:disabled { background: var(--ink-mute); cursor: not-allowed; opacity: 0.6; }
+.btn-secondary { background: transparent; color: var(--burgundy); border: 1px solid var(--burgundy); }
+.btn-secondary:hover:not(:disabled) { background: var(--burgundy); color: var(--cream); }
+.btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--cream-warm); border-color: var(--ink-mute); }
+
+.eval-status {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 26px;
+}
+.eval-status-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.eval-status-label { font-family: var(--serif); font-size: 1.1rem; font-style: italic; color: var(--burgundy); }
+.eval-status-meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+.token-bar { margin-top: 12px; display: flex; gap: 22px; flex-wrap: wrap; font-size: 0.78rem; color: var(--ink-soft); }
+.token-bar .num { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+
+.block-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 2px rgba(44, 32, 24, 0.03);
+}
+.block-card.pending { opacity: 0.5; }
+.block-card.running { border-color: var(--amber); background: linear-gradient(135deg, #fff 0%, rgba(232, 199, 122, 0.05) 100%); }
+.block-card.done { border-color: var(--sage); }
+.block-card.error { border-color: var(--err); background: rgba(179, 58, 58, 0.03); }
+
+.block-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); }
+.block-name { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; color: var(--burgundy); }
+.block-sub { font-size: 0.78rem; color: var(--ink-mute); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--mono); }
+.block-body { font-size: 0.95rem; color: var(--ink-soft); }
+.block-body p { margin-bottom: 10px; }
+.block-body h4 { color: var(--burgundy-soft); margin: 16px 0 8px 0; }
+.block-body ul, .block-body ol { margin: 8px 0 12px 22px; }
+.block-body li { margin-bottom: 4px; }
+.block-body code { font-family: var(--mono); font-size: 0.85em; background: var(--cream); padding: 1px 5px; border-radius: 3px; }
+.block-body blockquote { border-left: 3px solid var(--amber); padding: 4px 14px; margin: 12px 0; background: rgba(212, 162, 76, 0.05); font-style: italic; color: var(--ink-soft); }
+
+.items-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.88rem; }
+.items-table th { background: var(--burgundy); color: var(--cream); padding: 10px 8px; text-align: left; font-family: var(--serif); font-weight: 500; font-size: 0.85rem; }
+.items-table th.center { text-align: center; }
+.items-table td { padding: 12px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.items-table td.center { text-align: center; }
+.items-table tr:hover { background: var(--cream); }
+
+.cal-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cal-cumple   { background: rgba(90, 132, 112, 0.15); color: var(--cal-cumple); }
+.cal-parcial  { background: rgba(212, 162, 76, 0.18); color: #8B6914; }
+.cal-no       { background: rgba(179, 58, 58, 0.12); color: var(--cal-no); }
+.cal-na       { background: rgba(138, 120, 104, 0.15); color: var(--cal-na); }
+
+.evidencia { font-family: var(--serif); font-style: italic; color: var(--ink-soft); font-size: 0.92rem; border-left: 2px solid var(--amber); padding: 4px 12px; margin: 8px 0; }
+.evidencia::before { content: '"'; }
+.evidencia::after  { content: '"'; }
+
+.anexo-card {
+  background: linear-gradient(135deg, rgba(212, 162, 76, 0.04) 0%, rgba(127, 168, 141, 0.04) 100%);
+  border: 1px dashed var(--amber);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+}
+.anexo-tag { display: inline-block; background: var(--amber); color: var(--ink); font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+
+.concepto-final {
+  background: var(--burgundy-deep);
+  color: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 30px 36px;
+  margin: 30px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.concepto-final::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(212, 162, 76, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(201, 102, 63, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.concepto-final-label { position: relative; font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75; margin-bottom: 8px; }
+.concepto-final-value { position: relative; font-family: var(--serif); font-size: 2.6rem; font-weight: 600; margin-bottom: 12px; line-height: 1.1; }
+.concepto-final-just { position: relative; font-size: 0.95rem; opacity: 0.9; max-width: 660px; margin: 0 auto; line-height: 1.6; }
+
+.alert { padding: 12px 16px; border-radius: var(--radius); margin: 12px 0; font-size: 0.9rem; border-left: 3px solid; }
+.alert-info  { background: rgba(90, 123, 168, 0.08); border-color: var(--info); color: #2E4A7A; }
+.alert-warn  { background: rgba(212, 162, 76, 0.10); border-color: var(--warn); color: #8B6914; }
+.alert-err   { background: rgba(179, 58, 58, 0.08);  border-color: var(--err);  color: var(--err); }
+.alert-ok    { background: rgba(90, 132, 112, 0.08); border-color: var(--ok);   color: var(--ok); }
+
+.toast-stack { position: fixed; bottom: 22px; right: 22px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; max-width: 360px; }
+.toast { background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: var(--radius); box-shadow: 0 6px 20px rgba(0,0,0,0.18); font-size: 0.88rem; animation: slideIn 0.25s ease; }
+.toast.ok { background: var(--sage-deep); }
+.toast.err { background: var(--burgundy-deep); }
+.toast.warn { background: #8B6914; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+.loader-line {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--line);
+  border-top-color: var(--burgundy);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: -2px;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.downloads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+.download-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.download-card:hover { border-color: var(--burgundy); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(107, 45, 62, 0.1); }
+.download-card-letter { font-family: var(--serif); font-size: 2.4rem; font-style: italic; color: var(--terracotta); font-weight: 600; line-height: 1; }
+.download-card-title { font-family: var(--serif); font-size: 1.1rem; color: var(--burgundy); font-weight: 600; }
+.download-card-desc { font-size: 0.82rem; color: var(--ink-soft); flex-grow: 1; }
+.download-card-format { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .main { padding: 30px 22px; }
+  h1.page-title { font-size: 2.1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  .downloads-grid { grid-template-columns: 1fr; }
+  .concepto-final-value { font-size: 1.8rem; }
+}
+
+@media print {
+  .sidebar, .progress-bar, .no-print { display: none !important; }
+  .main { padding: 0; max-width: 100%; }
+  .app { grid-template-columns: 1fr; }
+  body { background: white; }
+  .block-card, .anexo-card { break-inside: avoid; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">Evaluador de Tesis CP</div>
+    <div class="sidebar-sub">UAN · Maestría en CP · v0.5</div>
+
+    <div class="sidebar-section-title">Inicio</div>
+    <ul class="sidebar-nav">
+      <li data-target="config"><span class="status-dot done"></span>Configuración</li>
+      <li data-target="upload"><span class="status-dot pending" id="dot-upload"></span>Trabajo de grado</li>
+      <li data-target="ident"><span class="status-dot pending" id="dot-ident"></span>Identificación</li>
+    </ul>
+
+    <div class="sidebar-section-title">Bloques oficiales UAN</div>
+    <ul class="sidebar-nav">
+      <li data-target="block-1"><span class="status-dot pending" id="dot-block-1"></span>1 · Título</li>
+      <li data-target="block-2"><span class="status-dot pending" id="dot-block-2"></span>2 · Marco de Referencia</li>
+      <li data-target="block-3"><span class="status-dot pending" id="dot-block-3"></span>3 · Marco Metodológico</li>
+      <li data-target="block-4"><span class="status-dot pending" id="dot-block-4"></span>4 · Consideraciones Éticas</li>
+      <li data-target="block-5"><span class="status-dot pending" id="dot-block-5"></span>5 · Resultados</li>
+      <li data-target="block-6"><span class="status-dot pending" id="dot-block-6"></span>6 · Discusión</li>
+      <li data-target="block-7"><span class="status-dot pending" id="dot-block-7"></span>7 · Estructura y Normas</li>
+    </ul>
+
+    <div class="sidebar-section-title">Anexos no oficiales</div>
+    <ul class="sidebar-nav">
+      <li data-target="anexo-A"><span class="status-dot pending" id="dot-anexo-A"></span>A · Pertinencia colombiana</li>
+      <li data-target="anexo-B"><span class="status-dot pending" id="dot-anexo-B"></span>B · Estándar de reporte</li>
+      <li data-target="anexo-C"><span class="status-dot pending" id="dot-anexo-C"></span>C · Integridad académica</li>
+    </ul>
+
+    <div class="sidebar-section-title">Síntesis</div>
+    <ul class="sidebar-nav">
+      <li data-target="sintesis"><span class="status-dot pending" id="dot-sintesis"></span>Concepto y documentos</li>
+      <li data-target="downloads"><span class="status-dot pending" id="dot-downloads"></span>Descargas</li>
+    </ul>
+
+    <div class="sidebar-footer">
+      Mg. Jorge Bogoya López · 2026<br>
+      Universidad Antonio Nariño · Colombia 🇨🇴
+    </div>
+  </aside>
+
+  <main class="main">
+    <h1 class="page-title">Evaluador de Trabajos de Grado</h1>
+    <p class="page-subtitle">Asistente del jurado · Maestría en Investigación en Cuidados Paliativos</p>
+    <p class="page-meta">Universidad Antonio Nariño · Facultad de Enfermería · Bogotá, Colombia · v0.5</p>
+
+    <section id="config">
+      <h2 class="section-title"><span class="section-num">§01</span>Configuración</h2>
+      <p class="section-intro">Conexión con Anthropic API y persistencia opcional en Google Sheets.</p>
+
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>API Key de Anthropic <span class="req">*</span></label>
+          <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" />
+        </div>
+        <div class="field field-full">
+          <label>URL del Apps Script Web App (opcional)</label>
+          <input type="text" id="appsScriptUrl" placeholder="https://script.google.com/macros/s/..." />
+        </div>
+        <div class="field">
+          <label>Modelo Claude</label>
+          <select id="modelSelect">
+            <option value="claude-sonnet-4-5" selected>Claude Sonnet 4.5 (recomendado)</option>
+            <option value="claude-opus-4-7">Claude Opus 4.7 (mayor profundidad, +costo)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Acciones</label>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary" id="btnPing" type="button">Probar conexión</button>
+            <button class="btn btn-ghost" id="btnSave" type="button">Guardar config</button>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info">
+        La API Key se guarda en <code>sessionStorage</code> y se borra al cerrar el navegador. Nunca se envía al Apps Script ni queda en GitHub.
+      </div>
+    </section>
+
+    <section id="upload">
+      <h2 class="section-title"><span class="section-num">§02</span>Trabajo de grado</h2>
+      <p class="section-intro">Cargue el PDF completo del trabajo de grado (proyecto o informe final, hasta 32 MB).</p>
+      <div class="file-zone" id="fileZone">
+        <div class="icon">↥</div>
+        <div class="label">Arrastre el PDF aquí o haga clic para seleccionar</div>
+        <div class="hint">Tesis completa en formato PDF · máximo 32 MB</div>
+        <div class="file-info" id="fileInfo"></div>
+      </div>
+      <input type="file" id="fileInput" accept="application/pdf" style="display:none;" />
+    </section>
+
+    <section id="ident">
+      <h2 class="section-title"><span class="section-num">§03</span>Identificación</h2>
+      <p class="section-intro">Datos del estudiante, director, jurado y tipología de la tesis. Lo que no conozca puede dejarlo en blanco; la herramienta intentará extraerlo del PDF.</p>
+
+      <h3>Datos de la tesis</h3>
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>Título de la tesis</label>
+          <input type="text" id="i_titulo" />
+        </div>
+        <div class="field">
+          <label>Estudiante(s) · separe con punto y coma</label>
+          <input type="text" id="i_estudiantes" placeholder="Apellidos Nombres" />
+        </div>
+        <div class="field">
+          <label>Director(a) de tesis</label>
+          <input type="text" id="i_director" />
+        </div>
+        <div class="field">
+          <label>Modalidad</label>
+          <select id="i_modalidad">
+            <option value="">— por detectar —</option>
+            <option value="individual">Individual</option>
+            <option value="grupal">Grupal</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tipología del estudio</label>
+          <select id="i_tipologia">
+            <option value="">— por detectar —</option>
+            <option value="ECA">Ensayo clínico aleatorizado (CONSORT)</option>
+            <option value="cuasi">Cuasi-experimental (TREND)</option>
+            <option value="observacional">Observacional analítico (STROBE)</option>
+            <option value="descriptivo">Descriptivo / serie de casos (STROBE/CARE)</option>
+            <option value="RS_meta">Revisión sistemática + metaanálisis (PRISMA + AMSTAR-2)</option>
+            <option value="RS_no_meta">Revisión sistemática sin metaanálisis (PRISMA + SWiM)</option>
+            <option value="scoping">Scoping review (PRISMA-ScR + JBI)</option>
+            <option value="umbrella">Umbrella review (PRIOR)</option>
+            <option value="cualitativo">Cualitativo general (COREQ/SRQR)</option>
+            <option value="etnografico">Etnográfico (COREQ)</option>
+            <option value="fenomenologico">Fenomenológico (Van Manen, Heidegger, IPA)</option>
+            <option value="IAP">Investigación-acción participativa (CONSIDER)</option>
+            <option value="validacion">Validación de instrumento (COSMIN)</option>
+            <option value="delphi">Delphi de consenso (CREDES)</option>
+            <option value="diagnostica">Pruebas diagnósticas (STARD)</option>
+            <option value="bibliometrico">Bibliométrico</option>
+            <option value="costo_efectividad">Costo-efectividad (CHEERS 2022)</option>
+            <option value="prediccion">Modelo pronóstico (TRIPOD + PROBAST)</option>
+            <option value="mixto">Mixto (GRAMMS)</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>Datos del jurado evaluador</h3>
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>Nombre completo del jurado</label>
+          <input type="text" id="j_nombre" placeholder="Mg. Jorge Bogoya López" />
+        </div>
+        <div class="field">
+          <label>Tipo y número de identificación</label>
+          <input type="text" id="j_documento" placeholder="CC 1.234.567" />
+        </div>
+        <div class="field">
+          <label>Email · teléfono</label>
+          <input type="text" id="j_email" />
+        </div>
+        <div class="field">
+          <label>País y ciudad de residencia</label>
+          <input type="text" id="j_pais_ciudad" placeholder="Colombia · Bogotá" />
+        </div>
+        <div class="field">
+          <label>Institución de filiación</label>
+          <input type="text" id="j_institucion" placeholder="Universidad Antonio Nariño" />
+        </div>
+      </div>
+    </section>
+
+    <section id="run">
+      <h2 class="section-title"><span class="section-num">§04</span>Ejecutar evaluación</h2>
+      <div class="eval-status">
+        <div class="eval-status-row">
+          <div class="eval-status-label" id="evalStatusLabel">Listo para iniciar</div>
+          <div class="eval-status-meta" id="evalStatusMeta">— / 11 llamadas</div>
+        </div>
+        <div class="token-bar">
+          <div>Tokens entrada: <span class="num" id="tokIn">0</span></div>
+          <div>Tokens salida: <span class="num" id="tokOut">0</span></div>
+          <div>Caché ahorrado: <span class="num" id="tokCache">0</span></div>
+          <div>Costo estimado: <span class="num" id="costoEst">USD 0.00</span></div>
+          <div>Tiempo: <span class="num" id="tiempoEval">00:00</span></div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-primary" id="btnRun" type="button" disabled>Iniciar evaluación</button>
+        <button class="btn btn-ghost" id="btnReset" type="button">Reiniciar</button>
+      </div>
+    </section>
+
+    <section id="block-1"><h2 class="section-title"><span class="section-num">B1</span>Título</h2><div id="block-1-body"></div></section>
+    <section id="block-2"><h2 class="section-title"><span class="section-num">B2</span>Marco de referencia, teórico y/o conceptual</h2><div id="block-2-body"></div></section>
+    <section id="block-3"><h2 class="section-title"><span class="section-num">B3</span>Marco metodológico</h2><div id="block-3-body"></div></section>
+    <section id="block-4"><h2 class="section-title"><span class="section-num">B4</span>Consideraciones éticas</h2><div id="block-4-body"></div></section>
+    <section id="block-5"><h2 class="section-title"><span class="section-num">B5</span>Resultados</h2><div id="block-5-body"></div></section>
+    <section id="block-6"><h2 class="section-title"><span class="section-num">B6</span>Discusión</h2><div id="block-6-body"></div></section>
+    <section id="block-7"><h2 class="section-title"><span class="section-num">B7</span>Estructura y normas para la presentación</h2><div id="block-7-body"></div></section>
+
+    <section id="anexo-A"><h2 class="section-title"><span class="section-num">A</span>Anexo · Pertinencia colombiana y normativa</h2><div id="anexo-A-body"></div></section>
+    <section id="anexo-B"><h2 class="section-title"><span class="section-num">B</span>Anexo · Estándar de reporte aplicable</h2><div id="anexo-B-body"></div></section>
+    <section id="anexo-C"><h2 class="section-title"><span class="section-num">C</span>Anexo · Integridad académica e IA</h2><div id="anexo-C-body"></div></section>
+
+    <section id="sintesis">
+      <h2 class="section-title"><span class="section-num">§Σ</span>Síntesis y concepto final</h2>
+      <div id="sintesis-body"></div>
+    </section>
+
+    <section id="downloads">
+      <h2 class="section-title"><span class="section-num">§↓</span>Descargas</h2>
+      <p class="section-intro">Tres documentos independientes: el formato oficial UAN diligenciado, la devolución pedagógica al estudiante y el resumen ejecutivo.</p>
+      <div id="downloads-body" class="alert alert-info">
+        Los documentos se generarán al completar la síntesis final.
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+<script>
+'use strict';
+
+const STATE = {
+  apiKey: '',
+  appsScriptUrl: '',
+  model: 'claude-sonnet-4-5',
+  pdfFile: null,
+  pdfBase64: '',
+  identificacion: {},
+  jurado: {},
+  results: {},
+  metadata: {
+    tokensIn: 0,
+    tokensOut: 0,
+    tokensCacheCreate: 0,
+    tokensCacheRead: 0,
+    duracionSegundos: 0,
+    costoUsd: 0,
+    timestampInicio: null,
+    timestampFin: null
+  },
+  running: false,
+  finalDocs: null
+};
+
+const TASKS = [
+  { id: 'block_1', label: 'Bloque 1 · Título',                kind: 'oficial', maxTokens: 6000 },
+  { id: 'block_2', label: 'Bloque 2 · Marco de Referencia',   kind: 'oficial', maxTokens: 16000 },
+  { id: 'block_3', label: 'Bloque 3 · Marco Metodológico',    kind: 'oficial', maxTokens: 16000 },
+  { id: 'block_4', label: 'Bloque 4 · Consideraciones Éticas',kind: 'oficial', maxTokens: 10000 },
+  { id: 'block_5', label: 'Bloque 5 · Resultados',            kind: 'oficial', maxTokens: 10000 },
+  { id: 'block_6', label: 'Bloque 6 · Discusión',             kind: 'oficial', maxTokens: 12000 },
+  { id: 'block_7', label: 'Bloque 7 · Estructura y Normas',   kind: 'oficial', maxTokens: 8000 },
+  { id: 'anexo_A', label: 'Anexo A · Pertinencia colombiana', kind: 'anexo',   maxTokens: 8000 },
+  { id: 'anexo_B', label: 'Anexo B · Estándar de reporte',    kind: 'anexo',   maxTokens: 8000 },
+  { id: 'anexo_C', label: 'Anexo C · Integridad académica',   kind: 'anexo',   maxTokens: 7000 },
+  { id: 'sintesis',label: 'Síntesis · concepto y documentos', kind: 'sintesis',maxTokens: 18000 }
+];
+
+const PRICING = {
+  'claude-sonnet-4-5': { in: 3.00, out: 15.00, cacheWrite: 3.75, cacheRead: 0.30 },
+  'claude-opus-4-7':   { in: 15.00, out: 75.00, cacheWrite: 18.75, cacheRead: 1.50 }
+};
+
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function toast(msg, kind = '') {
+  const stack = $('toastStack');
+  const t = document.createElement('div');
+  t.className = 'toast ' + kind;
+  t.textContent = msg;
+  stack.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; }, 3500);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function setStatus(taskId, status) {
+  const dot = $('dot-' + taskId.replace('_','-'));
+  if (dot) {
+    dot.classList.remove('pending', 'running', 'done', 'error');
+    dot.classList.add(status);
+  }
+  const section = $(taskId.replace('_','-'));
+  if (section) {
+    const card = section.querySelector('.block-card, .anexo-card');
+    if (card) {
+      card.classList.remove('pending', 'running', 'done', 'error');
+      card.classList.add(status);
+    }
+  }
+}
+
+function updateProgress() {
+  const total = TASKS.length;
+  const done = TASKS.filter(t => STATE.results[t.id]).length;
+  const pct = (done / total) * 100;
+  $('progressFill').style.width = pct + '%';
+  $('evalStatusMeta').textContent = `${done} / ${total} llamadas`;
+}
+
+function fmtTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateTokenDisplay() {
+  $('tokIn').textContent  = STATE.metadata.tokensIn.toLocaleString('es-CO');
+  $('tokOut').textContent = STATE.metadata.tokensOut.toLocaleString('es-CO');
+  $('tokCache').textContent = STATE.metadata.tokensCacheRead.toLocaleString('es-CO');
+  $('costoEst').textContent = `USD ${STATE.metadata.costoUsd.toFixed(2)}`;
+}
+
+function calcularCosto(usage, model) {
+  const p = PRICING[model] || PRICING['claude-sonnet-4-5'];
+  const inT = (usage.input_tokens || 0);
+  const outT = (usage.output_tokens || 0);
+  const cWrite = (usage.cache_creation_input_tokens || 0);
+  const cRead = (usage.cache_read_input_tokens || 0);
+  return (
+    (inT * p.in / 1e6) +
+    (outT * p.out / 1e6) +
+    (cWrite * p.cacheWrite / 1e6) +
+    (cRead * p.cacheRead / 1e6)
+  );
+}
+
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      const b64 = result.split(',')[1];
+      resolve(b64);
+    };
+    reader.onerror = () => reject(new Error('Lectura del archivo falló'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function balanceJSON(s) {
+  let depth = 0, start = -1, inStr = false, esc = false, lastOK = -1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (esc) { esc = false; continue; }
+    if (c === '\\') { esc = true; continue; }
+    if (c === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (c === '{') { if (start < 0) start = i; depth++; }
+    else if (c === '}') { depth--; if (depth === 0 && start >= 0) lastOK = i; }
+  }
+  if (start >= 0 && lastOK >= 0) return s.slice(start, lastOK + 1);
+  return null;
+}
+
+function findLastBalancedJSON(s) {
+  let lastClose = s.lastIndexOf('}');
+  while (lastClose > 0) {
+    let depth = 0, inStr = false, esc = false;
+    for (let i = lastClose; i >= 0; i--) {
+      const c = s[i];
+      if (esc) { esc = false; continue; }
+      if (c === '\\') { esc = true; continue; }
+      if (c === '"') { inStr = !inStr; continue; }
+      if (inStr) continue;
+      if (c === '}') depth++;
+      else if (c === '{') {
+        depth--;
+        if (depth === 0) return s.slice(i, lastClose + 1);
+      }
+    }
+    lastClose = s.lastIndexOf('}', lastClose - 1);
+  }
+  return null;
+}
+
+function extractJSON(text) {
+  if (!text) return null;
+  let m = text.match(/```json\s*([\s\S]*?)\s*```/);
+  if (m) {
+    try { return JSON.parse(m[1]); } catch(e) {}
+  }
+  m = text.match(/```json\s*([\s\S]*)$/);
+  if (m) {
+    const candidate = balanceJSON(m[1]);
+    if (candidate) {
+      try { return JSON.parse(candidate); } catch(e) {}
+    }
+  }
+  const last = findLastBalancedJSON(text);
+  if (last) {
+    try { return JSON.parse(last); } catch(e) {}
+  }
+  const first = balanceJSON(text);
+  if (first) {
+    try { return JSON.parse(first); } catch(e) {}
+  }
+  return null;
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+const SYSTEM_PROMPT = `Eres asistente experto del jurado evaluador de la Maestría en Investigación en Cuidados Paliativos de la Universidad Antonio Nariño (UAN), Facultad de Enfermería, Bogotá, Colombia.
+
+Tu tarea es leer el PDF de un trabajo de grado completo y producir una evaluación rigurosa, pedagógica y ajustada a la rúbrica oficial UAN.
+
+REGLAS ABSOLUTAS:
+
+1. **TU RESPUESTA DEBE SER ÚNICAMENTE EL BLOQUE JSON ENTRE TRIPLE BACKTICKS. NO ESCRIBAS NADA ANTES NI DESPUÉS DEL JSON. NI INTRODUCCIÓN, NI HEADERS, NI MARKDOWN EXPLICATIVO, NI SALUDOS, NI CONCLUSIONES.** El campo "justificacion" del JSON es donde va tu análisis. Si quieres ser detallado, sé detallado dentro de "justificacion" y "observaciones_recomendaciones", PERO NO FUERA DEL JSON.
+
+2. Idioma de salida: español de Colombia, registro académico.
+3. Citas textuales del PDF: máximo 15 palabras consecutivas (regla de derechos de autor).
+4. Si un dato no aparece en el PDF, escribe "no reportado". NUNCA inventes.
+5. La rúbrica oficial UAN tiene escala TERNARIA con cuatro etiquetas: "Cumple", "Cumple Parcial", "No Cumple", "No Aplica". NO uses puntajes 1-5 ni adjetivos distintos en bloques oficiales.
+6. Los anexos complementarios A, B, C son insumos NO oficiales del jurado. Etiquétalos siempre como "Anexo complementario no oficial · Uso interno del jurado".
+7. NO acuses al estudiante de plagio ni de uso de IA. Solo identifica señales objetivas con tono neutral.
+8. Tono: respetuoso, formativo, equilibrado. Reconoce fortalezas reales.
+9. **LÍMITES DE EXTENSIÓN POR CAMPO (estrictos):**
+   - "justificacion": máximo 4 frases, máximo 100 palabras.
+   - "observaciones_recomendaciones": máximo 3 frases, máximo 80 palabras.
+   - "evidencia_textual": máximo 15 palabras del PDF.
+   Sé denso, no extenso. Cada frase debe aportar información distinta.
+
+MARCO NORMATIVO COLOMBIANO DE REFERENCIA (cita cuando aplique):
+- Ley 1733/2014: servicios de CP en enfermedades terminales/crónicas/degenerativas/irreversibles.
+- Ley 2241/2022: educación en CP, telemedicina; modifica art. 7 de Ley 1733.
+- Ley 1996/2019: capacidad legal y ajustes razonables para personas con discapacidad.
+- Ley 1581/2012: habeas data.
+- Ley 70/1993: comunidades negras. Convenio 169 OIT (Ley 21/1991): pueblos indígenas.
+- Resolución 8430/1993: investigación en salud (clasificación de riesgo, consentimiento).
+- Resolución 971/2021: atención integral de CP en SGSSS (DEROGÓ a la Resolución 1216/2015).
+- Resolución 813/2026: procedimiento unificado eutanasia/AET/CP (deroga 971/2021).
+- Resolución 2654/2019: telesalud.
+- GPC No. 58/2016: Guía de Práctica Clínica de CP del MinSalud.
+
+BANDERA NORMATIVA CRÍTICA:
+Si el trabajo de grado cita la Resolución 1216/2015 como vigente, marca error normativo de alta gravedad: fue derogada por Resolución 971/2021.
+
+ESTÁNDARES DE REPORTE POR DISEÑO:
+ECA→CONSORT 2010; cuasi-experimental→TREND; observacional→STROBE; serie de casos→STROBE/CARE; revisión sistemática→PRISMA 2020 + AMSTAR-2; scoping→PRISMA-ScR + JBI; cualitativo→COREQ/SRQR; fenomenológico→COREQ + criterios del autor (Van Manen, Heidegger, Husserl, IPA Smith); IAP→CONSIDER; validación→COSMIN; Delphi→CREDES; pruebas diagnósticas→STARD; costo-efectividad→CHEERS 2022; modelo pronóstico→TRIPOD + PROBAST; mixto→GRAMMS.
+
+FORMATO DE SALIDA: ÚNICAMENTE un bloque JSON válido entre triple backticks con la etiqueta "json". CERO texto fuera del bloque JSON. Tu respuesta empieza con \`\`\`json y termina con \`\`\`.`;
+
+function promptForBlock(blockId, identificacion) {
+  const ctx = `\n\n## Contexto ya capturado por el jurado\n- Título declarado: ${identificacion.titulo || '(no declarado)'}\n- Estudiante(s): ${identificacion.estudiantes || '(no declarado)'}\n- Director(a): ${identificacion.director || '(no declarado)'}\n- Modalidad: ${identificacion.modalidad || '(por detectar)'}\n- Tipología declarada: ${identificacion.tipologia || '(por detectar)'}\n`;
+
+  const PROMPTS = {
+    block_1: `**BLOQUE 1 OFICIAL UAN · TÍTULO**${ctx}
+
+Lee el PDF adjunto y evalúa el ÚNICO ítem 1 de la rúbrica oficial UAN.
+
+## Ítem 1 (literal de la rúbrica)
+"Título: incluye un título claro y coherente con la investigación."
+
+### Verificación específica
+- ¿El título refleja claramente la pregunta de investigación, los participantes y el contexto?
+- ¿Es conciso y específico, sin redundancias ni siglas no estándar?
+- ¿Coincide el título de la portada con el de la página de aceptación y la cita de la base de datos?
+- ¿Es coherente con los objetivos efectivamente desarrollados en el trabajo?
+
+### Adicional: extracción de identificación
+Extrae también: título completo (literal), estudiante(s), director(a), modalidad detectada, tipología detectada.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 1,
+  "nombre_bloque": "TÍTULO",
+  "identificacion_extraida": {
+    "titulo": "...",
+    "estudiantes": ["..."],
+    "director": "...",
+    "modalidad": "individual | grupal | no detectada",
+    "tipologia_detectada": "..."
+  },
+  "items": [
+    {
+      "numero": 1,
+      "criterio": "Título: incluye un título claro y coherente con la investigación.",
+      "calificacion": "Cumple | Cumple Parcial | No Cumple | No Aplica",
+      "justificacion": "...",
+      "evidencia_textual": "...",
+      "pagina_aproximada": 0,
+      "observaciones_recomendaciones": "..."
+    }
+  ]
+}
+\`\`\``,
+
+    block_2: `**BLOQUE 2 OFICIAL UAN · MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL**${ctx}
+
+Evalúa los ítems 2, 3, 4, 5 y 6 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 2.** "Descripción del problema: Se presentan los antecedentes, derivados de la revisión de literatura científica, que demuestran la necesidad de la investigación."
+- **Ítem 3.** "La pregunta de investigación es relevante, contextualizada y coherente."
+- **Ítem 4.** "En la Justificación de la investigación se plantea la relevancia social, práctica y aportes al conocimiento científico."
+- **Ítem 5.** "Los objetivos planteados son claros, precisos, viables y coherentes con el problema de investigación."
+- **Ítem 6.** "El Marco conceptual y/o teórico se presenta de manera coherente, integrado y articulado que da sustento a la investigación."
+
+### Verificación específica por ítem
+- Ítem 2: ¿hay datos epidemiológicos colombianos? ¿vacío de conocimiento explícito? ¿conexión con vacíos estructurales colombianos en CP?
+- Ítem 3: ¿formato PICO/PICo/SPIDER/CoCoPop/SPICE/PCC adecuado al diseño?
+- Ítem 4: ¿relevancia para SGSSS, EPS/IPS de mediana y baja complejidad, comunidades PDET/indígenas/afrocolombianas?
+- Ítem 5: ¿objetivo general + específicos? ¿mensurables y coherentes con la pregunta?
+- Ítem 6: ¿modelos teóricos pertinentes (Calman, Murray-Lynn, Trauma de Pérdida, etc.)? ¿integración crítica vs. compilación?
+
+Para cada uno de los 5 ítems: calificación oficial (escala ternaria), justificación 3-5 frases, evidencia textual ≤15 palabras, página aproximada, recomendaciones para casilla de observaciones.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 2,
+  "nombre_bloque": "MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL",
+  "items": [
+    { "numero": 2, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 3, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 4, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 5, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 6, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_3: `**BLOQUE 3 OFICIAL UAN · MARCO METODOLÓGICO**${ctx}
+
+Evalúa los ítems 7, 8, 9, 10 y 11 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 7.** "Se identifica el diseño de la investigación que es coherente con la pregunta y los objetivos planteados."
+- **Ítem 8.** "En el diseño metodológico se describe la selección de los participantes, criterios de inclusión y de exclusión."
+- **Ítem 9.** "La muestra y el tipo de muestreo corresponde al diseño seleccionado."
+- **Ítem 10.** "Se realiza una descripción de las variables del estudio y el proceso de recolección de datos y plan de análisis, según el tipo de estudio."
+- **Ítem 11.** "Se hace explícito el rigor metodológico y control de sesgos según el tipo de estudio."
+
+### Verificación específica
+- Ítem 7: ¿enfoque (cuantitativo/cualitativo/mixto) coherente con la pregunta? ¿diseño bien especificado?
+- Ítem 8: ¿criterios de inclusión y exclusión completos y operacionalizables?
+- Ítem 9: ¿cálculo muestral o saturación teórica justificados?
+- Ítem 10: ¿instrumentos validados con propiedades psicométricas? ¿plan de análisis explícito?
+- Ítem 11: ¿estándar de reporte aplicable mencionado? Para CP: ¿manejo de atrición por muerte, MNAR, sesgo de supervivencia, gatekeeping clínico, Hawthorne, definición operativa de fin de vida? Para cualitativos: ¿criterios de Lincoln & Guba o equivalentes?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 3,
+  "nombre_bloque": "MARCO METODOLÓGICO",
+  "items": [
+    { "numero": 7,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 8,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 9,  "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 10, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 11, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_4: `**BLOQUE 4 OFICIAL UAN · CONSIDERACIONES ÉTICAS**${ctx}
+
+Evalúa los ítems 12 y 13 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 12.** "Se describen los aspectos y principios éticos a partir de las declaraciones internacionales y nacionales respecto a la investigación en salud, junto con la legislación sobre derechos de autor, y propiedad intelectual (plagio)."
+- **Ítem 13.** "Incluye el aval ético de la universidad y de las instituciones o comunidades donde se realizó el estudio, el consentimiento y/o asentimiento en el caso de investigación en que participan menores de edad. Además de la autorización para el uso de instrumentos de medición cuando sea el caso."
+
+### Verificación específica
+- Ítem 12: ¿Helsinki/CIOMS/Belmont mencionadas? ¿Resolución 8430/1993 con clasificación de riesgo? ¿derechos de autor y plagio? ¿reflexividad ética en estudios cualitativos?
+- Ítem 13: ¿aval ético UAN con número y fecha? ¿aval institucional adicional si recolección externa? ¿consentimiento informado completo? ¿asentimiento+consentimiento parental para menores (Ley 1098/2006)? ¿consulta previa para comunidades indígenas (Convenio 169 OIT)? ¿protocolos de no-revictimización para víctimas? ¿autorización del autor del instrumento?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 4,
+  "nombre_bloque": "CONSIDERACIONES ÉTICAS",
+  "items": [
+    { "numero": 12, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 13, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_5: `**BLOQUE 5 OFICIAL UAN · RESULTADOS**${ctx}
+
+Evalúa los ítems 14 y 15 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 14.** "Se presentan los resultados en coherencia con los objetivos propuestos."
+- **Ítem 15.** "Interpreta los resultados del estudio de manera adecuada en coherencia con el método."
+
+### Verificación específica
+- Ítem 14: ¿un bloque de resultados por objetivo específico o por categoría de análisis? ¿tablas y figuras numeradas, tituladas y referenciadas en texto?
+- Ítem 15: cuantitativos: ¿estadística descriptiva apropiada + IC 95%? cualitativos: ¿categorías + sub-categorías + verbatims con código del informante? mixtos: ¿integración de hallazgos? ¿hay interpretación indebida en este capítulo (que debería ir en discusión)?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 5,
+  "nombre_bloque": "RESULTADOS",
+  "items": [
+    { "numero": 14, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 15, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_6: `**BLOQUE 6 OFICIAL UAN · DISCUSIÓN**${ctx}
+
+Evalúa los ítems 16, 17 y 18 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 16.** "La discusión de los resultados muestra la articulación y contraste con la literatura científica y con la postura del autor en relación a los resultados obtenidos del proceso investigativo."
+- **Ítem 17.** "Las conclusiones derivadas del proyecto de investigación son coherentes con los objetivos planteados."
+- **Ítem 18.** "Incluye las recomendaciones y las limitaciones derivadas del proceso investigativo."
+
+### Verificación específica
+- Ítem 16: ¿contraste sustantivo (no solo "coincide con X")? ¿postura del autor explícita? ¿implicaciones para SGSSS y política pública en CP?
+- Ítem 17: ¿una conclusión por cada objetivo específico? ¿sin información nueva?
+- Ítem 18: ¿limitaciones explícitas (incluyendo sesgos paliativos: supervivencia, atrición, gatekeeping, Hawthorne, definición operativa)? ¿recomendaciones operativas? ¿culturalmente situadas (PDET, indígenas, afrocolombianos cuando aplica)?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 6,
+  "nombre_bloque": "DISCUSIÓN",
+  "items": [
+    { "numero": 16, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 17, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." },
+    { "numero": 18, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    block_7: `**BLOQUE 7 OFICIAL UAN · ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO**${ctx}
+
+Evalúa los ítems 19 y 20 de la rúbrica oficial.
+
+## Ítems (literales)
+- **Ítem 19.** "Dentro del texto se utiliza el estilo Vancouver para las citas y referencias bibliográficas. La propuesta contiene mínimo 20 referencias de artículos científicos."
+- **Ítem 20.** "Cumple con la norma ICONTEC para la presentación de trabajos escritos."
+
+### Verificación específica
+- Ítem 19: ¿Vancouver consistente en texto y bibliografía? ¿al menos 20 referencias de artículos científicos (no contar libros, capítulos, normas)? ¿errores de citación cruzada (texto cita ref X pero bibliografía la lista como ref Y)?
+- Ítem 20: ¿márgenes, tipografía, interlineado, paginación, numeración de capítulos? ¿estructura ICONTEC: portada, agradecimientos, contenido, listas de tablas/figuras/abreviaturas, resumen, abstract, cuerpo, bibliografía, anexos?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "bloque": 7,
+  "nombre_bloque": "ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO",
+  "items": [
+    { "numero": 19, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "...", "conteo_referencias_articulos_cientificos": 0 },
+    { "numero": 20, "criterio": "...", "calificacion": "...", "justificacion": "...", "evidencia_textual": "...", "pagina_aproximada": 0, "observaciones_recomendaciones": "..." }
+  ]
+}
+\`\`\``,
+
+    anexo_A: `**ANEXO COMPLEMENTARIO A · USO INTERNO DEL JURADO · PERTINENCIA COLOMBIANA Y MARCO NORMATIVO**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado para alimentar (a su discreción) las observaciones de los ítems oficiales 4 (justificación), 11 (rigor), 13 (aval ético), 16 (discusión), 18 (recomendaciones).
+
+## A.1 Aplicabilidad al SGSSS
+- ¿Implementable en EPS/IPS de mediana y baja complejidad?
+- ¿Pertinencia para municipios PDET, comunidades indígenas y afrocolombianas?
+
+## A.2 Aporte a vacíos estructurales colombianos
+- Cero ECAs sobre integración paliativa en patologías no-oncológicas en Colombia.
+- Sub-representación étnica (afrocolombianos, indígenas) en investigación en CP.
+- Ausencia de instrumentos COSMIN-validados para población adulta colombiana.
+- Ausencia de estudios interventivos en zonas rurales/PDET.
+
+## A.3 Compatibilidad normativa (BANDERA CRÍTICA si error 1216/2015)
+- ¿Cita Resolución 1216/2015 como vigente? Si sí → ERROR de alta gravedad (derogada por 971/2021).
+- ¿Si la tesis es posterior a marzo 2026, considera Resolución 813/2026?
+- ¿Incluye Ley 1733/2014 cuando aplica?
+- ¿Considera Ley 1996/2019 para participantes con capacidad fluctuante?
+- ¿Considera Convenio 169 OIT y Ley 70/1993 si involucra comunidades étnicas?
+- ¿Considera Ley 1581/2012 sobre habeas data para datos sensibles?
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "A",
+  "nombre_anexo": "Pertinencia colombiana y marco normativo",
+  "aplicabilidad_sgsss": "alta | media | baja",
+  "viabilidad_eps_ips_mediana_baja": "alta | media | baja",
+  "pertinencia_pdet_indigenas_afro": "alta | media | baja | no_aplica",
+  "aporte_vacios_estructurales": "...",
+  "error_normativo_1216_2015": true,
+  "normas_correctamente_citadas": ["..."],
+  "normas_omitidas_pertinentes": ["..."],
+  "recomendaciones_jurado_observaciones_oficiales": {
+    "item_4": "...",
+    "item_11": "...",
+    "item_13": "...",
+    "item_16": "...",
+    "item_18": "..."
+  }
+}
+\`\`\``,
+
+    anexo_B: `**ANEXO COMPLEMENTARIO B · USO INTERNO DEL JURADO · ESTÁNDAR DE REPORTE APLICABLE Y RIGOR**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado para alimentar (a su discreción) las observaciones del ítem oficial 11 (rigor metodológico y control de sesgos).
+
+## B.1 Detección de tipología
+Identifica explícitamente la tipología y el estándar de reporte aplicable.
+
+## B.2 Cumplimiento del estándar
+Para el estándar identificado, evalúa cumplimiento de los puntos centrales (no exhaustivo, los más relevantes).
+
+## B.3 Sesgos específicos del campo paliativo (cuando aplique)
+- Manejo planeado de atrición por muerte.
+- Tratamiento de datos faltantes no aleatorios (MNAR).
+- Sesgo de supervivencia.
+- Gatekeeping clínico.
+- Hawthorne en intervenciones.
+- Definición operativa de "fin de vida" / "fase terminal".
+
+## B.4 Estudios cualitativos
+- Criterios de Lincoln & Guba (credibilidad, transferibilidad, dependibilidad, confirmabilidad).
+- Si fenomenológico: coherencia con la tradición filosófica del autor de referencia (Van Manen, Heidegger, Husserl, Smith).
+- Reflexividad explícita del investigador.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "B",
+  "nombre_anexo": "Estándar de reporte aplicable y rigor",
+  "tipologia_detectada": "...",
+  "estandar_aplicable": "...",
+  "cumplimiento_estandar": "alto | medio | bajo",
+  "puntos_estandar_no_cumplidos": ["..."],
+  "sesgos_paliativos_relevantes": ["..."],
+  "sesgos_paliativos_abordados": ["..."],
+  "criterios_cualitativos_aplicados": ["..."],
+  "recomendaciones_jurado_observaciones_item_11": "..."
+}
+\`\`\``,
+
+    anexo_C: `**ANEXO COMPLEMENTARIO C · USO INTERNO DEL JURADO · INTEGRIDAD ACADÉMICA Y SEÑALES DE IA**${ctx}
+
+Esta NO es parte de la rúbrica oficial UAN. Es análisis interno del jurado. NO acuses al estudiante de uso de IA. Solo identifica señales objetivas y emite probabilidad orientativa para verificación oral en sustentación.
+
+## C.1 Declaración explícita
+- ¿El estudiante declara haber usado IA generativa? (Sí / No / Parcial)
+- Si declara: ¿en qué fases (búsqueda / redacción / análisis / traducción)? ¿es coherente con la política UAN?
+
+## C.2 Uniformidad de tono y estilo
+- ¿Variaciones naturales de estilo entre capítulos?
+- ¿Marcadores de "voz" personal del estudiante?
+- ¿Capítulos parecen escritos por la misma persona o como pegado de fragmentos heterogéneos?
+
+## C.3 Frecuencia de marcadores lingüísticos sobre-presentes en LLMs en español
+Buscar y estimar frecuencia (alta/media/baja): "es fundamental destacar", "cabe resaltar", "en este sentido", "por otro lado", "asimismo", "no obstante", "aporta valiosos insights", "visión integral", "holística", "robusta evidencia", "subraya la importancia", "es importante señalar", "en la actualidad".
+
+## C.4 Análisis de citaciones
+- ¿Las referencias citadas en texto existen en la bibliografía?
+- ¿Los DOIs son verificables y reales (estimación)?
+- ¿Hay referencias que NO corresponden al contenido citado?
+- ¿La distribución temporal de las referencias es plausible?
+
+## C.5 Probabilidad orientativa
+- Baja (0–30%) / Moderada (30–70%) / Alta (>70%).
+- Justifica con señales específicas observadas.
+- Recomienda acción al jurado:
+  * Baja: ninguna acción adicional.
+  * Moderada: preguntas orales específicas en sustentación.
+  * Alta: entrevista preliminar antes de sustentación, revisión de versiones previas.
+
+## SALVAGUARDAS OBLIGATORIAS
+- La probabilidad es ORIENTATIVA y no constituye prueba.
+- Uso de IA puede ser legítimo si se declara y se enmarca en política UAN.
+- La verificación final corresponde al jurado humano en sustentación oral.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "anexo": "C",
+  "nombre_anexo": "Integridad académica y señales de IA",
+  "ia_declarada_estudiante": "si | no | parcial",
+  "ia_declaracion_coherente_politica_uan": "si | no | no_aplica",
+  "uniformidad_tono": "alta | moderada | baja",
+  "frecuencia_marcadores_llm": "alta | moderada | baja",
+  "marcadores_detectados": ["..."],
+  "doi_verificables_estimado": "100% | 80-99% | <80%",
+  "probabilidad_ia_no_declarada": "baja | moderada | alta",
+  "justificacion_probabilidad": "...",
+  "recomendacion_accion_jurado": "ninguna | preguntas_orales | entrevista_preliminar",
+  "preguntas_sugeridas_sustentacion": ["..."]
+}
+\`\`\``
+  };
+
+  return PROMPTS[blockId];
+}
+
+function extractItemsOficiales(results) {
+  const items = {};
+  ['block_1','block_2','block_3','block_4','block_5','block_6','block_7'].forEach(b => {
+    const r = results[b];
+    if (!r || !r.items) return;
+    r.items.forEach(it => {
+      const k = String(it.numero).padStart(2,'0');
+      items[k] = {
+        criterio: it.criterio,
+        calificacion: it.calificacion,
+        justificacion: it.justificacion,
+        evidencia_textual: it.evidencia_textual,
+        pagina_aproximada: it.pagina_aproximada,
+        observaciones: it.observaciones_recomendaciones
+      };
+    });
+  });
+  return items;
+}
+
+function promptForSintesis(allResults, identificacion, jurado) {
+  const summary = JSON.stringify({
+    identificacion,
+    jurado,
+    items_oficiales: extractItemsOficiales(allResults),
+    anexos: {
+      A: allResults.anexo_A,
+      B: allResults.anexo_B,
+      C: allResults.anexo_C
+    }
+  }, null, 2);
+
+  return `**SÍNTESIS FINAL · CONCEPTO Y GENERACIÓN DE DOCUMENTOS**
+
+Has completado los 7 bloques oficiales (20 ítems) y los 3 anexos complementarios. Resumen de calificaciones e insumos:
+
+\`\`\`json
+${summary}
+\`\`\`
+
+## Paso 1 · Concepto final oficial UAN
+
+Decide UNO de tres conceptos según la escala oficial UAN:
+
+- **Aprobado:** ningún ítem en "No Cumple"; ítems en "Cumple Parcial" son menores y subsanables sin cambios estructurales.
+- **Aprobado con condicionamiento:** hay ítems en "Cumple Parcial" o "No Cumple" que requieren ajustes con orientación del tutor antes de sustentación o segunda lectura.
+- **No aprobado:** múltiples ítems en "No Cumple" o ítems críticos (12, 13, 7, 11) en "No Cumple" que comprometen la integridad del trabajo.
+
+Justifica el concepto en 5-8 frases.
+
+## Paso 2 · Preguntas adicionales según concepto
+
+- Si "Aprobado": ¿Merece distinción meritorio o laureado? Sí/No + justificación. ¿Calidad aceptable para sustentación? Sí/No.
+- Si "Aprobado con condicionamiento": ¿Requiere segunda lectura? Sí/No + justificación. ¿Calidad aceptable para sustentación? Sí/No.
+- Si "No aprobado": (sin preguntas adicionales).
+
+## Paso 3 · Generar tres documentos
+
+### A) Devolución pedagógica al estudiante (Markdown formativo)
+- Saludo respetuoso.
+- Reconocimiento de fortalezas concretas y citables.
+- Áreas de mejora ordenadas por prioridad, con sugerencias accionables.
+- Bibliografía complementaria recomendada (DOIs verificables).
+- Cierre alentador.
+NO incluye concepto final, calificaciones por ítem, ni anexos C (IA).
+
+### B) Resumen ejecutivo para coordinación (Markdown breve, 1-2 páginas)
+- Datos identificadores.
+- Tabla compacta de los 20 ítems con calificación.
+- Concepto final.
+- Banderas críticas (errores normativos, IA alta probabilidad, etc.).
+- Tiempo estimado de evaluación y modelo usado.
+
+### C) Texto consolidado para casillas "Observaciones" del Formato UAN
+Para cada uno de los 20 ítems, redacta un texto de 1-3 frases (máximo 60 palabras) que el jurado pueda copiar a la columna "Observaciones y recomendaciones" del Formato UAN oficial. Tono académico, formativo, sin jerga de IA. Si un ítem fue calificado "Cumple", la observación reconoce la fortaleza brevemente.
+
+**FORMATO JSON FINAL OBLIGATORIO:**
+\`\`\`json
+{
+  "concepto_final": "Aprobado | Aprobado con condicionamiento | No aprobado",
+  "justificacion_concepto": "...",
+  "preguntas_adicionales": {
+    "merece_distincion_meritorio_laureado": true,
+    "calidad_aceptable_sustentacion": true,
+    "requiere_segunda_lectura": false
+  },
+  "observaciones_consolidadas_por_item": {
+    "01": "...", "02": "...", "03": "...", "04": "...", "05": "...",
+    "06": "...", "07": "...", "08": "...", "09": "...", "10": "...",
+    "11": "...", "12": "...", "13": "...", "14": "...", "15": "...",
+    "16": "...", "17": "...", "18": "...", "19": "...", "20": "..."
+  },
+  "devolucion_pedagogica_md": "...",
+  "resumen_ejecutivo_md": "..."
+}
+\`\`\``;
+}
+
+async function callAnthropic(taskId, userText, maxTokens) {
+  const systemBlocks = [
+    { type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }
+  ];
+
+  const content = [
+    {
+      type: 'document',
+      source: {
+        type: 'base64',
+        media_type: 'application/pdf',
+        data: STATE.pdfBase64
+      },
+      cache_control: { type: 'ephemeral' }
+    },
+    { type: 'text', text: userText }
+  ];
+
+  const body = {
+    model: STATE.model,
+    max_tokens: maxTokens,
+    system: systemBlocks,
+    messages: [
+      { role: 'user', content }
+    ]
+  };
+
+  const url = 'https://api.anthropic.com/v1/messages';
+  const maxRetries = 5;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': STATE.apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        if (resp.status === 429 || resp.status === 529) {
+          // Respetar retry-after del header si existe; si no, escala 60/120/180/240/300s
+          const retryAfterHeader = resp.headers.get('retry-after');
+          let wait;
+          if (retryAfterHeader) {
+            wait = (parseInt(retryAfterHeader, 10) + 5) * 1000; // +5s de margen
+          } else {
+            wait = [60000, 120000, 180000, 240000, 300000][attempt - 1] || 300000;
+          }
+          toast(`API saturada (${resp.status}). Reintento en ${Math.round(wait/1000)}s...`, 'warn');
+          await sleep(wait);
+          continue;
+        }
+        throw new Error(`HTTP ${resp.status}: ${errText.slice(0, 300)}`);
+      }
+
+      const data = await resp.json();
+      const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+      const fullText = textBlocks.join('\n\n');
+
+      const usage = data.usage || {};
+      STATE.metadata.tokensIn += usage.input_tokens || 0;
+      STATE.metadata.tokensOut += usage.output_tokens || 0;
+      STATE.metadata.tokensCacheCreate += usage.cache_creation_input_tokens || 0;
+      STATE.metadata.tokensCacheRead += usage.cache_read_input_tokens || 0;
+      STATE.metadata.costoUsd += calcularCosto(usage, STATE.model);
+      updateTokenDisplay();
+
+      return { text: fullText, usage, raw: data };
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        const wait = [5000, 15000, 30000][attempt - 1];
+        toast(`Error de red. Reintento ${attempt+1}/${maxRetries} en ${wait/1000}s...`, 'warn');
+        await sleep(wait);
+      }
+    }
+  }
+  throw lastError || new Error('Falló después de varios reintentos');
+}
+
+async function runEvaluation() {
+  if (STATE.running) return;
+  if (!STATE.apiKey) { toast('Falta la API Key de Anthropic', 'err'); return; }
+  if (!STATE.pdfBase64) { toast('Falta cargar el PDF de la tesis', 'err'); return; }
+
+  STATE.running = true;
+  $('btnRun').disabled = true;
+  STATE.metadata.timestampInicio = Date.now();
+  STATE.results = {};
+  TASKS.forEach(t => {
+    const id = t.id.replace('_','-');
+    const body = $(id + '-body');
+    if (body) body.innerHTML = '';
+  });
+
+  const timer = setInterval(() => {
+    const sec = Math.floor((Date.now() - STATE.metadata.timestampInicio)/1000);
+    STATE.metadata.duracionSegundos = sec;
+    $('tiempoEval').textContent = fmtTime(sec);
+  }, 500);
+
+  try {
+    for (let i = 0; i < TASKS.length; i++) {
+      const task = TASKS[i];
+      $('evalStatusLabel').innerHTML = `<span class="loader-line"></span>Procesando: ${task.label}`;
+      setStatus(task.id, 'running');
+      renderPlaceholder(task);
+
+      let userText;
+      if (task.kind === 'sintesis') {
+        userText = promptForSintesis(STATE.results, STATE.identificacion, STATE.jurado);
+      } else {
+        userText = promptForBlock(task.id, STATE.identificacion);
+      }
+
+      const result = await callAnthropic(task.id, userText, task.maxTokens);
+      const json = extractJSON(result.text);
+
+      if (!json) {
+        setStatus(task.id, 'error');
+        const debugInfo = `Tokens generados: ${result.usage?.output_tokens || '?'} de ${task.maxTokens} máx. Stop reason: ${result.raw?.stop_reason || '?'}.`;
+        renderError(task, `No se pudo extraer JSON estructurado de la respuesta. ${debugInfo} Texto recibido:`, result.text);
+        throw new Error(`Tarea "${task.label}" devolvió respuesta sin JSON parseable. ${debugInfo}`);
+      }
+
+      STATE.results[task.id] = json;
+
+      if (task.id === 'block_1' && json.identificacion_extraida) {
+        const ie = json.identificacion_extraida;
+        if (!STATE.identificacion.titulo) STATE.identificacion.titulo = ie.titulo || '';
+        if (!STATE.identificacion.estudiantes && Array.isArray(ie.estudiantes)) {
+          STATE.identificacion.estudiantes = ie.estudiantes.join('; ');
+        }
+        if (!STATE.identificacion.director) STATE.identificacion.director = ie.director || '';
+        if (!STATE.identificacion.modalidad) STATE.identificacion.modalidad = ie.modalidad || '';
+        if (!STATE.identificacion.tipologia) STATE.identificacion.tipologia = ie.tipologia_detectada || '';
+        if (ie.titulo && !$('i_titulo').value) $('i_titulo').value = ie.titulo;
+        if (Array.isArray(ie.estudiantes) && !$('i_estudiantes').value) $('i_estudiantes').value = ie.estudiantes.join('; ');
+        if (ie.director && !$('i_director').value) $('i_director').value = ie.director;
+      }
+
+      renderTaskResult(task, json, result.text);
+      setStatus(task.id, 'done');
+      updateProgress();
+
+      if (i < TASKS.length - 1) {
+        // Throttling adaptado a Tier 1: 60s entre llamadas para que la cuota se reponga
+        $('evalStatusLabel').innerHTML = `<span class="loader-line"></span>Esperando 60s para respetar rate limit...`;
+        await sleep(60000);
+      }
+    }
+
+    STATE.metadata.timestampFin = Date.now();
+    $('evalStatusLabel').textContent = 'Evaluación completa';
+    toast('Evaluación completada con éxito', 'ok');
+
+    await buildDownloads();
+
+    if (STATE.appsScriptUrl) {
+      await persistirEnSheets();
+    }
+
+  } catch (err) {
+    console.error(err);
+    $('evalStatusLabel').innerHTML = `<span style="color:var(--err)">Error: ${escHtml(err.message)}</span>`;
+    toast('Error en evaluación: ' + err.message, 'err');
+  } finally {
+    clearInterval(timer);
+    STATE.running = false;
+    $('btnRun').disabled = false;
+  }
+}
+
+function renderPlaceholder(task) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="block-card running">
+      <div class="block-header">
+        <div class="block-name">${escHtml(task.label)}</div>
+        <div class="block-sub"><span class="loader-line"></span>Procesando...</div>
+      </div>
+      <div class="block-body">
+        <p style="color: var(--ink-mute); font-style: italic;">El modelo está evaluando este bloque. Tiempo estimado: 20-50 segundos.</p>
+      </div>
+    </div>`;
+}
+
+function renderError(task, msg, raw) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div class="block-card error">
+      <div class="block-header">
+        <div class="block-name">${escHtml(task.label)} · error</div>
+      </div>
+      <div class="block-body">
+        <div class="alert alert-err">${escHtml(msg)}</div>
+        <pre style="white-space:pre-wrap; font-family:var(--mono); font-size:0.78rem; background:var(--cream); padding:12px; border-radius:6px; max-height:300px; overflow:auto;">${escHtml(raw || '').slice(0,4000)}</pre>
+      </div>
+    </div>`;
+}
+
+function calBadgeHtml(cal) {
+  const c = String(cal || '').toLowerCase();
+  let cls = 'cal-na', label = cal || 'No reportado';
+  if (c === 'cumple') { cls = 'cal-cumple'; label = 'Cumple'; }
+  else if (c.includes('cumple parcial')) { cls = 'cal-parcial'; label = 'Cumple Parcial'; }
+  else if (c.includes('no cumple')) { cls = 'cal-no'; label = 'No Cumple'; }
+  else if (c.includes('no aplica')) { cls = 'cal-na'; label = 'No Aplica'; }
+  return `<span class="cal-badge ${cls}">${escHtml(label)}</span>`;
+}
+
+function renderTaskResult(task, json, rawText) {
+  const id = task.id.replace('_','-');
+  const body = $(id + '-body');
+  if (!body) return;
+
+  if (task.kind === 'oficial') {
+    body.innerHTML = renderOficialBlock(task, json);
+  } else if (task.kind === 'anexo') {
+    body.innerHTML = renderAnexoBlock(task, json);
+  } else if (task.kind === 'sintesis') {
+    body.innerHTML = renderSintesis(json);
+  }
+}
+
+function renderOficialBlock(task, json) {
+  const items = (json.items || []).map(it => `
+    <tr>
+      <td class="center" style="font-family:var(--mono); font-weight:600; color:var(--burgundy);">${it.numero}</td>
+      <td>${escHtml(it.criterio)}</td>
+      <td class="center">${calBadgeHtml(it.calificacion)}</td>
+      <td>
+        <div>${escHtml(it.justificacion || '')}</div>
+        ${it.evidencia_textual ? `<div class="evidencia">${escHtml(it.evidencia_textual)}${it.pagina_aproximada ? ` (p. ${it.pagina_aproximada})` : ''}</div>` : ''}
+        <div style="margin-top:8px; font-size:0.85rem;"><strong style="color:var(--burgundy);">Observación:</strong> ${escHtml(it.observaciones_recomendaciones || '')}</div>
+      </td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="block-card done">
+      <div class="block-header">
+        <div class="block-name">${escHtml(json.nombre_bloque)}</div>
+        <div class="block-sub">Bloque ${json.bloque || task.id.replace('block_','')} · oficial UAN</div>
+      </div>
+      <div class="block-body">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th class="center" style="width:6%;">#</th>
+              <th style="width:30%;">Criterio (literal)</th>
+              <th class="center" style="width:14%;">Calificación</th>
+              <th>Justificación, evidencia y observación</th>
+            </tr>
+          </thead>
+          <tbody>${items}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderAnexoBlock(task, json) {
+  let body = '';
+  if (task.id === 'anexo_A') {
+    body = `
+      <p><strong>Aplicabilidad SGSSS:</strong> ${escHtml(json.aplicabilidad_sgsss)}</p>
+      <p><strong>Viabilidad EPS/IPS mediana y baja complejidad:</strong> ${escHtml(json.viabilidad_eps_ips_mediana_baja)}</p>
+      <p><strong>Pertinencia PDET / indígenas / afro:</strong> ${escHtml(json.pertinencia_pdet_indigenas_afro)}</p>
+      <p><strong>Aporte a vacíos estructurales:</strong> ${escHtml(json.aporte_vacios_estructurales)}</p>
+      ${json.error_normativo_1216_2015 ? '<div class="alert alert-err"><strong>BANDERA CRÍTICA:</strong> El trabajo cita la Resolución 1216/2015 como vigente. Esta fue derogada por Resolución 971/2021. Error normativo de alta gravedad.</div>' : ''}
+      <h4>Normas correctamente citadas</h4>
+      <ul>${(json.normas_correctamente_citadas || []).map(n => `<li>${escHtml(n)}</li>`).join('')}</ul>
+      <h4>Normas pertinentes que se omitieron</h4>
+      <ul>${(json.normas_omitidas_pertinentes || []).map(n => `<li>${escHtml(n)}</li>`).join('')}</ul>
+      <h4>Recomendaciones para casillas de observaciones del Formato UAN</h4>
+      ${Object.entries(json.recomendaciones_jurado_observaciones_oficiales || {}).map(([k,v]) => `<p><strong>${k.toUpperCase()}:</strong> ${escHtml(v)}</p>`).join('')}
+    `;
+  } else if (task.id === 'anexo_B') {
+    body = `
+      <p><strong>Tipología detectada:</strong> ${escHtml(json.tipologia_detectada)}</p>
+      <p><strong>Estándar de reporte aplicable:</strong> ${escHtml(json.estandar_aplicable)}</p>
+      <p><strong>Cumplimiento del estándar:</strong> ${escHtml(json.cumplimiento_estandar)}</p>
+      <h4>Puntos del estándar no cumplidos</h4>
+      <ul>${(json.puntos_estandar_no_cumplidos || []).map(p => `<li>${escHtml(p)}</li>`).join('')}</ul>
+      <h4>Sesgos paliativos relevantes</h4>
+      <p>Relevantes: ${(json.sesgos_paliativos_relevantes || []).map(escHtml).join(', ') || '—'}</p>
+      <p>Abordados en el trabajo: ${(json.sesgos_paliativos_abordados || []).map(escHtml).join(', ') || '—'}</p>
+      <h4>Criterios cualitativos aplicados</h4>
+      <ul>${(json.criterios_cualitativos_aplicados || []).map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>
+      <h4>Recomendación para observaciones del ítem 11</h4>
+      <p>${escHtml(json.recomendaciones_jurado_observaciones_item_11)}</p>
+    `;
+  } else if (task.id === 'anexo_C') {
+    const probClass = json.probabilidad_ia_no_declarada === 'alta' ? 'alert-err' :
+                      json.probabilidad_ia_no_declarada === 'moderada' ? 'alert-warn' : 'alert-ok';
+    body = `
+      <div class="alert ${probClass}">
+        <strong>Probabilidad de IA no declarada: ${escHtml(json.probabilidad_ia_no_declarada)}.</strong> Recomendación: ${escHtml(json.recomendacion_accion_jurado)}.
+      </div>
+      <p><strong>Declaración explícita del estudiante:</strong> ${escHtml(json.ia_declarada_estudiante)}</p>
+      <p><strong>Coherencia con política UAN:</strong> ${escHtml(json.ia_declaracion_coherente_politica_uan)}</p>
+      <p><strong>Uniformidad de tono:</strong> ${escHtml(json.uniformidad_tono)}</p>
+      <p><strong>Frecuencia de marcadores LLM:</strong> ${escHtml(json.frecuencia_marcadores_llm)}</p>
+      <p><strong>DOIs verificables (estimado):</strong> ${escHtml(json.doi_verificables_estimado)}</p>
+      <h4>Marcadores detectados</h4>
+      <ul>${(json.marcadores_detectados || []).map(m => `<li><code>${escHtml(m)}</code></li>`).join('')}</ul>
+      <h4>Justificación</h4>
+      <p>${escHtml(json.justificacion_probabilidad)}</p>
+      <h4>Preguntas sugeridas para sustentación</h4>
+      <ol>${(json.preguntas_sugeridas_sustentacion || []).map(q => `<li>${escHtml(q)}</li>`).join('')}</ol>
+    `;
+  }
+
+  return `
+    <div class="anexo-card">
+      <span class="anexo-tag">Anexo no oficial · uso interno del jurado</span>
+      <h3 style="margin-top:6px;">${escHtml(json.nombre_anexo || task.label)}</h3>
+      ${body}
+    </div>`;
+}
+
+function renderSintesis(json) {
+  const conceptoColor = json.concepto_final === 'Aprobado' ? 'var(--sage-deep)' :
+                        json.concepto_final === 'No aprobado' ? 'var(--burgundy-deep)' :
+                        'var(--terracotta)';
+
+  const obs = json.observaciones_consolidadas_por_item || {};
+  const obsRows = [];
+  for (let i = 1; i <= 20; i++) {
+    const k = String(i).padStart(2,'0');
+    obsRows.push(`<tr><td class="center" style="font-family:var(--mono); font-weight:600; width:8%;">${i}</td><td>${escHtml(obs[k] || '')}</td></tr>`);
+  }
+
+  let preguntas = '';
+  const pa = json.preguntas_adicionales || {};
+  if (json.concepto_final === 'Aprobado') {
+    preguntas = `
+      <h4>Preguntas adicionales (Aprobado)</h4>
+      <p>¿Merece distinción meritorio o laureado? <strong>${pa.merece_distincion_meritorio_laureado ? 'Sí' : 'No'}</strong></p>
+      <p>¿Calidad aceptable para sustentación? <strong>${pa.calidad_aceptable_sustentacion ? 'Sí' : 'No'}</strong></p>`;
+  } else if (json.concepto_final === 'Aprobado con condicionamiento') {
+    preguntas = `
+      <h4>Preguntas adicionales (Aprobado con condicionamiento)</h4>
+      <p>¿Requiere segunda lectura? <strong>${pa.requiere_segunda_lectura ? 'Sí' : 'No'}</strong></p>
+      <p>¿Calidad aceptable para sustentación? <strong>${pa.calidad_aceptable_sustentacion ? 'Sí' : 'No'}</strong></p>`;
+  }
+
+  return `
+    <div class="concepto-final" style="background: ${conceptoColor};">
+      <div class="concepto-final-label">Concepto final del jurado</div>
+      <div class="concepto-final-value">${escHtml(json.concepto_final)}</div>
+      <div class="concepto-final-just">${escHtml(json.justificacion_concepto)}</div>
+    </div>
+
+    <div class="block-card done">
+      ${preguntas}
+      <h4>Observaciones consolidadas para casillas del Formato UAN</h4>
+      <p style="color: var(--ink-mute); font-size: 0.88rem;">Texto sugerido para cada ítem; el jurado puede ajustarlo en el documento descargable.</p>
+      <table class="items-table">
+        <thead><tr><th class="center">#</th><th>Observación sugerida</th></tr></thead>
+        <tbody>${obsRows.join('')}</tbody>
+      </table>
+    </div>`;
+}
+async function buildDownloads() {
+  const sintesis = STATE.results.sintesis;
+  if (!sintesis) {
+    $('downloads-body').innerHTML = '<div class="alert alert-err">No se pudo construir documentos: falta síntesis.</div>';
+    return;
+  }
+
+  const itemsOf = extractItemsOficiales(STATE.results);
+  const obsConsolidadas = sintesis.observaciones_consolidadas_por_item || {};
+  const formatoHtml = buildFormatoUanHtml(itemsOf, obsConsolidadas, sintesis);
+  const devolucionMd = sintesis.devolucion_pedagogica_md || '(no generada)';
+  const resumenMd = sintesis.resumen_ejecutivo_md || '(no generado)';
+
+  STATE.finalDocs = {
+    formatoHtml,
+    devolucionMd,
+    resumenMd,
+    itemsOf,
+    obsConsolidadas,
+    sintesis
+  };
+
+  $('downloads-body').innerHTML = `
+    <div class="downloads-grid">
+      <div class="download-card" onclick="downloadFormatoDocx()">
+        <div class="download-card-letter">A</div>
+        <div class="download-card-title">Formato Oficial UAN</div>
+        <div class="download-card-desc">Diligenciado con las 20 calificaciones, observaciones y concepto final. Editable antes de firmar.</div>
+        <div class="download-card-format">Word · .docx</div>
+      </div>
+      <div class="download-card" onclick="downloadFormatoHtml()">
+        <div class="download-card-letter">A'</div>
+        <div class="download-card-title">Formato Oficial UAN</div>
+        <div class="download-card-desc">Misma plantilla en HTML para visualizar e imprimir directamente desde el navegador.</div>
+        <div class="download-card-format">HTML imprimible · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadDevolucion()">
+        <div class="download-card-letter">B</div>
+        <div class="download-card-title">Devolución pedagógica</div>
+        <div class="download-card-desc">Documento formativo para el estudiante. Reconoce fortalezas y orienta mejoras.</div>
+        <div class="download-card-format">Markdown · .md / HTML · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadResumen()">
+        <div class="download-card-letter">C</div>
+        <div class="download-card-title">Resumen ejecutivo</div>
+        <div class="download-card-desc">Para coordinación del programa: 1-2 páginas con tabla compacta y banderas.</div>
+        <div class="download-card-format">Markdown · .md / HTML · .html</div>
+      </div>
+      <div class="download-card" onclick="downloadJsonCompleto()">
+        <div class="download-card-letter">JSON</div>
+        <div class="download-card-title">Evaluación completa</div>
+        <div class="download-card-desc">JSON con todas las respuestas estructuradas (uso interno del jurado / archivo).</div>
+        <div class="download-card-format">JSON · .json</div>
+      </div>
+    </div>`;
+
+  setStatus('downloads', 'done');
+}
+
+const ITEM_DEF = [
+  { n: 1,  bloque: 'TÍTULO', txt: 'Título: incluye un título claro y coherente con la investigación.' },
+  { n: 2,  bloque: 'MARCO DE REFERENCIA, TEÓRICO Y/O CONCEPTUAL', txt: 'Descripción del problema: Se presentan los antecedentes, derivados de la revisión de literatura científica, que demuestran la necesidad de la investigación.' },
+  { n: 3,  txt: 'La pregunta de investigación es relevante, contextualizada y coherente.' },
+  { n: 4,  txt: 'En la Justificación de la investigación se plantea la relevancia social, práctica y aportes al conocimiento científico.' },
+  { n: 5,  txt: 'Los objetivos planteados son claros, precisos, viables y coherentes con el problema de investigación.' },
+  { n: 6,  txt: 'El Marco conceptual y/o teórico se presenta de manera coherente, integrado y articulado que da sustento a la investigación.' },
+  { n: 7,  bloque: 'MARCO METODOLÓGICO', txt: 'Se identifica el diseño de la investigación que es coherente con la pregunta y los objetivos planteados.' },
+  { n: 8,  txt: 'En el diseño metodológico se describe la selección de los participantes, criterios de inclusión y de exclusión.' },
+  { n: 9,  txt: 'La muestra y el tipo de muestreo corresponde al diseño seleccionado.' },
+  { n: 10, txt: 'Se realiza una descripción de las variables del estudio y el proceso de recolección de datos y plan de análisis, según el tipo de estudio.' },
+  { n: 11, txt: 'Se hace explícito el rigor metodológico y control de sesgos según el tipo de estudio.' },
+  { n: 12, bloque: 'CONSIDERACIONES ÉTICAS', txt: 'Se describen los aspectos y principios éticos a partir de las declaraciones internacionales y nacionales respecto a la investigación en salud, junto con la legislación sobre derechos de autor, y propiedad intelectual (plagio).' },
+  { n: 13, txt: 'Incluye el aval ético de la universidad y de las instituciones o comunidades donde se realizó el estudio, el consentimiento y/o asentimiento en el caso de investigación en que participan menores de edad. Además de la autorización para el uso de instrumentos de medición cuando sea el caso.' },
+  { n: 14, bloque: 'RESULTADOS', txt: 'Se presentan los resultados en coherencia con los objetivos propuestos.' },
+  { n: 15, txt: 'Interpreta los resultados del estudio de manera adecuada en coherencia con el método.' },
+  { n: 16, bloque: 'DISCUSIÓN', txt: 'La discusión de los resultados muestra la articulación y contraste con la literatura científica y con la postura del autor en relación a los resultados obtenidos del proceso investigativo.' },
+  { n: 17, txt: 'Las conclusiones derivadas del proyecto de investigación son coherentes con los objetivos planteados.' },
+  { n: 18, txt: 'Incluye las recomendaciones y las limitaciones derivadas del proceso investigativo.' },
+  { n: 19, bloque: 'ESTRUCTURA Y NORMAS PARA LA PRESENTACIÓN DEL DOCUMENTO', txt: 'Dentro del texto se utiliza el estilo Vancouver para las citas y referencias bibliográficas. La propuesta contiene mínimo 20 referencias de artículos científicos.' },
+  { n: 20, txt: 'Cumple con la norma ICONTEC para la presentación de trabajos escritos.' }
+];
+
+function buildFormatoUanHtml(items, obs, sintesis) {
+  const fechaHoy = new Date().toLocaleDateString('es-CO', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const ident = STATE.identificacion;
+  const j = STATE.jurado;
+
+  const calCols = ['Cumple', 'Cumple Parcial', 'No Cumple', 'No Aplica'];
+  const isMatch = (cal, col) => String(cal || '').toLowerCase() === col.toLowerCase();
+
+  const itemRows = [];
+  ITEM_DEF.forEach(d => {
+    const k = String(d.n).padStart(2,'0');
+    const it = items[k] || {};
+    const cal = it.calificacion || '';
+    const observ = obs[k] || it.observaciones || '';
+
+    if (d.bloque) {
+      itemRows.push(`<tr class="bloque-row"><td colspan="6"><strong>${escHtml(d.bloque)}</strong></td></tr>`);
+    }
+    itemRows.push(`
+      <tr>
+        <td>${escHtml(d.txt)}</td>
+        ${calCols.map(c => `<td class="center">${isMatch(cal, c) ? '<strong>X</strong>' : ''}</td>`).join('')}
+        <td>${escHtml(observ)}</td>
+      </tr>
+    `);
+  });
+
+  const conceptoVal = sintesis.concepto_final || '';
+  const pa = sintesis.preguntas_adicionales || {};
+  let preguntasExtra = '';
+  if (conceptoVal === 'Aprobado') {
+    preguntasExtra = `
+      <p><strong>En caso de que su concepto sea "Aprobado":</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado es merecedor de recibir alguna distinción como trabajo de grado meritorio o laureado?: <strong>Sí ${pa.merece_distincion_meritorio_laureado ? 'X' : '___'} No: ${!pa.merece_distincion_meritorio_laureado ? 'X' : '___'}</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: <strong>Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'} No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}</strong></p>`;
+  } else if (conceptoVal === 'Aprobado con condicionamiento') {
+    preguntasExtra = `
+      <p><strong>En caso de que su concepto sea "Aprobado con condicionamiento":</strong></p>
+      <p>· ¿Requiere el envío del informe final para adelantar segunda lectura del mismo, una vez el o los estudiantes hayan efectuado los ajustes bajo la orientación y con aval de su tutor?: <strong>Sí: ${pa.requiere_segunda_lectura ? 'X' : '___'} No: ${!pa.requiere_segunda_lectura ? 'X' : '___'}</strong></p>
+      <p>· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: <strong>Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'} No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}</strong></p>`;
+  } else if (conceptoVal === 'No aprobado') {
+    preguntasExtra = `<p><strong>En caso de que su concepto sea "No aprobado":</strong> Recibirá una segunda versión del informe final de trabajo de grado ajustada por el o los estudiantes, bajo la orientación y con aval de su tutor, para adelantar la segunda lectura del mismo.</p>`;
+  }
+
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8" /><title>Formato Evaluación Tesis · UAN</title>
+<style>
+@page { size: letter; margin: 2cm 2cm 2.5cm 2cm; }
+body { font-family: 'Times New Roman', serif; font-size: 11pt; color: #000; line-height: 1.4; }
+h1, h2, h3 { text-align: center; }
+h1 { font-size: 14pt; margin-bottom: 4pt; }
+h2 { font-size: 12pt; margin-bottom: 2pt; }
+h3 { font-size: 11pt; margin-bottom: 14pt; }
+table { width: 100%; border-collapse: collapse; margin: 8pt 0; }
+th, td { border: 1px solid #000; padding: 5pt 6pt; vertical-align: top; font-size: 10pt; }
+th { background: #ddd; font-weight: bold; text-align: center; }
+.center { text-align: center; }
+.bloque-row td { background: #f0f0f0; font-weight: bold; }
+.intro { text-align: justify; margin: 12pt 0; font-size: 10.5pt; }
+.note { font-size: 9.5pt; }
+@media print { body { margin: 0; } }
+</style></head><body>
+<h1>UNIVERSIDAD ANTONIO NARIÑO</h1>
+<h2>FACULTAD DE ENFERMERÍA</h2>
+<h2>PROGRAMAS MAESTRÍAS EN INVESTIGACIÓN</h2>
+<h3>FORMATO DE EVALUACIÓN TESIS</h3>
+
+<p class="intro">El documento propuesto permite la evaluación de tesis. El proceso evaluativo se basa en los principios de equidad e imparcialidad y en los criterios de calidad, pertinencia y eficiencia. Esta evaluación consta de dos componentes, el primero corresponde a la revisión de la tesis por parte de los jurados y el segundo a la sustentación pública de la tesis. La Facultad de Enfermería de la Universidad Antonio Nariño agradece a usted su participación en este proceso académico e investigativo.</p>
+
+<p class="intro">Para la revisión del documento escrito de tesis se solicita que realice su evaluación de acuerdo a los parámetros que se describen a continuación, adicionalmente emitir sus observaciones y recomendaciones frente al documento.</p>
+
+<table>
+<tr><th style="width:35%; text-align:left;">Nombre del estudiante</th><td>${escHtml(ident.estudiantes || '')}</td></tr>
+<tr><th style="text-align:left;">Nombre del director de tesis</th><td>${escHtml(ident.director || '')}</td></tr>
+<tr><th style="text-align:left;">Título de la tesis</th><td>${escHtml(ident.titulo || '')}</td></tr>
+<tr><th colspan="2" style="text-align:center;">INFORMACIÓN DEL JURADO EVALUADOR</th></tr>
+<tr><th style="text-align:left;">Nombre del jurado</th><td>${escHtml(j.nombre || '')}</td></tr>
+<tr><th style="text-align:left;">Tipo de documento de identificación y número de identificación</th><td>${escHtml(j.documento || '')}</td></tr>
+<tr><th style="text-align:left;">Datos de contacto teléfono – Email</th><td>${escHtml(j.email || '')}</td></tr>
+<tr><th style="text-align:left;">País y ciudad de residencia</th><td>${escHtml(j.pais_ciudad || '')}</td></tr>
+<tr><th style="text-align:left;">Institución de filiación</th><td>${escHtml(j.institucion || '')}</td></tr>
+</table>
+
+<p class="intro">De acuerdo con su evaluación en cada criterio marque con una X si cumple, cumple parcialmente, no cumple o no aplica según corresponda y relacione sus observaciones.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:32%;">CRITERIOS DE EVALUACIÓN</th>
+      <th style="width:8%;">CUMPLE</th>
+      <th style="width:9%;">CUMPLE PARCIAL</th>
+      <th style="width:9%;">NO CUMPLE</th>
+      <th style="width:8%;">NO APLICA</th>
+      <th>OBSERVACIONES Y RECOMENDACIONES</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${itemRows.join('')}
+  </tbody>
+</table>
+
+<p class="intro">A continuación, seleccione con una (X) el concepto de acuerdo con la revisión adelantada:</p>
+<table>
+<tr>
+  <td class="center" style="width:33%;">Aprobado*: ${conceptoVal === 'Aprobado' ? '<strong>X</strong>' : '____'}</td>
+  <td class="center" style="width:34%;">Aprobado con condicionamiento**: ${conceptoVal === 'Aprobado con condicionamiento' ? '<strong>X</strong>' : '____'}</td>
+  <td class="center" style="width:33%;">No aprobado***: ${conceptoVal === 'No aprobado' ? '<strong>X</strong>' : '____'}</td>
+</tr>
+</table>
+
+${preguntasExtra}
+
+<p class="note"><em>Justificación del concepto:</em> ${escHtml(sintesis.justificacion_concepto || '')}</p>
+
+<table style="margin-top:20pt;">
+<tr><th style="width:35%; text-align:left;">Nombre del jurado evaluador</th><td>${escHtml(j.nombre || '')}</td></tr>
+<tr><th style="text-align:left;">Firma del jurado evaluador</th><td style="height:50pt;">&nbsp;</td></tr>
+<tr><th style="text-align:left;">Fecha del envío de la evaluación (dd/mm/aaaa)</th><td>${escHtml(fechaHoy)}</td></tr>
+</table>
+
+<p class="note" style="margin-top:30pt; text-align:center; font-style:italic; color:#555;">
+Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴<br>
+Asistido por herramienta Evaluador de Tesis CP v0.5 · Modelo ${STATE.model} · Fecha ${fechaHoy}
+</p>
+</body></html>`;
+}
+
+async function generateFormatoDocx() {
+  const D = window.docx;
+  if (!D) throw new Error('Librería docx no cargada');
+
+  const sintesis = STATE.finalDocs.sintesis;
+  const items = STATE.finalDocs.itemsOf;
+  const obs = STATE.finalDocs.obsConsolidadas;
+  const ident = STATE.identificacion;
+  const j = STATE.jurado;
+  const fechaHoy = new Date().toLocaleDateString('es-CO');
+
+  const cell = (text, opts = {}) => new D.TableCell({
+    width: { size: opts.width || 1500, type: D.WidthType.DXA },
+    borders: {
+      top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+      right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+    },
+    margins: { top: 80, bottom: 80, left: 120, right: 120 },
+    shading: opts.shading ? { fill: opts.shading, type: D.ShadingType.CLEAR } : undefined,
+    children: Array.isArray(text)
+      ? text
+      : [new D.Paragraph({
+          alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT,
+          children: [new D.TextRun({ text: String(text || ''), bold: !!opts.bold, size: 18 })]
+        })]
+  });
+
+  const titleP = (txt, size = 24, bold = true) => new D.Paragraph({
+    alignment: D.AlignmentType.CENTER,
+    spacing: { before: 120, after: 60 },
+    children: [new D.TextRun({ text: txt, bold, size, font: 'Times New Roman' })]
+  });
+
+  const para = (txt, opts = {}) => new D.Paragraph({
+    alignment: opts.center ? D.AlignmentType.CENTER : (opts.justify ? D.AlignmentType.JUSTIFIED : D.AlignmentType.LEFT),
+    spacing: { before: opts.before || 80, after: opts.after || 80 },
+    children: [new D.TextRun({ text: txt, bold: opts.bold, italics: opts.italic, size: opts.size || 20, font: 'Times New Roman' })]
+  });
+
+  const identRows = [];
+  [
+    ['Nombre del estudiante', ident.estudiantes || ''],
+    ['Nombre del director de tesis', ident.director || ''],
+    ['Título de la tesis', ident.titulo || '']
+  ].forEach(r => identRows.push(new D.TableRow({
+    children: [ cell(r[0], { width: 3700, bold: true, shading: 'EEEEEE' }), cell(r[1], { width: 5660 }) ]
+  })));
+
+  identRows.push(new D.TableRow({
+    children: [
+      new D.TableCell({
+        width: { size: 9360, type: D.WidthType.DXA },
+        columnSpan: 2,
+        borders: {
+          top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+          right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+        },
+        shading: { fill: 'CCCCCC', type: D.ShadingType.CLEAR },
+        margins: { top: 80, bottom: 80, left: 120, right: 120 },
+        children: [new D.Paragraph({
+          alignment: D.AlignmentType.CENTER,
+          children: [new D.TextRun({ text: 'INFORMACIÓN DEL JURADO EVALUADOR', bold: true, size: 18 })]
+        })]
+      })
+    ]
+  }));
+
+  [
+    ['Nombre del jurado', j.nombre || ''],
+    ['Tipo de documento de identificación y número de identificación', j.documento || ''],
+    ['Datos de contacto teléfono – Email', j.email || ''],
+    ['País y ciudad de residencia', j.pais_ciudad || ''],
+    ['Institución de filiación', j.institucion || '']
+  ].forEach(r => identRows.push(new D.TableRow({
+    children: [ cell(r[0], { width: 3700, bold: true, shading: 'EEEEEE' }), cell(r[1], { width: 5660 }) ]
+  })));
+
+  const identTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3700, 5660],
+    rows: identRows
+  });
+
+  const critWidths = [3300, 900, 1100, 950, 950, 2160];
+
+  const headerRow = new D.TableRow({
+    tableHeader: true,
+    children: [
+      cell('CRITERIOS DE EVALUACIÓN', { width: critWidths[0], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('CUMPLE', { width: critWidths[1], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('CUMPLE PARCIAL', { width: critWidths[2], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('NO CUMPLE', { width: critWidths[3], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('NO APLICA', { width: critWidths[4], bold: true, center: true, shading: 'CCCCCC' }),
+      cell('OBSERVACIONES Y RECOMENDACIONES', { width: critWidths[5], bold: true, center: true, shading: 'CCCCCC' })
+    ]
+  });
+
+  const critRows = [headerRow];
+  ITEM_DEF.forEach(d => {
+    if (d.bloque) {
+      critRows.push(new D.TableRow({
+        children: [
+          new D.TableCell({
+            width: { size: 9360, type: D.WidthType.DXA },
+            columnSpan: 6,
+            borders: {
+              top: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              bottom: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              left: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' },
+              right: { style: D.BorderStyle.SINGLE, size: 4, color: '000000' }
+            },
+            shading: { fill: 'F0F0F0', type: D.ShadingType.CLEAR },
+            margins: { top: 80, bottom: 80, left: 120, right: 120 },
+            children: [new D.Paragraph({
+              alignment: D.AlignmentType.LEFT,
+              children: [new D.TextRun({ text: d.bloque, bold: true, size: 18 })]
+            })]
+          })
+        ]
+      }));
+    }
+    const k = String(d.n).padStart(2,'0');
+    const it = items[k] || {};
+    const cal = (it.calificacion || '').toLowerCase();
+    const observ = obs[k] || it.observaciones || '';
+
+    const mark = (target) => {
+      if (target === 'cumple' && cal === 'cumple') return 'X';
+      if (target === 'parcial' && cal.includes('cumple parcial')) return 'X';
+      if (target === 'no' && cal.includes('no cumple')) return 'X';
+      if (target === 'na' && cal.includes('no aplica')) return 'X';
+      return '';
+    };
+
+    critRows.push(new D.TableRow({
+      children: [
+        cell(d.txt, { width: critWidths[0] }),
+        cell(mark('cumple'),  { width: critWidths[1], center: true, bold: true }),
+        cell(mark('parcial'), { width: critWidths[2], center: true, bold: true }),
+        cell(mark('no'),      { width: critWidths[3], center: true, bold: true }),
+        cell(mark('na'),      { width: critWidths[4], center: true, bold: true }),
+        cell(observ,          { width: critWidths[5] })
+      ]
+    }));
+  });
+
+  const critTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: critWidths,
+    rows: critRows
+  });
+
+  const conceptoVal = sintesis.concepto_final || '';
+  const conceptoTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3120, 3120, 3120],
+    rows: [new D.TableRow({
+      children: [
+        cell(`Aprobado*: ${conceptoVal === 'Aprobado' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true }),
+        cell(`Aprobado con condicionamiento**: ${conceptoVal === 'Aprobado con condicionamiento' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true }),
+        cell(`No aprobado***: ${conceptoVal === 'No aprobado' ? '   X   ' : '  ____'}`, { width: 3120, center: true, bold: true })
+      ]
+    })]
+  });
+
+  const pa = sintesis.preguntas_adicionales || {};
+  const preguntasParas = [];
+  if (conceptoVal === 'Aprobado') {
+    preguntasParas.push(para('En caso de que su concepto sea "Aprobado":', { bold: true, before: 200 }));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado es merecedor de recibir alguna distinción como trabajo de grado meritorio o laureado?: Sí ${pa.merece_distincion_meritorio_laureado ? 'X' : '___'}   No: ${!pa.merece_distincion_meritorio_laureado ? 'X' : '___'}`));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'}   No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}`));
+  } else if (conceptoVal === 'Aprobado con condicionamiento') {
+    preguntasParas.push(para('En caso de que su concepto sea "Aprobado con condicionamiento":', { bold: true, before: 200 }));
+    preguntasParas.push(para(`· ¿Requiere el envío del informe final para adelantar segunda lectura del mismo, una vez el o los estudiantes hayan efectuado los ajustes bajo la orientación y con aval de su tutor?: Sí: ${pa.requiere_segunda_lectura ? 'X' : '___'}   No: ${!pa.requiere_segunda_lectura ? 'X' : '___'}`));
+    preguntasParas.push(para(`· ¿Considera usted que el trabajo de grado se encuentra con un nivel de calidad aceptable para que el o los estudiantes puedan continuar con la sustentación del mismo: Sí: ${pa.calidad_aceptable_sustentacion ? 'X' : '___'}   No: ${!pa.calidad_aceptable_sustentacion ? 'X' : '___'}`));
+  } else if (conceptoVal === 'No aprobado') {
+    preguntasParas.push(para('En caso de que su concepto sea "No aprobado":', { bold: true, before: 200 }));
+    preguntasParas.push(para('Recibirá una segunda versión del informe final de trabajo de grado ajustada por el o los estudiantes, bajo la orientación y con aval de su tutor, para adelantar la segunda lectura del mismo.', { italic: true }));
+  }
+
+  const cierreTable = new D.Table({
+    width: { size: 9360, type: D.WidthType.DXA },
+    columnWidths: [3700, 5660],
+    rows: [
+      new D.TableRow({ children: [ cell('Nombre del jurado evaluador', { width: 3700, bold: true, shading: 'EEEEEE' }), cell(j.nombre || '', { width: 5660 }) ] }),
+      new D.TableRow({ children: [ cell('Firma del jurado evaluador', { width: 3700, bold: true, shading: 'EEEEEE' }), cell([new D.Paragraph({ children: [new D.TextRun({ text: ' ', size: 20 })], spacing: { before: 200, after: 200 } })], { width: 5660 }) ] }),
+      new D.TableRow({ children: [ cell('Fecha del envío de la evaluación (dd/mm/aaaa)', { width: 3700, bold: true, shading: 'EEEEEE' }), cell(fechaHoy, { width: 5660 }) ] })
+    ]
+  });
+
+  const doc = new D.Document({
+    styles: {
+      default: {
+        document: {
+          run: { font: 'Times New Roman', size: 22 },
+          paragraph: { spacing: { line: 280 } }
+        }
+      }
+    },
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 12240, height: 15840 },
+          margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+        }
+      },
+      children: [
+        titleP('UNIVERSIDAD ANTONIO NARIÑO', 28, true),
+        titleP('FACULTAD DE ENFERMERÍA', 24, true),
+        titleP('PROGRAMAS MAESTRÍAS EN INVESTIGACIÓN', 24, true),
+        titleP('FORMATO DE EVALUACIÓN TESIS', 22, true),
+        para('El documento propuesto permite la evaluación de tesis. El proceso evaluativo se basa en los principios de equidad e imparcialidad y en los criterios de calidad, pertinencia y eficiencia. Esta evaluación consta de dos componentes, el primero corresponde a la revisión de la tesis por parte de los jurados y el segundo a la sustentación pública de la tesis. La Facultad de Enfermería de la Universidad Antonio Nariño agradece a usted su participación en este proceso académico e investigativo.', { justify: true, before: 200 }),
+        para('Para la revisión del documento escrito de tesis se solicita que realice su evaluación de acuerdo a los parámetros que se describen a continuación, adicionalmente emitir sus observaciones y recomendaciones frente al documento.', { justify: true }),
+        identTable,
+        para('De acuerdo con su evaluación en cada criterio marque con una X si cumple, cumple parcialmente, no cumple o no aplica según corresponda y relacione sus observaciones.', { justify: true, before: 200, after: 200 }),
+        critTable,
+        para('A continuación, seleccione con una (X) el concepto de acuerdo con la revisión adelantada:', { before: 200, after: 100 }),
+        conceptoTable,
+        ...preguntasParas,
+        para(`Justificación del concepto: ${sintesis.justificacion_concepto || ''}`, { italic: true, before: 200, justify: true, size: 18 }),
+        para(' ', { before: 100 }),
+        cierreTable,
+        para('Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia', { center: true, italic: true, before: 400, size: 18 }),
+        para(`Asistido por herramienta Evaluador de Tesis CP v0.5 · Modelo ${STATE.model} · Fecha ${fechaHoy}`, { center: true, italic: true, size: 16 })
+      ]
+    }]
+  });
+
+  const blob = await D.Packer.toBlob(doc);
+  return blob;
+}
+
+async function downloadFormatoDocx() {
+  try {
+    toast('Generando DOCX...', '');
+    const blob = await generateFormatoDocx();
+    const fileName = `Formato_UAN_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.docx`;
+    saveAs(blob, fileName);
+    toast('DOCX descargado', 'ok');
+  } catch (err) {
+    console.error(err);
+    toast('Error al generar DOCX: ' + err.message, 'err');
+  }
+}
+
+function downloadFormatoHtml() {
+  const fileName = `Formato_UAN_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.html`;
+  const blob = new Blob([STATE.finalDocs.formatoHtml], { type: 'text/html;charset=utf-8' });
+  saveAs(blob, fileName);
+  toast('HTML descargado', 'ok');
+}
+
+function downloadDevolucion() {
+  const md = STATE.finalDocs.devolucionMd;
+  const html = mdToHtml(md, 'Devolución pedagógica');
+  const baseName = `Devolucion_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}`;
+  saveAs(new Blob([md], { type: 'text/markdown;charset=utf-8' }), baseName + '.md');
+  saveAs(new Blob([html], { type: 'text/html;charset=utf-8' }), baseName + '.html');
+  toast('Devolución descargada', 'ok');
+}
+
+function downloadResumen() {
+  const md = STATE.finalDocs.resumenMd;
+  const html = mdToHtml(md, 'Resumen ejecutivo');
+  const baseName = `Resumen_Ejecutivo_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}`;
+  saveAs(new Blob([md], { type: 'text/markdown;charset=utf-8' }), baseName + '.md');
+  saveAs(new Blob([html], { type: 'text/html;charset=utf-8' }), baseName + '.html');
+  toast('Resumen descargado', 'ok');
+}
+
+function downloadJsonCompleto() {
+  const fullPayload = buildFullPayload();
+  const fileName = `Evaluacion_completa_${slugify(STATE.identificacion.estudiantes || 'tesis')}_${dateSlug()}.json`;
+  saveAs(new Blob([JSON.stringify(fullPayload, null, 2)], { type: 'application/json' }), fileName);
+  toast('JSON descargado', 'ok');
+}
+
+function buildFullPayload() {
+  return {
+    metadata: {
+      app: 'Evaluador_Tesis_CP_UAN',
+      version: '0.2',
+      timestamp: new Date().toISOString(),
+      modelo: STATE.model,
+      tokens_input: STATE.metadata.tokensIn,
+      tokens_output: STATE.metadata.tokensOut,
+      tokens_cache_create: STATE.metadata.tokensCacheCreate,
+      tokens_cache_read: STATE.metadata.tokensCacheRead,
+      duracion_segundos: STATE.metadata.duracionSegundos,
+      costo_usd_estimado: Number(STATE.metadata.costoUsd.toFixed(4))
+    },
+    identificacion: STATE.identificacion,
+    jurado: STATE.jurado,
+    bloques_oficiales: {
+      block_1: STATE.results.block_1,
+      block_2: STATE.results.block_2,
+      block_3: STATE.results.block_3,
+      block_4: STATE.results.block_4,
+      block_5: STATE.results.block_5,
+      block_6: STATE.results.block_6,
+      block_7: STATE.results.block_7
+    },
+    items_oficiales: extractItemsOficiales(STATE.results),
+    anexos_complementarios: {
+      A: STATE.results.anexo_A,
+      B: STATE.results.anexo_B,
+      C: STATE.results.anexo_C
+    },
+    sintesis: STATE.results.sintesis
+  };
+}
+
+function mdToHtml(md, title) {
+  const body = (window.marked && window.marked.parse) ? window.marked.parse(md) : `<pre>${escHtml(md)}</pre>`;
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>${escHtml(title)}</title>
+<style>
+body { font-family: Georgia, 'Times New Roman', serif; max-width: 740px; margin: 40px auto; padding: 0 20px; line-height: 1.65; color: #2C2018; }
+h1, h2, h3 { color: #6B2D3E; font-family: 'Cormorant Garamond', Georgia, serif; }
+h1 { border-bottom: 2px solid #D4A24C; padding-bottom: 6px; }
+blockquote { border-left: 3px solid #D4A24C; padding-left: 14px; margin-left: 0; color: #5A4A3E; font-style: italic; }
+code { background: #FAF6EE; padding: 2px 5px; border-radius: 3px; font-size: 0.9em; }
+.footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #E8DDC8; font-size: 0.82rem; color: #8A7868; text-align: center; font-style: italic; }
+@media print { body { margin: 0; max-width: 100%; } }
+</style></head><body>
+${body}
+<div class="footer">Elaborado por Jorge Bogoya López, docente de la Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴</div>
+</body></html>`;
+}
+
+function slugify(s) {
+  return String(s).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
+    .slice(0, 60) || 'sin_nombre';
+}
+
+function dateSlug() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+async function persistirEnSheets() {
+  if (!STATE.appsScriptUrl) return;
+  try {
+    const sintesis = STATE.results.sintesis || {};
+    const items = extractItemsOficiales(STATE.results);
+    const anexos = {
+      a_pertinencia_alertas: (STATE.results.anexo_A || {}).aporte_vacios_estructurales || '',
+      b_estandar_cumplimiento: (STATE.results.anexo_B || {}).cumplimiento_estandar || '',
+      c_probabilidad_ia: (STATE.results.anexo_C || {}).probabilidad_ia_no_declarada || '',
+      error_normativo_1216_2015: !!((STATE.results.anexo_A || {}).error_normativo_1216_2015)
+    };
+
+    const items_oficiales = {};
+    Object.keys(items).forEach(k => { items_oficiales[k] = items[k].calificacion || ''; });
+
+    const payload = {
+      action: 'guardar_evaluacion',
+      data: {
+        identificacion: {
+          titulo_tesis: STATE.identificacion.titulo,
+          estudiantes: STATE.identificacion.estudiantes,
+          director: STATE.identificacion.director,
+          modalidad: STATE.identificacion.modalidad,
+          tipologia_estudio: STATE.identificacion.tipologia,
+          estandar_reporte_aplicable: (STATE.results.anexo_B || {}).estandar_aplicable || ''
+        },
+        jurado: STATE.jurado,
+        items_oficiales,
+        concepto_final: {
+          concepto: sintesis.concepto_final,
+          merece_distincion_meritorio_laureado: (sintesis.preguntas_adicionales || {}).merece_distincion_meritorio_laureado,
+          calidad_aceptable_sustentacion: (sintesis.preguntas_adicionales || {}).calidad_aceptable_sustentacion,
+          requiere_segunda_lectura: (sintesis.preguntas_adicionales || {}).requiere_segunda_lectura
+        },
+        anexos_complementarios: anexos,
+        metadatos: {
+          modelo: STATE.model,
+          tokens_input: STATE.metadata.tokensIn,
+          tokens_output: STATE.metadata.tokensOut,
+          duracion_segundos: STATE.metadata.duracionSegundos,
+          costo_usd_estimado: Number(STATE.metadata.costoUsd.toFixed(4))
+        },
+        full: buildFullPayload()
+      }
+    };
+
+    const resp = await fetch(STATE.appsScriptUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    const txt = await resp.text();
+    let parsed = null;
+    try { parsed = JSON.parse(txt); } catch(e) {}
+
+    if (parsed && parsed.ok) {
+      toast(`Guardado en Sheets (fila ${parsed.fila})`, 'ok');
+    } else {
+      toast('Sheets respondió, pero sin confirmación. Revise el libro.', 'warn');
+    }
+  } catch (err) {
+    console.error('Error en persistencia:', err);
+    toast('No se pudo guardar en Sheets: ' + err.message, 'warn');
+  }
+}
+
+async function pingAppsScript() {
+  if (!STATE.appsScriptUrl) {
+    toast('Falta URL del Apps Script', 'warn');
+    return;
+  }
+  try {
+    const resp = await fetch(STATE.appsScriptUrl, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'ping' })
+    });
+    const txt = await resp.text();
+    const parsed = JSON.parse(txt);
+    if (parsed.ok) toast('Apps Script responde correctamente', 'ok');
+    else toast('Apps Script respondió pero con error: ' + parsed.error, 'err');
+  } catch (err) {
+    toast('No se pudo conectar al Apps Script: ' + err.message, 'err');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedKey = sessionStorage.getItem('anth_api_key') || '';
+  const savedUrl = sessionStorage.getItem('apps_script_url') || '';
+  const savedModel = sessionStorage.getItem('claude_model') || 'claude-sonnet-4-5';
+  if (savedKey) $('apiKey').value = savedKey;
+  if (savedUrl) $('appsScriptUrl').value = savedUrl;
+  if (savedModel) $('modelSelect').value = savedModel;
+  STATE.apiKey = savedKey;
+  STATE.appsScriptUrl = savedUrl;
+  STATE.model = savedModel;
+
+  $('btnSave').addEventListener('click', () => {
+    STATE.apiKey = $('apiKey').value.trim();
+    STATE.appsScriptUrl = $('appsScriptUrl').value.trim();
+    STATE.model = $('modelSelect').value;
+    sessionStorage.setItem('anth_api_key', STATE.apiKey);
+    sessionStorage.setItem('apps_script_url', STATE.appsScriptUrl);
+    sessionStorage.setItem('claude_model', STATE.model);
+    toast('Configuración guardada en sessionStorage', 'ok');
+    refreshRunButton();
+  });
+
+  $('btnPing').addEventListener('click', () => {
+    STATE.appsScriptUrl = $('appsScriptUrl').value.trim();
+    pingAppsScript();
+  });
+
+  const fz = $('fileZone');
+  const fi = $('fileInput');
+  fz.addEventListener('click', () => fi.click());
+  fz.addEventListener('dragover', e => { e.preventDefault(); fz.classList.add('dragover'); });
+  fz.addEventListener('dragleave', () => fz.classList.remove('dragover'));
+  fz.addEventListener('drop', e => {
+    e.preventDefault();
+    fz.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fi.addEventListener('change', e => {
+    if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]);
+  });
+
+  ['i_titulo','i_estudiantes','i_director','i_modalidad','i_tipologia',
+   'j_nombre','j_documento','j_email','j_pais_ciudad','j_institucion'].forEach(id => {
+    $(id).addEventListener('change', () => {
+      STATE.identificacion = {
+        titulo: $('i_titulo').value.trim(),
+        estudiantes: $('i_estudiantes').value.trim(),
+        director: $('i_director').value.trim(),
+        modalidad: $('i_modalidad').value,
+        tipologia: $('i_tipologia').value
+      };
+      STATE.jurado = {
+        nombre: $('j_nombre').value.trim(),
+        documento: $('j_documento').value.trim(),
+        email: $('j_email').value.trim(),
+        pais_ciudad: $('j_pais_ciudad').value.trim(),
+        institucion: $('j_institucion').value.trim()
+      };
+      sessionStorage.setItem('jurado', JSON.stringify(STATE.jurado));
+      $('dot-ident').classList.remove('pending');
+      $('dot-ident').classList.add(STATE.jurado.nombre ? 'done' : 'pending');
+    });
+  });
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('jurado') || 'null');
+    if (saved) {
+      $('j_nombre').value = saved.nombre || '';
+      $('j_documento').value = saved.documento || '';
+      $('j_email').value = saved.email || '';
+      $('j_pais_ciudad').value = saved.pais_ciudad || '';
+      $('j_institucion').value = saved.institucion || '';
+      STATE.jurado = saved;
+      $('dot-ident').classList.remove('pending');
+      $('dot-ident').classList.add('done');
+    }
+  } catch(e) {}
+
+  $$('.sidebar-nav li').forEach(li => {
+    li.addEventListener('click', () => {
+      const target = li.dataset.target;
+      const el = document.getElementById(target);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const sections = $$('section[id]');
+  const navItems = $$('.sidebar-nav li');
+  window.addEventListener('scroll', () => {
+    let activeId = '';
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      if (r.top <= 80 && r.bottom > 80) activeId = s.id;
+    });
+    navItems.forEach(li => {
+      li.classList.toggle('active', li.dataset.target === activeId);
+    });
+  });
+
+  $('btnRun').addEventListener('click', runEvaluation);
+  $('btnReset').addEventListener('click', () => {
+    if (confirm('¿Reiniciar la evaluación? Se perderán los resultados.')) {
+      STATE.results = {};
+      STATE.metadata = { tokensIn:0, tokensOut:0, tokensCacheCreate:0, tokensCacheRead:0, duracionSegundos:0, costoUsd:0, timestampInicio:null, timestampFin:null };
+      updateTokenDisplay();
+      updateProgress();
+      TASKS.forEach(t => setStatus(t.id, 'pending'));
+      $$('section[id^="block-"], section[id^="anexo-"], #sintesis, #downloads').forEach(s => {
+        const body = s.querySelector('[id$="-body"]');
+        if (body) body.innerHTML = '';
+      });
+      $('downloads-body').innerHTML = '<div class="alert alert-info">Los documentos se generarán al completar la síntesis final.</div>';
+      $('evalStatusLabel').textContent = 'Listo para iniciar';
+      $('progressFill').style.width = '0%';
+      $('tiempoEval').textContent = '00:00';
+      toast('Reiniciado', 'ok');
+    }
+  });
+
+  refreshRunButton();
+});
+
+function handleFile(file) {
+  if (file.type !== 'application/pdf') {
+    toast('Solo se aceptan archivos PDF', 'err');
+    return;
+  }
+  if (file.size > 32 * 1024 * 1024) {
+    toast('El archivo excede 32 MB. Comprímalo antes de cargar.', 'err');
+    return;
+  }
+  STATE.pdfFile = file;
+  fileToBase64(file).then(b64 => {
+    STATE.pdfBase64 = b64;
+    const sizeMb = (file.size / (1024*1024)).toFixed(2);
+    $('fileInfo').textContent = `✓ ${file.name} · ${sizeMb} MB`;
+    $('fileZone').classList.add('has-file');
+    $('dot-upload').classList.remove('pending');
+    $('dot-upload').classList.add('done');
+    toast('PDF cargado correctamente', 'ok');
+    refreshRunButton();
+  }).catch(err => {
+    toast('Error al leer el PDF: ' + err.message, 'err');
+  });
+}
+
+function refreshRunButton() {
+  STATE.apiKey = $('apiKey').value.trim();
+  const ready = !!(STATE.apiKey && STATE.pdfBase64);
+  $('btnRun').disabled = !ready;
+}
+</script>
+</body>
+</html>

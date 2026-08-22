@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuropaliativos en ACV Agudo — Síntesis de Evidencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1218;
+    --bg2: #151a24;
+    --bg3: #1c2333;
+    --bg4: #222c3d;
+    --border: rgba(130,160,210,0.13);
+    --border2: rgba(130,160,210,0.22);
+    --lilac: #b8a9d4;
+    --lilac-bright: #d4c4f0;
+    --lilac-dim: #8c7db0;
+    --blue: #7bafd4;
+    --blue-bright: #a4ccec;
+    --blue-dim: #5589aa;
+    --green: #7dc4a8;
+    --green-bright: #a2d9c2;
+    --green-dim: #527d6a;
+    --amber: #d4a96a;
+    --amber-bright: #e8c490;
+    --rose: #d48a8a;
+    --rose-dim: #a06060;
+    --text: #c8d0de;
+    --text-dim: #8a95a5;
+    --text-bright: #e8edf5;
+    --heading: #d4c4f0;
+    --nav-w: 270px;
+    --accent-gradient: linear-gradient(135deg, var(--lilac-dim), var(--blue-dim));
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 15.5px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ─── SCROLLBAR ─────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+  /* ─── GRAIN OVERLAY ─────────────────────── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAVIGATION ─────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--nav-w);
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s ease;
+  }
+
+  .nav-header {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--lilac-dim);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .nav-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--lilac-bright);
+    line-height: 1.3;
+  }
+
+  .nav-items { padding: 14px 0 40px; flex: 1; }
+
+  .nav-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 22px 6px;
+    opacity: .6;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 22px;
+    cursor: pointer;
+    transition: background .18s, color .18s;
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    line-height: 1.35;
+  }
+
+  .nav-item:hover { background: rgba(130,160,210,.06); color: var(--text); }
+  .nav-item.active { color: var(--lilac-bright); border-left-color: var(--lilac); background: rgba(184,169,212,.07); }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: currentColor;
+    opacity: .5;
+  }
+  .nav-item.active .nav-dot { opacity: 1; background: var(--lilac); box-shadow: 0 0 6px var(--lilac); }
+
+  /* ─── MAIN ─────────────────────────────── */
+  main {
+    margin-left: var(--nav-w);
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── HERO ─────────────────────────────── */
+  .hero {
+    padding: 80px 72px 60px;
+    background: linear-gradient(160deg, var(--bg3) 0%, var(--bg) 60%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'ACV';
+    position: absolute;
+    right: -20px; top: -30px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 220px;
+    font-weight: 700;
+    color: rgba(130,160,210,.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: rgba(123,175,212,.1);
+    border: 1px solid rgba(123,175,212,.2);
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 46px;
+    font-weight: 600;
+    color: var(--heading);
+    line-height: 1.15;
+    max-width: 720px;
+    margin-bottom: 18px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--blue-bright);
+  }
+
+  .hero-sub {
+    font-size: 14.5px;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin-bottom: 36px;
+    line-height: 1.65;
+  }
+
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: .06em;
+  }
+  .pill-lilac { background: rgba(184,169,212,.12); color: var(--lilac); border: 1px solid rgba(184,169,212,.2); }
+  .pill-blue { background: rgba(123,175,212,.12); color: var(--blue-bright); border: 1px solid rgba(123,175,212,.2); }
+  .pill-green { background: rgba(125,196,168,.12); color: var(--green-bright); border: 1px solid rgba(125,196,168,.2); }
+  .pill-amber { background: rgba(212,169,106,.12); color: var(--amber-bright); border: 1px solid rgba(212,169,106,.2); }
+  .pill-rose { background: rgba(212,138,138,.12); color: var(--rose); border: 1px solid rgba(212,138,138,.2); }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    max-width: 680px;
+  }
+
+  .stat-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: 3px;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--lilac-bright);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  /* ─── CONTENT SECTIONS ─────────────────── */
+  .section {
+    padding: 60px 72px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--blue-dim);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--heading);
+    line-height: 1.2;
+  }
+
+  .section h2 .accent { color: var(--blue-bright); }
+
+  .section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--lilac-bright);
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section p { margin-bottom: 14px; color: var(--text); }
+
+  /* ─── CARDS GRID ────────────────────────── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+
+  .card-lilac::before { background: var(--lilac); }
+  .card-blue::before { background: var(--blue); }
+  .card-green::before { background: var(--green); }
+  .card-amber::before { background: var(--amber); }
+  .card-rose::before { background: var(--rose); }
+
+  .card-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .card p { font-size: 13px; color: var(--text-dim); margin-bottom: 0; line-height: 1.6; }
+
+  .card-ref {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--blue-dim);
+    margin-top: 10px;
+    display: block;
+  }
+
+  /* ─── TABLE ─────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead tr {
+    background: var(--bg4);
+    border-bottom: 2px solid var(--border2);
+  }
+
+  th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tr:hover td { background: rgba(130,160,210,.04); }
+
+  td code, th code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .9em;
+    background: rgba(130,160,210,.1);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: var(--blue-bright);
+  }
+
+  /* ─── CALLOUT BOXES ─────────────────────── */
+  .callout {
+    border-radius: 3px;
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-left: 3px solid;
+    background: var(--bg3);
+  }
+
+  .callout-critical { border-color: var(--rose); }
+  .callout-info { border-color: var(--blue); }
+  .callout-success { border-color: var(--green); }
+  .callout-warn { border-color: var(--amber); }
+
+  .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .callout-critical .callout-title { color: var(--rose); }
+  .callout-info .callout-title { color: var(--blue); }
+  .callout-success .callout-title { color: var(--green); }
+  .callout-warn .callout-title { color: var(--amber); }
+
+  .callout p { font-size: 13.5px; margin-bottom: 0; }
+
+  /* ─── TIMELINE ─────────────────────────── */
+  .timeline { margin: 24px 0; position: relative; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--lilac-dim), transparent);
+  }
+
+  .tl-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 22px;
+    padding-left: 4px;
+    align-items: flex-start;
+  }
+
+  .tl-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--bg4);
+    border: 2px solid var(--lilac-dim);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tl-dot-inner {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--lilac);
+  }
+
+  .tl-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--blue-dim);
+    flex-shrink: 0;
+    width: 40px;
+    margin-top: 4px;
+  }
+
+  .tl-content h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 3px;
+  }
+
+  .tl-content p { font-size: 12.5px; color: var(--text-dim); margin-bottom: 0; }
+
+  /* ─── EVIDENCE HIERARCHY ─────────────────── */
+  .evidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0;
+  }
+
+  .evidence-label { font-size: 12px; color: var(--text-dim); min-width: 180px; }
+
+  .evidence-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg4);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .evidence-fill {
+    height: 100%;
+    border-radius: 3px;
+    animation: fillBar 1.2s ease forwards;
+    animation-delay: .3s;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  @keyframes fillBar { to { transform: scaleX(1); } }
+
+  .evidence-fill.high { background: linear-gradient(90deg, var(--green), var(--green-bright)); }
+  .evidence-fill.mid { background: linear-gradient(90deg, var(--amber), var(--amber-bright)); }
+  .evidence-fill.low { background: linear-gradient(90deg, var(--rose-dim), var(--rose)); }
+
+  /* ─── QUOTE ─────────────────────────────── */
+  .quote {
+    margin: 24px 0;
+    padding: 20px 28px;
+    border-left: 3px solid var(--lilac-dim);
+    background: var(--bg3);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-style: italic;
+    color: var(--lilac-bright);
+    line-height: 1.5;
+  }
+
+  .quote cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: .05em;
+  }
+
+  /* ─── TWO-COL ─────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .col-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 18px 20px;
+  }
+
+  .col-box h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .col-box ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .col-box ul li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(130,160,210,.06);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .col-box ul li::before {
+    content: '▸';
+    color: var(--lilac-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ─── GAP BOXES ─────────────────────────── */
+  .gap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .gap-box {
+    background: var(--bg3);
+    border: 1px solid rgba(212,138,138,.2);
+    border-radius: 3px;
+    padding: 16px 18px;
+    counter-increment: gap-counter;
+    position: relative;
+  }
+
+  .gap-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: rgba(212,138,138,.2);
+    position: absolute;
+    top: 8px; right: 12px;
+    line-height: 1;
+  }
+
+  .gap-box h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--amber-bright);
+    margin-bottom: 6px;
+    padding-right: 24px;
+  }
+
+  .gap-box p { font-size: 12.5px; color: var(--text-dim); margin-bottom: 0; }
+
+  /* ─── FOOTER ─────────────────────────────── */
+  footer {
+    padding: 36px 72px;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  footer strong { color: var(--lilac); font-weight: 500; }
+
+  /* ─── MOBILE NAV TOGGLE ─────────────────── */
+  .nav-toggle {
+    display: none;
+    position: fixed;
+    top: 14px; left: 14px;
+    z-index: 200;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* ─── TOOLTIPS ────────────────────────── */
+  [data-tip] {
+    cursor: help;
+    border-bottom: 1px dashed var(--blue-dim);
+  }
+
+  /* ─── INSTRUMENT HIERARCHY ─────────────── */
+  .instrument-stack { margin: 18px 0; }
+  .inst-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    margin: 4px 0;
+    border-radius: 3px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    cursor: default;
+    transition: background .15s;
+  }
+  .inst-row:hover { background: var(--bg4); }
+  .inst-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    min-width: 60px;
+    text-align: center;
+  }
+  .badge-a { background: rgba(125,196,168,.2); color: var(--green-bright); border: 1px solid rgba(125,196,168,.3); }
+  .badge-b { background: rgba(123,175,212,.2); color: var(--blue-bright); border: 1px solid rgba(123,175,212,.3); }
+  .badge-c { background: rgba(212,169,106,.2); color: var(--amber-bright); border: 1px solid rgba(212,169,106,.3); }
+  .inst-name { font-weight: 700; color: var(--text-bright); min-width: 110px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .inst-desc { color: var(--text-dim); flex: 1; font-size: 12.5px; }
+  .inst-ref { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--blue-dim); white-space: nowrap; }
+
+  /* ─── NORMATIVA TIMELINE ─────────────────── */
+  .norma-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .norma-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px 18px;
+  }
+
+  .norma-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  .norma-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+  }
+
+  .norma-card p { font-size: 12.5px; color: var(--text-dim); margin-bottom: 0; }
+
+  /* ─── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 900px) {
+    nav { transform: translateX(-100%); }
+    nav.open { transform: translateX(0); }
+    main { margin-left: 0; }
+    .nav-toggle { display: block; }
+    .section, .hero { padding: 48px 28px; }
+    .hero h1 { font-size: 32px; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    footer { padding: 28px; }
+  }
+
+  /* ─── FADE ANIMATION ─────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * { animation: fadeUp .7s ease both; }
+  .hero > *:nth-child(1) { animation-delay: .1s; }
+  .hero > *:nth-child(2) { animation-delay: .2s; }
+  .hero > *:nth-child(3) { animation-delay: .3s; }
+  .hero > *:nth-child(4) { animation-delay: .4s; }
+  .hero > *:nth-child(5) { animation-delay: .5s; }
+
+  /* ─── ACCORDION ─────────────────────────── */
+  .accordion { margin: 16px 0; }
+  .acc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    transition: background .15s;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--text-bright);
+  }
+  .acc-header:hover { background: var(--bg4); }
+  .acc-header.open { border-color: var(--border2); background: var(--bg4); }
+  .acc-arrow { font-size: 10px; color: var(--text-dim); transition: transform .2s; }
+  .acc-header.open .acc-arrow { transform: rotate(90deg); }
+  .acc-body {
+    display: none;
+    padding: 16px 18px;
+    background: rgba(0,0,0,.2);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    margin-bottom: 6px;
+  }
+  .acc-body.open { display: block; }
+  .acc-body p { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+  .acc-body p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" onclick="toggleNav()">☰ Menú</button>
+
+<!-- ─── NAVIGATION ─────────────────────────── -->
+<nav id="sidebar">
+  <div class="nav-header">
+    <div class="nav-logo">Maestría en Investigación<br>Cuidados Paliativos · UAN</div>
+    <div class="nav-title">Neuropaliativos en ACV</div>
+  </div>
+  <div class="nav-items">
+    <div class="nav-section-label">Introducción</div>
+    <a href="#resumen" class="nav-item active" onclick="setActive(this)">
+      <span class="nav-dot"></span>Resumen ejecutivo
+    </a>
+    <a href="#campo" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Campo de neuropaliativos
+    </a>
+
+    <div class="nav-section-label">Clínica</div>
+    <a href="#sintomas" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Control sintomático
+    </a>
+    <a href="#ocultos" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Síntomas ocultos
+    </a>
+    <a href="#nutricion" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Nutrición e hidratación
+    </a>
+
+    <div class="nav-section-label">Pronóstico</div>
+    <a href="#trayectorias" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Trayectorias
+    </a>
+    <a href="#profecias" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Profecías autocumplidas
+    </a>
+
+    <div class="nav-section-label">Marco operativo</div>
+    <a href="#comunicacion" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Comunicación y decisiones
+    </a>
+    <a href="#instrumentos" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Instrumentos clínicos
+    </a>
+    <a href="#colombia" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Marco colombiano
+    </a>
+    <a href="#vacios" class="nav-item" onclick="setActive(this)">
+      <span class="nav-dot"></span>Vacíos de investigación
+    </a>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─────────────────────────────── -->
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">Síntesis de evidencia · 2026</div>
+    <h1>Cuidados paliativos y <em>neuropaliativos</em> en el accidente cerebrovascular agudo</h1>
+    <p class="hero-sub">
+      Revisión crítica para producción propia de investigación. Cubre el espectro completo de ACV — isquémico, hemorragia intracerebral (HIC) y hemorragia subaracnoidea (HSA) — con énfasis en control sintomático, síntomas ocultos, decisiones sobre nutrición e hidratación, trayectorias pronósticas, comunicación y marco normativo colombiano.
+    </p>
+    <div class="hero-pills">
+      <span class="pill pill-lilac">Neuropalliative Care</span>
+      <span class="pill pill-blue">ACV isquémico</span>
+      <span class="pill pill-blue">Hemorragia intracerebral</span>
+      <span class="pill pill-blue">HSA</span>
+      <span class="pill pill-green">Control sintomático</span>
+      <span class="pill pill-amber">CNHA · Nutrición</span>
+      <span class="pill pill-rose">Profecías autocumplidas</span>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box">
+        <div class="stat-num">2014</div>
+        <div class="stat-label">Statement AHA/ASA fundacional</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">46,6%</div>
+        <div class="stat-label">prevalencia disfagia post-ACV</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">2×</div>
+        <div class="stat-label">mortalidad con límite temprano en HIC</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">45K</div>
+        <div class="stat-label">ACV/año en Colombia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 0. RESUMEN EJECUTIVO -->
+  <section class="section" id="resumen">
+    <div class="section-header">
+      <div class="section-num">00</div>
+      <h2>Resumen <span class="accent">ejecutivo</span></h2>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">▲ Hallazgo central</div>
+      <p>El neuropaliativismo se ha consolidado entre 2014 y 2025 como subespecialidad clínica diferenciada. El ACV ya no se concibe sólo como evento agudo sino como <strong>enfermedad crónica con necesidades paliativas longitudinales</strong>.</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card card-rose">
+        <span class="card-icon">⚠️</span>
+        <h4>Profecías autocumplidas</h4>
+        <p>La limitación temprana del soporte vital es predictor independiente de mortalidad. Las escalas pronósticas están contaminadas por las decisiones de cuidado, no sólo por la biología del hematoma.</p>
+        <span class="card-ref">Becker 2001 · Zahuranec 2007 · Morgenstern 2015</span>
+      </div>
+      <div class="card card-amber">
+        <span class="card-icon">🔇</span>
+        <h4>Síntomas ocultos</h4>
+        <p>Los pacientes con afasia o conciencia alterada tienen experiencias de dolor y disconfort que existen aunque no puedan comunicarse. La IASP reconoce explícitamente esta realidad.</p>
+        <span class="card-ref">NCS-R · CPOT-Neuro · PAINAD-Sp</span>
+      </div>
+      <div class="card card-blue">
+        <span class="card-icon">🍽️</span>
+        <h4>Evidencia limitada en CNHA</h4>
+        <p>Las decisiones sobre nutrición e hidratación en ACV se sostienen sobre evidencia extrapolada de demencia y oncología. El FOOD trial sigue siendo la referencia más sólida.</p>
+        <span class="card-ref">FOOD trial (Lancet 2005)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. CAMPO DE NEUROPALIATIVOS -->
+  <section class="section" id="campo">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2>El campo de los <span class="accent">neuropaliativos</span></h2>
+    </div>
+
+    <p>El <em>neuropalliative care</em> se define como la subespecialidad orientada a mejorar la calidad de vida de personas con enfermedades neurológicas graves, abordando síntomas físicos, psicológicos, sociales, espirituales y existenciales, además de planificación anticipada, toma de decisiones compartida y apoyo al duelo.</p>
+
+    <h3>Hitos fundacionales</h3>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2012</div>
+        <div class="tl-content">
+          <h4>Reconocimiento explícito en supervivientes de ictus</h4>
+          <p>Creutzfeldt, Holloway & Walker · <em>J Gen Intern Med</em> · PMID 22130810</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2013</div>
+        <div class="tl-content">
+          <h4>Primer programa multidisciplinario integral</h4>
+          <p>Benzi Kluger funda el programa de neuropaliativos en University of Colorado.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2014</div>
+        <div class="tl-content">
+          <h4>Statement fundacional AHA/ASA</h4>
+          <p>Holloway et al. · <em>Stroke</em> 2014;45:1887–1916 · DOI 10.1161/STR.0000000000000015</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2018</div>
+        <div class="tl-content">
+          <h4>Neuropalliative Care Summit — documento de prioridades</h4>
+          <p>Creutzfeldt et al. · <em>Neurology</em> 2018;91:217–226 · DOI 10.1212/WNL.0000000000005916</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2021</div>
+        <div class="tl-content">
+          <h4>Fundación de la INPCS</h4>
+          <p>International Neuropalliative Care Society — presidencia de Benzi Kluger.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2022</div>
+        <div class="tl-content">
+          <h4>Position statement AAN sobre neuropaliativos</h4>
+          <p>Taylor, Besbris et al. · <em>Neurology</em> 2022;98:409–416 · DOI 10.1212/WNL.0000000000200063</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2025</div>
+        <div class="tl-content">
+          <h4>Actualización statement AHA + prioridades INPCS</h4>
+          <p>Creutzfeldt et al. · <em>Stroke</em> 2025 · DOI 10.1161/STR.0000000000000479</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Diferencias frente al modelo oncológico</h3>
+    <div class="two-col">
+      <div class="col-box">
+        <h4>🎗️ Modelo oncológico</h4>
+        <ul>
+          <li>Trayectoria de decline gradual y previsible</li>
+          <li>Decisiones en semanas-meses</li>
+          <li>Paciente usualmente capaz de participar</li>
+          <li>Síntomas: dolor, caquexia, fatiga</li>
+          <li>Pérdida de vida como eje existencial</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>🧠 ACV / Modelo neuropaliativo</h4>
+        <ul>
+          <li>Inicio súbito + incertidumbre prolongada</li>
+          <li>Decisiones de alta consecuencia en horas</li>
+          <li>Frecuente pérdida de capacidad decisional</li>
+          <li>Síntomas: disfagia, dolor neuropático, espasticidad, déficits comunicativos</li>
+          <li>Pérdida de identidad además de pérdida de vida</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. CONTROL SINTOMÁTICO -->
+  <section class="section" id="sintomas">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2>Control <span class="accent">sintomático</span> — barrido general</h2>
+    </div>
+
+    <h3>Prevalencia de síntomas en fase paliativa</h3>
+
+    <div class="evidence-bar">
+      <div class="evidence-label">Estertores respiratorios</div>
+      <div class="evidence-track"><div class="evidence-fill high" style="width: 82%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">~81%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Disfagia neurogénica</div>
+      <div class="evidence-track"><div class="evidence-fill high" style="width: 68%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">47–78%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Dolor (general)</div>
+      <div class="evidence-track"><div class="evidence-fill mid" style="width: 60%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">~69%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Disnea</div>
+      <div class="evidence-track"><div class="evidence-fill mid" style="width: 50%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">39–81%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Agitación / delirium</div>
+      <div class="evidence-track"><div class="evidence-fill mid" style="width: 30%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">~26%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Dolor central post-ictus (CPSP)</div>
+      <div class="evidence-track"><div class="evidence-fill low" style="width: 25%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">8–46%</span>
+    </div>
+    <div class="evidence-bar">
+      <div class="evidence-label">Dolor de hombro hemipléjico</div>
+      <div class="evidence-track"><div class="evidence-fill low" style="width: 35%"></div></div>
+      <span style="font-family:'JetBrains Mono',mono;font-size:11px;color:var(--text-dim)">22–47%</span>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Fuentes: Mazzocato 2010, Ntlholang 2016, Eriksson 2016, Cowey 2021, Song 2024.</p>
+
+    <h3>Manejo farmacológico — síntesis</h3>
+    <div class="accordion">
+      <div class="acc-header" onclick="toggleAcc(this)">
+        Dolor y disnea <span class="acc-arrow">▶</span>
+      </div>
+      <div class="acc-body">
+        <p><strong>Morfina subcutánea o IV</strong> iniciando 2,5–5 mg cada 4 horas, titulando. Metaanálisis de Jennings et al. (<em>Thorax</em> 2002; DOI 10.1136/thorax.57.11.939) respaldan opioides en disnea refractaria.</p>
+        <p><strong>Dolor central post-ictus:</strong> amitriptilina 10–75 mg/noche como primera línea (Leijon & Boivie, <em>Pain</em> 1989; PMID 2465530); pregabalina/gabapentina como alternativa.</p>
+      </div>
+
+      <div class="acc-header" onclick="toggleAcc(this)">
+        Estertores respiratorios <span class="acc-arrow">▶</span>
+      </div>
+      <div class="acc-body">
+        <p>El <strong>SILENCE trial</strong> (van Esch et al. <em>JAMA</em> 2021; DOI 10.1001/jama.2021.14785) demostró que el butilbromuro de escopolamina profiláctico reduce la incidencia de estertores.</p>
+        <p>La revisión Cochrane de Wee & Hillier (2008; DOI 10.1002/14651858.CD005177.pub2) muestra evidencia limitada sobre el confort objetivo del paciente.</p>
+      </div>
+
+      <div class="acc-header" onclick="toggleAcc(this)">
+        Delirium y agitación terminal <span class="acc-arrow">▶</span>
+      </div>
+      <div class="acc-body">
+        <p>Hui et al. (<em>JAMA</em> 2017; DOI 10.1001/jama.2017.11468): <strong>haloperidol + lorazepam</strong> supera a haloperidol solo en agitación terminal.</p>
+        <p>Agar et al. (<em>JAMA Intern Med</em> 2017; DOI 10.1001/jamainternmed.2016.7491) advierten contra antipsicóticos rutinarios en delirium no agitado.</p>
+      </div>
+
+      <div class="acc-header" onclick="toggleAcc(this)">
+        Convulsiones <span class="acc-arrow">▶</span>
+      </div>
+      <div class="acc-body">
+        <p>El <strong>PEACH trial</strong> (Peter-Derex et al. <em>Lancet Neurol</em> 2022; DOI 10.1016/S1474-4422(22)00235-6) respalda levetiracetam profiláctico en HIC (convulsiones hasta 30% con monitoreo EEG).</p>
+        <p>La profilaxis primaria en ACV isquémico <strong>no se recomienda</strong> en guías AHA/ASA.</p>
+      </div>
+
+      <div class="acc-header" onclick="toggleAcc(this)">
+        Sedación paliativa <span class="acc-arrow">▶</span>
+      </div>
+      <div class="acc-body">
+        <p>Marco regulador: <strong>EAPC Framework 2024</strong> (Surges et al. <em>Palliat Med</em>; DOI 10.1177/02692163231220225). Primera línea: <strong>midazolam</strong> bolo 2,5–5 mg → infusión 0,5–1 mg/h.</p>
+        <p>Maltoni et al. (<em>Ann Oncol</em> 2009; DOI 10.1093/annonc/mdp048) demostraron que la sedación paliativa proporcional <strong>no acorta la supervivencia</strong>.</p>
+        <p>Advertencia en ACV: evitar sedación prematura bajo el sesgo de la profecía autocumplida.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SÍNTOMAS OCULTOS -->
+  <section class="section" id="ocultos">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2>Síntomas <span class="accent">ocultos</span> y no comunicables</h2>
+    </div>
+
+    <div class="quote">
+      "La incapacidad de comunicar verbalmente no niega la posibilidad de que un individuo experimente dolor y necesite tratamiento."
+      <cite>— IASP, Raja et al. Pain 2020;161:1976–1982 · DOI 10.1097/j.pain.0000000000001939</cite>
+    </div>
+
+    <p>El paciente con ACV grave constituye el <strong>paradigma del paciente paliativo silente</strong>: afasia (21–38%), anartria, alteración de conciencia y deterioro cognitivo producen experiencias subjetivas que existen aunque no puedan ser autoreportadas.</p>
+
+    <div class="callout callout-warn">
+      <div class="callout-title">⚠ Trampas clínicas frecuentes</div>
+      <p>Confundir agitación con dolor · Atribuir gemidos solo a disnea · Asumir que el paciente en coma "no siente" · Sobre-sedación que enmascara la valoración · Confundir afasia con incapacidad para decidir.</p>
+    </div>
+
+    <h3>Jerarquía de evaluación del dolor no comunicable</h3>
+    <div class="cards-grid">
+      <div class="card card-green">
+        <h4>① Autoreporte simplificado</h4>
+        <p>Intentar NRS vertical, FPS-R orientado, respuestas binarias sí/no con facial. Siempre intentar primero aunque parezca imposible.</p>
+      </div>
+      <div class="card card-blue">
+        <h4>② Buscar causas potenciales</h4>
+        <p>Úlceras, retención urinaria, fecaloma, posicionamiento incorrecto, espasticidad, cefalea por HIC/HSA, infecciones.</p>
+      </div>
+      <div class="card card-lilac">
+        <h4>③ Escalas observacionales</h4>
+        <p>NCS-R para trastornos de conciencia. CPOT-Neuro en UCI neurológico. PAINAD-Sp en demencia y neurológicos hospitalizados.</p>
+      </div>
+      <div class="card card-amber">
+        <h4>④ Reporte del cuidador proxy</h4>
+        <p>Verificar con familiar o cuidador que conoce los signos habituales de disconfort del paciente. Cautela: sobreestimación frecuente.</p>
+      </div>
+      <div class="card card-rose">
+        <h4>⑤ Ensayo analgésico empírico</h4>
+        <p>Si hay sospecha de dolor sin poder confirmarlo: administrar analgésico y evaluar cambio en el comportamiento (30–60 minutos).</p>
+        <span class="card-ref">Herr et al. Pain Manag Nurs 2011 · DOI 10.1016/j.pmn.2011.10.002</span>
+      </div>
+    </div>
+
+    <h3>Evidencia NCS-R: dolor en coma</h3>
+    <p>Chatelle et al. (2014; DOI 10.1177/1545968313503220) demostraron activación de la corteza cingulada anterior ante nocicepción incluso en <span data-tip="Unresponsive Wakefulness Syndrome — estado vegetativo">estado de mínima conciencia y UWS</span>. La validación española NCS-R-I (López-López et al. 2025; DOI 10.3390/nursrep15080278) obtuvo AUC 0,952 e ICC 0,90 en intubados con lesión cerebral aguda.</p>
+  </section>
+
+  <!-- 4. NUTRICIÓN E HIDRATACIÓN -->
+  <section class="section" id="nutricion">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2>Nutrición e <span class="accent">hidratación</span> clínicamente asistidas (CNHA)</h2>
+    </div>
+
+    <h3>Disfagia neurogénica — magnitud del problema</h3>
+    <p>Prevalencia agrupada: <strong>46,6%</strong> (Song et al. 2024; DOI 10.3389/fneur.2024.1403610). Mortalidad a 1 año en pacientes con disfagia: 31,3%. El fallo en cribado se asocia con neumonía (aOR 4,71) y mortalidad a 1 año (aHR 2,42) — Joundi et al. <em>Stroke</em> 2017.</p>
+
+    <div class="callout callout-info">
+      <div class="callout-title">Herramientas de cribado validadas</div>
+      <p><strong>GUSS:</strong> Sensibilidad 100%, VPN 100% — Trapl et al. PMID 17885261<br>
+      <strong>TOR-BSST:</strong> Sensibilidad 91,3% — Martino et al. <em>Stroke</em> 2009; DOI 10.1161/strokeaha.107.510370</p>
+    </div>
+
+    <h3>El FOOD trial — referencia central</h3>
+    <div class="callout callout-success">
+      <div class="callout-title">Dennis et al. Lancet 2005 · DOI 10.1016/S0140-6736(05)17983-5</div>
+      <p>El mayor ECA en nutrición en ACV agudo (n=4.023). Tres brazos con hallazgos decisivos.</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card card-blue">
+        <h4>Suplementos orales rutinarios</h4>
+        <p>No mejoran desenlaces en pacientes que pueden comer. Sin beneficio significativo en mortalidad ni funcionalidad.</p>
+      </div>
+      <div class="card card-green">
+        <h4>Alimentación enteral temprana (NG)</h4>
+        <p>Reduce mortalidad absoluta 5,8% (p=0,09). Sin diferencia significativa en muerte+mala evolución. <strong>Preferible sobre PEG en fase aguda.</strong></p>
+      </div>
+      <div class="card card-rose">
+        <h4>PEG temprana ⚠️</h4>
+        <p><strong>Incrementa el riesgo absoluto de muerte o mala evolución en 7,8%</strong> (p=0,05). Considerar PEG solo si la disfagia persiste más de 2–4 semanas.</p>
+      </div>
+    </div>
+
+    <h3>CNHA al final de la vida — debate ético</h3>
+
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Principios establecidos por consenso</h4>
+        <ul>
+          <li>Equivalencia ética entre withholding y withdrawing</li>
+          <li>CNHA es tratamiento médico, no cuidado básico</li>
+          <li>Principio de proporcionalidad: cargas vs beneficios</li>
+          <li>Prioridad de la voluntad anticipada (DVA)</li>
+          <li>Comfort feeding only como alternativa ética</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>Evidencia extrapolada de demencia</h4>
+        <ul>
+          <li>Alimentación enteral no prolonga vida en demencia avanzada — Cochrane 2009</li>
+          <li>PEG no mejora supervivencia en nursing home — Teno et al. 2012</li>
+          <li>1L/día vs 100mL/día sin diferencias en síntomas — Bruera et al. JCO 2013</li>
+          <li>La retirada consensuada ya no requiere tribunal (Re Y 2018, UK)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Algoritmo operativo en ACV agudo paliativo</h3>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">0 h</div>
+        <div class="tl-content">
+          <h4>Cribado de disfagia al ingreso</h4>
+          <p>GUSS o TOR-BSST antes de cualquier ingesta oral (AHA/ASA Clase I)</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">7 días</div>
+        <div class="tl-content">
+          <h4>Decisión sonda nasogástrica</h4>
+          <p>Si pronóstico funcional razonable, iniciar NG en primeros 7 días. Si pronóstico paliativo claro: comfort feeding + hipodermoclisis según síntomas.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+        <div class="tl-year">2–4 sem</div>
+        <div class="tl-content">
+          <h4>Reevaluación y transición</h4>
+          <p>Si hay mejoría → considerar PEG. Si pronóstico paliativo consolidado → consolidar cuidados de confort y retirada ética de soporte.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TRAYECTORIAS -->
+  <section class="section" id="trayectorias">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <h2>Trayectorias y <span class="accent">modelos pronósticos</span></h2>
+    </div>
+
+    <h3>La cuarta trayectoria (Creutzfeldt et al. BMJ 2015)</h3>
+
+    <div class="callout callout-info">
+      <div class="callout-title">Creutzfeldt, Longstreth & Holloway · BMJ 2015;351:h3904 · DOI 10.1136/bmj.h3904</div>
+      <p>El ACV no encaja en las tres trayectorias clásicas (Lunney/Lynn 2003). Proponen una <strong>cuarta trayectoria</strong>: caída funcional súbita al nadir → período prolongado de incertidumbre → múltiples ventanas decisionales → recuperación o muerte determinadas en gran parte por las <em>decisiones de cuidado</em>.</p>
+    </div>
+
+    <h3>Escalas pronósticas por tipo de ACV</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Tipo ACV</th>
+            <th>Componentes</th>
+            <th>Advertencia</th>
+            <th>DOI / PMID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ICH score</code></td>
+            <td>HIC</td>
+            <td>GCS, edad ≥80, volumen ≥30mL, IVH, infratentorial</td>
+            <td style="color:var(--rose)">Contaminado por decisiones WLST</td>
+            <td><code>PMID 11283388</code></td>
+          </tr>
+          <tr>
+            <td><code>max-ICH score</code></td>
+            <td>HIC</td>
+            <td>Diseñado para evitar sesgo WLST — cohorte sin limitación temprana</td>
+            <td style="color:var(--green)">Menor sesgo autocumplido</td>
+            <td><code>PMID 28679602</code></td>
+          </tr>
+          <tr>
+            <td><code>FUNC score</code></td>
+            <td>HIC</td>
+            <td>Edad, GCS, volumen, ubicación, deterioro cognitivo previo</td>
+            <td>Predictor de independencia, no mortalidad</td>
+            <td><code>PMID 18556582</code></td>
+          </tr>
+          <tr>
+            <td><code>Hunt & Hess · WFNS</code></td>
+            <td>HSA</td>
+            <td>Estado clínico inicial: GCS, déficit focal</td>
+            <td>Alta variabilidad interobservador</td>
+            <td><code>Clásicos</code></td>
+          </tr>
+          <tr>
+            <td><code>VASOGRADE</code></td>
+            <td>HSA</td>
+            <td>Predictor de isquemia cerebral diferida (DCI)</td>
+            <td>—</td>
+            <td><code>10.1161/STROKEAHA.115.008728</code></td>
+          </tr>
+          <tr>
+            <td><code>ASTRAL / iScore</code></td>
+            <td>Isquémico</td>
+            <td>Múltiples variables clínicas y laboratorio</td>
+            <td>Predicción correcta solo 17% (JURaSSiC)</td>
+            <td><code>10.1212/WNL.0b013e318259e221</code></td>
+          </tr>
+          <tr>
+            <td><code>FOUR scale</code></td>
+            <td>Todos</td>
+            <td>Respuesta ocular, motora, tronco cerebral, respiración</td>
+            <td>Más sensible que GCS para daño cerebral</td>
+            <td><code>10.1002/ana.20611</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Mortalidad por tipo de ACV — referencia rápida</h3>
+    <div class="cards-grid">
+      <div class="card card-blue">
+        <h4>ACV isquémico</h4>
+        <p>Mortalidad 10–17% a 30 días. En infarto maligno de ACM sin hemicraniectomía: 70–80%.</p>
+      </div>
+      <div class="card card-rose">
+        <h4>Hemorragia intracerebral</h4>
+        <p>Mortalidad 35–52% a 30 días. La mitad de las muertes ocurren en las primeras 48 horas.</p>
+      </div>
+      <div class="card card-amber">
+        <h4>HSA aneurismática</h4>
+        <p>Mortalidad global 35–45%. Riesgos secuenciales: resangrado → vasoespasmo → DCI.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PROFECÍAS AUTOCUMPLIDAS -->
+  <section class="section" id="profecias">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <h2>Profecías <span class="accent">autocumplidas</span></h2>
+    </div>
+
+    <div class="callout callout-critical">
+      <div class="callout-title">⛔ Hallazgo estructural del campo</div>
+      <p>El predictor más importante del desenlace tras HIC <em>no es la biología del hematoma</em> sino el nivel de soporte médico provisto. La limitación temprana del esfuerzo terapéutico es causa —no consecuencia— de una mayor mortalidad.</p>
+    </div>
+
+    <h3>Evidencia cronológica del sesgo</h3>
+
+    <div class="cards-grid">
+      <div class="card card-rose">
+        <h4>Becker et al. 2001</h4>
+        <p>Pesimismo pronóstico sistemático entre médicos ante viñetas estandarizadas de HIC. Primera documentación del sesgo.</p>
+        <span class="card-ref">Neurology 2001;56:766–772 · PMID 11274312</span>
+      </div>
+      <div class="card card-rose">
+        <h4>Hemphill et al. 2004</h4>
+        <p>La tasa hospitalaria de DNR temprano es predictor independiente de mortalidad ajustado por severidad clínica.</p>
+        <span class="card-ref">Stroke 2004;35:1130–1134 · DOI 10.1161/01.STR.0000125858.71051.ca</span>
+      </div>
+      <div class="card card-rose">
+        <h4>Zahuranec et al. 2007</h4>
+        <p>Estudio BASIC: las limitaciones tempranas duplican la mortalidad ajustada (HR 2,17) en HIC.</p>
+        <span class="card-ref">Neurology 2007;68:1651–1657 · DOI 10.1212/01.wnl.0000261906.93238.72</span>
+      </div>
+      <div class="card card-amber">
+        <h4>Morgenstern et al. 2015</h4>
+        <p>Cohorte sin DNR temprano: mortalidad observada 20,2% vs 50% predicha por ICH score. 30% alcanzaron mRS 0–3.</p>
+        <span class="card-ref">Neurology 2015;84:1739–1744 · DOI 10.1212/WNL.0000000000001525</span>
+      </div>
+      <div class="card card-amber">
+        <h4>Ormseth et al. 2021</h4>
+        <p>La retirada de soporte vital <em>media</em> la mortalidad en HIC con alteración de conciencia — relación causal documentada.</p>
+        <span class="card-ref">Stroke 2021;52:3905–3910 · DOI 10.1161/STROKEAHA.121.035233</span>
+      </div>
+      <div class="card card-green">
+        <h4>max-ICH score (Sembill 2017)</h4>
+        <p>Primer modelo pronóstico diseñado explícitamente para evitar el sesgo de WLST. Construido sobre cohorte con soporte máximo estandarizado.</p>
+        <span class="card-ref">Neurology 2017;88:1726–1734 · PMID 28679602</span>
+      </div>
+    </div>
+
+    <h3>Recomendación operativa (AHA/ASA 2022 para HIC)</h3>
+
+    <div class="callout callout-success">
+      <div class="callout-title">Greenberg et al. Stroke 2022 · DOI 10.1161/STR.0000000000000407</div>
+      <p>Diferir techos terapéuticos en las <strong>primeras 24–72 horas</strong>, excepto en pacientes con voluntades anticipadas previas claras. Esto aplica también a la Neurocritical Care Society 2015 (Souter et al.).</p>
+    </div>
+
+    <h3>La paradoja de la discapacidad</h3>
+    <p>Albrecht & Devlieger (1999): <strong>50–60% de personas con discapacidad moderada-severa reportan calidad de vida buena o excelente</strong>, mientras observadores externos la considerarían pobre. Khan et al. (2020) cuantificaron estados peores que la muerte según pacientes con stroke previo: depender de ventilador (66%), sonda de alimentación (66%), confusión persistente (62%), incapacidad para comunicarse (58%).</p>
+    <p>La implicación directa: las conversaciones de objetivos de cuidado deben explorar desenlaces funcionales <strong>específicos</strong> con el paciente —cuando sea posible— antes de extrapolar lo que otros considerarían "inaceptable".</p>
+  </section>
+
+  <!-- 7. COMUNICACIÓN -->
+  <section class="section" id="comunicacion">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <h2>Comunicación y <span class="accent">toma de decisiones</span></h2>
+    </div>
+
+    <h3>Modelos estructurados de comunicación</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Modelo</th><th>Descripción</th><th>DOI / Ref.</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>SPIKES</code></td>
+            <td>6 pasos para malas noticias. Setting, Perception, Invitation, Knowledge, Emotions, Strategy. Ampliamente adaptado a neurología.</td>
+            <td><code>DOI 10.1634/theoncologist.5-4-302</code></td>
+          </tr>
+          <tr>
+            <td><code>REMAP</code></td>
+            <td>Reframe, Expect emotion, Map goals, Align, Plan. Marco VitalTalk para conversaciones de objetivos de cuidado.</td>
+            <td><code>DOI 10.1200/JOP.2016.018796</code></td>
+          </tr>
+          <tr>
+            <td><code>VALUE</code></td>
+            <td>Value, Acknowledge, Listen, Understand, Elicit. Mnemotécnica para conferencias familiares en UCI. Redujo PTSD/ansiedad/depresión (RCT Lautrette 2007).</td>
+            <td><code>DOI 10.1056/NEJMoa063446</code></td>
+          </tr>
+          <tr>
+            <td><code>Best Case / Worst Case</code></td>
+            <td>Escenarios para decisiones de alto riesgo en lesión cerebral aguda grave. Reduce incertidumbre del sustituto.</td>
+            <td><code>DOI 10.1111/jgs.13615</code></td>
+          </tr>
+          <tr>
+            <td><code>Time-limited trial</code></td>
+            <td>Acuerdo con criterios prospectivos de éxito/fracaso antes de iniciar soporte. ATS Workshop Report 2024.</td>
+            <td><code>DOI 10.1513/AnnalsATS.202310-925ST</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Decisiones por sustitutos (surrogate decision-making)</h3>
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Evidencia sobre precisión</h4>
+        <ul>
+          <li>Sustitutos predicen preferencias correctamente solo ~68% de los casos (Shalowitz 2006)</li>
+          <li>≥1/3 de sustitutos experimentan carga emocional negativa duradera (Wendler & Rid 2011)</li>
+          <li>PARTNER trial: mejora comunicación pero no síntomas a 6 meses (White NEJM 2018)</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>Afasia ≠ incapacidad</h4>
+        <ul>
+          <li>Kagan et al. 2020: debe presumirse capacidad en pacientes con afasia</li>
+          <li>Usar conversación apoyada con pictogramas y opciones binarias</li>
+          <li>La Ley 1996/2019 (Colombia) consagra el régimen de apoyos — no interdicción</li>
+          <li>T-048/2023 articuló Ley 1996 con muerte digna</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Apoyo al duelo y PICS-F</h3>
+    <p>El <em>Post-Intensive Care Syndrome – Family (PICS-F)</em> afecta familiares con tasas elevadas de PTSD, ansiedad y depresión (Davidson et al. <em>Crit Care Med</em> 2012; DOI 10.1097/CCM.0b013e318236ebf9). Intervenciones con evidencia:</p>
+    <div class="cards-grid">
+      <div class="card card-green">
+        <h4>Estrategia proactiva + folleto</h4>
+        <p>Lautrette et al. (NEJM 2007): redujo síntomas de duelo, ansiedad y PTSD a 90 días en familia de UCI.</p>
+        <span class="card-ref">DOI 10.1056/NEJMoa063446</span>
+      </div>
+      <div class="card card-green">
+        <h4>Estrategia tripartita</h4>
+        <p>Kentish-Barnes et al. (Lancet 2022): redujo duelo prolongado, ansiedad y PTSD en clúster RCT.</p>
+        <span class="card-ref">DOI 10.1016/S0140-6736(21)02176-0</span>
+      </div>
+      <div class="card card-rose">
+        <h4>⚠️ Carta de condolencia aislada</h4>
+        <p>Kentish-Barnes et al. (ICM 2017): la carta sola <strong>aumentó</strong> PTSD y depresión a 6 meses. Intervención nociva si no va acompañada de seguimiento.</p>
+        <span class="card-ref">DOI 10.1007/s00134-016-4669-9</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. INSTRUMENTOS -->
+  <section class="section" id="instrumentos">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <h2>Instrumentos <span class="accent">clínicos</span> validados</h2>
+    </div>
+
+    <h3>Identificación de necesidades paliativas</h3>
+
+    <div class="instrument-stack">
+      <div class="inst-row">
+        <span class="inst-badge badge-a">NECPAL 4.0</span>
+        <span class="inst-name">NECPAL CCOMS-ICO©</span>
+        <span class="inst-desc">Pregunta sorpresa + demanda + indicadores específicos. Versión 4.0 con estimación cuantitativa de supervivencia. Sin validación específica en ACV en Colombia.</span>
+        <span class="inst-ref">PMID 23702846</span>
+      </div>
+      <div class="inst-row">
+        <span class="inst-badge badge-a">SPICT-ES™</span>
+        <span class="inst-name">SPICT</span>
+        <span class="inst-desc">Versión española validada. SPICT-LIS para entornos de recursos limitados. Incluye indicadores para ACV.</span>
+        <span class="inst-ref">DOI 10.1136/bmjspcare-2013-000488</span>
+      </div>
+    </div>
+
+    <h3>Dolor en no comunicativos — escalas observacionales</h3>
+
+    <div class="instrument-stack">
+      <div class="inst-row">
+        <span class="inst-badge badge-a">PRIORIDAD</span>
+        <span class="inst-name">NCS-R</span>
+        <span class="inst-desc">Nociception Coma Scale-Revised. Mejor evidencia para trastornos de conciencia post-ACV. Versión española NCS-R-I 2025: AUC 0,952, ICC 0,90.</span>
+        <span class="inst-ref">DOI 10.3390/nursrep15080278</span>
+      </div>
+      <div class="inst-row">
+        <span class="inst-badge badge-a">ALTA EVIDENCIA</span>
+        <span class="inst-name">CPOT-Neuro</span>
+        <span class="inst-desc">Critical-Care Pain Observation Tool Neuro. Validación multicéntrica (Gélinas 2021, n=226). Cut-off ≥2 dolor leve, ≥3 moderado-severo.</span>
+        <span class="inst-ref">PMID 33849619</span>
+      </div>
+      <div class="inst-row">
+        <span class="inst-badge badge-b">ESPAÑOL VALIDADO</span>
+        <span class="inst-name">PAINAD-Sp</span>
+        <span class="inst-desc">Validación española en neurológicos hospitalizados (PAINAD-Sp_Hosp). Aplicable en pacientes con demencia y lesión cerebral.</span>
+        <span class="inst-ref">PMID 12807591</span>
+      </div>
+      <div class="inst-row">
+        <span class="inst-badge badge-b">UCI</span>
+        <span class="inst-name">BPS / BPS-NI</span>
+        <span class="inst-desc">Behavioral Pain Scale. Original para intubados (BPS), versión no-intubados (BPS-NI). Validada en TCE bajo nivel de conciencia.</span>
+        <span class="inst-ref">PMID 11801819</span>
+      </div>
+    </div>
+
+    <h3>Calidad de vida post-ACV</h3>
+
+    <div class="instrument-stack">
+      <div class="inst-row">
+        <span class="inst-badge badge-a">🇨🇴 COLOMBIA</span>
+        <span class="inst-name">HRQOLISP-40</span>
+        <span class="inst-desc"><strong>Validación colombiana publicada</strong> (Guzmán Sabogal et al. BMC Neurol 2016). Instrumento de elección para investigación en Colombia.</span>
+        <span class="inst-ref">DOI 10.1186/s12883-016-0770-5</span>
+      </div>
+      <div class="inst-row">
+        <span class="inst-badge badge-b">ESTÁNDAR GLOBAL</span>
+        <span class="inst-name">ICHOM Stroke Set</span>
+        <span class="inst-desc">Recomienda PROMIS-10 + smRSq como medidas centradas en paciente. Estándar internacional de referencia.</span>
+        <span class="inst-ref">DOI 10.1161/STROKEAHA.115.010898</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. COLOMBIA -->
+  <section class="section" id="colombia">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <h2>Marco normativo <span class="accent">colombiano</span></h2>
+    </div>
+
+    <div class="callout callout-critical">
+      <div class="callout-title">⛔ ALERTA NORMATIVA CRÍTICA — VERIFICACIÓN OBLIGATORIA</div>
+      <p>La <strong>Resolución 1216 de 2015 fue derogada por el artículo 36 de la Resolución 971 de 2021</strong>. Todo el procedimiento de eutanasia en adultos se rige por la Resolución 971/2021. Ningún material docente ni publicación académica debe citar la 1216/2015 como vigente.</p>
+    </div>
+
+    <h3>Normativa vigente aplicable al ACV paliativo</h3>
+
+    <div class="norma-grid">
+      <div class="norma-card">
+        <div class="norma-tag">Ley 1733 / 2014</div>
+        <h4>Consuelo Devis Saavedra</h4>
+        <p>Regula cuidados paliativos para enfermedades terminales, crónicas, degenerativas e irreversibles. El ACV con secuelas devastadoras encaja plenamente.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Ley 2241 / 2022</div>
+        <h4>Telemedicina y paliativos</h4>
+        <p>Refuerza educación en CP. Habilita telemedicina/teleasistencia. Fundamental para acceso en zonas PDET.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Ley 1996 / 2019</div>
+        <h4>Régimen de apoyos — <span style="color:var(--rose)">crítica para ACV</span></h4>
+        <p>Elimina interdicción. En afasia, anosognosia o demencia vascular: régimen de apoyos, no curador. T-048/2023 articuló esta ley con muerte digna.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Resolución 971 / 2021 ✓ VIGENTE</div>
+        <h4>Procedimiento eutanasia adultos</h4>
+        <p>Deroga expresamente la Resolución 1216/2015. Norma vigente para el procedimiento en mayores de 18 años.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Resolución 2665 / 2018</div>
+        <h4>Documento de Voluntad Anticipada</h4>
+        <p>DVA — herramienta preventiva fundamental para pacientes con factores de riesgo vascular antes del ACV.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Sentencia C-233 / 2021</div>
+        <h4>Más allá de la terminalidad</h4>
+        <p>Amplía el derecho a morir dignamente: basta enfermedad grave e incurable con sufrimiento intenso. Aplica a ACV no terminal con secuelas devastadoras (locked-in, dolor central refractario, afasia con epilepsia).</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Decreto-Ley 1953 / 2014</div>
+        <h4>SISPI — Salud Indígena</h4>
+        <p>Habilita modelos interculturales de cuidados al final de la vida en articulación con medicina tradicional.</p>
+      </div>
+      <div class="norma-card">
+        <div class="norma-tag">Decreto-Ley 893 / 2017</div>
+        <h4>PDET — 170 municipios</h4>
+        <p>Focaliza la inequidad de acceso a servicios de salud especializados. Brecha 24,4% vs 17,4% pobreza multidimensional.</p>
+      </div>
+    </div>
+
+    <h3>Epidemiología del ACV en Colombia</h3>
+    <div class="cards-grid">
+      <div class="card card-blue">
+        <h4>Incidencia y mortalidad</h4>
+        <p>~45.000 ACV/año. 16.946 muertes en 2023 (DANE). Tasa 32,45/100.000 hab. El ACV es la 2ª-3ª causa de muerte y 1ª causa de discapacidad en adultos.</p>
+      </div>
+      <div class="card card-amber">
+        <h4>Distribución regional</h4>
+        <p>Valle del Cauca, Caldas y Tolima con tasas departamentales más altas. En Guainía es primera causa de muerte. Regiones Andina y Pacífica concentran mayor mortalidad.</p>
+        <span class="card-ref">Guerrero Agámez et al. Acta Neurol Colomb 2021</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. VACÍOS -->
+  <section class="section" id="vacios">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Vacíos de investigación y <span class="accent">agenda colombiana</span></h2>
+    </div>
+
+    <p>La convergencia de vacíos internacionales con el contexto colombiano configura un campo de investigación original con alto potencial de impacto regional latinoamericano.</p>
+
+    <div class="gap-grid">
+      <div class="gap-box">
+        <div class="gap-num">01</div>
+        <h4>Neuropaliativos específicos en Colombia</h4>
+        <p>La literatura nacional se concentra en oncología y pediatría. ACV, demencia vascular, ELA y EM son zona casi ciega.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">02</div>
+        <h4>Validación NECPAL/SPICT en ACV</h4>
+        <p>Ningún estudio publicado de validación COSMIN de instrumentos de identificación paliativa en ACV en Colombia.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">03</div>
+        <h4>Acceso en PDET, indígenas y NARP</h4>
+        <p>Inexistencia de estudios sobre barreras y facilitadores para cuidados paliativos neurológicos en poblaciones prioritarias.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">04</div>
+        <h4>Cohortes longitudinales post-ACV</h4>
+        <p>Ausencia de registros nacionales que capturen sobrevida, dependencia funcional, lugar de fallecimiento y necesidades paliativas.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">05</div>
+        <h4>Modelos de neuropaliativos en IPS colombianas</h4>
+        <p>No se identifican publicaciones que describan equipos neuropaliativos estructurados en hospitales del país.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">06</div>
+        <h4>Ley 1996 + afasia + decisiones de fin de vida</h4>
+        <p>Vacío de guía clínica para operacionalizar el régimen de apoyos en pacientes con afasia o deterioro cognitivo post-ACV.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">07</div>
+        <h4>Tasas de DVA en pacientes con riesgo vascular</h4>
+        <p>Sin datos publicados sobre suscripción del Documento de Voluntad Anticipada en población con factores de riesgo para ACV.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">08</div>
+        <h4>Carga de cuidadores informales</h4>
+        <p>Ausencia de datos sobre carga económica y psicológica en familias colombianas con sobreviviente de ACV severo.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">09</div>
+        <h4>Profecías autocumplidas en Colombia</h4>
+        <p>No hay cohortes multicéntricas con protocolo de soporte total estandarizado para evaluar el sesgo WLST en HIC.</p>
+      </div>
+      <div class="gap-box">
+        <div class="gap-num">10</div>
+        <h4>Integración SISPI–cuidados paliativos</h4>
+        <p>Ningún estudio documenta cómo articular la medicina tradicional indígena con los paliativos al final de vida por ACV.</p>
+      </div>
+    </div>
+
+    <h3>Líneas de investigación propuestas</h3>
+    <div class="cards-grid">
+      <div class="card card-lilac">
+        <span class="card-icon">📏</span>
+        <h4>Línea 1 — Instrumentación</h4>
+        <p>Estudios COSMIN para validar NECPAL 4.0, SPICT-ES™, PAINAD-Sp, CPOT-Neuro y NCS-R en cohortes colombianas con ACV.</p>
+      </div>
+      <div class="card card-blue">
+        <span class="card-icon">🏥</span>
+        <h4>Línea 2 — Implementación</h4>
+        <p>Estudios hybrid effectiveness-implementation de modelos neuropaliativos integrados en unidades de ictus colombianas.</p>
+      </div>
+      <div class="card card-green">
+        <span class="card-icon">🌿</span>
+        <h4>Línea 3 — Equidad</h4>
+        <p>Investigación cualitativa en PDET, comunidades indígenas (SISPI) y NARP para co-diseñar modelos culturalmente apropiados.</p>
+      </div>
+      <div class="card card-amber">
+        <span class="card-icon">⚖️</span>
+        <h4>Línea 4 — Marcos legales</h4>
+        <p>Operacionalizar Ley 1996/2019 para pacientes con afasia: protocolos, evaluación de capacidad apoyada, DVA.</p>
+      </div>
+      <div class="card card-rose">
+        <span class="card-icon">🔬</span>
+        <h4>Línea 5 — Profecías en HIC</h4>
+        <p>Cohorte multicéntrica con soporte total 72 horas antes de limitación. Aplicar max-ICH score como referencia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <strong>Jorge Bogoya López</strong><br>
+    Docente de la Maestría en Investigación en Cuidados Paliativos<br>
+    Universidad Antonio Nariño · Colombia 🇨🇴<br><br>
+    Síntesis de evidencia construida sobre investigación primaria verificada — 2026.<br>
+    Todas las afirmaciones clínicas requieren verificación de DOI/PMID antes de uso académico.
+    <br><br>
+    <span style="opacity:.45">Curso 37543011 · Plan 2377 · Facultad de Enfermería UAN</span>
+  </footer>
+
+</main>
+
+<script>
+  // ─── INTERSECTION OBSERVER ────────────────
+  const sections = document.querySelectorAll('.section');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Update nav
+        const id = e.target.id;
+        document.querySelectorAll('.nav-item').forEach(n => {
+          n.classList.toggle('active', n.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '-10% 0px -60% 0px' });
+
+  sections.forEach(s => io.observe(s));
+
+  // ─── EVIDENCE BARS (animate on visible) ────
+  const barIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.evidence-fill').forEach(f => {
+          f.style.animation = 'none';
+          void f.offsetWidth;
+          f.style.animation = '';
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('#sintomas').forEach(s => barIO.observe(s));
+
+  // ─── ACCORDION ─────────────────────────────
+  function toggleAcc(header) {
+    const body = header.nextElementSibling;
+    const wasOpen = header.classList.contains('open');
+    document.querySelectorAll('.acc-header.open').forEach(h => {
+      h.classList.remove('open');
+      h.nextElementSibling.classList.remove('open');
+    });
+    if (!wasOpen) {
+      header.classList.add('open');
+      body.classList.add('open');
+    }
+  }
+
+  // ─── NAV ────────────────────────────────────
+  function setActive(el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    if (window.innerWidth < 900) document.getElementById('sidebar').classList.remove('open');
+  }
+
+  function toggleNav() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // ─── CLOSE NAV ON OUTSIDE CLICK ────────────
+  document.addEventListener('click', (e) => {
+    const nav = document.getElementById('sidebar');
+    const toggle = document.querySelector('.nav-toggle');
+    if (window.innerWidth < 900 && !nav.contains(e.target) && !toggle.contains(e.target)) {
+      nav.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>

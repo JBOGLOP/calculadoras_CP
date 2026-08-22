@@ -4,64 +4,93 @@ Colección de recursos web gratuitos para estudiantes y profesionales de la salu
 
 **Autor:** Dr. Jorge Bogoya López · Docente Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño 🇨🇴
 
+### 👉 [**Abrir el portal**](https://jboglop.github.io/calculadoras_CP/)
+
+Todo funciona en el navegador, sin instalación ni registro.
+
 ---
 
-## 🌐 Acceso directo
+## 📁 Estructura del repositorio
 
-Todos los recursos funcionan directamente en el navegador, sin instalación:
+```
+calculadoras_CP/
+├── index.html              Portada: buscador + tarjetas (se arma desde datos/catalogo.json)
+├── datos/
+│   ├── catalogo.json       Fuente única de verdad de los recursos publicados
+│   └── supabase.sql        Esquema de estadísticas (tabla eventos + RLS + vistas)
+├── assets/js/tracker.js    Cliente de Supabase compartido por todas las herramientas
+├── calculadoras/           Calculadoras clínicas
+├── clases/                 Clases interactivas con evaluación
+├── revision-temas/         Síntesis de evidencia
+├── herramientas/           Apoyo metodológico para la Maestría
+├── panel/                  Estadísticas de uso (requiere sesión del docente)
+└── CONTRIBUTING.md         Guía para crear un módulo nuevo
+```
+
+Las rutas antiguas (`Calculadora_Opioides.html`, `Revision_temas/…`, `analizador_tesis/…`) siguen
+funcionando: quedaron como redirecciones automáticas a la nueva ubicación.
+
+---
+
+## 🌐 Recursos publicados
 
 ### 💊 Calculadoras clínicas
 
-| Herramienta | Enlace |
+| Herramienta | Contenido |
 |---|---|
-| **Calculadora de Equianalgesia Opioide** | [Abrir Calculadora_Opioides](./calculadora_opioides.html) |
-| **Calculadoras Pronósticas** | [Abrir Pronosticos](./Escalas_CP_Clinico.html) |
-| **Calculadoras NeuroPaliativos** | [Abrir NeuroPaliativos](./Neuropaliativos_Escalas_ACV.html) |
+| [Equianalgesia opioide](./calculadoras/opioides.html) `v5.2` | 11 opioides, DEMO, morfina 3% en gotas, rotación a metadona (Ripamonti, Ayonrinde) |
+| [Escalas pronósticas y de valoración](./calculadoras/escalas-clinicas.html) | PPS, PPI, PaP, NECPAL, PROFUND, Karnofsky, Barthel, ESAS, Zarit |
+| [Escalas por tipo de ACV](./calculadoras/neuropaliativos-escalas-acv.html) | Pronóstico neuropaliativo según subtipo de ataque cerebrovascular |
 
-### 🧠 Revisión de temas
+### 🎓 Clases interactivas
 
-| Recurso | Enlace |
+| Clase | Contenido |
 |---|---|
-| **Neuropaliativos y ACV Agudo** | [Abrir Neuropaliativos](./Revision_temas/neuropaliativos_acv.html) |
+| [Manejo del dolor](./clases/dolor-manejo.html) | Contenido colapsable, quizzes, caso clínico por decisiones, examen con temporizador |
+| [Factores pronósticos y final de vida](./clases/pronosticos-final-vida.html) | Calculadoras integradas y trayectorias de Lynn & Adamson |
+
+### 📚 Revisión de temas
+
+| Recurso | Contenido |
+|---|---|
+| [Fibromialgia: dolor nociplástico](./revision-temas/fibromialgia.html) | Revisión académica 2020–2026 |
+| [Movilización con hueso frágil](./revision-temas/movilizacion-fractura-patologica.html) | Evidencia sobre riesgo de fractura patológica |
+| [Neuropaliativos en ACV agudo](./revision-temas/neuropaliativos-acv.html) | Evidencia 2014–2025 en 10 secciones + marco normativo colombiano |
+
+### 🔬 Herramientas de investigación
+
+| Herramienta | Contenido |
+|---|---|
+| [Analizador crítico de artículos](./herramientas/analizador-articulos/) | Lectura crítica paso a paso |
+| [Evaluador de trabajos de grado](./herramientas/analizador-tesis/) | Rúbrica interactiva para tesis de la Maestría |
 
 ---
 
-## 📊 ¿Qué incluye cada herramienta?
+## 📊 Estadísticas de uso
 
-### 1. `Calculadora_Opioides.html` — Equianalgesia y rotación opioide
+Las herramientas registran eventos anónimos (aperturas, quizzes completados, resultados de
+evaluación) en **Supabase**. El panel del docente vive en [`/panel/`](./panel/) y **exige iniciar
+sesión**: la clave pública incrustada en el HTML solo puede *escribir*, nunca leer.
 
-Calculadora de Dosis Equivalente de Morfina Oral (DEMO):
+Para ponerlo en marcha:
 
-- Conversión entre **11 opioides** (codeína, tramadol, morfina, oxicodona, hidromorfona, fentanilo, buprenorfina, tapentadol, metadona)
-- Vías: oral, IV, SC, transdérmica, sublingual
-- Soporte para **morfina solución oral 3% en gotas** (presentación colombiana)
-- Tablas de rotación a metadona (Ripamonti y Ayonrinde)
-- Alertas clínicas automáticas y niveles de evidencia GRADE
+1. Ejecutar [`datos/supabase.sql`](./datos/supabase.sql) en el *SQL Editor* del proyecto de Supabase.
+2. Copiar la clave **anon / publishable** (Settings → API Keys).
+3. Pegarla en `assets/js/tracker.js` y en `panel/index.html`, donde dice `PEGAR_AQUI_LA_CLAVE_ANON`.
+4. En Authentication → URL Configuration, agregar `https://jboglop.github.io/calculadoras_CP/panel/`
+   como *Redirect URL*.
 
-### 2. `Pronosticos_CP.html` — Factores pronósticos y cuidado al final de la vida
+Para instrumentar una herramienta basta con una línea, más las llamadas que interesen:
 
-Clase interactiva con calculadoras pronósticas en tiempo real:
+```html
+<script src="../assets/js/tracker.js" data-curso="opioides"></script>
+<script>
+  CP.identificar({ nombre: 'Ana Pérez', correo: 'ana@uan.edu.co' });   // si hay registro
+  CP.evento('quiz_completado', { puntaje: 8, total: 10 });
+</script>
+```
 
-- **PPS** — Palliative Performance Scale
-- **PPI** — Palliative Prognostic Index
-- **PaP** — Palliative Prognostic Score
-- **NECPAL CCOMS-ICO**
-- **La Pregunta Sorpresa**
-- **PROFUND** para pacientes pluripatológicos
-- Escalas de valoración: Karnofsky, Barthel, ESAS, Zarit
-- Modelo de trayectorias de Lynn & Adamson
-
-### 3. `Revision_temas/neuropaliativos_acv.html` — Neuropaliativos y ACV Agudo
-
-Síntesis de evidencia interactiva (2014–2025) en 10 secciones navegables:
-
-- Campo de neuropaliativos y cuarta trayectoria (Creutzfeldt 2015)
-- Control sintomático y síntomas ocultos (disfagia, dolor, estertores, convulsiones subclínicas)
-- Nutrición e hidratación clínicamente asistidas (FOOD trial; equivalencia ética withdrawing/withholding)
-- Profecías autocumplidas en HIC: sesgo WLST, max-ICH score
-- Instrumentos validados: NCS-R-I, CPOT-Neuro, HRQOLISP-40 (validación colombiana)
-- Marco normativo colombiano vigente (Ley 1733/2014, Ley 1996/2019, Res. 971/2021, Sentencia C-233/2021)
-- Vacíos de investigación y 5 líneas propuestas para la Maestría
+Si Supabase no responde, la herramienta sigue funcionando: los fallos son silenciosos.
 
 ---
 
@@ -94,16 +123,17 @@ Todos los recursos se alinean con la **Ley 1733 de 2014** (derecho a cuidados pa
 
 ## 🤝 Contribuciones y contacto
 
-**Dr. Jorge Bogoya López**  
+**Dr. Jorge Bogoya López**
 Hospital Regional de Moniquirá E.S.E. · Boyacá, Colombia
 
-Para reportar errores clínicos, sugerencias o colaboraciones, abre un [**Issue**](https://github.com/JBOGLOP/calculadoras_CP/issues) en este repositorio.
+¿Vas a crear un módulo nuevo? Empieza por [CONTRIBUTING.md](./CONTRIBUTING.md).
+Para reportar errores clínicos o sugerencias, abre un [**Issue**](https://github.com/JBOGLOP/calculadoras_CP/issues).
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto se distribuye bajo **licencia MIT** — uso libre con reconocimiento del autor. Ver archivo [LICENSE](./LICENSE).
+Distribuido bajo **licencia MIT** — uso libre con reconocimiento del autor.
 
 ---
 

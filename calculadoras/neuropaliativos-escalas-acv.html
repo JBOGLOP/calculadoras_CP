@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuropaliativos — Escalas Pronósticas por tipo de ACV</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Palette — deep slate-navy + amber-gold accent + semantic reds/greens */
+  --navy-950: #0C1B2A;
+  --navy-900: #112236;
+  --navy-800: #162E48;
+  --navy-700: #1D3D5C;
+  --navy-600: #255170;
+  --navy-500: #306886;
+  --steel-400: #4E7EA0;
+  --steel-300: #7AA3BE;
+  --steel-200: #A8C6DA;
+  --steel-100: #D0E3EE;
+  --fog-50:    #EAF2F8;
+  --fog-20:    #F4F8FB;
+
+  --gold-600:  #C08A2A;
+  --gold-500:  #D4A033;
+  --gold-400:  #E4B84A;
+  --gold-300:  #EFD080;
+  --gold-dim:  rgba(212,160,51,0.12);
+  --gold-dim2: rgba(212,160,51,0.22);
+
+  --rose-600:  #B84D5A;
+  --rose-500:  #CD6470;
+  --rose-400:  #DE8E97;
+  --rose-dim:  rgba(184,77,90,0.10);
+  --rose-dim2: rgba(184,77,90,0.20);
+
+  --teal-500:  #3A9E8F;
+  --teal-400:  #58B8AA;
+  --teal-300:  #80CCBF;
+  --teal-dim:  rgba(58,158,143,0.10);
+  --teal-dim2: rgba(58,158,143,0.20);
+
+  --amber-500: #D4833A;
+  --amber-400: #E49B55;
+  --amber-dim: rgba(212,131,58,0.12);
+
+  --green-500: #4A9B6E;
+  --green-dim: rgba(74,155,110,0.10);
+
+  /* category colors */
+  --cat-sev:   #3A9E8F;
+  --cat-hic:   #CD6470;
+  --cat-hsa:   #9590BB;
+  --cat-isq:   #4E7EA0;
+  --cat-out:   #D4A033;
+
+  --bg-body:   var(--fog-20);
+  --bg-card:   #FFFFFF;
+  --bg-surface:var(--fog-50);
+  --border:    rgba(22,46,72,0.09);
+  --border-md: rgba(22,46,72,0.16);
+  --text-primary: var(--navy-900);
+  --text-body:    #2B4A62;
+  --text-muted:   #6B8EA8;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius:   12px;
+  --radius-lg:18px;
+  --radius-xl:24px;
+  --shadow-sm:0 1px 4px rgba(12,27,42,0.06);
+  --shadow:   0 4px 20px rgba(12,27,42,0.08);
+  --shadow-lg:0 12px 40px rgba(12,27,42,0.11);
+  --transition:0.28s cubic-bezier(0.4,0,0.2,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg-body);color:var(--text-body);line-height:1.72;font-size:16px;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--fog-50);}::-webkit-scrollbar-thumb{background:var(--steel-300);border-radius:3px;}
+
+/* ══ SIDEBAR ══ */
+.nav-sidebar{position:fixed;left:0;top:0;bottom:0;width:278px;background:var(--navy-900);z-index:100;overflow-y:auto;box-shadow:4px 0 28px rgba(12,27,42,0.18);transition:transform 0.4s ease;}
+.nav-sidebar.collapsed{transform:translateX(-278px);}
+.nav-brand{padding:1.6rem 1.6rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.07);}
+.nav-brand small{display:block;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.24em;color:var(--steel-300);margin-bottom:0.35rem;}
+.nav-brand h3{font-family:var(--font-display);font-size:1rem;font-weight:400;color:#E8F2F8;line-height:1.35;letter-spacing:0.01em;}
+.nav-section-label{padding:1.1rem 1.6rem 0.3rem;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.22em;font-weight:600;}
+.nav-cat-sev{color:var(--cat-sev);}.nav-cat-hic{color:var(--cat-hic);}.nav-cat-hsa{color:#9590BB;}
+.nav-cat-isq{color:var(--cat-isq);}.nav-cat-out{color:var(--cat-out);}
+.nav-link{display:flex;align-items:center;gap:0.7rem;padding:0.46rem 1.6rem;color:rgba(160,195,218,0.55);text-decoration:none;font-size:0.78rem;transition:var(--transition);border-left:3px solid transparent;cursor:pointer;font-weight:400;}
+.nav-link:hover{color:#E8F2F8;background:rgba(255,255,255,0.04);}
+.nav-link.active{color:#fff;background:rgba(58,158,143,0.10);border-left-color:var(--teal-400);font-weight:500;}
+.nav-link .cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.nav-toggle{position:fixed;top:1rem;left:1rem;z-index:101;width:40px;height:40px;background:#fff;border:1px solid var(--border);border-radius:10px;cursor:pointer;display:none;align-items:center;justify-content:center;color:var(--navy-700);font-size:1.1rem;box-shadow:var(--shadow);}
+
+/* ══ MAIN ══ */
+.main{margin-left:278px;transition:margin-left 0.4s ease;min-height:100vh;}
+.main.expanded{margin-left:0;}
+
+/* ══ HERO ══ */
+.hero-cli{
+  background:linear-gradient(150deg, var(--navy-950) 0%, var(--navy-800) 45%, var(--navy-600) 100%);
+  padding:3rem 3rem 2.5rem;position:relative;overflow:hidden;
+}
+.hero-cli::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%, rgba(212,160,51,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-cli::after{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.hero-eyebrow{font-family:var(--font-mono);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.3em;color:var(--gold-300);margin-bottom:0.7rem;position:relative;}
+.hero-cli h1{font-family:var(--font-display);font-size:clamp(1.8rem,3.2vw,2.6rem);font-weight:400;color:#EAF2F8;margin-bottom:0.5rem;position:relative;line-height:1.2;letter-spacing:-0.01em;}
+.hero-cli h1 em{font-style:italic;color:var(--gold-400);}
+.hero-cli p{font-size:0.88rem;color:var(--steel-300);max-width:580px;position:relative;}
+.hero-quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-top:2rem;position:relative;}
+.hero-q-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);border-radius:var(--radius);padding:0.95rem 1rem;cursor:pointer;text-align:left;transition:var(--transition);text-decoration:none;display:block;}
+.hero-q-btn:hover{background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.20);transform:translateY(-2px);}
+.hero-q-btn .q-icon{font-size:1.3rem;margin-bottom:0.35rem;display:block;}
+.hero-q-btn .q-label{display:block;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.16em;font-weight:600;margin-bottom:0.1rem;}
+.hero-q-btn .q-title{display:block;font-size:0.8rem;color:#EAF2F8;font-weight:400;line-height:1.3;}
+.hero-q-btn.c-sev .q-label{color:var(--teal-300);}
+.hero-q-btn.c-hic .q-label{color:var(--rose-400);}
+.hero-q-btn.c-hsa .q-label{color:#B8B5D4;}
+.hero-q-btn.c-isq .q-label{color:var(--steel-200);}
+.hero-q-btn.c-out .q-label{color:var(--gold-300);}
+
+/* ══ SECTIONS ══ */
+.section{padding:3.5rem 3rem;max-width:1040px;margin:0 auto;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.section.visible{opacity:1;transform:translateY(0);}
+.section-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;}
+.section-cat-bar{width:4px;height:50px;border-radius:3px;flex-shrink:0;}
+.section-cat-bar.sev{background:var(--cat-sev);}.section-cat-bar.hic{background:var(--cat-hic);}
+.section-cat-bar.hsa{background:#9590BB;}.section-cat-bar.isq{background:var(--cat-isq);}
+.section-cat-bar.out{background:var(--cat-out);}
+.section-eyebrow{font-family:var(--font-mono);font-size:0.62rem;text-transform:uppercase;letter-spacing:0.2em;margin-bottom:0.25rem;font-weight:500;}
+.section-eyebrow.sev{color:var(--cat-sev);}.section-eyebrow.hic{color:var(--cat-hic);}
+.section-eyebrow.hsa{color:#9590BB;}.section-eyebrow.isq{color:var(--cat-isq);}
+.section-eyebrow.out{color:var(--cat-out);}
+.section h2{font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,1.95rem);font-weight:400;color:var(--text-primary);line-height:1.25;letter-spacing:-0.01em;}
+.section-intro{font-size:0.84rem;color:var(--text-muted);margin-bottom:2rem;max-width:70ch;border-left:2px solid var(--border-md);padding-left:0.85rem;line-height:1.7;}
+
+/* ══ WLST ALERT — advertencia sesgo autocumplido ══ */
+.wlst-alert{
+  display:flex;align-items:flex-start;gap:1rem;
+  background:linear-gradient(135deg,rgba(184,77,90,0.08),rgba(184,77,90,0.03));
+  border:1.5px solid var(--rose-500);
+  border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;
+  position:relative;overflow:hidden;
+}
+.wlst-alert::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--rose-500);}
+.wlst-icon{font-size:1.4rem;flex-shrink:0;margin-top:0.1rem;}
+.wlst-body strong{font-size:0.82rem;color:var(--rose-600);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;display:block;margin-bottom:0.25rem;}
+.wlst-body p{font-size:0.83rem;color:#5A2630;line-height:1.65;margin:0;}
+.wlst-toggle{font-size:0.75rem;color:var(--rose-500);cursor:pointer;text-decoration:underline;margin-top:0.35rem;display:inline-block;}
+.wlst-expand{display:none;margin-top:0.6rem;font-size:0.82rem;color:#5A2630;line-height:1.7;border-top:1px solid rgba(184,77,90,0.2);padding-top:0.6rem;}
+
+/* ══ TABS ══ */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.4rem;flex-wrap:wrap;}
+.tab-btn{padding:0.62rem 1.15rem;background:none;border:none;color:var(--text-muted);font-family:var(--font-body);font-size:0.8rem;cursor:pointer;font-weight:500;border-bottom:2.5px solid transparent;margin-bottom:-2px;transition:var(--transition);white-space:nowrap;}
+.tab-btn:hover{color:var(--text-body);}
+.tab-btn.active{color:var(--teal-500);border-bottom-color:var(--teal-400);}
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+/* ══ TOOL BOX ══ */
+.tool-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;margin:0 0 0.5rem;box-shadow:var(--shadow);}
+.tool-top{padding:1.1rem 1.7rem;background:linear-gradient(135deg,var(--fog-50),#EEF5FA);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+.tool-top-main{flex:1;}
+.tool-top h3{font-family:var(--font-display);font-size:1.08rem;font-weight:600;color:var(--text-primary);margin:0 0 0.2rem;letter-spacing:-0.01em;}
+.tool-when{font-size:0.78rem;color:var(--text-muted);font-style:italic;line-height:1.5;}
+.tool-meta{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;}
+.tool-badge{font-family:var(--font-mono);font-size:0.58rem;padding:0.2rem 0.55rem;border-radius:20px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;white-space:nowrap;}
+.badge-teal{background:var(--teal-dim2);color:var(--teal-500);}
+.badge-gold{background:var(--gold-dim2);color:var(--gold-600);}
+.badge-rose{background:var(--rose-dim2);color:var(--rose-600);}
+.badge-navy{background:rgba(22,46,72,0.10);color:var(--navy-700);}
+.tool-doi{font-family:var(--font-mono);font-size:0.6rem;color:var(--text-muted);text-decoration:none;padding:0.18rem 0.5rem;border:1px solid var(--border-md);border-radius:6px;}
+.tool-doi:hover{color:var(--teal-500);border-color:var(--teal-400);}
+.tool-inner{padding:1.5rem;}
+
+/* ══ SCALE OPTS ══ */
+.scale-row{display:grid;grid-template-columns:160px 1fr;gap:1rem;align-items:start;padding:0.75rem 0;border-bottom:1px solid var(--border);}
+.scale-row:last-child{border-bottom:none;}
+.scale-label{font-size:0.82rem;font-weight:600;color:var(--navy-700);padding-top:0.38rem;line-height:1.4;}
+.scale-sublabel{font-size:0.7rem;color:var(--text-muted);font-weight:400;display:block;margin-top:0.1rem;}
+.scale-options{display:flex;flex-wrap:wrap;gap:0.32rem;}
+.scale-opt{padding:0.42rem 0.8rem;background:var(--bg-surface);border:1.5px solid var(--border);border-radius:9px;font-size:0.76rem;color:var(--text-body);cursor:pointer;transition:var(--transition);text-align:left;line-height:1.4;}
+.scale-opt:hover{border-color:var(--teal-400);color:var(--navy-700);}
+.scale-opt.selected{background:var(--teal-dim2);border-color:var(--teal-400);color:var(--teal-500);font-weight:600;box-shadow:0 0 0 3px rgba(58,158,143,0.08);}
+
+/* ══ CHECK ITEMS ══ */
+.check-item{display:flex;align-items:center;gap:0.65rem;padding:0.58rem 0.85rem;border:1.5px solid var(--border);border-radius:var(--radius);margin:0.28rem 0;cursor:pointer;transition:var(--transition);background:var(--bg-card);font-size:0.84rem;}
+.check-item:hover{border-color:var(--teal-400);background:rgba(58,158,143,0.03);}
+.check-item input[type="checkbox"]{display:none;}
+.check-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--border-md);display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;font-size:0.7rem;color:transparent;}
+.check-item input:checked~.check-box{background:var(--teal-500);border-color:var(--teal-500);color:#fff;}
+.check-item input:checked~.check-box::after{content:'✓';}
+.check-item input:checked~.check-text{color:var(--text-primary);font-weight:500;}
+.check-text{color:var(--text-muted);transition:var(--transition);display:flex;align-items:center;gap:0.5rem;flex:1;}
+.check-pts{margin-left:auto;font-family:var(--font-mono);font-size:0.68rem;font-weight:600;color:var(--gold-600);background:var(--gold-dim);padding:0.1rem 0.42rem;border-radius:7px;}
+
+/* ══ RESULTS ══ */
+.result-panel{margin-top:1.3rem;padding:1.2rem;background:var(--bg-surface);border-radius:var(--radius);border:1px solid var(--border);transition:var(--transition);}
+.result-panel.active{border-color:var(--teal-400);box-shadow:0 0 0 3px var(--teal-dim);}
+.result-score{font-family:var(--font-display);font-size:2.5rem;font-weight:600;line-height:1;letter-spacing:-0.02em;}
+.result-score.high{color:var(--green-500);}.result-score.medium{color:var(--amber-500);}.result-score.low{color:var(--rose-600);}
+.result-label{font-size:0.73rem;color:var(--text-muted);margin-top:0.2rem;}
+.result-interp{margin-top:0.85rem;padding:0.85rem 1rem;border-radius:9px;font-size:0.85rem;line-height:1.72;}
+.result-interp.green{background:var(--green-dim);color:#2a5c3a;border-left:3px solid var(--green-500);}
+.result-interp.yellow{background:var(--amber-dim);color:#5a3512;border-left:3px solid var(--amber-500);}
+.result-interp.red{background:var(--rose-dim2);color:#5A2630;border-left:3px solid var(--rose-600);}
+.progress-track{width:100%;height:5px;background:var(--steel-100);border-radius:3px;margin:0.75rem 0;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.55s ease,background 0.4s ease;}
+
+/* ══ TABLE ══ */
+.styled-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:var(--radius);overflow:hidden;margin:1rem 0;font-size:0.79rem;box-shadow:var(--shadow-sm);}
+.styled-table thead th{background:var(--navy-800);padding:0.62rem 0.9rem;text-align:left;font-weight:600;color:var(--steel-100);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;}
+.styled-table tbody td{padding:0.58rem 0.9rem;border-bottom:1px solid var(--border);color:var(--text-body);background:#fff;}
+.styled-table tbody tr:hover td{background:var(--fog-50);}
+
+/* ══ INFO BOX ══ */
+.info-box{padding:0.82rem 1rem;border-radius:var(--radius);margin:0.75rem 0;font-size:0.82rem;line-height:1.65;}
+.info-box.teal{background:var(--teal-dim2);border-left:3px solid var(--teal-500);color:#1a4a44;}
+.info-box.gold{background:var(--gold-dim2);border-left:3px solid var(--gold-500);color:#4a3200;}
+.info-box.navy{background:rgba(22,46,72,0.07);border-left:3px solid var(--navy-600);color:var(--navy-800);}
+
+/* ══ SUB CATEGORY LABEL ══ */
+.sub-cat{font-size:0.67rem;text-transform:uppercase;letter-spacing:0.13em;font-weight:700;margin:1rem 0 0.3rem;padding-left:0.15rem;}
+
+/* ══ SECTION DIVIDER ══ */
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-md),transparent);margin:0 3rem;}
+
+/* ══ BUTTONS ══ */
+.btn-ghost{padding:0.52rem 1.2rem;border-radius:9px;font-family:var(--font-body);font-size:0.82rem;font-weight:500;cursor:pointer;transition:var(--transition);border:1.5px solid var(--border-md);background:transparent;color:var(--teal-500);}
+.btn-ghost:hover{background:var(--teal-dim);border-color:var(--teal-400);}
+.btn-ghost.sel{background:var(--teal-dim2);border-color:var(--teal-400);font-weight:600;}
+
+/* ══ GCS SPECIAL ══ */
+.gcs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+@media(max-width:700px){.gcs-grid{grid-template-columns:1fr;}}
+.gcs-col-title{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--navy-700);margin-bottom:0.5rem;padding-bottom:0.4rem;border-bottom:2px solid var(--border);}
+
+/* ══ SCORE COMPARISON TABLE ══ */
+.compare-strip{display:flex;gap:0;border-radius:var(--radius);overflow:hidden;margin:1.2rem 0;border:1px solid var(--border);}
+.compare-cell{flex:1;padding:1rem;text-align:center;background:#fff;border-right:1px solid var(--border);}
+.compare-cell:last-child{border-right:none;}
+.compare-val{font-family:var(--font-display);font-size:1.5rem;font-weight:600;line-height:1;}
+.compare-lbl{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* ══ FOOTER ══ */
+.page-footer{text-align:center;padding:2.5rem 2rem 3rem;color:var(--text-muted);font-size:0.78rem;border-top:1px solid var(--border);margin:2rem 0 0;}
+.page-footer strong{color:var(--teal-500);}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){.nav-sidebar{transform:translateX(-278px);}.nav-sidebar.open{transform:translateX(0);}.nav-toggle{display:flex;}.main{margin-left:0;}}
+@media(max-width:640px){.section{padding:2.5rem 1.4rem;}.hero-cli{padding:2rem 1.4rem 1.8rem;}.scale-row{grid-template-columns:1fr;gap:0.3rem;}.hero-quick{grid-template-columns:repeat(2,1fr);}.compare-strip{flex-direction:column;}}
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+
+<nav class="nav-sidebar" id="nav">
+  <div class="nav-brand">
+    <small>Herramienta clínica · Neuropaliativos</small>
+    <h3>Escalas Pronósticas por tipo de ACV</h3>
+  </div>
+  <div class="nav-section-label nav-cat-sev">● Severidad inicial</div>
+  <a class="nav-link" href="#severidad" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-sev)"></span>GCS — Glasgow Coma Scale</a>
+  <a class="nav-link" href="#severidad" onclick="closeMobileNav();switchTabGlobal('nihss')"><span class="cat-dot" style="background:var(--cat-sev)"></span>NIHSS — déficit neurológico</a>
+  <a class="nav-link" href="#severidad" onclick="closeMobileNav();switchTabGlobal('four')"><span class="cat-dot" style="background:var(--cat-sev)"></span>FOUR Scale</a>
+
+  <div class="nav-section-label nav-cat-hic">● Hemorragia intracerebral</div>
+  <a class="nav-link" href="#hic" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-hic)"></span>ICH Score ⚠ sesgo WLST</a>
+  <a class="nav-link" href="#hic" onclick="closeMobileNav();switchTabGlobal('maxich')"><span class="cat-dot" style="background:var(--cat-hic)"></span>max-ICH Score</a>
+  <a class="nav-link" href="#hic" onclick="closeMobileNav();switchTabGlobal('func')"><span class="cat-dot" style="background:var(--cat-hic)"></span>FUNC Score</a>
+
+  <div class="nav-section-label nav-cat-hsa">● Hemorragia subaracnoidea</div>
+  <a class="nav-link" href="#hsa" onclick="closeMobileNav()"><span class="cat-dot" style="background:#9590BB"></span>Hunt & Hess · WFNS</a>
+  <a class="nav-link" href="#hsa" onclick="closeMobileNav();switchTabGlobal('vasograde')"><span class="cat-dot" style="background:#9590BB"></span>VASOGRADE (DCI)</a>
+
+  <div class="nav-section-label nav-cat-isq">● ACV isquémico · AIT</div>
+  <a class="nav-link" href="#isquemico" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-isq)"></span>ASTRAL Score</a>
+  <a class="nav-link" href="#isquemico" onclick="closeMobileNav();switchTabGlobal('iscore')"><span class="cat-dot" style="background:var(--cat-isq)"></span>iScore</a>
+  <a class="nav-link" href="#isquemico" onclick="closeMobileNav();switchTabGlobal('abcd2')"><span class="cat-dot" style="background:var(--cat-isq)"></span>ABCD² (AIT)</a>
+
+  <div class="nav-section-label nav-cat-out">● Outcome funcional</div>
+  <a class="nav-link" href="#outcome" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-out)"></span>mRS — Rankin modificada</a>
+  <a class="nav-link" href="#outcome" onclick="closeMobileNav();switchTabGlobal('barthel-acv')"><span class="cat-dot" style="background:var(--cat-out)"></span>Índice de Barthel post-ACV</a>
+</nav>
+
+<div class="main" id="mainContent">
+
+<!-- HERO -->
+<div class="hero-cli" id="hero">
+  <div class="hero-eyebrow">Herramienta clínica · Neuropaliativos</div>
+  <h1>Escalas pronósticas<br><em>por tipo de ACV</em></h1>
+  <p>Para el equipo de cuidados paliativos. Interpretación pronóstica, advertencias de sesgo y criterios de outcome funcional en hemorragia, isquemia y HSA.</p>
+  <div class="hero-quick">
+    <a class="hero-q-btn c-sev" href="#severidad"><span class="q-icon">🧠</span><span class="q-label">Severidad</span><span class="q-title">GCS · NIHSS · FOUR</span></a>
+    <a class="hero-q-btn c-hic" href="#hic"><span class="q-icon">🩸</span><span class="q-label">HIC</span><span class="q-title">Hemorragia intracerebral</span></a>
+    <a class="hero-q-btn c-hsa" href="#hsa"><span class="q-icon">💠</span><span class="q-label">HSA</span><span class="q-title">Hemorragia subaracnoidea</span></a>
+    <a class="hero-q-btn c-isq" href="#isquemico"><span class="q-icon">🔵</span><span class="q-label">Isquémico · AIT</span><span class="q-title">ASTRAL · iScore · ABCD²</span></a>
+    <a class="hero-q-btn c-out" href="#outcome"><span class="q-icon">📐</span><span class="q-label">Outcome</span><span class="q-title">mRS · Barthel post-ACV</span></a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     A. SEVERIDAD INICIAL
+     ══════════════════════════════════════ -->
+<section class="section" id="severidad">
+  <div class="section-header">
+    <div class="section-cat-bar sev"></div>
+    <div>
+      <div class="section-eyebrow sev">Severidad inicial · Aplicable a todos los subtipos</div>
+      <h2>¿Qué tan grave es el ACV?</h2>
+    </div>
+  </div>
+  <p class="section-intro">Estas tres escalas evalúan el estado neurológico inicial. Son la base de las calculadoras pronósticas específicas (ICH score, Hunt & Hess, ASTRAL) y el lenguaje común entre neurología y paliativos.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('gcs',this,'severidad')">GCS</button>
+    <button class="tab-btn" onclick="switchTab('nihss',this,'severidad')">NIHSS</button>
+    <button class="tab-btn" onclick="switchTab('four',this,'severidad')">FOUR Scale</button>
+  </div>
+
+  <!-- GCS -->
+  <div class="tab-content active" id="tab-gcs">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>Glasgow Coma Scale (GCS)</h3>
+          <div class="tool-when">Base del ICH Score, Hunt & Hess, WFNS y FOUR · Documentar siempre la puntuación por subescalas (ej. O3M4V4 = GCS 11), no solo el total</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-navy">Teasdale & Jennett, Lancet 1974</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="gcs-grid">
+          <div>
+            <div class="gcs-col-title">👁 Apertura ocular (O)</div>
+            <div id="gcsOcularOpts"></div>
+          </div>
+          <div>
+            <div class="gcs-col-title">🗣 Respuesta verbal (V)</div>
+            <div id="gcsVerbalOpts"></div>
+          </div>
+          <div>
+            <div class="gcs-col-title">✋ Respuesta motora (M)</div>
+            <div id="gcsMotorOpts"></div>
+          </div>
+        </div>
+        <div class="result-panel" id="gcsResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="gcsScore">—</div><div class="result-label">GCS Total (3–15)</div></div>
+            <div style="text-align:center;"><div class="result-score" id="gcsDetail" style="font-size:1.1rem;color:var(--navy-600);">—</div><div class="result-label">Desglose O + V + M</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="gcsBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="gcsInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>GCS</th><th>Clasificación</th><th>Implicación clínica</th></tr></thead>
+          <tbody>
+            <tr><td>13–15</td><td>Leve</td><td>Comunicación posible · Participación en decisiones</td></tr>
+            <tr><td>9–12</td><td>Moderado</td><td>Comunicación limitada · Evaluar capacidad para decisiones</td></tr>
+            <tr><td>6–8</td><td>Grave</td><td>Sin comunicación · Subrogación familiar necesaria</td></tr>
+            <tr><td>3–5</td><td>Muy grave / coma</td><td>Planificación anticipada urgente con familia · Evaluar objetivos terapéuticos</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box navy">El GCS no evalúa función de tronco cerebral ni patrón respiratorio — para esto usar la FOUR Scale. En intubados, el componente verbal se registra como V-T (intubado).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NIHSS -->
+  <div class="tab-content" id="tab-nihss">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>NIHSS — National Institutes of Health Stroke Scale</h3>
+          <div class="tool-when">Cuantifica severidad del déficit neurológico en ACV isquémico · Guía decisiones de trombolisis y trombectomía · También útil en hemorragia para comunicar severidad</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-navy">Brott et al., Stroke 1989</span>
+            <a class="tool-doi" href="https://doi.org/10.1161/01.STR.20.7.864" target="_blank">DOI</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Versión simplificada para evaluación paliativa. Evalúe cada ítem y seleccione la puntuación.</p>
+        <div id="nihssItems"></div>
+        <div class="result-panel" id="nihssResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="nihssScore">0</div><div class="result-label">NIHSS Total (0–42)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="nihssBar" style="width:0%;background:var(--green-500);"></div></div></div>
+          </div>
+          <div class="result-interp" id="nihssInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>NIHSS</th><th>Severidad</th><th>Pronóstico general (isquémico)</th></tr></thead>
+          <tbody>
+            <tr><td>0–4</td><td>Leve</td><td>Alta probabilidad de independencia a 3 meses</td></tr>
+            <tr><td>5–15</td><td>Moderado</td><td>Probabilidad intermedia · Evaluar lesión y territorio</td></tr>
+            <tr><td>16–20</td><td>Moderado-grave</td><td>Mayor riesgo de dependencia severa</td></tr>
+            <tr><td>21–42</td><td>Grave</td><td>Alta probabilidad de dependencia total o muerte</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box gold">NIHSS > 25 se asocia con mortalidad hospitalaria del 17–34 % y dependencia severa en > 60 % de los supervivientes. En el contexto de paliativos, complementar siempre con neuroimagen y edad del paciente.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOUR SCALE -->
+  <div class="tab-content" id="tab-four">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>FOUR Scale — Full Outline of UnResponsiveness</h3>
+          <div class="tool-when">Más sensible que GCS para daño cerebral grave · Evalúa reflejos de tronco y patrón respiratorio · Útil en pacientes intubados donde GCS verbal es no valorable</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-navy">Wijdicks et al., Ann Neurol 2005</span>
+            <a class="tool-doi" href="https://doi.org/10.1002/ana.20611" target="_blank">10.1002/ana.20611</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="scale-row"><div class="scale-label">Respuesta ocular (E)<span class="scale-sublabel">0–4 puntos</span></div><div class="scale-options" data-four="eye">
+          <div class="scale-opt" data-value="4" onclick="selFOUR(this)">Parpadea a la orden, seguimiento o fijación (4)</div>
+          <div class="scale-opt" data-value="3" onclick="selFOUR(this)">Ojos abiertos sin seguimiento (3)</div>
+          <div class="scale-opt" data-value="2" onclick="selFOUR(this)">Ojos abiertos al estímulo intenso (2)</div>
+          <div class="scale-opt" data-value="1" onclick="selFOUR(this)">Ojos abiertos al dolor (1)</div>
+          <div class="scale-opt" data-value="0" onclick="selFOUR(this)">Ojos cerrados al dolor (0)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Respuesta motora (M)<span class="scale-sublabel">0–4 puntos</span></div><div class="scale-options" data-four="motor">
+          <div class="scale-opt" data-value="4" onclick="selFOUR(this)">Obedece órdenes con pulgar, puño o signo de paz (4)</div>
+          <div class="scale-opt" data-value="3" onclick="selFOUR(this)">Localiza el dolor (3)</div>
+          <div class="scale-opt" data-value="2" onclick="selFOUR(this)">Respuesta flexora al dolor (2)</div>
+          <div class="scale-opt" data-value="1" onclick="selFOUR(this)">Respuesta extensora al dolor (1)</div>
+          <div class="scale-opt" data-value="0" onclick="selFOUR(this)">Sin respuesta o respuesta mioclónica generalizada (0)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Reflejos tronco (B)<span class="scale-sublabel">0–4 puntos</span></div><div class="scale-options" data-four="brainstem">
+          <div class="scale-opt" data-value="4" onclick="selFOUR(this)">Pupilas y reflejo corneal presentes (4)</div>
+          <div class="scale-opt" data-value="3" onclick="selFOUR(this)">Una pupila dilatada y fija (3)</div>
+          <div class="scale-opt" data-value="2" onclick="selFOUR(this)">Reflejos pupilares o corneal ausentes (2)</div>
+          <div class="scale-opt" data-value="1" onclick="selFOUR(this)">Reflejos pupilares y corneal ausentes (1)</div>
+          <div class="scale-opt" data-value="0" onclick="selFOUR(this)">Ausencia de reflejos pupilares, corneal y tusígeno (0)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Respiración (R)<span class="scale-sublabel">0–4 puntos</span></div><div class="scale-options" data-four="resp">
+          <div class="scale-opt" data-value="4" onclick="selFOUR(this)">No intubado, patrón regular (4)</div>
+          <div class="scale-opt" data-value="3" onclick="selFOUR(this)">No intubado, respiración de Cheyne-Stokes (3)</div>
+          <div class="scale-opt" data-value="2" onclick="selFOUR(this)">No intubado, respiración irregular (2)</div>
+          <div class="scale-opt" data-value="1" onclick="selFOUR(this)">Intubado, respira por encima del ventilador (1)</div>
+          <div class="scale-opt" data-value="0" onclick="selFOUR(this)">Intubado, no gatilla el ventilador (0)</div>
+        </div></div>
+        <div class="result-panel" id="fourResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="fourScore">—</div><div class="result-label">FOUR Score (0–16)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="fourBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="fourInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>FOUR</th><th>Interpretación</th></tr></thead>
+          <tbody>
+            <tr><td>13–16</td><td>Estado neurológico moderado-grave · Seguimiento estrecho</td></tr>
+            <tr><td>8–12</td><td>Estado grave · Evaluar pronóstico a corto plazo</td></tr>
+            <tr><td>0–7</td><td>Estado muy grave · FOUR = 0 compatible con muerte cerebral — verificar criterios</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box teal"><strong>Ventaja sobre GCS:</strong> FOUR = 0 tiene alta especificidad para muerte cerebral. La escala también detecta el síndrome de enclaustramiento (locked-in), donde GCS puede dar falsamente bajo pero FOUR E4 es normal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     B. HIC
+     ══════════════════════════════════════ -->
+<section class="section" id="hic">
+  <div class="section-header">
+    <div class="section-cat-bar hic"></div>
+    <div>
+      <div class="section-eyebrow hic">Hemorragia intracerebral (HIC)</div>
+      <h2>¿Qué pronóstico tiene esta hemorragia?</h2>
+    </div>
+  </div>
+  <p class="section-intro">Tres herramientas con propósitos distintos: ICH Score predice mortalidad (con sesgo documentado), max-ICH corrige ese sesgo, y FUNC Score orienta hacia el pronóstico funcional — que es la pregunta más relevante para paliativos.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('ich',this,'hic')">ICH Score ⚠</button>
+    <button class="tab-btn" onclick="switchTab('maxich',this,'hic')">max-ICH Score</button>
+    <button class="tab-btn" onclick="switchTab('func',this,'hic')">FUNC Score</button>
+  </div>
+
+  <!-- ICH SCORE -->
+  <div class="tab-content active" id="tab-ich">
+    <div class="wlst-alert">
+      <div class="wlst-icon">⚠️</div>
+      <div class="wlst-body">
+        <strong>Sesgo por limitación del esfuerzo terapéutico (WLST)</strong>
+        <p>El ICH Score fue desarrollado en una cohorte donde las órdenes de no reanimar y la limitación del soporte vital (WLST) se aplicaron libremente. Esto crea una <em>profecía autocumplida</em>: un score alto lleva a limitar el tratamiento, lo que aumenta la mortalidad, lo que «valida» el score. Publicado el año 2001, el error metodológico fue reconocido formalmente a partir de 2010.</p>
+        <span class="wlst-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.textContent=this.textContent.includes('Ver')? 'Ocultar evidencia':'Ver evidencia';">Ver evidencia</span>
+        <div class="wlst-expand">
+          <strong>Estudios clave que documentan el sesgo:</strong><br>
+          — Morgenstern et al. (2010): pacientes con ICH Score ≥ 4 en centros que suspendieron limitación terapéutica temprana tuvieron mortalidad 35–50 % menor que la predicha.<br>
+          — Zahuranec et al. (2012): el OR para WLST fue 6,2 × por cada punto adicional en el ICH Score, independientemente de la severidad clínica real.<br>
+          — Hemphill et al. (2015, editorial Stroke): los propios autores del ICH Score advirtieron contra su uso como criterio único para limitar tratamiento.<br><br>
+          <strong>Implicación para paliativos:</strong> No usar el ICH Score como argumento único para comunicar pronóstico a la familia ni para recomendar limitación del soporte vital. Combinar con max-ICH Score y con el juicio clínico contextualizado.
+        </div>
+      </div>
+    </div>
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>ICH Score</h3>
+          <div class="tool-when">Predictor de mortalidad a 30 días en HIC · Usar con precaución — ver advertencia WLST arriba</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-rose">Contaminado WLST</span>
+            <span class="tool-badge badge-navy">Hemphill et al., Stroke 2001</span>
+            <a class="tool-doi" href="https://pubmed.ncbi.nlm.nih.gov/11283388" target="_blank">PMID 11283388</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="sub-cat" style="color:var(--cat-hic);">Componentes del ICH Score</div>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-gcs" value="2"><span class="check-box"></span><span class="check-text">GCS 3–4<span class="check-pts">+2</span></span></label>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-gcs2" value="1"><span class="check-box"></span><span class="check-text">GCS 5–12<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-vol" value="1"><span class="check-box"></span><span class="check-text">Volumen hematoma ≥ 30 mL<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-ivh" value="1"><span class="check-box"></span><span class="check-text">Hemorragia intraventricular (IVH)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-inf" value="1"><span class="check-box"></span><span class="check-text">Origen infratentorial<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcICH()"><input type="checkbox" id="ich-age" value="1"><span class="check-box"></span><span class="check-text">Edad ≥ 80 años<span class="check-pts">+1</span></span></label>
+        <p style="font-size:0.76rem;color:var(--text-muted);font-style:italic;margin:0.5rem 0 0.3rem;">Nota: GCS 3–4 y GCS 5–12 son mutuamente excluyentes. GCS 13–15 = 0 puntos.</p>
+        <div class="result-panel" id="ichResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="ichScore">0</div><div class="result-label">ICH Score (0–6)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="ichBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="ichInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>ICH Score</th><th>Mortalidad 30 d (cohorte original)</th><th>Advertencia</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>0 %</td><td>—</td></tr>
+            <tr><td>1</td><td>13 %</td><td>—</td></tr>
+            <tr><td>2</td><td>26 %</td><td>⚠ Influenciado por WLST</td></tr>
+            <tr><td>3</td><td>72 %</td><td>⚠⚠ Alta contaminación WLST</td></tr>
+            <tr><td>4</td><td>97 %</td><td>⚠⚠⚠ Profecía autocumplida</td></tr>
+            <tr><td>5–6</td><td>100 %</td><td>⚠⚠⚠ No usar para limitar tratamiento</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAX-ICH -->
+  <div class="tab-content" id="tab-maxich">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>max-ICH Score</h3>
+          <div class="tool-when">Diseñado específicamente para eliminar el sesgo WLST · Cohorte donde se evitó limitación terapéutica temprana · Pronóstico más real</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Menor sesgo autocumplido</span>
+            <span class="tool-badge badge-navy">Sembill et al., Ann Neurol 2019</span>
+            <a class="tool-doi" href="https://pubmed.ncbi.nlm.nih.gov/28679602" target="_blank">PMID 28679602</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="info-box teal">El max-ICH fue derivado en una cohorte alemana (n = 226) con política estricta de <strong>no limitación temprana del tratamiento</strong> durante las primeras 72 horas. Las tasas de mortalidad son sistemáticamente más bajas que el ICH Score para los mismos perfiles clínicos.</div>
+        <div class="sub-cat" style="color:var(--cat-hic);">Componentes max-ICH</div>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-gcs34" value="2"><span class="check-box"></span><span class="check-text">GCS 3–4<span class="check-pts">+2</span></span></label>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-gcs512" value="1"><span class="check-box"></span><span class="check-text">GCS 5–12<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-vol" value="1"><span class="check-box"></span><span class="check-text">Volumen hematoma ≥ 30 mL<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-ivh" value="1"><span class="check-box"></span><span class="check-text">Hemorragia intraventricular (IVH)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-inf" value="1"><span class="check-box"></span><span class="check-text">Origen infratentorial (cerebelo o tronco)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcMaxICH()"><input type="checkbox" id="mich-age" value="1"><span class="check-box"></span><span class="check-text">Edad ≥ 80 años<span class="check-pts">+1</span></span></label>
+        <p style="font-size:0.76rem;color:var(--text-muted);font-style:italic;margin:0.5rem 0 0.3rem;">GCS 3–4 y GCS 5–12 son mutuamente excluyentes.</p>
+        <div class="result-panel" id="maxichResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="maxichScore">0</div><div class="result-label">max-ICH Score (0–6)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="maxichBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="maxichInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>max-ICH</th><th>Mortalidad 3 meses (sin WLST temprana)</th><th>Comparación ICH Score</th></tr></thead>
+          <tbody>
+            <tr><td>0</td><td>≈ 0 %</td><td>Similar (ICH: 0 %)</td></tr>
+            <tr><td>1</td><td>≈ 11 %</td><td>Similar (ICH: 13 %)</td></tr>
+            <tr><td>2</td><td>≈ 28 %</td><td>Similar (ICH: 26 %)</td></tr>
+            <tr><td>3</td><td>≈ 46 %</td><td>Menor (ICH: 72 %)</td></tr>
+            <tr><td>4</td><td>≈ 68 %</td><td>Menor (ICH: 97 %)</td></tr>
+            <tr><td>5–6</td><td>≈ 83 %</td><td>Menor (ICH: 100 %)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNC SCORE -->
+  <div class="tab-content" id="tab-func">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>FUNC Score — Predictor de independencia funcional en HIC</h3>
+          <div class="tool-when">Predice probabilidad de independencia funcional (mRS 0–2) a 90 días · Complementa el ICH Score — no predice mortalidad sino funcionalidad</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Predictor de independencia</span>
+            <span class="tool-badge badge-navy">Rost et al., Stroke 2008</span>
+            <a class="tool-doi" href="https://pubmed.ncbi.nlm.nih.gov/18556582" target="_blank">PMID 18556582</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="info-box gold"><strong>Por qué importa para paliativos:</strong> La pregunta clínicamente relevante no es «¿va a morir?» sino «¿va a poder vivir con independencia?». El FUNC Score fue diseñado precisamente para responder esta segunda pregunta, que es la que más importa a las familias y al equipo paliativo.</div>
+        <div class="sub-cat" style="color:var(--cat-hic);">Componentes</div>
+        <div class="scale-row"><div class="scale-label">Volumen HIC<span class="scale-sublabel">en mL por TC</span></div><div class="scale-options" data-func="vol">
+          <div class="scale-opt" data-value="4" onclick="selFUNC(this)">≤ 30 mL (4 pts)</div>
+          <div class="scale-opt" data-value="2" onclick="selFUNC(this)">30–60 mL (2 pts)</div>
+          <div class="scale-opt" data-value="0" onclick="selFUNC(this)">> 60 mL (0 pts)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Edad</div><div class="scale-options" data-func="age">
+          <div class="scale-opt" data-value="2" onclick="selFUNC(this)">< 70 años (2 pts)</div>
+          <div class="scale-opt" data-value="1" onclick="selFUNC(this)">70–79 años (1 pt)</div>
+          <div class="scale-opt" data-value="0" onclick="selFUNC(this)">≥ 80 años (0 pts)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">GCS al ingreso</div><div class="scale-options" data-func="gcs">
+          <div class="scale-opt" data-value="2" onclick="selFUNC(this)">≥ 9 (2 pts)</div>
+          <div class="scale-opt" data-value="1" onclick="selFUNC(this)">≤ 8 (1 pt)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Localización HIC</div><div class="scale-options" data-func="loc">
+          <div class="scale-opt" data-value="2" onclick="selFUNC(this)">Lobar (2 pts)</div>
+          <div class="scale-opt" data-value="1" onclick="selFUNC(this)">Ganglios basales profundos (1 pt)</div>
+          <div class="scale-opt" data-value="0" onclick="selFUNC(this)">Infratentorial (0 pts)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Deterioro cognitivo previo</div><div class="scale-options" data-func="cog">
+          <div class="scale-opt" data-value="1" onclick="selFUNC(this)">Ninguno (1 pt)</div>
+          <div class="scale-opt" data-value="0" onclick="selFUNC(this)">Presente (0 pts)</div>
+        </div></div>
+        <div class="result-panel" id="funcResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="funcScore">—</div><div class="result-label">FUNC Score (0–11)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="funcBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="funcInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>FUNC</th><th>Prob. independencia funcional 90 d (mRS 0–2)</th></tr></thead>
+          <tbody>
+            <tr><td>0–3</td><td>≈ 0 %</td></tr>
+            <tr><td>4–7</td><td>≈ 1–21 %</td></tr>
+            <tr><td>8–10</td><td>≈ 33–58 %</td></tr>
+            <tr><td>11</td><td>≈ 82 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     C. HSA
+     ══════════════════════════════════════ -->
+<section class="section" id="hsa">
+  <div class="section-header">
+    <div class="section-cat-bar hsa"></div>
+    <div>
+      <div class="section-eyebrow hsa">Hemorragia subaracnoidea (HSA) — Aneurismática</div>
+      <h2>¿Qué pronóstico tiene esta HSA?</h2>
+    </div>
+  </div>
+  <p class="section-intro">Hunt & Hess y WFNS clasifican severidad clínica inicial. VASOGRADE predice isquemia cerebral diferida (DCI), la complicación más tratable y la principal causa de muerte tardía en HSA.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('hunthess',this,'hsa')">Hunt & Hess · WFNS</button>
+    <button class="tab-btn" onclick="switchTab('vasograde',this,'hsa')">VASOGRADE (DCI)</button>
+  </div>
+
+  <!-- HUNT & HESS / WFNS -->
+  <div class="tab-content active" id="tab-hunthess">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>Hunt & Hess · WFNS — Severidad clínica inicial en HSA</h3>
+          <div class="tool-when">Clasificación clínica al ingreso · Correlaciona con pronóstico quirúrgico y supervivencia · Alta variabilidad interobservador — preferir WFNS por basarse en GCS</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-navy">Hunt & Hess, 1968 · WFNS, 1988</span>
+            <span class="tool-badge badge-gold">Alta variabilidad interobservador</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+          <div>
+            <p style="font-size:0.8rem;font-weight:700;color:var(--cat-hsa);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:0.08em;">Hunt & Hess</p>
+            <div id="huntHessOpts"></div>
+            <div class="result-interp" id="huntHessInterp" style="display:none;margin-top:0.8rem;"></div>
+          </div>
+          <div>
+            <p style="font-size:0.8rem;font-weight:700;color:var(--navy-600);margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:0.08em;">WFNS (basado en GCS)</p>
+            <div id="wfnsOpts"></div>
+            <div class="result-interp" id="wfnsInterp" style="display:none;margin-top:0.8rem;"></div>
+          </div>
+        </div>
+        <div class="info-box gold" style="margin-top:1rem;"><strong>Advertencia interobservador:</strong> Hunt & Hess tiene variabilidad interobservador documentada del 20–30 %, especialmente en grados II–III. La WFNS al basarse en GCS + déficit focal es más reproducible. Para comunicación con neurocirugía, usar siempre WFNS.</div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>WFNS</th><th>GCS</th><th>Déficit focal</th><th>Mortalidad hospitalaria</th></tr></thead>
+          <tbody>
+            <tr><td>I</td><td>15</td><td>No</td><td>≈ 0–5 %</td></tr>
+            <tr><td>II</td><td>13–14</td><td>No</td><td>≈ 9 %</td></tr>
+            <tr><td>III</td><td>13–14</td><td>Sí</td><td>≈ 20 %</td></tr>
+            <tr><td>IV</td><td>7–12</td><td>+/−</td><td>≈ 33 %</td></tr>
+            <tr><td>V</td><td>3–6</td><td>+/−</td><td>≈ 77 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- VASOGRADE -->
+  <div class="tab-content" id="tab-vasograde">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>VASOGRADE — Predictor de isquemia cerebral diferida (DCI) en HSA</h3>
+          <div class="tool-when">Predice riesgo de DCI (vasoespasmo con infarto) en HSA aneurismática · Primer score validado para esta complicación tratable</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-navy">Rosen et al., Stroke 2016</span>
+            <a class="tool-doi" href="https://doi.org/10.1161/STROKEAHA.115.008728" target="_blank">10.1161/STROKEAHA.115.008728</a>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="info-box teal"><strong>¿Por qué importa el DCI para paliativos?</strong> La isquemia cerebral diferida ocurre entre días 4–14 post-HSA y es la causa modificable más importante de deterioro neurológico tardío. Un VASOGRADE alto justifica vigilancia neurológica intensiva y nimodipino a dosis plenas incluso en pacientes con enfoque paliativo paralelo.</div>
+        <div class="scale-row"><div class="scale-label">WFNS al ingreso</div><div class="scale-options" data-vaso="wfns">
+          <div class="scale-opt" data-value="0" onclick="selVASOGRADE(this)">WFNS I–II (bueno)</div>
+          <div class="scale-opt" data-value="1" onclick="selVASOGRADE(this)">WFNS III (intermedio)</div>
+          <div class="scale-opt" data-value="2" onclick="selVASOGRADE(this)">WFNS IV–V (malo)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Fisher modificado (sangre en TC)</div><div class="scale-options" data-vaso="fisher">
+          <div class="scale-opt" data-value="0" onclick="selVASOGRADE(this)">Fisher 1–2 (poca sangre)</div>
+          <div class="scale-opt" data-value="1" onclick="selVASOGRADE(this)">Fisher 3–4 (mucha sangre / IVH)</div>
+        </div></div>
+        <div class="result-panel" id="vasogradeResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="vasogradeScore">—</div><div class="result-label">VASOGRADE</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="vasogradeBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="vasogradeInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>VASOGRADE</th><th>Riesgo DCI</th><th>Recomendación</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--green-500);font-weight:600;">Verde (0)</td><td>Bajo (≈ 9 %)</td><td>Vigilancia estándar · Nimodipino oral</td></tr>
+            <tr><td style="color:var(--amber-500);font-weight:600;">Amarillo (1)</td><td>Intermedio (≈ 20 %)</td><td>Vigilancia intensificada · Nimodipino · Doppler transcraneal</td></tr>
+            <tr><td style="color:var(--rose-600);font-weight:600;">Rojo (2–3)</td><td>Alto (≈ 33–40 %)</td><td>UCI neuro · Nimodipino IV · TC perfusión o angiografía ante deterioro</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     D. ISQUÉMICO
+     ══════════════════════════════════════ -->
+<section class="section" id="isquemico">
+  <div class="section-header">
+    <div class="section-cat-bar isq"></div>
+    <div>
+      <div class="section-eyebrow isq">ACV isquémico · AIT</div>
+      <h2>¿Qué pronóstico tiene este infarto? ¿Cuál es el riesgo tras el AIT?</h2>
+    </div>
+  </div>
+  <p class="section-intro">ASTRAL e iScore predicen outcome funcional a 90 días en ACV isquémico. ABCD² estratifica el riesgo de ACV en los primeros días tras un AIT — una emergencia frecuentemente subvalorada.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('astral',this,'isquemico')">ASTRAL Score</button>
+    <button class="tab-btn" onclick="switchTab('iscore',this,'isquemico')">iScore</button>
+    <button class="tab-btn" onclick="switchTab('abcd2',this,'isquemico')">ABCD² (AIT)</button>
+  </div>
+
+  <!-- ASTRAL -->
+  <div class="tab-content active" id="tab-astral">
+    <div class="wlst-alert">
+      <div class="wlst-icon">⚠️</div>
+      <div class="wlst-body">
+        <strong>Advertencia de calibración — Estudio JURaSSiC</strong>
+        <p>El estudio JURaSSiC (Counsell et al., Neurology 2012) demostró que ASTRAL, iScore y otras herramientas predicen correctamente el outcome en solo el 17 % de los pacientes individuales. <strong>Ninguna escala isquémica debe usarse para tomar decisiones de limitación terapéutica en los primeros días.</strong></p>
+        <span class="wlst-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.textContent=this.textContent.includes('Ver')? 'Ocultar':'Ver más';">Ver más</span>
+        <div class="wlst-expand">
+          Counsell et al. evaluaron 7 scores distintos (incluyendo ASTRAL e iScore) en cohortes de validación independientes. Ninguna alcanzó la precisión individual suficiente para justificar por sí sola la limitación del tratamiento. La recomendación es usar estas herramientas como apoyo comunicacional con familias, no como criterio de eligibilidad para cuidados activos.<br><br>
+          DOI: <a href="https://doi.org/10.1212/WNL.0b013e318259e221" style="color:var(--rose-500);">10.1212/WNL.0b013e318259e221</a>
+        </div>
+      </div>
+    </div>
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>ASTRAL Score — Outcome funcional en ACV isquémico</h3>
+          <div class="tool-when">Predice outcome funcional desfavorable (mRS 3–6) a 90 días · Derivado y validado en cohorte de Lausanne · Requiere glucemia al ingreso</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-rose">Calibración individual limitada</span>
+            <span class="tool-badge badge-navy">Ntaios et al., Stroke 2012</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="scale-row"><div class="scale-label">Edad</div><div class="scale-options" data-astral="age">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">< 45 años (0)</div>
+          <div class="scale-opt" data-value="5" onclick="selASTRAL(this)">45–50 (5)</div>
+          <div class="scale-opt" data-value="6" onclick="selASTRAL(this)">51–55 (6)</div>
+          <div class="scale-opt" data-value="7" onclick="selASTRAL(this)">56–60 (7)</div>
+          <div class="scale-opt" data-value="8" onclick="selASTRAL(this)">61–65 (8)</div>
+          <div class="scale-opt" data-value="9" onclick="selASTRAL(this)">66–70 (9)</div>
+          <div class="scale-opt" data-value="10" onclick="selASTRAL(this)">71–75 (10)</div>
+          <div class="scale-opt" data-value="11" onclick="selASTRAL(this)">76–80 (11)</div>
+          <div class="scale-opt" data-value="12" onclick="selASTRAL(this)">81–85 (12)</div>
+          <div class="scale-opt" data-value="13" onclick="selASTRAL(this)">> 85 años (13)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">NIHSS al ingreso<span class="scale-sublabel">score completo</span></div><div class="scale-options" data-astral="nihss">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">0–4 (0)</div>
+          <div class="scale-opt" data-value="5" onclick="selASTRAL(this)">5–9 (5)</div>
+          <div class="scale-opt" data-value="10" onclick="selASTRAL(this)">10–14 (10)</div>
+          <div class="scale-opt" data-value="15" onclick="selASTRAL(this)">15–19 (15)</div>
+          <div class="scale-opt" data-value="20" onclick="selASTRAL(this)">20–24 (20)</div>
+          <div class="scale-opt" data-value="25" onclick="selASTRAL(this)">25–29 (25)</div>
+          <div class="scale-opt" data-value="30" onclick="selASTRAL(this)">≥ 30 (30)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Tiempo al tratamiento<span class="scale-sublabel">onset a admisión</span></div><div class="scale-options" data-astral="time">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">< 3 h (0)</div>
+          <div class="scale-opt" data-value="2" onclick="selASTRAL(this)">3–6 h (2)</div>
+          <div class="scale-opt" data-value="4" onclick="selASTRAL(this)">> 6 h (4)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Déficits visuales<span class="scale-sublabel">hemianopsia / amaurosis</span></div><div class="scale-options" data-astral="vis">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">No (0)</div>
+          <div class="scale-opt" data-value="2" onclick="selASTRAL(this)">Sí (2)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Glucemia al ingreso<span class="scale-sublabel">mg/dL</span></div><div class="scale-options" data-astral="gluc">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">< 131 mg/dL (0)</div>
+          <div class="scale-opt" data-value="1" onclick="selASTRAL(this)">≥ 131 mg/dL (1)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Nivel de consciencia<span class="scale-sublabel">ítem 1a NIHSS</span></div><div class="scale-options" data-astral="con">
+          <div class="scale-opt" data-value="0" onclick="selASTRAL(this)">Alerta (0)</div>
+          <div class="scale-opt" data-value="3" onclick="selASTRAL(this)">No alerta (3)</div>
+        </div></div>
+        <div class="result-panel" id="astralResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="astralScore">—</div><div class="result-label">ASTRAL Score</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="astralBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="astralInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>ASTRAL</th><th>Prob. outcome desfavorable (mRS 3–6) a 90 d</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 20</td><td>≈ 10 %</td></tr>
+            <tr><td>20–30</td><td>≈ 25–35 %</td></tr>
+            <tr><td>31–40</td><td>≈ 50–65 %</td></tr>
+            <tr><td>> 40</td><td>≈ 75–90 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- iSCORE -->
+  <div class="tab-content" id="tab-iscore">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>iScore — Predictor de outcome a 30 días y 1 año en ACV isquémico</h3>
+          <div class="tool-when">Derivado en Ontario, Canadá (n > 10,000) · Predice mortalidad y dependencia severa · Misma limitación de calibración individual que ASTRAL</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-rose">Calibración individual limitada</span>
+            <span class="tool-badge badge-navy">Saposnik et al., Stroke 2011</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="sub-cat" style="color:var(--cat-isq);">Factores del iScore</div>
+        <div class="scale-row"><div class="scale-label">Edad</div><div class="scale-options" data-iscore="age">
+          <div class="scale-opt" data-value="0" onclick="selISCORE(this)">< 60 años (0)</div>
+          <div class="scale-opt" data-value="3" onclick="selISCORE(this)">60–69 años (3)</div>
+          <div class="scale-opt" data-value="6" onclick="selISCORE(this)">70–79 años (6)</div>
+          <div class="scale-opt" data-value="9" onclick="selISCORE(this)">80–89 años (9)</div>
+          <div class="scale-opt" data-value="12" onclick="selISCORE(this)">≥ 90 años (12)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Sexo</div><div class="scale-options" data-iscore="sex">
+          <div class="scale-opt" data-value="0" onclick="selISCORE(this)">Femenino (0)</div>
+          <div class="scale-opt" data-value="2" onclick="selISCORE(this)">Masculino (2)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Severidad ACV<span class="scale-sublabel">NIHSS al ingreso</span></div><div class="scale-options" data-iscore="sev">
+          <div class="scale-opt" data-value="0" onclick="selISCORE(this)">Leve (NIHSS 0–8) (0)</div>
+          <div class="scale-opt" data-value="13" onclick="selISCORE(this)">Moderado (NIHSS 9–14) (13)</div>
+          <div class="scale-opt" data-value="19" onclick="selISCORE(this)">Grave (NIHSS ≥ 15) (19)</div>
+          <div class="scale-opt" data-value="13" onclick="selISCORE(this)">Desconocido/coma (13)</div>
+        </div></div>
+        <div class="scale-row"><div class="scale-label">Glucemia al ingreso</div><div class="scale-options" data-iscore="gluc">
+          <div class="scale-opt" data-value="0" onclick="selISCORE(this)">Normal (0)</div>
+          <div class="scale-opt" data-value="3" onclick="selISCORE(this)">Elevada (3)</div>
+        </div></div>
+        <label class="check-item" onclick="calcISCORE()"><input type="checkbox" id="is-dm" value="3"><span class="check-box"></span><span class="check-text">Diabetes mellitus<span class="check-pts">+3</span></span></label>
+        <label class="check-item" onclick="calcISCORE()"><input type="checkbox" id="is-fa" value="4"><span class="check-box"></span><span class="check-text">Fibrilación auricular<span class="check-pts">+4</span></span></label>
+        <label class="check-item" onclick="calcISCORE()"><input type="checkbox" id="is-ic" value="3"><span class="check-box"></span><span class="check-text">Insuficiencia cardíaca congestiva<span class="check-pts">+3</span></span></label>
+        <label class="check-item" onclick="calcISCORE()"><input type="checkbox" id="is-cancer" value="6"><span class="check-box"></span><span class="check-text">Cáncer activo<span class="check-pts">+6</span></span></label>
+        <label class="check-item" onclick="calcISCORE()"><input type="checkbox" id="is-prev" value="3"><span class="check-box"></span><span class="check-text">ACV previo<span class="check-pts">+3</span></span></label>
+        <div class="result-panel" id="iscoreResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="iscoreScore">—</div><div class="result-label">iScore</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="iscoreBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="iscoreInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>iScore</th><th>Mortalidad 30 d</th><th>Dependencia severa 1 año</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 100</td><td>≈ 2–5 %</td><td>Baja</td></tr>
+            <tr><td>100–149</td><td>≈ 10–20 %</td><td>Moderada</td></tr>
+            <tr><td>150–199</td><td>≈ 25–40 %</td><td>Alta</td></tr>
+            <tr><td>≥ 200</td><td>≈ 50–70 %</td><td>Muy alta</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABCD2 -->
+  <div class="tab-content" id="tab-abcd2">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>ABCD² Score — Riesgo de ACV tras AIT</h3>
+          <div class="tool-when">Estratifica riesgo de ACV en las primeras 48 h–7 días tras AIT · AIT = emergencia neurológica · Un ABCD² ≥ 4 justifica ingreso hospitalario urgente</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-navy">Johnston et al., Lancet 2007</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div class="info-box navy"><strong>Regla clínica:</strong> Un AIT no es «un ACV que se fue» — el 10–15 % de los ACV isquémicos está precedido por AIT en los 7 días previos. El riesgo es más alto en las primeras 48 horas.</div>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-age" value="1"><span class="check-box"></span><span class="check-text">Edad ≥ 60 años<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-bp" value="1"><span class="check-box"></span><span class="check-text">PA sistólica ≥ 140 mmHg o diastólica ≥ 90 mmHg al ingreso<span class="check-pts">+1</span></span></label>
+        <div class="sub-cat" style="color:var(--cat-isq);">Características clínicas del AIT</div>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-uni" value="2"><span class="check-box"></span><span class="check-text">Debilidad unilateral<span class="check-pts">+2</span></span></label>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-speech" value="1"><span class="check-box"></span><span class="check-text">Alteración del habla sin debilidad<span class="check-pts">+1</span></span></label>
+        <div class="sub-cat" style="color:var(--cat-isq);">Duración de síntomas</div>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-dur60" value="2"><span class="check-box"></span><span class="check-text">≥ 60 minutos<span class="check-pts">+2</span></span></label>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-dur10" value="1"><span class="check-box"></span><span class="check-text">10–59 minutos (si no marcó ≥ 60)<span class="check-pts">+1</span></span></label>
+        <label class="check-item" onclick="calcABCD2()"><input type="checkbox" id="ab-dm" value="1"><span class="check-box"></span><span class="check-text">Diabetes mellitus conocida<span class="check-pts">+1</span></span></label>
+        <div class="result-panel" id="abcd2Result">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="abcd2Score">0</div><div class="result-label">ABCD² Score (0–7)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="abcd2Bar" style="width:0%;background:var(--green-500);"></div></div></div>
+          </div>
+          <div class="result-interp" id="abcd2Interp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>ABCD²</th><th>Riesgo ACV 48 h</th><th>Riesgo ACV 7 días</th><th>Manejo</th></tr></thead>
+          <tbody>
+            <tr><td>0–3 (bajo)</td><td>≈ 1 %</td><td>≈ 3 %</td><td>Estudio ambulatorio urgente</td></tr>
+            <tr><td>4–5 (intermedio)</td><td>≈ 4 %</td><td>≈ 5 %</td><td>Ingreso hospitalario recomendado</td></tr>
+            <tr><td>6–7 (alto)</td><td>≈ 8 %</td><td>≈ 12 %</td><td>Ingreso urgente · UCI neuro / stroke unit</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     E. OUTCOME FUNCIONAL
+     ══════════════════════════════════════ -->
+<section class="section" id="outcome">
+  <div class="section-header">
+    <div class="section-cat-bar out"></div>
+    <div>
+      <div class="section-eyebrow out">Outcome funcional · Lenguaje común con neurología</div>
+      <h2>¿Qué funcionalidad tendrá este paciente?</h2>
+    </div>
+  </div>
+  <p class="section-intro">mRS y Barthel son los outcomes primarios de casi todos los estudios de ACV. Son el lenguaje en que neurología comunica pronóstico funcional — el equipo paliativo necesita leerlos e interpretarlos.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('mrs',this,'outcome')">mRS — Rankin Modificada</button>
+    <button class="tab-btn" onclick="switchTab('barthel-acv',this,'outcome')">Barthel post-ACV</button>
+  </div>
+
+  <!-- mRS -->
+  <div class="tab-content active" id="tab-mrs">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>mRS — modified Rankin Scale</h3>
+          <div class="tool-when">Estándar de oro para medir discapacidad neurológica post-ACV · Outcome primario en la mayoría de ensayos clínicos · mRS 0–2: independencia funcional · mRS 3–5: dependencia · mRS 6: muerte</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-gold">Outcome primario en ensayos ACV</span>
+            <span class="tool-badge badge-navy">Rankin 1957 · Van Swieten 1988</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Seleccione el grado que mejor describe la situación funcional del paciente. Para la comunicación con familias, los descriptores del lenguaje cotidiano son más útiles que el número.</p>
+        <div id="mrsOpts"></div>
+        <div class="result-panel" id="mrsResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="mrsScore">—</div><div class="result-label">mRS</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="mrsBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="mrsInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>mRS</th><th>Descripción</th><th>Implicación paliativa</th></tr></thead>
+          <tbody>
+            <tr><td>0–1</td><td>Sin síntomas / sin incapacidad</td><td>Objetivos curativos plenos</td></tr>
+            <tr><td>2</td><td>Incapacidad leve — independiente</td><td>Objetivos activos · Rehabilitación</td></tr>
+            <tr><td>3</td><td>Incapacidad moderada — ayuda para algunas</td><td>Apoyo domiciliario · Evaluar necesidades</td></tr>
+            <tr><td>4</td><td>Incapacidad moderada-grave — no camina</td><td>Carga del cuidador alta · Evaluar Zarit</td></tr>
+            <tr><td>5</td><td>Incapacidad grave — encamado / dependiente</td><td>Enfoque paliativo activo · Planificación anticipada</td></tr>
+            <tr><td>6</td><td>Muerte</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="info-box teal"><strong>Para paliativos:</strong> Un mRS 4–5 previo al ACV (basal) cambia radicalmente el pronóstico y los objetivos de tratamiento. Preguntar siempre el mRS basal antes de comunicar expectativas de recuperación.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARTHEL POST-ACV -->
+  <div class="tab-content" id="tab-barthel-acv">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div class="tool-top-main">
+          <h3>Índice de Barthel — Contexto post-ACV</h3>
+          <div class="tool-when">Cuantifica la dependencia funcional para planificar destino al alta y necesidades de cuidado · En ACV, Barthel &lt; 60 predice dependencia a largo plazo y alta carga del cuidador</div>
+          <div class="tool-meta">
+            <span class="tool-badge badge-teal">Interactivo</span>
+            <span class="tool-badge badge-gold">Barthel < 60: evaluar plan paliativo</span>
+          </div>
+        </div>
+      </div>
+      <div class="tool-inner">
+        <div id="barthelACVItems"></div>
+        <div class="result-panel" id="barthelACVResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="barthelACVScore">0</div><div class="result-label">Barthel (0–100)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="barthelACVBar" style="width:0%;background:var(--green-500);"></div></div></div>
+          </div>
+          <div class="result-interp" id="barthelACVInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>Barthel</th><th>Dependencia</th><th>En contexto ACV</th></tr></thead>
+          <tbody>
+            <tr><td>91–100</td><td>Independiente</td><td>Buen pronóstico funcional</td></tr>
+            <tr><td>61–90</td><td>Leve</td><td>Potencial de rehabilitación</td></tr>
+            <tr><td>41–60</td><td>Moderada</td><td>Rehabilitación con expectativas limitadas · Evaluar cuidador</td></tr>
+            <tr><td>21–40</td><td>Severa</td><td>Alta carga del cuidador · Soporte domiciliario o institucional</td></tr>
+            <tr><td>0–20</td><td>Total</td><td>Objetivos centrados en confort · Evaluar plan paliativo activo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <strong>Neuropaliativos — Escalas Pronósticas por tipo de ACV</strong><br>
+  Jorge Bogoya López · Maestría en Investigación en Cuidados Paliativos · Universidad Antonio Nariño · Colombia 🇨🇴<br>
+  <span style="font-size:0.72rem;">Herramienta de uso clínico-asistencial. Los resultados deben integrarse siempre con el juicio clínico, neuroimagen y contexto del paciente.</span>
+</footer>
+
+</div><!-- /main -->
+
+<script>
+// ══ NAV / UI HELPERS ══
+function closeMobileNav(){if(window.innerWidth<=1024)document.getElementById('nav').classList.remove('open');}
+function switchTab(id,btn,sectionId){
+  const section=sectionId?document.getElementById(sectionId):btn.closest('section');
+  if(section){section.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));}
+  btn.classList.add('active');const el=document.getElementById('tab-'+id);if(el)el.classList.add('active');
+}
+function switchTabGlobal(id){
+  const el=document.getElementById('tab-'+id);if(!el)return;
+  const section=el.closest('section');if(!section)return;
+  section.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  section.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active');});
+  el.classList.add('active');
+}
+const obsR=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.06});
+document.querySelectorAll('.section').forEach(s=>obsR.observe(s));
+const secs2=document.querySelectorAll('section[id]');const nls2=document.querySelectorAll('.nav-link');
+secs2.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){nls2.forEach(l=>l.classList.remove('active'));const l=document.querySelector(`.nav-link[href="#${e.target.id}"]`);if(l)l.classList.add('active');}});},{threshold:0.2}).observe(s));
+
+// ══ GCS ══
+const gcsSel={o:null,v:null,m:null};
+const gcsOcular=[{v:4,l:'Espontánea'},{v:3,l:'A la voz'},{v:2,l:'Al dolor'},{v:1,l:'Sin respuesta'}];
+const gcsVerbal=[{v:5,l:'Orientado'},{v:4,l:'Confuso'},{v:3,l:'Palabras inapropiadas'},{v:2,l:'Sonidos'},{v:1,l:'Sin respuesta'}];
+const gcsMotor=[{v:6,l:'Obedece órdenes'},{v:5,l:'Localiza el dolor'},{v:4,l:'Retirada al dolor'},{v:3,l:'Flexión anormal (decorticación)'},{v:2,l:'Extensión anormal (descerebración)'},{v:1,l:'Sin respuesta'}];
+function renderGCSOpts(data,key,containerId){
+  const c=document.getElementById(containerId);
+  data.forEach(it=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.28rem;padding:0.62rem 0.8rem;font-size:0.8rem;';
+    const col=it.v>=4?'var(--green-500)':it.v>=2?'var(--amber-500)':'var(--rose-600)';
+    d.innerHTML=`<strong style="color:${col};">${it.v}</strong> — ${it.l}`;
+    d.onclick=()=>{c.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));d.classList.add('selected');gcsSel[key]=it.v;calcGCS();};
+    c.appendChild(d);
+  });
+}
+renderGCSOpts(gcsOcular,'o','gcsOcularOpts');
+renderGCSOpts(gcsVerbal,'v','gcsVerbalOpts');
+renderGCSOpts(gcsMotor,'m','gcsMotorOpts');
+function calcGCS(){
+  const {o,v,m}=gcsSel;if(!o||!v||!m)return;
+  const total=o+v+m;
+  document.getElementById('gcsScore').textContent=total;
+  document.getElementById('gcsDetail').textContent=`O${o} V${v} M${m}`;
+  document.getElementById('gcsBar').style.width=((total-3)/12*100)+'%';
+  const ie=document.getElementById('gcsInterp');ie.style.display='block';document.getElementById('gcsResult').classList.add('active');
+  let cls,col,txt;
+  if(total>=13){cls='green';col='var(--green-500)';txt=`<strong>GCS ${total} (O${o}V${v}M${m}) — Leve:</strong> Comunicación posible. Evaluar capacidad para participar en decisiones sobre su propio cuidado.`;}
+  else if(total>=9){cls='yellow';col='var(--amber-500)';txt=`<strong>GCS ${total} (O${o}V${v}M${m}) — Moderado:</strong> Comunicación limitada o variable. Evaluar capacidad decisional. Involucrar familia en planificación anticipada.`;}
+  else if(total>=6){cls='red';col='var(--rose-600)';txt=`<strong>GCS ${total} (O${o}V${v}M${m}) — Grave:</strong> Sin comunicación. Subrogación familiar necesaria. Evaluar pronóstico con max-ICH/FOUR y contexto clínico.`;}
+  else{cls='red';col='var(--rose-600)';txt=`<strong>GCS ${total} (O${o}V${v}M${m}) — Muy grave / coma:</strong> Estado crítico. Planificación anticipada urgente con familia. Discutir objetivos terapéuticos con equipo. Completar con FOUR Scale para evaluar tronco cerebral.`;}
+  document.getElementById('gcsScore').className='result-score '+(total>=13?'high':total>=9?'medium':'low');
+  document.getElementById('gcsBar').style.background=col;
+  ie.className='result-interp '+cls;ie.innerHTML=txt;
+}
+
+// ══ NIHSS ══
+const nihssItems=[
+  {n:'1a. Nivel de consciencia',opts:[{l:'Alerta',v:0},{l:'Somnoliento',v:1},{l:'Estuporoso',v:2},{l:'Coma',v:3}]},
+  {n:'1b. Orientación (mes/edad)',opts:[{l:'Ambas correctas',v:0},{l:'Una correcta',v:1},{l:'Ninguna',v:2}]},
+  {n:'1c. Órdenes (ojos/mano)',opts:[{l:'Ambas',v:0},{l:'Una',v:1},{l:'Ninguna',v:2}]},
+  {n:'2. Mirada conjugada',opts:[{l:'Normal',v:0},{l:'Paresia parcial',v:1},{l:'Desviación forzada',v:2}]},
+  {n:'3. Campo visual',opts:[{l:'Normal',v:0},{l:'Hemianopsia parcial',v:1},{l:'Hemianopsia completa',v:2},{l:'Ceguera bilateral',v:3}]},
+  {n:'4. Parálisis facial',opts:[{l:'Normal',v:0},{l:'Paresia leve',v:1},{l:'Paresia parcial',v:2},{l:'Parálisis completa',v:3}]},
+  {n:'5. Brazo (peor lado)',opts:[{l:'Sin caída',v:0},{l:'Cae antes de 10s',v:1},{l:'No vence gravedad',v:2},{l:'Sin movimiento',v:3}]},
+  {n:'6. Pierna (peor lado)',opts:[{l:'Sin caída',v:0},{l:'Cae antes de 5s',v:1},{l:'No vence gravedad',v:2},{l:'Sin movimiento',v:3}]},
+  {n:'8. Sensibilidad',opts:[{l:'Normal',v:0},{l:'Pérdida leve',v:1},{l:'Pérdida severa',v:2}]},
+  {n:'9. Lenguaje',opts:[{l:'Normal',v:0},{l:'Afasia leve',v:1},{l:'Afasia grave',v:2},{l:'Mudo / global',v:3}]},
+  {n:'11. Extinción / inatención',opts:[{l:'Normal',v:0},{l:'Una modalidad',v:1},{l:'Severa',v:2}]},
+];
+const nihssSel=new Array(nihssItems.length).fill(null);
+(function(){
+  const c=document.getElementById('nihssItems');
+  nihssItems.forEach((it,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:180px 1fr;gap:0.8rem;align-items:start;padding:0.65rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:0.81rem;font-weight:600;color:var(--navy-700);padding-top:0.35rem;line-height:1.4;">${it.n}</div><div class="scale-options" id="nihssOpts${i}"></div>`;
+    c.appendChild(row);
+    const optsC=document.getElementById('nihssOpts'+i);
+    it.opts.forEach(opt=>{
+      const btn=document.createElement('div');btn.className='scale-opt';
+      btn.textContent=`${opt.l} (${opt.v})`;
+      btn.onclick=()=>{optsC.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));btn.classList.add('selected');nihssSel[i]=opt.v;calcNIHSS();};
+      optsC.appendChild(btn);
+    });
+  });
+})();
+function calcNIHSS(){
+  const filled=nihssSel.filter(v=>v!==null);if(filled.length<5)return;
+  const total=nihssSel.reduce((a,v)=>a+(v||0),0);
+  document.getElementById('nihssScore').textContent=total;
+  document.getElementById('nihssBar').style.width=(total/42*100)+'%';
+  const ie=document.getElementById('nihssInterp');ie.style.display='block';
+  let cls,col,txt;
+  if(total<=4){cls='green';col='var(--green-500)';txt=`<strong>NIHSS ${total} — Leve:</strong> Alta probabilidad de independencia a 3 meses. Evaluar para trombolisis y trombectomía según ventana horaria.`;}
+  else if(total<=15){cls='yellow';col='var(--amber-500)';txt=`<strong>NIHSS ${total} — Moderado:</strong> Probabilidad intermedia de outcome favorable. Complementar con ASTRAL/iScore e imagen de perfusión.`;}
+  else if(total<=20){cls='red';col='var(--rose-600)';txt=`<strong>NIHSS ${total} — Moderado-grave:</strong> Mayor riesgo de dependencia severa. Evaluar objetivos terapéuticos con familia si no hay respuesta a tratamiento reperfusión.`;}
+  else{cls='red';col='var(--rose-600)';txt=`<strong>NIHSS ${total} — Grave:</strong> Alta probabilidad de dependencia total o muerte. Planificación anticipada urgente. Discutir realismo de expectativas con familia.`;}
+  document.getElementById('nihssScore').className='result-score '+(total<=4?'high':total<=15?'medium':'low');
+  document.getElementById('nihssBar').style.background=col;
+  ie.className='result-interp '+cls;ie.innerHTML=txt;
+}
+
+// ══ FOUR SCALE ══
+const fourSel={};
+function selFOUR(el){
+  const row=el.closest('.scale-row');const cat=row.querySelector('.scale-options').dataset.four;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+  fourSel[cat]=parseInt(el.dataset.value);calcFOUR();
+}
+function calcFOUR(){
+  const keys=['eye','motor','brainstem','resp'];const f=keys.filter(k=>fourSel[k]!==undefined);if(f.length<2)return;
+  const total=f.reduce((a,k)=>a+fourSel[k],0);
+  document.getElementById('fourScore').textContent=total;document.getElementById('fourResult').classList.add('active');
+  document.getElementById('fourBar').style.width=(total/16*100)+'%';
+  const ie=document.getElementById('fourInterp');ie.style.display='block';
+  let cls,col,txt;
+  if(total>=13){cls='yellow';col='var(--amber-500)';txt=`<strong>FOUR ${total}:</strong> Estado neurológico grave. Seguimiento estrecho. Evaluar pronóstico con escala específica según tipo de ACV.`;}
+  else if(total>=8){cls='red';col='var(--rose-600)';txt=`<strong>FOUR ${total}:</strong> Estado muy grave. Evaluar pronóstico a corto plazo. Iniciar planificación anticipada con familia.`;}
+  else if(total>0){cls='red';col='var(--rose-600)';txt=`<strong>FOUR ${total}:</strong> Estado crítico. Compromiso severo de tronco cerebral. Si persiste > 72h, discutir metas de cuidado y pronóstico realista con familia.`;}
+  else{cls='red';col='var(--rose-600)';txt=`<strong>FOUR 0:</strong> Compatible con muerte cerebral. Iniciar protocolo de confirmación. Solicitar evaluación neurológica formal. Preparar comunicación con familia.`;}
+  document.getElementById('fourScore').className='result-score '+(total>=13?'medium':'low');
+  document.getElementById('fourBar').style.background=col;
+  ie.className='result-interp '+cls;ie.innerHTML=txt;
+}
+
+// ══ ICH SCORE ══
+function calcICH(){
+  setTimeout(()=>{
+    let total=0;
+    ['ich-gcs','ich-gcs2','ich-vol','ich-ivh','ich-inf','ich-age'].forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseFloat(el.value);});
+    // cap at 6 even if both gcs checked
+    total=Math.min(total,6);
+    document.getElementById('ichScore').textContent=total;
+    document.getElementById('ichBar').style.width=(total/6*100)+'%';
+    const col=total<=1?'var(--green-500)':total<=2?'var(--amber-500)':'var(--rose-600)';
+    document.getElementById('ichBar').style.background=col;
+    const ie=document.getElementById('ichInterp');ie.style.display='block';
+    const mort=[0,13,26,72,97,100,100];
+    ie.className='result-interp '+(total<=1?'green':total<=2?'yellow':'red');
+    let warn=total>=3?'<br><strong style="color:var(--rose-600);">⚠ Advertencia:</strong> A esta puntuación el sesgo WLST es clinicamente significativo. No usar este score como argumento único para limitar tratamiento. Complementar con max-ICH Score.':'';
+    ie.innerHTML=`<strong>ICH Score ${total}/6:</strong> Mortalidad 30 días estimada (cohorte original, contaminada por WLST): <strong>${mort[total]} %</strong>${warn}`;
+  },50);
+}
+
+// ══ MAX-ICH ══
+function calcMaxICH(){
+  setTimeout(()=>{
+    let total=0;
+    ['mich-gcs34','mich-gcs512','mich-vol','mich-ivh','mich-inf','mich-age'].forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseFloat(el.value);});
+    total=Math.min(total,6);
+    document.getElementById('maxichScore').textContent=total;
+    document.getElementById('maxichBar').style.width=(total/6*100)+'%';
+    const col=total<=1?'var(--green-500)':total<=3?'var(--amber-500)':'var(--rose-600)';
+    document.getElementById('maxichBar').style.background=col;
+    const ie=document.getElementById('maxichInterp');ie.style.display='block';
+    const mort=[0,11,28,46,68,80,83];
+    ie.className='result-interp '+(total<=1?'green':total<=3?'yellow':'red');
+    ie.innerHTML=`<strong>max-ICH Score ${total}/6:</strong> Mortalidad 3 meses estimada (sin WLST temprana): <strong>${mort[Math.min(total,6)]} %</strong><br><em style="font-size:0.8rem;">Esta estimación refleja mejor el pronóstico real cuando se ofrece tratamiento activo durante las primeras 72 horas.</em>`;
+  },50);
+}
+
+// ══ FUNC SCORE ══
+const funcSel={};
+function selFUNC(el){
+  const row=el.closest('.scale-row');const cat=row.querySelector('.scale-options').dataset.func;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+  funcSel[cat]=parseInt(el.dataset.value);calcFUNC();
+}
+function calcFUNC(){
+  const keys=['vol','age','gcs','loc','cog'];const f=keys.filter(k=>funcSel[k]!==undefined);if(f.length<3)return;
+  const total=f.reduce((a,k)=>a+funcSel[k],0);
+  document.getElementById('funcScore').textContent=total;document.getElementById('funcResult').classList.add('active');
+  document.getElementById('funcBar').style.width=(total/11*100)+'%';
+  const ie=document.getElementById('funcInterp');ie.style.display='block';
+  let prob,cls,col;
+  if(total<=3){prob='≈ 0 %';cls='red';col='var(--rose-600)';}
+  else if(total<=7){prob='≈ 1–21 %';cls='yellow';col='var(--amber-500)';}
+  else if(total<=10){prob='≈ 33–58 %';cls='yellow';col='var(--amber-500)';}
+  else{prob='≈ 82 %';cls='green';col='var(--green-500)';}
+  document.getElementById('funcScore').className='result-score '+(total<=3?'low':total<=7?'medium':'high');
+  document.getElementById('funcBar').style.background=col;
+  ie.className='result-interp '+cls;
+  ie.innerHTML=`<strong>FUNC Score ${total}/11:</strong> Probabilidad de independencia funcional (mRS 0–2) a 90 días: <strong>${prob}</strong><br><em style="font-size:0.8rem;">Esta es la pregunta más relevante para pacientes y familias — no solo si sobrevivirá, sino cómo quedará.</em>`;
+}
+
+// ══ HUNT & HESS ══
+(function(){
+  const hh=[
+    {g:0,l:'Grado 0',d:'Aneurisma incidental, no roto.',col:'var(--green-500)',i:'Aneurisma no roto. Manejo electivo.'},
+    {g:1,l:'Grado I',d:'Asintomático o cefalea leve/leve rigidez nuca.',col:'var(--green-500)',i:'Excelente pronóstico. WFNS I. Tratamiento activo recomendado.'},
+    {g:2,l:'Grado II',d:'Cefalea moderada-severa, rigidez nuca, sin déficit.',col:'var(--teal-500)',i:'Buen pronóstico con tratamiento. WFNS II.'},
+    {g:3,l:'Grado III',d:'Confusión o déficit focal leve.',col:'var(--amber-500)',i:'Pronóstico intermedio. WFNS III. Evaluar estado y comorbilidades.'},
+    {g:4,l:'Grado IV',d:'Estupor, hemiparesia moderada-severa.',col:'var(--rose-600)',i:'Pronóstico desfavorable. WFNS IV. Planificación anticipada con familia.'},
+    {g:5,l:'Grado V',d:'Coma profundo, descerebración.',col:'var(--rose-600)',i:'Pronóstico muy grave. WFNS V. Discutir objetivos terapéuticos urgentemente.'},
+  ];
+  const c=document.getElementById('huntHessOpts');
+  hh.forEach(it=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.28rem;padding:0.65rem 0.85rem;';
+    d.innerHTML=`<strong style="color:${it.col};">${it.l}</strong><br><span style="font-size:0.74rem;color:var(--text-muted);">${it.d}</span>`;
+    d.onclick=()=>{
+      c.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));d.classList.add('selected');
+      const ie=document.getElementById('huntHessInterp');ie.style.display='block';
+      const cls=it.g<=2?'green':it.g===3?'yellow':'red';ie.className='result-interp '+cls;
+      ie.innerHTML=`<strong>Hunt & Hess ${it.l}:</strong> ${it.i}`;
+    };
+    c.appendChild(d);
+  });
+
+  const wfns=[
+    {g:1,l:'WFNS I',d:'GCS 15, sin déficit focal.',col:'var(--green-500)',mort:'≈ 0–5 %'},
+    {g:2,l:'WFNS II',d:'GCS 13–14, sin déficit focal.',col:'var(--teal-500)',mort:'≈ 9 %'},
+    {g:3,l:'WFNS III',d:'GCS 13–14, con déficit focal.',col:'var(--amber-500)',mort:'≈ 20 %'},
+    {g:4,l:'WFNS IV',d:'GCS 7–12.',col:'var(--rose-600)',mort:'≈ 33 %'},
+    {g:5,l:'WFNS V',d:'GCS 3–6.',col:'var(--rose-600)',mort:'≈ 77 %'},
+  ];
+  const cw=document.getElementById('wfnsOpts');
+  wfns.forEach(it=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.28rem;padding:0.65rem 0.85rem;';
+    d.innerHTML=`<strong style="color:${it.col};">${it.l}</strong><br><span style="font-size:0.74rem;color:var(--text-muted);">${it.d} · Mortalidad hosp: ${it.mort}</span>`;
+    d.onclick=()=>{
+      cw.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));d.classList.add('selected');
+      const ie=document.getElementById('wfnsInterp');ie.style.display='block';
+      const cls=it.g<=2?'green':it.g===3?'yellow':'red';ie.className='result-interp '+cls;
+      ie.innerHTML=`<strong>${it.l}:</strong> Mortalidad hospitalaria estimada: <strong>${it.mort}</strong>. ${it.g>=4?'Planificación anticipada urgente con familia.':''}`;
+    };
+    d.appendChild;cw.appendChild(d);
+  });
+})();
+
+// ══ VASOGRADE ══
+const vasogradeSel={};
+function selVASOGRADE(el){
+  const row=el.closest('.scale-row');const cat=row.querySelector('.scale-options').dataset.vaso;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+  vasogradeSel[cat]=parseInt(el.dataset.value);calcVASOGRADE();
+}
+function calcVASOGRADE(){
+  if(vasogradeSel.wfns===undefined||vasogradeSel.fisher===undefined)return;
+  const total=vasogradeSel.wfns+vasogradeSel.fisher;
+  const sE=document.getElementById('vasogradeScore'),bE=document.getElementById('vasogradeBar'),iE=document.getElementById('vasogradeInterp');
+  document.getElementById('vasogradeResult').classList.add('active');iE.style.display='block';
+  if(total===0){sE.textContent='Verde';sE.style.color='var(--green-500)';bE.style.width='33%';bE.style.background='var(--green-500)';iE.className='result-interp green';iE.innerHTML='<strong>VASOGRADE Verde (bajo riesgo DCI ≈ 9 %):</strong> Vigilancia estándar. Nimodipino oral 60 mg/4h durante 21 días. Doppler transcraneal de seguimiento.';}
+  else if(total===1){sE.textContent='Amarillo';sE.style.color='var(--amber-500)';bE.style.width='66%';bE.style.background='var(--amber-500)';iE.className='result-interp yellow';iE.innerHTML='<strong>VASOGRADE Amarillo (riesgo intermedio DCI ≈ 20 %):</strong> Vigilancia intensificada. Nimodipino. Doppler transcraneal diario. Evaluar angio-TC ante cualquier deterioro.';}
+  else{sE.textContent='Rojo';sE.style.color='var(--rose-600)';bE.style.width='100%';bE.style.background='var(--rose-600)';iE.className='result-interp red';iE.innerHTML='<strong>VASOGRADE Rojo (alto riesgo DCI ≈ 33–40 %):</strong> UCI neurocrítica. Nimodipino IV si vía oral no posible. TC perfusión o angiografía diagnóstica ante deterioro. El DCI es tratable: no escalar a objetivos de confort por deterioro tardío sin descartar vasoespasmo.';}
+}
+
+// ══ ASTRAL ══
+const astralSel={};
+function selASTRAL(el){
+  const row=el.closest('.scale-row');const cat=row.querySelector('.scale-options').dataset.astral;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+  astralSel[cat]=parseInt(el.dataset.value);calcASTRAL();
+}
+function calcASTRAL(){
+  const keys=['age','nihss','time','vis','gluc','con'];const f=keys.filter(k=>astralSel[k]!==undefined);if(f.length<3)return;
+  const total=f.reduce((a,k)=>a+astralSel[k],0);
+  document.getElementById('astralScore').textContent=total;document.getElementById('astralResult').classList.add('active');
+  document.getElementById('astralBar').style.width=Math.min(total/50*100,100)+'%';
+  const ie=document.getElementById('astralInterp');ie.style.display='block';
+  let cls,col,prob;
+  if(total<20){cls='green';col='var(--green-500)';prob='≈ 10 %';}
+  else if(total<=30){cls='yellow';col='var(--amber-500)';prob='≈ 25–35 %';}
+  else if(total<=40){cls='red';col='var(--rose-600)';prob='≈ 50–65 %';}
+  else{cls='red';col='var(--rose-600)';prob='≈ 75–90 %';}
+  document.getElementById('astralScore').className='result-score '+(total<20?'high':total<=30?'medium':'low');
+  document.getElementById('astralBar').style.background=col;
+  ie.className='result-interp '+cls;
+  ie.innerHTML=`<strong>ASTRAL ${total}:</strong> Probabilidad de outcome desfavorable (mRS 3–6) a 90 días: <strong>${prob}</strong><br><em style="font-size:0.8rem;">⚠ Calibración individual limitada (JURaSSiC 2012). Usar para comunicación pronóstica con familia, no para limitar tratamiento.</em>`;
+}
+
+// ══ iSCORE ══
+const iscoreSel={};
+function selISCORE(el){
+  const row=el.closest('.scale-row');const cat=row.querySelector('.scale-options').dataset.iscore;
+  row.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');
+  iscoreSel[cat]=parseInt(el.dataset.value);calcISCORE();
+}
+function calcISCORE(){
+  setTimeout(()=>{
+    let total=0;
+    ['age','sex','sev','gluc'].forEach(k=>{if(iscoreSel[k]!==undefined)total+=iscoreSel[k];});
+    ['is-dm','is-fa','is-ic','is-cancer','is-prev'].forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseInt(el.value);});
+    document.getElementById('iscoreScore').textContent=total;document.getElementById('iscoreResult').classList.add('active');
+    document.getElementById('iscoreBar').style.width=Math.min(total/60*100,100)+'%';
+    const ie=document.getElementById('iscoreInterp');ie.style.display='block';
+    let cls,col,mort30,dep1y;
+    if(total<100){cls='green';col='var(--green-500)';mort30='≈ 2–5 %';dep1y='Baja';}
+    else if(total<150){cls='yellow';col='var(--amber-500)';mort30='≈ 10–20 %';dep1y='Moderada';}
+    else if(total<200){cls='red';col='var(--rose-600)';mort30='≈ 25–40 %';dep1y='Alta';}
+    else{cls='red';col='var(--rose-600)';mort30='≈ 50–70 %';dep1y='Muy alta';}
+    document.getElementById('iscoreScore').className='result-score '+(total<100?'high':total<150?'medium':'low');
+    document.getElementById('iscoreBar').style.background=col;
+    ie.className='result-interp '+cls;
+    ie.innerHTML=`<strong>iScore ${total}:</strong> Mortalidad 30 días: <strong>${mort30}</strong> · Dependencia severa 1 año: <strong>${dep1y}</strong><br><em style="font-size:0.8rem;">⚠ Calibración individual limitada. Complementar con juicio clínico y neuroimagen.</em>`;
+  },50);
+}
+
+// ══ ABCD2 ══
+function calcABCD2(){
+  setTimeout(()=>{
+    let total=0;
+    ['ab-age','ab-bp','ab-uni','ab-speech','ab-dur60','ab-dur10','ab-dm'].forEach(id=>{const el=document.getElementById(id);if(el&&el.checked)total+=parseInt(el.value);});
+    total=Math.min(total,7);
+    document.getElementById('abcd2Score').textContent=total;
+    document.getElementById('abcd2Bar').style.width=(total/7*100)+'%';
+    const col=total<=3?'var(--green-500)':total<=5?'var(--amber-500)':'var(--rose-600)';
+    document.getElementById('abcd2Bar').style.background=col;
+    const ie=document.getElementById('abcd2Interp');ie.style.display='block';
+    let cls,r48,r7,accion;
+    if(total<=3){cls='green';r48='≈ 1 %';r7='≈ 3 %';accion='Estudio ambulatorio urgente (< 24 h).';}
+    else if(total<=5){cls='yellow';r48='≈ 4 %';r7='≈ 5 %';accion='Ingreso hospitalario recomendado para estudio urgente.';}
+    else{cls='red';r48='≈ 8 %';r7='≈ 12 %';accion='Ingreso urgente. UCI neuro o stroke unit. No diferir tratamiento antiagregante/anticoagulante.';}
+    document.getElementById('abcd2Score').className='result-score '+(total<=3?'high':total<=5?'medium':'low');
+    ie.className='result-interp '+cls;
+    ie.innerHTML=`<strong>ABCD² ${total}/7:</strong> Riesgo ACV 48h: <strong>${r48}</strong> · Riesgo 7 días: <strong>${r7}</strong><br>${accion}`;
+  },50);
+}
+
+// ══ mRS ══
+const mrsData=[
+  {s:0,l:'Sin síntomas',d:'Sin síntomas en absoluto.',c:'high',i:'Recuperación completa.'},
+  {s:1,l:'Sin incapacidad significativa',d:'Puede realizar todas las actividades y labores habituales, a pesar de síntomas.',c:'high',i:'Independencia completa. Objetivos curativos plenos.'},
+  {s:2,l:'Incapacidad leve',d:'Incapaz de realizar las actividades previas, pero puede valerse por sí mismo sin ayuda.',c:'high',i:'Independencia funcional. Rehabilitación activa recomendada.'},
+  {s:3,l:'Incapacidad moderada',d:'Requiere ayuda para algunas actividades. Puede caminar sin ayuda.',c:'medium',i:'Dependencia parcial. Evaluar necesidades de cuidado domiciliario. Apoyo al cuidador.'},
+  {s:4,l:'Incapacidad moderada-grave',d:'No puede caminar sin ayuda. No puede atender sus necesidades corporales sin ayuda.',c:'medium',i:'Alta carga del cuidador. Evaluar Zarit. Considerar evaluación paliativa especializada.'},
+  {s:5,l:'Incapacidad grave',d:'Encamado, incontinente, requiere cuidados de enfermería y atención constante.',c:'low',i:'Enfoque paliativo activo indicado. Planificación anticipada. Evaluar objetivos de cuidado.'},
+  {s:6,l:'Muerte',d:'',c:'low',i:''},
+];
+(function(){
+  const c=document.getElementById('mrsOpts');
+  mrsData.filter(it=>it.s<6).forEach(it=>{
+    const d=document.createElement('div');d.className='scale-opt';
+    d.style.cssText='display:block;width:100%;margin-bottom:0.3rem;padding:0.75rem 1rem;';
+    const col=it.c==='high'?'var(--green-500)':it.c==='medium'?'var(--amber-500)':'var(--rose-600)';
+    d.innerHTML=`<strong style="color:${col};">mRS ${it.s}</strong> — ${it.l}<br><span style="font-size:0.76rem;color:var(--text-muted);">${it.d}</span>`;
+    d.onclick=()=>{
+      c.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));d.classList.add('selected');
+      document.getElementById('mrsScore').textContent='mRS '+it.s;document.getElementById('mrsScore').className='result-score '+it.c;
+      document.getElementById('mrsBar').style.width=(it.s/5*100)+'%';
+      const col2=it.c==='high'?'var(--green-500)':it.c==='medium'?'var(--amber-500)':'var(--rose-600)';
+      document.getElementById('mrsBar').style.background=col2;
+      const ie=document.getElementById('mrsInterp');ie.style.display='block';document.getElementById('mrsResult').classList.add('active');
+      ie.className='result-interp '+(it.c==='high'?'green':it.c==='medium'?'yellow':'red');
+      ie.innerHTML=`<strong>mRS ${it.s} — ${it.l}:</strong> ${it.i}`;
+    };
+    c.appendChild(d);
+  });
+})();
+
+// ══ BARTHEL POST-ACV ══
+const barthelACVData=[
+  {n:'Alimentación',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Baño',opts:[{l:'Independiente',v:5},{l:'Dependiente',v:0}]},
+  {n:'Aseo personal',opts:[{l:'Independiente',v:5},{l:'Dependiente',v:0}]},
+  {n:'Vestirse',opts:[{l:'Independiente',v:10},{l:'Necesita ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Control de heces',opts:[{l:'Continente',v:10},{l:'Ocasional',v:5},{l:'Incontinente',v:0}]},
+  {n:'Control de orina',opts:[{l:'Continente',v:10},{l:'Ocasional',v:5},{l:'Incontinente',v:0}]},
+  {n:'Uso del retrete',opts:[{l:'Independiente',v:10},{l:'Con ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Traslado cama-silla',opts:[{l:'Independiente',v:15},{l:'Mínima ayuda',v:10},{l:'Gran ayuda',v:5},{l:'Dependiente',v:0}]},
+  {n:'Deambulación',opts:[{l:'Independiente',v:15},{l:'Con ayuda',v:10},{l:'Silla de ruedas',v:5},{l:'Dependiente',v:0}]},
+  {n:'Subir escaleras',opts:[{l:'Independiente',v:10},{l:'Con ayuda',v:5},{l:'Dependiente',v:0}]},
+];
+const barthelACVSel=new Array(10).fill(null);
+(function(){
+  const c=document.getElementById('barthelACVItems');
+  barthelACVData.forEach((it,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:130px 1fr;gap:0.75rem;align-items:start;padding:0.62rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:0.82rem;font-weight:600;color:var(--navy-700);padding-top:0.35rem;">${it.n}</div><div class="scale-options" id="bacvOpts${i}"></div>`;
+    c.appendChild(row);
+    const optsC=document.getElementById('bacvOpts'+i);
+    it.opts.forEach(opt=>{
+      const btn=document.createElement('div');btn.className='scale-opt';
+      btn.textContent=`${opt.l} (${opt.v})`;
+      btn.onclick=()=>{optsC.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));btn.classList.add('selected');barthelACVSel[i]=opt.v;calcBarthelACV();};
+      optsC.appendChild(btn);
+    });
+  });
+})();
+function calcBarthelACV(){
+  const filled=barthelACVSel.filter(v=>v!==null);if(filled.length<5)return;
+  const total=barthelACVSel.reduce((a,v)=>a+(v||0),0);
+  document.getElementById('barthelACVScore').textContent=total;
+  document.getElementById('barthelACVBar').style.width=total+'%';
+  const ie=document.getElementById('barthelACVInterp');ie.style.display='block';
+  let cls,col,txt;
+  if(total>=91){cls='green';col='var(--green-500)';txt=`<strong>Barthel ${total}/100 — Independiente.</strong> Recuperación funcional buena. Objetivos activos con rehabilitación.`;}
+  else if(total>=61){cls='green';col='var(--teal-500)';txt=`<strong>Barthel ${total}/100 — Dependencia leve.</strong> Potencial de rehabilitación. Seguimiento funcional estrecho.`;}
+  else if(total>=41){cls='yellow';col='var(--amber-500)';txt=`<strong>Barthel ${total}/100 — Dependencia moderada.</strong> Rehabilitación con expectativas limitadas. Evaluar sobrecarga del cuidador (Zarit).`;}
+  else if(total>=21){cls='red';col='var(--rose-600)';txt=`<strong>Barthel ${total}/100 — Dependencia severa.</strong> Alta carga del cuidador. Soporte domiciliario o institucional. Evaluar plan paliativo.`;}
+  else{cls='red';col='var(--rose-600)';txt=`<strong>Barthel ${total}/100 — Dependencia total.</strong> Objetivos centrados en confort. Activar plan paliativo activo. Planificación anticipada de la atención.`;}
+  document.getElementById('barthelACVScore').className='result-score '+(total>=61?'high':total>=41?'medium':'low');
+  document.getElementById('barthelACVBar').style.background=col;
+  ie.className='result-interp '+cls;ie.innerHTML=txt;
+}
+</script>
+</body>
+</html>

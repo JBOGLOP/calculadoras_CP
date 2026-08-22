@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Panel del docente · Estadísticas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#faf8f5; --superficie:#fff; --borde:#e6ded3;
+    --tinta:#2b2520; --tinta-suave:#6b6055; --tinta-tenue:#948878;
+    --acento:#7a4b2a; --acento-fondo:#f3ebe2; --exito:#2f6b4f; --error:#a33a2a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --fondo:#17140f; --superficie:#211d17; --borde:#3a332a;
+      --tinta:#f0eae1; --tinta-suave:#b8ac9c; --tinta-tenue:#8a7f70;
+      --acento:#d99b62; --acento-fondo:#2c2419; --exito:#7fc4a1; --error:#e08a76;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--tinta);
+       font-family:'Source Sans 3',system-ui,sans-serif;font-size:16px;line-height:1.55}
+  .envoltorio{max-width:1080px;margin:0 auto;padding:32px 24px 64px}
+  h1{font-family:'Crimson Pro',Georgia,serif;font-size:2rem;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--tinta-suave);margin:0 0 28px;font-size:.95rem}
+  .tarjeta{background:var(--superficie);border:1px solid var(--borde);border-radius:14px;padding:24px;
+           box-shadow:0 1px 2px rgba(43,37,32,.05)}
+  /* Login */
+  #login{max-width:420px;margin:12vh auto}
+  label{display:block;font-size:.85rem;font-weight:600;color:var(--tinta-suave);margin-bottom:6px}
+  input,select{width:100%;padding:10px 13px;font:inherit;color:var(--tinta);background:var(--fondo);
+               border:1px solid var(--borde);border-radius:9px}
+  input:focus,select:focus{outline:none;border-color:var(--acento)}
+  button{font:inherit;font-weight:600;cursor:pointer;padding:10px 18px;border-radius:9px;
+         background:var(--acento);color:#fff;border:1px solid var(--acento);transition:opacity .15s}
+  @media (prefers-color-scheme: dark){ button{color:#17140f} }
+  button:hover{opacity:.88}
+  button.sec{background:transparent;color:var(--acento)}
+  .mensaje{margin-top:14px;font-size:.9rem;padding:10px 14px;border-radius:9px;background:var(--acento-fondo)}
+  .mensaje.error{color:var(--error)}
+  .mensaje.ok{color:var(--exito)}
+  /* Panel */
+  .barra{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .filtros{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .filtros select,.filtros input{width:auto;min-width:160px}
+  .metricas{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px}
+  .metrica{background:var(--superficie);border:1px solid var(--borde);border-radius:14px;padding:18px 20px}
+  .metrica .valor{font-size:2rem;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .metrica .etiqueta{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tinta-tenue);margin-top:4px}
+  h2{font-family:'Crimson Pro',Georgia,serif;font-size:1.4rem;margin:0 0 14px}
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th{text-align:left;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+     color:var(--tinta-tenue);padding:0 12px 10px;border-bottom:1px solid var(--borde)}
+  td{padding:11px 12px;border-bottom:1px solid var(--borde)}
+  tbody tr:last-child td{border-bottom:none}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .barra-uso{height:6px;border-radius:3px;background:var(--acento);min-width:2px;display:inline-block;vertical-align:middle}
+  .tabla-envoltura{overflow-x:auto;margin-bottom:32px}
+  .oculto{display:none}
+  .pie{margin-top:32px;font-size:.85rem;color:var(--tinta-tenue);text-align:center}
+  .pie a{color:var(--acento)}
+</style>
+</head>
+<body>
+
+<!-- Pantalla de acceso -->
+<div id="login" class="tarjeta">
+  <h1>Panel del docente</h1>
+  <p class="sub">Los datos solo son visibles con sesión iniciada. Recibirás un enlace de acceso por correo.</p>
+  <label for="correo">Correo del docente</label>
+  <input type="email" id="correo" placeholder="jwbogoyal@gmail.com" autocomplete="email">
+  <p style="margin:16px 0 0"><button id="btnEntrar">Enviar enlace de acceso</button></p>
+  <div id="msgLogin" class="mensaje oculto"></div>
+</div>
+
+<!-- Panel -->
+<div id="panel" class="envoltorio oculto">
+  <div class="barra">
+    <div>
+      <h1>Estadísticas de uso</h1>
+      <p class="sub" id="sesionInfo"></p>
+    </div>
+    <button class="sec" id="btnSalir">Cerrar sesión</button>
+  </div>
+
+  <div class="barra filtros">
+    <select id="filtroCurso"><option value="">Todos los recursos</option></select>
+    <select id="filtroDias">
+      <option value="7">Últimos 7 días</option>
+      <option value="30" selected>Últimos 30 días</option>
+      <option value="90">Últimos 90 días</option>
+      <option value="3650">Todo el histórico</option>
+    </select>
+    <button class="sec" id="btnCSV">Descargar CSV</button>
+  </div>
+
+  <div class="metricas" id="metricas"></div>
+
+  <h2>Uso por recurso</h2>
+  <div class="tabla-envoltura"><table id="tablaCursos">
+    <thead><tr><th>Recurso</th><th class="num">Sesiones</th><th class="num">Eventos</th><th class="num">Promedio</th><th>Último uso</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2>Resultados de estudiantes</h2>
+  <div class="tabla-envoltura"><table id="tablaResultados">
+    <thead><tr><th>Fecha</th><th>Estudiante</th><th>Recurso</th><th>Evaluación</th><th class="num">Puntaje</th><th class="num">%</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <p class="pie"><a href="../">Volver a la portada</a></p>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://bnbzupyymrznuamrttcd.supabase.co';
+// Clave anon/publishable: sin sesión iniciada no puede leer nada (ver datos/supabase.sql).
+const SUPABASE_ANON = 'PEGAR_AQUI_LA_CLAVE_ANON';
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+const $ = (id) => document.getElementById(id);
+let filas = [];
+
+// ── Acceso ──────────────────────────────────────────────
+$('btnEntrar').addEventListener('click', async () => {
+  const email = $('correo').value.trim();
+  if (!email) return msg('Escribe tu correo.', 'error');
+  msg('Enviando…', '');
+  const { error } = await sb.auth.signInWithOtp({
+    email, options: { emailRedirectTo: location.href }
+  });
+  msg(error ? 'Error: ' + error.message : 'Revisa tu correo: te llegó un enlace de acceso.',
+      error ? 'error' : 'ok');
+});
+
+$('btnSalir').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
+
+function msg(texto, clase){
+  const m = $('msgLogin');
+  m.textContent = texto; m.className = 'mensaje ' + clase; m.classList.remove('oculto');
+}
+
+sb.auth.getSession().then(({ data }) => { if (data.session) iniciar(data.session); });
+sb.auth.onAuthStateChange((_e, session) => { if (session) iniciar(session); });
+
+async function iniciar(session){
+  $('login').classList.add('oculto');
+  $('panel').classList.remove('oculto');
+  $('sesionInfo').textContent = 'Sesión de ' + session.user.email;
+  await cargar();
+}
+
+// ── Datos ───────────────────────────────────────────────
+$('filtroCurso').addEventListener('change', pintar);
+$('filtroDias').addEventListener('change', cargar);
+$('btnCSV').addEventListener('click', descargarCSV);
+
+async function cargar(){
+  const dias = Number($('filtroDias').value);
+  const desde = new Date(Date.now() - dias * 86400000).toISOString();
+  const { data, error } = await sb.from('eventos')
+    .select('creado_en,curso,modulo,evento,sesion_id,nombre,correo,estudiante_id,puntaje,total')
+    .gte('creado_en', desde)
+    .order('creado_en', { ascending: false })
+    .limit(5000);
+  if (error) { alert('Error al leer: ' + error.message); return; }
+  filas = data || [];
+
+  const cursos = [...new Set(filas.map(f => f.curso))].sort();
+  const sel = $('filtroCurso'), previo = sel.value;
+  sel.innerHTML = '<option value="">Todos los recursos</option>' +
+    cursos.map(c => `<option value="${c}">${c}</option>`).join('');
+  sel.value = cursos.includes(previo) ? previo : '';
+  pintar();
+}
+
+const visibles = () => {
+  const c = $('filtroCurso').value;
+  return c ? filas.filter(f => f.curso === c) : filas;
+};
+
+function pintar(){
+  const f = visibles();
+  const sesiones = new Set(f.map(x => x.sesion_id)).size;
+  const evaluaciones = f.filter(x => x.total > 0);
+  const promedio = evaluaciones.length
+    ? Math.round(evaluaciones.reduce((s, x) => s + x.puntaje / x.total, 0) / evaluaciones.length * 100)
+    : null;
+  const estudiantes = new Set(f.map(x => x.correo).filter(Boolean)).size;
+
+  $('metricas').innerHTML = [
+    ['Sesiones', sesiones],
+    ['Eventos', f.length],
+    ['Estudiantes identificados', estudiantes],
+    ['Promedio de evaluación', promedio === null ? '—' : promedio + '%']
+  ].map(([e, v]) => `<div class="metrica"><div class="valor">${v}</div><div class="etiqueta">${e}</div></div>`).join('');
+
+  // Uso por recurso
+  const porCurso = {};
+  for (const x of filas) {
+    const c = (porCurso[x.curso] ||= { sesiones: new Set(), eventos: 0, suma: 0, n: 0, ultimo: '' });
+    c.sesiones.add(x.sesion_id); c.eventos++;
+    if (x.total > 0) { c.suma += x.puntaje / x.total; c.n++; }
+    if (x.creado_en > c.ultimo) c.ultimo = x.creado_en;
+  }
+  const lista = Object.entries(porCurso).sort((a, b) => b[1].sesiones.size - a[1].sesiones.size);
+  const tope = Math.max(1, ...lista.map(([, c]) => c.sesiones.size));
+  $('tablaCursos').tBodies[0].innerHTML = lista.map(([curso, c]) => `
+    <tr>
+      <td>${curso} <span class="barra-uso" style="width:${Math.round(c.sesiones.size / tope * 90)}px"></span></td>
+      <td class="num">${c.sesiones.size}</td>
+      <td class="num">${c.eventos}</td>
+      <td class="num">${c.n ? Math.round(c.suma / c.n * 100) + '%' : '—'}</td>
+      <td>${fecha(c.ultimo)}</td>
+    </tr>`).join('') || '<tr><td colspan="5">Sin datos en este periodo.</td></tr>';
+
+  // Resultados individuales
+  const res = f.filter(x => x.total > 0).slice(0, 300);
+  $('tablaResultados').tBodies[0].innerHTML = res.map(x => `
+    <tr>
+      <td>${fecha(x.creado_en)}</td>
+      <td>${x.nombre || x.correo || x.estudiante_id || '<em>anónimo</em>'}</td>
+      <td>${x.curso}</td>
+      <td>${x.evento}</td>
+      <td class="num">${x.puntaje}/${x.total}</td>
+      <td class="num">${Math.round(x.puntaje / x.total * 100)}%</td>
+    </tr>`).join('') || '<tr><td colspan="6">Aún no hay evaluaciones enviadas.</td></tr>';
+}
+
+const fecha = (iso) => iso ? new Date(iso).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+
+function descargarCSV(){
+  const f = visibles();
+  if (!f.length) return alert('No hay datos para exportar.');
+  const cols = Object.keys(f[0]);
+  const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = '﻿' + [cols.join(','), ...f.map(r => cols.map(c => esc(r[c])).join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'estadisticas_cp.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>
