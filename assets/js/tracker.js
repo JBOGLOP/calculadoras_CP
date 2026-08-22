@@ -17,8 +17,8 @@
 
   var CONFIG = {
     url: 'https://bnbzupyymrznuamrttcd.supabase.co',
-    // TODO: pegar la clave anon/publishable desde Supabase → Settings → API Keys
-    anonKey: 'PEGAR_AQUI_LA_CLAVE_ANON',
+    // Clave publicable: solo puede INSERTAR. Verificado: leer devuelve vacio por RLS.
+    anonKey: 'sb_publishable_iT2xGTOVDFt3ivT9VFO_DQ_0f_kUPlP',
     tabla: 'eventos',
     activo: true
   };

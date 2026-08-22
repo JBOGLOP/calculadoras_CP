@@ -51,3 +51,13 @@ select creado_en, curso, nombre, correo, estudiante_id,
 from public.eventos
 where evento in ('quiz_completado','examen_final','resultado_final')
 order by creado_en desc;
+
+-- ── Seguridad de las vistas ─────────────────────────────────────────────
+-- Por defecto una vista se ejecuta con los permisos de su creador y se salta
+-- el RLS de la tabla base. Con security_invoker la vista respeta el RLS,
+-- de modo que la clave anónima tampoco puede leer a través de ella.
+alter view public.resumen_por_curso       set (security_invoker = on);
+alter view public.resultados_estudiantes  set (security_invoker = on);
+
+revoke all on public.resumen_por_curso      from anon;
+revoke all on public.resultados_estudiantes from anon;

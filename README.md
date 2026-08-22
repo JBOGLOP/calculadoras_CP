@@ -72,13 +72,18 @@ Las herramientas registran eventos anónimos (aperturas, quizzes completados, re
 evaluación) en **Supabase**. El panel del docente vive en [`/panel/`](./panel/) y **exige iniciar
 sesión**: la clave pública incrustada en el HTML solo puede *escribir*, nunca leer.
 
-Para ponerlo en marcha:
+El esquema ([`datos/supabase.sql`](./datos/supabase.sql)) ya está aplicado y la clave publicable ya
+está incrustada. Comprobado contra la API real:
 
-1. Ejecutar [`datos/supabase.sql`](./datos/supabase.sql) en el *SQL Editor* del proyecto de Supabase.
-2. Copiar la clave **anon / publishable** (Settings → API Keys).
-3. Pegarla en `assets/js/tracker.js` y en `panel/index.html`, donde dice `PEGAR_AQUI_LA_CLAVE_ANON`.
-4. En Authentication → URL Configuration, agregar `https://jboglop.github.io/calculadoras_CP/panel/`
-   como *Redirect URL*.
+| Operación con la clave pública | Resultado |
+|---|---|
+| Insertar un evento | `201 Created` ✅ |
+| Leer la tabla `eventos` | `[]` — el RLS filtra todo ✅ |
+| Leer las vistas del panel | `permission denied` ✅ |
+
+Falta un solo paso manual: en **Authentication → URL Configuration**, agregar
+`https://jboglop.github.io/calculadoras_CP/panel/` como *Redirect URL* para que funcione el
+enlace de acceso del docente.
 
 Para instrumentar una herramienta basta con una línea, más las llamadas que interesen:
 
