@@ -15,9 +15,8 @@ Todo funciona en el navegador, sin instalación ni registro.
 ```
 calculadoras_CP/
 ├── index.html              Portada: buscador + tarjetas (se arma desde datos/catalogo.json)
-├── datos/
-│   ├── catalogo.json       Fuente única de verdad de los recursos publicados
-│   └── supabase.sql        Esquema de estadísticas (tabla eventos + RLS + vistas)
+├── datos/catalogo.json     Fuente única de verdad de los recursos publicados
+├── supabase/migrations/    Esquema versionado (tabla eventos + RLS + vistas)
 ├── assets/js/tracker.js    Cliente de Supabase compartido por todas las herramientas
 ├── calculadoras/           Calculadoras clínicas
 ├── clases/                 Clases interactivas con evaluación
@@ -72,7 +71,7 @@ Las herramientas registran eventos anónimos (aperturas, quizzes completados, re
 evaluación) en **Supabase**. El panel del docente vive en [`/panel/`](./panel/) y **exige iniciar
 sesión**: la clave pública incrustada en el HTML solo puede *escribir*, nunca leer.
 
-El esquema ([`datos/supabase.sql`](./datos/supabase.sql)) ya está aplicado y la clave publicable ya
+El esquema ([`supabase/migrations/20260822000000_esquema_eventos.sql`](./supabase/migrations/20260822000000_esquema_eventos.sql)) ya está aplicado y la clave publicable ya
 está incrustada. Comprobado contra la API real:
 
 | Operación con la clave pública | Resultado |

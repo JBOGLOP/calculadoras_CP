@@ -9,7 +9,7 @@
  *
  * Reglas de oro:
  *  - Aquí SOLO va la clave anónima (publishable). NUNCA la service_role.
- *  - La tabla tiene RLS: anon puede INSERTAR pero no LEER. Ver datos/supabase.sql.
+ *  - La tabla tiene RLS: anon puede INSERTAR pero no LEER. Ver supabase/migrations/20260822000000_esquema_eventos.sql.
  *  - Todo fallo es silencioso: si Supabase no responde, la herramienta sigue funcionando.
  */
 (function (global) {
