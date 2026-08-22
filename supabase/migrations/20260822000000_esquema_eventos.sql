@@ -1,6 +1,10 @@
 -- Esquema de estadísticas · calculadoras_CP
--- Ejecutar en Supabase → SQL Editor → Run
 -- Proyecto: bnbzupyymrznuamrttcd
+--
+-- Migración inicial. Ya está aplicada en el proyecto remoto.
+-- Es idempotente a propósito: volver a ejecutarla no rompe nada.
+--   npx supabase db push        aplica lo que falte
+--   npx supabase migration list compara local contra remoto
 
 create table if not exists public.eventos (
   id            bigint generated always as identity primary key,
