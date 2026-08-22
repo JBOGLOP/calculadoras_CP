@@ -1,0 +1,81 @@
+{
+  "actualizado": "2026-08-22",
+  "categorias": [
+    { "id": "calculadoras",   "nombre": "Calculadoras clínicas", "icono": "💊", "descripcion": "Cálculo en tiempo real para decisiones al lado de la cama." },
+    { "id": "clases",         "nombre": "Clases interactivas",   "icono": "🎓", "descripcion": "Contenido, caso clínico y evaluación con envío automático de resultados." },
+    { "id": "revision-temas", "nombre": "Revisión de temas",     "icono": "📚", "descripcion": "Síntesis de evidencia navegable, con referencias y normativa colombiana." },
+    { "id": "herramientas",   "nombre": "Herramientas de investigación", "icono": "🔬", "descripcion": "Apoyo metodológico para la Maestría." }
+  ],
+  "recursos": [
+    {
+      "id": "opioides", "categoria": "calculadoras",
+      "titulo": "Equianalgesia opioide",
+      "resumen": "Conversión entre 11 opioides y DEMO. Incluye morfina 3% en gotas (presentación colombiana) y rotación a metadona (Ripamonti, Ayonrinde).",
+      "url": "calculadoras/opioides.html",
+      "etiquetas": ["DEMO", "rotación", "metadona"], "version": "v5.2", "destacado": true
+    },
+    {
+      "id": "escalas-clinicas", "categoria": "calculadoras",
+      "titulo": "Escalas pronósticas y de valoración",
+      "resumen": "PPS, PPI, PaP, NECPAL, PROFUND, Karnofsky, Barthel, ESAS y Zarit en un solo lugar.",
+      "url": "calculadoras/escalas-clinicas.html",
+      "etiquetas": ["PPS", "PPI", "NECPAL", "ESAS"], "destacado": true
+    },
+    {
+      "id": "neuro-acv", "categoria": "calculadoras",
+      "titulo": "Escalas pronósticas por tipo de ACV",
+      "resumen": "Herramientas neuropaliativas específicas según el subtipo de ataque cerebrovascular.",
+      "url": "calculadoras/neuropaliativos-escalas-acv.html",
+      "etiquetas": ["ACV", "neuropaliativos"]
+    },
+    {
+      "id": "clase-dolor", "categoria": "clases",
+      "titulo": "Manejo del dolor en cuidados paliativos",
+      "resumen": "Contenido colapsable con quizzes parciales, caso clínico por decisiones y evaluación final con temporizador.",
+      "url": "clases/dolor-manejo.html",
+      "etiquetas": ["dolor", "evaluación"], "destacado": true
+    },
+    {
+      "id": "clase-pronosticos", "categoria": "clases",
+      "titulo": "Factores pronósticos y cuidado al final de la vida",
+      "resumen": "Clase 2 con calculadoras integradas y el modelo de trayectorias de Lynn & Adamson.",
+      "url": "clases/pronosticos-final-vida.html",
+      "etiquetas": ["pronóstico", "trayectorias"]
+    },
+    {
+      "id": "fibromialgia", "categoria": "revision-temas",
+      "titulo": "Fibromialgia: dolor nociplástico",
+      "resumen": "Revisión académica 2020–2026 del tercer mecanismo del dolor.",
+      "url": "revision-temas/fibromialgia.html",
+      "etiquetas": ["nociplástico", "2020–2026"]
+    },
+    {
+      "id": "fractura-patologica", "categoria": "revision-temas",
+      "titulo": "Movilización con hueso frágil",
+      "resumen": "Síntesis de evidencia sobre movilización segura ante riesgo de fractura patológica.",
+      "url": "revision-temas/movilizacion-fractura-patologica.html",
+      "etiquetas": ["metástasis ósea", "seguridad"]
+    },
+    {
+      "id": "neuro-revision", "categoria": "revision-temas",
+      "titulo": "Neuropaliativos en ACV agudo",
+      "resumen": "Evidencia 2014–2025 en 10 secciones: síntomas ocultos, nutrición asistida, profecías autocumplidas y marco normativo colombiano.",
+      "url": "revision-temas/neuropaliativos-acv.html",
+      "etiquetas": ["ACV", "Ley 1733", "evidencia"]
+    },
+    {
+      "id": "analizador-articulos", "categoria": "herramientas",
+      "titulo": "Analizador crítico de artículos",
+      "resumen": "Guía la lectura crítica de un artículo científico paso a paso.",
+      "url": "herramientas/analizador-articulos/",
+      "etiquetas": ["lectura crítica"]
+    },
+    {
+      "id": "analizador-tesis", "categoria": "herramientas",
+      "titulo": "Evaluador de trabajos de grado",
+      "resumen": "Rúbrica interactiva para evaluar tesis de la Maestría en Investigación en CP.",
+      "url": "herramientas/analizador-tesis/",
+      "etiquetas": ["rúbrica", "maestría"]
+    }
+  ]
+}

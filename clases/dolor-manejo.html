@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plataforma Clase Interactiva — Cuidados Paliativos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --surface-alt: #f3f0eb;
+    --border: #e2ddd5;
+    --border-light: #eae6df;
+    --text: #2c2825;
+    --text-secondary: #6b6560;
+    --text-muted: #9a948e;
+    --accent: #8b5e3c;
+    --accent-hover: #6d4830;
+    --accent-light: #f0e6db;
+    --success: #3d7a4a;
+    --success-bg: #e8f5ea;
+    --error: #b5453a;
+    --error-bg: #fce8e6;
+    --warning: #c07d24;
+    --warning-bg: #fef3e0;
+    --info: #3a6b8b;
+    --info-bg: #e3eef5;
+    --locked: #9a948e;
+    --locked-bg: #f0eeeb;
+    --radius: 8px;
+    --shadow-sm: 0 1px 3px rgba(44,40,37,0.06);
+    --shadow-md: 0 4px 12px rgba(44,40,37,0.08);
+    --shadow-lg: 0 8px 24px rgba(44,40,37,0.12);
+    --font-display: 'Crimson Pro', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: linear-gradient(135deg, #3a2e28 0%, #5a4235 50%, #6d4830 100%);
+    color: white;
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header h1 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+
+  .progress-bar-container {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    width: 140px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: #e8c9a8;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+  }
+
+  /* === NAV TABS === */
+  .nav-tabs {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 0;
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    background: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .nav-tab:hover { color: var(--accent); }
+  .nav-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .nav-tab.locked {
+    color: var(--locked);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* === MAIN CONTAINER === */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  /* === COLLAPSIBLE SECTIONS === */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .section-card:hover { box-shadow: var(--shadow-md); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    gap: 0.8rem;
+    background: var(--surface);
+    transition: background 0.2s;
+  }
+
+  .section-header:hover { background: var(--surface-alt); }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  .section-icon.completed { background: var(--success-bg); color: var(--success); }
+
+  .section-title-area { flex: 1; }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .section-chevron {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .section-chevron.open { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border-light);
+    animation: slideDown 0.3s ease;
+  }
+
+  .section-body.open { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === CONTENT STYLES === */
+  .content-block { padding-top: 1rem; }
+
+  .content-block h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+
+  .content-block h4 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 1.2rem 0 0.5rem;
+  }
+
+  .content-block p {
+    margin-bottom: 0.8rem;
+    color: var(--text);
+  }
+
+  .content-block ul, .content-block ol {
+    margin: 0.5rem 0 1rem 1.5rem;
+    color: var(--text);
+  }
+
+  .content-block li { margin-bottom: 0.3rem; }
+
+  .highlight-box {
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .highlight-box.info { background: var(--info-bg); border-left: 4px solid var(--info); }
+  .highlight-box.warning { background: var(--warning-bg); border-left: 4px solid var(--warning); }
+  .highlight-box.success { background: var(--success-bg); border-left: 4px solid var(--success); }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+  }
+
+  .data-table th {
+    background: var(--accent);
+    color: white;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .data-table td {
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .data-table tr:nth-child(even) { background: var(--surface-alt); }
+  .data-table tr:hover { background: var(--accent-light); }
+
+  /* === QUIZ SYSTEM === */
+  .quiz-container {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .quiz-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .quiz-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .question-block {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .question-text {
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .option-label:hover { background: var(--accent-light); }
+  .option-label input { margin-top: 3px; accent-color: var(--accent); }
+
+  .option-label.correct {
+    background: var(--success-bg);
+    border-color: var(--success);
+  }
+
+  .option-label.incorrect {
+    background: var(--error-bg);
+    border-color: var(--error);
+  }
+
+  .option-label.disabled { pointer-events: none; opacity: 0.8; }
+
+  .feedback-text {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    display: none;
+  }
+
+  .feedback-text.show { display: block; }
+  .feedback-text.correct { background: var(--success-bg); color: var(--success); }
+  .feedback-text.incorrect { background: var(--error-bg); color: var(--error); }
+
+  /* === CLINICAL CASE === */
+  .case-container {
+    background: linear-gradient(to bottom right, #fdf8f3, #f8f0e8);
+    border: 1px solid #ddd0c4;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .case-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .case-badge {
+    background: var(--accent);
+    color: white;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .case-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  .case-narrative {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .case-decision {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 0.8rem;
+  }
+
+  .case-decision h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--accent);
+  }
+
+  .decision-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+  }
+
+  .decision-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .decision-btn.selected { border-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+  .decision-btn.best { border-color: var(--success); background: var(--success-bg); }
+  .decision-btn.suboptimal { border-color: var(--warning); background: var(--warning-bg); }
+  .decision-btn.wrong { border-color: var(--error); background: var(--error-bg); }
+
+  .case-result {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 0.8rem;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  .case-result.show { display: block; }
+
+  /* === TIMER & LOCK === */
+  .timer-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    background: var(--surface-alt);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--border);
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .timer-label { color: var(--text-secondary); font-size: 0.85rem; }
+
+  .lock-overlay {
+    background: var(--locked-bg);
+    border: 2px dashed var(--locked);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: var(--locked);
+  }
+
+  .lock-overlay .lock-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+
+  .lock-overlay h3 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  .lock-overlay p { font-size: 0.9rem; }
+
+  .lock-time-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .lock-time-input label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .lock-time-input input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
+  /* === BUTTONS === */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-secondary { background: var(--surface-alt); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border-light); }
+  .btn-success { background: var(--success); color: white; }
+
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* === SCORE DISPLAY === */
+  .score-summary {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .score-number {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .score-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+  }
+
+  .score-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--surface-alt);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease;
+  }
+
+  /* === CONFIG PANEL (for instructor) === */
+  .config-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .config-panel h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .config-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .config-row label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 180px;
+  }
+
+  .config-row input, .config-row select {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    background: var(--surface);
+  }
+
+  /* === FOOTER === */
+  .footer {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* === STUDENT REGISTRATION === */
+  .student-register {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .student-register h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .student-register p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .form-group.full-width { grid-column: 1 / -1; }
+
+  .form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .form-group input {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .form-group input.invalid { border-color: var(--error); }
+
+  .student-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    background: var(--accent-light);
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* === SEND RESULTS BUTTONS === */
+  .send-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-email { background: #c07d24; color: white; }
+  .btn-email:hover { background: #a56a1c; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  .btn-copy { background: var(--info); color: white; }
+  .btn-copy:hover { background: #2d5770; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  .btn-whatsapp { background: #25d366; color: white; }
+  .btn-whatsapp:hover { background: #1da855; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+  .copy-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .copy-toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .send-actions { flex-direction: column; }
+    .send-actions .btn { width: 100%; justify-content: center; }
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 640px) {
+    .header h1 { font-size: 1.3rem; }
+    .container { padding: 1rem; }
+    .section-header { padding: 0.8rem 1rem; }
+    .nav-tabs { padding: 0.5rem 1rem 0; }
+    .data-table { font-size: 0.78rem; }
+    .config-row { flex-direction: column; align-items: flex-start; }
+    .config-row label { min-width: auto; }
+  }
+
+  /* === PRINT === */
+  @media print {
+    .header { position: static; }
+    .section-body { display: block !important; }
+    .nav-tabs, .config-panel, .btn, .timer-bar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>Manejo del Dolor en Cuidados Paliativos</h1>
+      <div style="font-size:0.82rem; opacity:0.8; margin-top:4px;">Módulo 3 · Diplomado "El Misterio del Dolor y la Muerte"</div>
+    </div>
+    <div class="header-meta">
+      <div>
+        <div style="font-size:0.75rem; opacity:0.7;">Progreso</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="globalProgress" style="width: 0%"></div>
+        </div>
+      </div>
+      <div id="globalScore" style="font-family: var(--font-mono);">0/0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<div class="nav-tabs" id="navTabs">
+  <button class="nav-tab active" onclick="showTab('contenido')">📖 Contenido</button>
+  <button class="nav-tab" onclick="showTab('caso')">🏥 Caso Clínico</button>
+  <button class="nav-tab" onclick="showTab('evaluacion')" id="evalTab">📝 Evaluación Final</button>
+</div>
+
+<!-- ============ MAIN ============ -->
+<div class="container">
+
+  <!-- ====== CONFIG PANEL (Instructor) — Oculto por defecto ====== -->
+  <div class="config-panel" id="configPanel" style="display:none;">
+    <h3>⚙️ Panel del Docente — Configuración de sesión</h3>
+    <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:1rem;">
+      Configura la hora de desbloqueo de la evaluación final y el tiempo límite. Los estudiantes solo verán el contenido.
+    </p>
+    <div class="config-row">
+      <label>🔓 Desbloquear evaluación a las:</label>
+      <input type="time" id="unlockTime" value="10:00">
+      <span style="font-size:0.8rem; color:var(--text-muted);">(hora local)</span>
+    </div>
+    <div class="config-row">
+      <label>⏱️ Tiempo para evaluación (min):</label>
+      <input type="number" id="examDuration" value="15" min="5" max="120" style="width:70px;">
+    </div>
+    <div class="config-row">
+      <label>🔒 Contraseña docente:</label>
+      <input type="password" id="teacherPass" value="docente2026" style="width:150px;">
+      <span style="font-size:0.78rem; color:var(--text-muted);">Para ocultar este panel</span>
+    </div>
+    <div style="margin-top:0.8rem; display:flex; gap:0.5rem; flex-wrap: wrap;">
+      <button class="btn btn-primary" onclick="applyConfig()">Aplicar y ocultar panel</button>
+      <button class="btn btn-secondary" onclick="exportResults()">📊 Exportar resultados</button>
+    </div>
+  </div>
+
+  <!-- ====== STUDENT REGISTRATION ====== -->
+  <div class="student-register" id="studentRegister">
+    <h3>👤 Identificación del Estudiante</h3>
+    <p>Completa tus datos antes de iniciar. Esta información se incluirá al enviar tus resultados al docente.</p>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nombres *</label>
+        <input type="text" id="stuNombres" placeholder="Ej: María Elena" required>
+      </div>
+      <div class="form-group">
+        <label>Apellidos *</label>
+        <input type="text" id="stuApellidos" placeholder="Ej: García López" required>
+      </div>
+      <div class="form-group">
+        <label>Código estudiantil o CC *</label>
+        <input type="text" id="stuId" placeholder="Ej: 20261234 o 1098765432">
+      </div>
+      <div class="form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" id="stuEmail" placeholder="Ej: maria.garcia@correo.edu">
+      </div>
+    </div>
+    <div style="margin-top:1rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="registerStudent()">✓ Registrarme e iniciar</button>
+      <span id="registerError" style="font-size:0.82rem; color:var(--error); display:none;">Completa todos los campos</span>
+    </div>
+  </div>
+
+  <!-- Student badge (shown after registration) -->
+  <div id="studentBadgeArea" style="display:none; margin-bottom:1rem;">
+    <span class="student-badge" id="studentBadge">👤 Estudiante registrado</span>
+  </div>
+
+  <!-- ================================================ -->
+  <!-- ================ TAB: CONTENIDO ================ -->
+  <!-- ================================================ -->
+  <div id="tab-contenido">
+
+    <!-- SECCIÓN 1 -->
+    <div class="section-card" id="section1">
+      <div class="section-header" onclick="toggleSection('section1')">
+        <div class="section-icon" id="icon-section1">1</div>
+        <div class="section-title-area">
+          <div class="section-title">Fisiopatología del dolor</div>
+          <div class="section-subtitle">Fundamentos de nocicepción y sensibilización — 45 min</div>
+        </div>
+        <div class="section-chevron" id="chevron-section1">▼</div>
+      </div>
+      <div class="section-body" id="body-section1">
+        <div class="content-block">
+          <h3>Mecanismos del dolor</h3>
+          <p>El dolor es una experiencia sensorial y emocional compleja, definida por la IASP como <em>"una experiencia sensorial y emocional desagradable asociada o similar a la asociada con daño tisular real o potencial"</em> (revisión 2020).</p>
+
+          <h4>Clasificación por mecanismo</h4>
+          <ul>
+            <li><strong>Nociceptivo somático:</strong> bien localizado, constante o pulsátil. Ejemplo: metástasis óseas.</li>
+            <li><strong>Nociceptivo visceral:</strong> difuso, cólico o sordo. Ejemplo: distensión hepática por hepatomegalia.</li>
+            <li><strong>Neuropático:</strong> quemante, lancinante, con alodinia/hiperalgesia. Ejemplo: invasión del plexo braquial.</li>
+            <li><strong>Nociplástico:</strong> sensibilización central sin daño tisular claro. Ejemplo: fibromialgia concomitante.</li>
+          </ul>
+
+          <div class="highlight-box info">
+            <strong>📌 Concepto clave:</strong> En cuidados paliativos, el dolor frecuentemente tiene componentes mixtos (nociceptivo + neuropático), lo que exige un abordaje farmacológico multimodal.
+          </div>
+
+          <h4>Escalera analgésica de la OMS (modificada)</h4>
+          <table class="data-table">
+            <thead>
+              <tr><th>Escalón</th><th>Intensidad</th><th>Fármacos</th><th>Ejemplo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1°</td><td>Leve (EVA 1-3)</td><td>No opioides ± adyuvantes</td><td>Paracetamol 1g c/6h</td></tr>
+              <tr><td>2°</td><td>Moderado (EVA 4-6)</td><td>Opioides débiles ± no opioides</td><td>Tramadol 50mg c/6h</td></tr>
+              <tr><td>3°</td><td>Severo (EVA 7-10)</td><td>Opioides fuertes ± adyuvantes</td><td>Morfina oral titulada</td></tr>
+              <tr><td>4°</td><td>Refractario</td><td>Técnicas intervencionistas</td><td>Bloqueos, infusiones IT</td></tr>
+            </tbody>
+          </table>
+
+          <div class="highlight-box warning">
+            <strong>⚠️ Importante:</strong> La escalera de la OMS es un marco orientativo. En cuidados paliativos, se recomienda un enfoque de "ascensor analgésico" donde se puede iniciar directamente con opioides fuertes si la intensidad del dolor lo justifica.
+          </div>
+        </div>
+
+        <!-- MINI QUIZ SECCIÓN 1 -->
+        <div class="quiz-container">
+          <div class="quiz-title">✅ Verificación de comprensión</div>
+          <div class="quiz-subtitle">Responde antes de continuar a la siguiente sección</div>
+
+          <div class="question-block" id="q1">
+            <div class="question-text">1. Un paciente con cáncer de páncreas describe dolor difuso, tipo cólico en hemiabdomen superior. ¿Qué tipo de dolor es más probable?</div>
+            <label class="option-label" onclick="answerQuiz('q1', this, false)">
+              <input type="radio" name="q1"> a) Nociceptivo somático
+            </label>
+            <label class="option-label" onclick="answerQuiz('q1', this, true)">
+              <input type="radio" name="q1"> b) Nociceptivo visceral
+            </label>
+            <label class="option-label" onclick="answerQuiz('q1', this, false)">
+              <input type="radio" name="q1"> c) Neuropático
+            </label>
+            <label class="option-label" onclick="answerQuiz('q1', this, false)">
+              <input type="radio" name="q1"> d) Nociplástico
+            </label>
+            <div class="feedback-text correct" id="q1-correct">✓ Correcto. El dolor visceral es típicamente difuso, tipo cólico, asociado a órganos internos como el páncreas.</div>
+            <div class="feedback-text incorrect" id="q1-incorrect">✗ Revisa: el dolor difuso y tipo cólico localizado en vísceras abdominales corresponde a dolor nociceptivo visceral.</div>
+          </div>
+
+          <div class="question-block" id="q2">
+            <div class="question-text">2. ¿Cuál es la principal ventaja del enfoque de "ascensor analgésico" sobre la escalera de la OMS?</div>
+            <label class="option-label" onclick="answerQuiz('q2', this, false)">
+              <input type="radio" name="q2"> a) Usa menos medicamentos
+            </label>
+            <label class="option-label" onclick="answerQuiz('q2', this, false)">
+              <input type="radio" name="q2"> b) Evita el uso de opioides
+            </label>
+            <label class="option-label" onclick="answerQuiz('q2', this, true)">
+              <input type="radio" name="q2"> c) Permite iniciar con opioides fuertes según la intensidad del dolor
+            </label>
+            <label class="option-label" onclick="answerQuiz('q2', this, false)">
+              <input type="radio" name="q2"> d) Es más económico
+            </label>
+            <div class="feedback-text correct" id="q2-correct">✓ Correcto. El ascensor analgésico prioriza la intensidad del dolor sobre la secuencia escalonada, evitando demoras innecesarias.</div>
+            <div class="feedback-text incorrect" id="q2-incorrect">✗ La ventaja clave es poder iniciar directamente en el escalón apropiado según la intensidad, sin pasar obligatoriamente por los anteriores.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2 -->
+    <div class="section-card" id="section2">
+      <div class="section-header" onclick="toggleSection('section2')">
+        <div class="section-icon" id="icon-section2">2</div>
+        <div class="section-title-area">
+          <div class="section-title">Opioides en cuidados paliativos</div>
+          <div class="section-subtitle">Farmacología, titulación y rotación — 60 min</div>
+        </div>
+        <div class="section-chevron" id="chevron-section2">▼</div>
+      </div>
+      <div class="section-body" id="body-section2">
+        <div class="content-block">
+          <h3>Principios de la terapia opioide</h3>
+          <p>Los opioides son la piedra angular del manejo del dolor moderado a severo en cuidados paliativos. Su uso racional requiere comprender conceptos de equianalgesia, titulación y rotación.</p>
+
+          <h4>Factores de conversión a Dosis Equivalente de Morfina Oral (DEMO)</h4>
+          <table class="data-table">
+            <thead>
+              <tr><th>Opioide</th><th>Vía</th><th>Factor → Morfina VO</th><th>Ejemplo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Morfina</td><td>VO</td><td>×1</td><td>30 mg VO = 30 mg DEMO</td></tr>
+              <tr><td>Morfina</td><td>SC/IV</td><td>×2-3</td><td>10 mg IV = 20-30 mg DEMO</td></tr>
+              <tr><td>Oxicodona</td><td>VO</td><td>×1.5</td><td>20 mg VO = 30 mg DEMO</td></tr>
+              <tr><td>Hidromorfona</td><td>VO</td><td>×5</td><td>4 mg VO = 20 mg DEMO</td></tr>
+              <tr><td>Tramadol</td><td>VO</td><td>×0.1</td><td>100 mg VO = 10 mg DEMO</td></tr>
+              <tr><td>Fentanilo</td><td>TD (µg/h)</td><td>×2.4*</td><td>25 µg/h = 60 mg DEMO/24h</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.82rem; color:var(--text-muted);">*Fentanilo TD: se multiplica µg/h × 24h y se aplica factor ×100 respecto a morfina parenteral.</p>
+
+          <h4>Indicaciones de rotación opioide</h4>
+          <ul>
+            <li>Efectos adversos intolerables a pesar de tratamiento adyuvante</li>
+            <li>Dolor refractario con dosis altas (posible tolerancia/hiperalgesia)</li>
+            <li>Cambio de vía de administración por condición clínica</li>
+            <li>Insuficiencia renal o hepática (ajuste farmacológico)</li>
+          </ul>
+
+          <div class="highlight-box success">
+            <strong>💡 Regla práctica para rotación:</strong> Al rotar, reducir la dosis equianalgésica calculada en un 25-50% para compensar la tolerancia cruzada incompleta. Excepto con metadona, que requiere tablas específicas (Ripamonti).
+          </div>
+        </div>
+
+        <!-- MINI QUIZ SECCIÓN 2 -->
+        <div class="quiz-container">
+          <div class="quiz-title">✅ Verificación de comprensión</div>
+          <div class="quiz-subtitle">Responde antes de continuar</div>
+
+          <div class="question-block" id="q3">
+            <div class="question-text">3. Un paciente recibe Morfina VO 60 mg/día. Se requiere rotar a Oxicodona VO. ¿Cuál es la dosis diaria inicial recomendada?</div>
+            <label class="option-label" onclick="answerQuiz('q3', this, false)">
+              <input type="radio" name="q3"> a) 60 mg de Oxicodona
+            </label>
+            <label class="option-label" onclick="answerQuiz('q3', this, false)">
+              <input type="radio" name="q3"> b) 40 mg de Oxicodona
+            </label>
+            <label class="option-label" onclick="answerQuiz('q3', this, true)">
+              <input type="radio" name="q3"> c) 20-30 mg de Oxicodona
+            </label>
+            <label class="option-label" onclick="answerQuiz('q3', this, false)">
+              <input type="radio" name="q3"> d) 90 mg de Oxicodona
+            </label>
+            <div class="feedback-text correct" id="q3-correct">✓ Correcto. 60 mg morfina ÷ 1.5 = 40 mg oxicodona equianalgésica. Reducción 25-50%: 20-30 mg/día.</div>
+            <div class="feedback-text incorrect" id="q3-incorrect">✗ Recuerda: Morfina VO ÷ 1.5 = Oxicodona equianalgésica (40 mg), luego reducir 25-50% por tolerancia cruzada incompleta → 20-30 mg.</div>
+          </div>
+
+          <div class="question-block" id="q4">
+            <div class="question-text">4. ¿Por qué la metadona requiere precaución especial al rotar?</div>
+            <label class="option-label" onclick="answerQuiz('q4', this, false)">
+              <input type="radio" name="q4"> a) Es más costosa
+            </label>
+            <label class="option-label" onclick="answerQuiz('q4', this, true)">
+              <input type="radio" name="q4"> b) Su ratio de conversión varía según la dosis previa de morfina (no lineal)
+            </label>
+            <label class="option-label" onclick="answerQuiz('q4', this, false)">
+              <input type="radio" name="q4"> c) Solo existe en presentación IV
+            </label>
+            <label class="option-label" onclick="answerQuiz('q4', this, false)">
+              <input type="radio" name="q4"> d) No tiene efectos adversos
+            </label>
+            <div class="feedback-text correct" id="q4-correct">✓ Correcto. La tabla de Ripamonti muestra ratios variables: a mayor DEMO previa, mayor potencia relativa de la metadona (ratio no lineal).</div>
+            <div class="feedback-text incorrect" id="q4-incorrect">✗ La metadona tiene una relación de conversión no lineal con la morfina (tablas de Ripamonti), además de vida media larga e impredecible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 3 -->
+    <div class="section-card" id="section3">
+      <div class="section-header" onclick="toggleSection('section3')">
+        <div class="section-icon" id="icon-section3">3</div>
+        <div class="section-title-area">
+          <div class="section-title">Adyuvantes y dolor neuropático</div>
+          <div class="section-subtitle">Co-analgesia y manejo de dolor total — 45 min</div>
+        </div>
+        <div class="section-chevron" id="chevron-section3">▼</div>
+      </div>
+      <div class="section-body" id="body-section3">
+        <div class="content-block">
+          <h3>Fármacos adyuvantes</h3>
+          <p>Los adyuvantes son medicamentos cuya indicación primaria no es analgésica, pero que contribuyen al control del dolor en contextos específicos. Son esenciales en el manejo multimodal.</p>
+
+          <h4>Principales adyuvantes según tipo de dolor</h4>
+          <table class="data-table">
+            <thead>
+              <tr><th>Tipo de dolor</th><th>Adyuvante</th><th>Dosis habitual</th><th>Consideraciones</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Neuropático</td><td>Gabapentina</td><td>300-3600 mg/día</td><td>Ajustar en falla renal</td></tr>
+              <tr><td>Neuropático</td><td>Pregabalina</td><td>75-600 mg/día</td><td>Inicio más rápido que gabapentina</td></tr>
+              <tr><td>Neuropático</td><td>Amitriptilina</td><td>10-75 mg/noche</td><td>Anticolinérgicos en ancianos</td></tr>
+              <tr><td>Óseo</td><td>Dexametasona</td><td>4-16 mg/día</td><td>Efecto antiinflamatorio + antiedema</td></tr>
+              <tr><td>Espasmo muscular</td><td>Baclofeno</td><td>5-20 mg c/8h</td><td>Titular lentamente</td></tr>
+              <tr><td>Cólico</td><td>Hioscina</td><td>10-20 mg c/6-8h</td><td>Útil en obstrucción intestinal</td></tr>
+            </tbody>
+          </table>
+
+          <div class="highlight-box info">
+            <strong>📌 Dolor total (Cicely Saunders):</strong> El concepto de "dolor total" integra las dimensiones física, emocional, social y espiritual del sufrimiento. El manejo farmacológico solo aborda la dimensión física; un abordaje paliativo integral requiere atención a las cuatro dimensiones.
+          </div>
+        </div>
+
+        <!-- MINI QUIZ SECCIÓN 3 -->
+        <div class="quiz-container">
+          <div class="quiz-title">✅ Verificación de comprensión</div>
+          <div class="quiz-subtitle">Última verificación antes del caso clínico</div>
+
+          <div class="question-block" id="q5">
+            <div class="question-text">5. Paciente con metástasis óseas en columna lumbar y dolor EVA 8/10 con componente neuropático radicular. ¿Cuál es la combinación más apropiada?</div>
+            <label class="option-label" onclick="answerQuiz('q5', this, false)">
+              <input type="radio" name="q5"> a) Paracetamol + Tramadol
+            </label>
+            <label class="option-label" onclick="answerQuiz('q5', this, true)">
+              <input type="radio" name="q5"> b) Morfina + Dexametasona + Pregabalina
+            </label>
+            <label class="option-label" onclick="answerQuiz('q5', this, false)">
+              <input type="radio" name="q5"> c) Ibuprofeno + Gabapentina
+            </label>
+            <label class="option-label" onclick="answerQuiz('q5', this, false)">
+              <input type="radio" name="q5"> d) Amitriptilina sola
+            </label>
+            <div class="feedback-text correct" id="q5-correct">✓ Correcto. Dolor severo (EVA 8) → opioide fuerte (morfina). Metástasis óseas → dexametasona. Componente neuropático → pregabalina. Abordaje multimodal.</div>
+            <div class="feedback-text incorrect" id="q5-incorrect">✗ Con EVA 8/10 se requiere opioide fuerte (escalón 3). Las metástasis óseas responden a corticoides y el componente neuropático a anticonvulsivantes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-contenido -->
+
+  <!-- ================================================ -->
+  <!-- ================ TAB: CASO CLÍNICO ============= -->
+  <!-- ================================================ -->
+  <div id="tab-caso" style="display:none;">
+
+    <div class="case-container">
+      <div class="case-header">
+        <span class="case-badge">Caso Clínico</span>
+        <span class="case-title">Sra. María Elena, 67 años</span>
+      </div>
+
+      <!-- Etapa 1 -->
+      <div id="case-step-1" class="case-step">
+        <div class="case-narrative">
+          <strong>Presentación inicial:</strong><br>
+          Paciente femenina de 67 años con diagnóstico de adenocarcinoma de pulmón estadio IV con metástasis óseas en columna dorsal y pelvis. ECOG 3. Actualmente en manejo con Tramadol 50 mg c/6h VO + Paracetamol 1g c/8h. Refiere dolor en espalda baja y pelvis, EVA 8/10, que le impide dormir. Describe el dolor como "constante, profundo, que a veces baja por la pierna derecha como corriente eléctrica".
+        </div>
+        <div class="case-decision">
+          <h4>¿Cuál es su primera decisión terapéutica?</h4>
+          <button class="decision-btn" onclick="caseDecide(1, this, 'suboptimal')">
+            A) Aumentar Tramadol a 100 mg c/6h y agregar Ibuprofeno
+          </button>
+          <button class="decision-btn" onclick="caseDecide(1, this, 'best')">
+            B) Iniciar Morfina oral con titulación + Dexametasona + Pregabalina
+          </button>
+          <button class="decision-btn" onclick="caseDecide(1, this, 'wrong')">
+            C) Referir a cirugía para fijación vertebral
+          </button>
+          <button class="decision-btn" onclick="caseDecide(1, this, 'suboptimal')">
+            D) Cambiar a Fentanilo transdérmico 25 µg/h directamente
+          </button>
+        </div>
+        <div class="case-result" id="case-result-1"></div>
+      </div>
+
+      <!-- Etapa 2 -->
+      <div id="case-step-2" class="case-step" style="display:none;">
+        <div class="case-narrative">
+          <strong>Evolución (72 horas después):</strong><br>
+          Se inició Morfina oral 10 mg c/4h (60 mg/día) + Dexametasona 8 mg/día + Pregabalina 75 mg c/12h. La paciente reporta mejoría del dolor a EVA 4/10, pero presenta náuseas persistentes, somnolencia excesiva y estreñimiento severo (5 días sin evacuación). Ha necesitado 3 dosis de rescate de Morfina 5 mg en 24h.
+        </div>
+        <div class="case-decision">
+          <h4>¿Cómo maneja los efectos adversos sin perder control analgésico?</h4>
+          <button class="decision-btn" onclick="caseDecide(2, this, 'suboptimal')">
+            A) Reducir Morfina a la mitad y esperar
+          </button>
+          <button class="decision-btn" onclick="caseDecide(2, this, 'best')">
+            B) Mantener Morfina + agregar Metoclopramida, Lactulosa/Senósidos, y reevaluar en 48h
+          </button>
+          <button class="decision-btn" onclick="caseDecide(2, this, 'wrong')">
+            C) Suspender Morfina y regresar a Tramadol
+          </button>
+          <button class="decision-btn" onclick="caseDecide(2, this, 'suboptimal')">
+            D) Rotar inmediatamente a Metadona
+          </button>
+        </div>
+        <div class="case-result" id="case-result-2"></div>
+      </div>
+
+      <!-- Etapa 3 -->
+      <div id="case-step-3" class="case-step" style="display:none;">
+        <div class="case-narrative">
+          <strong>Evolución (1 semana después):</strong><br>
+          Los efectos adversos se controlaron. Dolor estable EVA 3/10. Dosis actual: Morfina 80 mg/día VO (incluyendo rescates). Sin embargo, la paciente desarrolla disfagia progresiva y ya no puede tomar medicación oral. La familia pregunta sobre opciones.
+        </div>
+        <div class="case-decision">
+          <h4>¿Qué cambio de vía/opioide propone?</h4>
+          <button class="decision-btn" onclick="caseDecide(3, this, 'suboptimal')">
+            A) Morfina rectal con la misma dosis
+          </button>
+          <button class="decision-btn" onclick="caseDecide(3, this, 'best')">
+            B) Rotar a Morfina SC con infusión continua: calcular dosis equivalente (÷2) y reducir 25%
+          </button>
+          <button class="decision-btn" onclick="caseDecide(3, this, 'suboptimal')">
+            C) Fentanilo transdérmico 50 µg/h
+          </button>
+          <button class="decision-btn" onclick="caseDecide(3, this, 'wrong')">
+            D) Suspender opioides y usar solo Ketamina IV
+          </button>
+        </div>
+        <div class="case-result" id="case-result-3"></div>
+      </div>
+
+      <!-- Resumen del caso -->
+      <div id="case-summary" style="display:none;">
+        <div class="score-summary">
+          <div class="score-number" id="caseScoreDisplay">0/3</div>
+          <div class="score-label">Decisiones óptimas en el caso clínico</div>
+          <div class="score-bar">
+            <div class="score-bar-fill" id="caseScoreBar" style="width:0%; background: var(--accent);"></div>
+          </div>
+          <p style="margin-top:1rem; font-size:0.88rem; color:var(--text-secondary);" id="caseFeedback"></p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-caso -->
+
+  <!-- ================================================ -->
+  <!-- ============= TAB: EVALUACIÓN FINAL ============ -->
+  <!-- ================================================ -->
+  <div id="tab-evaluacion" style="display:none;">
+
+    <div id="evalLocked" class="lock-overlay">
+      <div class="lock-icon">🔒</div>
+      <h3>Evaluación bloqueada</h3>
+      <p>Esta evaluación se desbloqueará a la hora programada por el docente.</p>
+      <p style="margin-top:0.5rem; font-family: var(--font-mono); font-size:1.1rem;" id="lockTimeDisplay">Hora de desbloqueo: 10:00</p>
+      <p style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-muted);" id="lockCountdown"></p>
+      <div style="margin-top:1rem;">
+        <label style="font-size:0.82rem; color:var(--text-secondary);">Contraseña docente para desbloquear manualmente:</label><br>
+        <input type="password" id="manualUnlockPass" style="margin-top:0.3rem; padding:0.4rem; border:1px solid var(--border); border-radius:6px;">
+        <button class="btn btn-secondary" onclick="manualUnlock()" style="margin-left:0.3rem;">Desbloquear</button>
+      </div>
+    </div>
+
+    <div id="evalContent" style="display:none;">
+      <div class="timer-bar">
+        <span>⏱️</span>
+        <span class="timer-display" id="examTimer">15:00</span>
+        <span class="timer-label">Tiempo restante</span>
+        <button class="btn btn-primary" id="startExamBtn" onclick="startExam()">Iniciar evaluación</button>
+      </div>
+
+      <div id="examQuestions" style="opacity:0.4; pointer-events:none;">
+
+        <div class="question-block" id="eq1">
+          <div class="question-text">1. ¿Cuál es la Dosis Equivalente de Morfina Oral (DEMO) de Fentanilo transdérmico 75 µg/h?</div>
+          <label class="option-label" onclick="answerExam('eq1', this, 'a')"><input type="radio" name="eq1"> a) 90 mg/día</label>
+          <label class="option-label" onclick="answerExam('eq1', this, 'b')"><input type="radio" name="eq1"> b) 180 mg/día</label>
+          <label class="option-label" onclick="answerExam('eq1', this, 'c')"><input type="radio" name="eq1"> c) 120 mg/día</label>
+          <label class="option-label" onclick="answerExam('eq1', this, 'd')"><input type="radio" name="eq1"> d) 225 mg/día</label>
+        </div>
+
+        <div class="question-block" id="eq2">
+          <div class="question-text">2. Al rotar opioides por efectos adversos intolerables, ¿qué porcentaje de reducción se recomienda sobre la dosis equianalgésica calculada?</div>
+          <label class="option-label" onclick="answerExam('eq2', this, 'a')"><input type="radio" name="eq2"> a) 0% (dosis equivalente exacta)</label>
+          <label class="option-label" onclick="answerExam('eq2', this, 'b')"><input type="radio" name="eq2"> b) 25-50%</label>
+          <label class="option-label" onclick="answerExam('eq2', this, 'c')"><input type="radio" name="eq2"> c) 75%</label>
+          <label class="option-label" onclick="answerExam('eq2', this, 'd')"><input type="radio" name="eq2"> d) 10%</label>
+        </div>
+
+        <div class="question-block" id="eq3">
+          <div class="question-text">3. ¿Cuál de los siguientes fármacos es adyuvante de primera línea para dolor neuropático en cuidados paliativos?</div>
+          <label class="option-label" onclick="answerExam('eq3', this, 'a')"><input type="radio" name="eq3"> a) Diclofenaco</label>
+          <label class="option-label" onclick="answerExam('eq3', this, 'b')"><input type="radio" name="eq3"> b) Pregabalina</label>
+          <label class="option-label" onclick="answerExam('eq3', this, 'c')"><input type="radio" name="eq3"> c) Omeprazol</label>
+          <label class="option-label" onclick="answerExam('eq3', this, 'd')"><input type="radio" name="eq3"> d) Metoclopramida</label>
+        </div>
+
+        <div class="question-block" id="eq4">
+          <div class="question-text">4. ¿Qué concepto de Cicely Saunders integra las dimensiones física, emocional, social y espiritual del sufrimiento?</div>
+          <label class="option-label" onclick="answerExam('eq4', this, 'a')"><input type="radio" name="eq4"> a) Dolor crónico</label>
+          <label class="option-label" onclick="answerExam('eq4', this, 'b')"><input type="radio" name="eq4"> b) Dolor total</label>
+          <label class="option-label" onclick="answerExam('eq4', this, 'c')"><input type="radio" name="eq4"> c) Dolor refractario</label>
+          <label class="option-label" onclick="answerExam('eq4', this, 'd')"><input type="radio" name="eq4"> d) Dolor irruptivo</label>
+        </div>
+
+        <div class="question-block" id="eq5">
+          <div class="question-text">5. Paciente con DEMO de 200 mg/día requiere rotación a Metadona VO. Según la tabla de Ripamonti, ¿cuál es el ratio correcto?</div>
+          <label class="option-label" onclick="answerExam('eq5', this, 'a')"><input type="radio" name="eq5"> a) 4:1 (Morfina:Metadona)</label>
+          <label class="option-label" onclick="answerExam('eq5', this, 'b')"><input type="radio" name="eq5"> b) 8:1 (Morfina:Metadona)</label>
+          <label class="option-label" onclick="answerExam('eq5', this, 'c')"><input type="radio" name="eq5"> c) 12:1 (Morfina:Metadona)</label>
+          <label class="option-label" onclick="answerExam('eq5', this, 'd')"><input type="radio" name="eq5"> d) 1:1 (Morfina:Metadona)</label>
+        </div>
+
+        <div style="text-align:center; margin-top:1.5rem;">
+          <button class="btn btn-success" onclick="submitExam()" id="submitExamBtn" disabled>📝 Enviar evaluación</button>
+        </div>
+      </div>
+
+      <div id="examResults" style="display:none;">
+        <div class="score-summary">
+          <div class="score-number" id="examScoreDisplay">0/5</div>
+          <div class="score-label">Evaluación Final — Manejo del Dolor en Cuidados Paliativos</div>
+          <div class="score-bar">
+            <div class="score-bar-fill" id="examScoreBar" style="width:0%;"></div>
+          </div>
+          <p style="margin-top:1rem; font-size:0.9rem;" id="examFeedbackText"></p>
+          <p style="margin-top:0.5rem; font-size:0.82rem; color:var(--text-muted);" id="examTimeTaken"></p>
+          <div class="send-actions">
+            <button class="btn btn-success" onclick="sendToGoogleSheets()" id="btnSheets">📊 Enviar automáticamente al docente</button>
+            <button class="btn btn-email" onclick="sendByEmail()">📧 Enviar por correo</button>
+            <button class="btn btn-copy" onclick="copyResults()">📋 Copiar resultados</button>
+            <button class="btn btn-whatsapp" onclick="sendByWhatsApp()">💬 WhatsApp</button>
+          </div>
+          <p id="sheetsStatus" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.5rem; text-align:center; display:none;"></p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-evaluacion -->
+
+</div><!-- /container -->
+
+<!-- Toast notification -->
+<div class="copy-toast" id="copyToast">✓ Resultados copiados al portapapeles</div>
+
+<div class="footer">
+  <p><strong>Plataforma Clase Interactiva</strong> — Plantilla educativa para GitHub Pages</p>
+  <p>Construida como herramienta docente · Licencia: GNU-GPL v3</p>
+  <p style="margin-top:0.5rem;">Para personalizar, edita las secciones de contenido, preguntas y caso clínico en el HTML</p>
+</div>
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+// ==========================================
+// STATE
+// ==========================================
+const state = {
+  sectionsCompleted: new Set(),
+  quizAnswers: {},
+  quizCorrect: 0,
+  quizTotal: 5,
+  examAnswers: {},
+  examCorrectAnswers: { eq1: 'b', eq2: 'b', eq3: 'b', eq4: 'b', eq5: 'c' },
+  examStarted: false,
+  examSubmitted: false,
+  examTimerInterval: null,
+  examTimeLeft: 0,
+  examDuration: 15,
+  unlockTime: '10:00',
+  teacherPass: 'docente2026',
+  teacherEmail: 'jwbogoyal@gmail.com',
+  googleSheetsURL: 'https://script.google.com/macros/s/AKfycbzrTc8IIPwyNWCJXnCYh4hdrFSban6FPI1VKrPZffpCLdNAXTCCILT5O-GiFYgZia-M/exec',
+  caseScore: 0,
+  caseStep: 1,
+  lockCheckInterval: null,
+  student: null,
+  registered: false
+};
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+function showTab(tabName) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tabName).style.display = 'block';
+  event.target.classList.add('active');
+}
+
+// ==========================================
+// COLLAPSIBLE SECTIONS
+// ==========================================
+function toggleSection(sectionId) {
+  const body = document.getElementById('body-' + sectionId);
+  const chevron = document.getElementById('chevron-' + sectionId);
+  const isOpen = body.classList.contains('open');
+
+  if (isOpen) {
+    body.classList.remove('open');
+    chevron.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    chevron.classList.add('open');
+  }
+}
+
+// ==========================================
+// SECTION QUIZZES (Parciales)
+// ==========================================
+function answerQuiz(qId, element, isCorrect) {
+  if (state.quizAnswers[qId] !== undefined) return;
+  state.quizAnswers[qId] = isCorrect;
+
+  const options = element.parentElement.querySelectorAll('.option-label');
+  options.forEach(opt => {
+    opt.classList.add('disabled');
+    const radio = opt.querySelector('input');
+    radio.disabled = true;
+  });
+
+  if (isCorrect) {
+    element.classList.add('correct');
+    state.quizCorrect++;
+    const fb = document.getElementById(qId + '-correct');
+    fb.classList.add('show');
+  } else {
+    element.classList.add('incorrect');
+    const fb = document.getElementById(qId + '-incorrect');
+    fb.classList.add('show');
+    // Highlight correct
+    options.forEach(opt => {
+      if (!opt.classList.contains('incorrect')) {
+        const handler = opt.getAttribute('onclick');
+        if (handler && handler.includes('true')) {
+          opt.classList.add('correct');
+        }
+      }
+    });
+  }
+
+  // Check section completion
+  checkSectionCompletion();
+  updateProgress();
+}
+
+function checkSectionCompletion() {
+  // Section 1: q1, q2
+  if (state.quizAnswers['q1'] !== undefined && state.quizAnswers['q2'] !== undefined) {
+    state.sectionsCompleted.add('section1');
+    document.getElementById('icon-section1').classList.add('completed');
+    document.getElementById('icon-section1').textContent = '✓';
+  }
+  // Section 2: q3, q4
+  if (state.quizAnswers['q3'] !== undefined && state.quizAnswers['q4'] !== undefined) {
+    state.sectionsCompleted.add('section2');
+    document.getElementById('icon-section2').classList.add('completed');
+    document.getElementById('icon-section2').textContent = '✓';
+  }
+  // Section 3: q5
+  if (state.quizAnswers['q5'] !== undefined) {
+    state.sectionsCompleted.add('section3');
+    document.getElementById('icon-section3').classList.add('completed');
+    document.getElementById('icon-section3').textContent = '✓';
+  }
+}
+
+// ==========================================
+// CLINICAL CASE
+// ==========================================
+const caseMessages = {
+  1: {
+    best: '✅ <strong>Excelente decisión.</strong> Con EVA 8/10, se justifica iniciar opioide fuerte (morfina). La dexametasona aborda el componente óseo y la pregabalina el neuropático. Abordaje multimodal óptimo.',
+    suboptimal: '⚠️ <strong>Decisión subóptima.</strong> Con dolor severo (EVA 8/10) y componentes mixtos, se necesita un abordaje multimodal con opioide fuerte desde el inicio, no incrementar un opioide débil ni iniciar parches sin titulación previa.',
+    wrong: '❌ <strong>Decisión inadecuada.</strong> La fijación quirúrgica no es el primer paso en un paciente con ECOG 3 y enfermedad metastásica avanzada. La prioridad es el control farmacológico del dolor.'
+  },
+  2: {
+    best: '✅ <strong>Excelente manejo.</strong> Los efectos adversos (náuseas, estreñimiento) son esperados y tratables. No se debe suspender ni reducir innecesariamente el opioide si el dolor aún no está controlado del todo. Tratar los efectos adversos proactivamente.',
+    suboptimal: '⚠️ <strong>Subóptimo.</strong> Reducir la morfina a la mitad puede descontrolar el dolor. Regresar a tramadol sería un retroceso. La rotación a metadona es prematura sin haber intentado manejar los efectos adversos primero.',
+    wrong: '❌ <strong>Inadecuado.</strong> Suspender el opioide fuerte y regresar a uno débil causaría dolor descontrolado e innecesario. Los efectos adversos se deben tratar activamente.'
+  },
+  3: {
+    best: '✅ <strong>Excelente.</strong> La vía subcutánea es la alternativa ideal cuando se pierde la vía oral en paliativos. Morfina VO 80mg ÷ 2 = 40mg SC equianalgésica, reducir 25% = 30mg SC/24h en infusión continua.',
+    suboptimal: '⚠️ <strong>Parcialmente adecuado.</strong> La vía rectal es una alternativa pero no siempre disponible ni confortable. El fentanilo TD podría funcionar pero la dosis debe calcularse cuidadosamente desde la DEMO.',
+    wrong: '❌ <strong>Inadecuado.</strong> Suspender opioides para usar solo ketamina no es un enfoque estándar. La ketamina es adyuvante, no sustituto de la analgesia opioide en este contexto.'
+  }
+};
+
+function caseDecide(step, btn, quality) {
+  if (state.caseStep !== step) return;
+
+  const stepEl = document.getElementById('case-step-' + step);
+  const btns = stepEl.querySelectorAll('.decision-btn');
+  btns.forEach(b => {
+    b.classList.remove('selected');
+    b.disabled = true;
+    b.style.cursor = 'default';
+  });
+
+  btn.classList.add(quality);
+
+  if (quality === 'best') state.caseScore++;
+
+  const resultEl = document.getElementById('case-result-' + step);
+  resultEl.innerHTML = caseMessages[step][quality];
+  resultEl.className = 'case-result show';
+  resultEl.style.background = quality === 'best' ? 'var(--success-bg)' :
+                                quality === 'suboptimal' ? 'var(--warning-bg)' : 'var(--error-bg)';
+
+  state.caseStep++;
+
+  if (step < 3) {
+    setTimeout(() => {
+      document.getElementById('case-step-' + (step + 1)).style.display = 'block';
+      document.getElementById('case-step-' + (step + 1)).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1500);
+  } else {
+    setTimeout(() => {
+      const summary = document.getElementById('case-summary');
+      summary.style.display = 'block';
+      document.getElementById('caseScoreDisplay').textContent = state.caseScore + '/3';
+      document.getElementById('caseScoreBar').style.width = (state.caseScore / 3 * 100) + '%';
+      const fb = state.caseScore === 3 ? 'Manejo clínico impecable. Demostró dominio del enfoque multimodal y toma de decisiones basada en evidencia.' :
+                 state.caseScore >= 2 ? 'Buen criterio clínico general. Revise las decisiones subóptimas para fortalecer el razonamiento.' :
+                 'Se recomienda revisar los conceptos de escalera/ascensor analgésico, rotación opioide y manejo de efectos adversos.';
+      document.getElementById('caseFeedback').textContent = fb;
+      summary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1500);
+  }
+
+  updateProgress();
+}
+
+// ==========================================
+// EVALUATION TIMER & LOCK
+// ==========================================
+function applyConfig() {
+  state.unlockTime = document.getElementById('unlockTime').value;
+  state.examDuration = parseInt(document.getElementById('examDuration').value) || 15;
+  state.teacherPass = document.getElementById('teacherPass').value;
+  state.examTimeLeft = state.examDuration * 60;
+
+  document.getElementById('examTimer').textContent = formatTime(state.examTimeLeft);
+  document.getElementById('lockTimeDisplay').textContent = 'Hora de desbloqueo: ' + state.unlockTime;
+  document.getElementById('configPanel').style.display = 'none';
+
+  startLockCheck();
+}
+
+function startLockCheck() {
+  checkLock();
+  state.lockCheckInterval = setInterval(checkLock, 10000);
+}
+
+function checkLock() {
+  const now = new Date();
+  const [h, m] = state.unlockTime.split(':').map(Number);
+  const unlockDate = new Date();
+  unlockDate.setHours(h, m, 0, 0);
+
+  if (now >= unlockDate) {
+    unlockEval();
+  } else {
+    const diff = unlockDate - now;
+    const mins = Math.floor(diff / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById('lockCountdown').textContent =
+      'Faltan ' + mins + ' min ' + secs + ' seg para el desbloqueo';
+  }
+}
+
+function unlockEval() {
+  if (state.lockCheckInterval) clearInterval(state.lockCheckInterval);
+  document.getElementById('evalLocked').style.display = 'none';
+  document.getElementById('evalContent').style.display = 'block';
+  state.examTimeLeft = state.examDuration * 60;
+  document.getElementById('examTimer').textContent = formatTime(state.examTimeLeft);
+}
+
+function manualUnlock() {
+  const pass = document.getElementById('manualUnlockPass').value;
+  if (pass === state.teacherPass) {
+    unlockEval();
+  } else {
+    alert('Contraseña incorrecta');
+  }
+}
+
+function startExam() {
+  if (state.examStarted) return;
+  state.examStarted = true;
+  document.getElementById('startExamBtn').disabled = true;
+  document.getElementById('startExamBtn').textContent = 'En curso...';
+  document.getElementById('examQuestions').style.opacity = '1';
+  document.getElementById('examQuestions').style.pointerEvents = 'auto';
+
+  state.examStartTime = Date.now();
+
+  state.examTimerInterval = setInterval(() => {
+    state.examTimeLeft--;
+    document.getElementById('examTimer').textContent = formatTime(state.examTimeLeft);
+
+    if (state.examTimeLeft <= 60) {
+      document.getElementById('examTimer').style.color = 'var(--error)';
+    }
+
+    if (state.examTimeLeft <= 0) {
+      submitExam();
+    }
+  }, 1000);
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return m.toString().padStart(2, '0') + ':' + s.toString().padStart(2, '0');
+}
+
+// ==========================================
+// EXAM ANSWERS
+// ==========================================
+function answerExam(qId, element, value) {
+  if (state.examSubmitted) return;
+  state.examAnswers[qId] = value;
+
+  const options = element.parentElement.querySelectorAll('.option-label');
+  options.forEach(opt => opt.style.background = '');
+  element.style.background = 'var(--accent-light)';
+
+  // Enable submit if all answered
+  const totalQ = Object.keys(state.examCorrectAnswers).length;
+  if (Object.keys(state.examAnswers).length >= totalQ) {
+    document.getElementById('submitExamBtn').disabled = false;
+  }
+}
+
+function submitExam() {
+  if (state.examSubmitted) return;
+  state.examSubmitted = true;
+
+  if (state.examTimerInterval) clearInterval(state.examTimerInterval);
+
+  const elapsed = Math.round((Date.now() - (state.examStartTime || Date.now())) / 1000);
+
+  let correct = 0;
+  const totalQ = Object.keys(state.examCorrectAnswers).length;
+
+  for (const [qId, correctAns] of Object.entries(state.examCorrectAnswers)) {
+    const isCorrect = state.examAnswers[qId] === correctAns;
+    if (isCorrect) correct++;
+
+    const block = document.getElementById(qId);
+    const options = block.querySelectorAll('.option-label');
+    options.forEach(opt => {
+      opt.classList.add('disabled');
+      const radio = opt.querySelector('input');
+      radio.disabled = true;
+
+      const handler = opt.getAttribute('onclick');
+      const match = handler.match(/'([a-d])'\)$/);
+      if (match) {
+        if (match[1] === correctAns) opt.classList.add('correct');
+        else if (match[1] === state.examAnswers[qId] && !isCorrect) opt.classList.add('incorrect');
+      }
+    });
+  }
+
+  const pct = (correct / totalQ * 100);
+
+  // Supabase: registro automatico del examen, no depende de que el estudiante envie.
+  if (window.CP) CP.evento('examen_final', {
+    puntaje: correct, total: totalQ,
+    datos: { respuestas: state.examAnswers, segundos: elapsed }
+  });
+  document.getElementById('examResults').style.display = 'block';
+  document.getElementById('examScoreDisplay').textContent = correct + '/' + totalQ;
+  document.getElementById('examScoreBar').style.width = pct + '%';
+  document.getElementById('examScoreBar').style.background =
+    pct >= 80 ? 'var(--success)' : pct >= 60 ? 'var(--warning)' : 'var(--error)';
+
+  document.getElementById('examFeedbackText').textContent =
+    pct >= 80 ? 'Excelente dominio del tema. Competencia demostrada.' :
+    pct >= 60 ? 'Aprobado. Se recomienda reforzar los temas con respuestas incorrectas.' :
+    'No aprobado. Es necesario revisar el material y repetir la evaluación.';
+
+  document.getElementById('examTimeTaken').textContent =
+    'Tiempo utilizado: ' + Math.floor(elapsed / 60) + ' min ' + (elapsed % 60) + ' seg';
+
+  document.getElementById('submitExamBtn').style.display = 'none';
+  document.getElementById('examResults').scrollIntoView({ behavior: 'smooth' });
+
+  updateProgress();
+
+  // Auto-send to Google Sheets
+  if (state.registered) {
+    setTimeout(() => sendToGoogleSheets(), 500);
+  }
+}
+
+// ==========================================
+// PROGRESS
+// ==========================================
+function updateProgress() {
+  const totalItems = 3 + 1 + 1; // 3 sections + case + exam
+  let completed = state.sectionsCompleted.size;
+  if (state.caseStep > 3) completed++;
+  if (state.examSubmitted) completed++;
+
+  const pct = (completed / totalItems * 100);
+  document.getElementById('globalProgress').style.width = pct + '%';
+
+  const scoreTotal = state.quizCorrect + state.caseScore +
+    (state.examSubmitted ? Object.entries(state.examCorrectAnswers)
+      .filter(([k, v]) => state.examAnswers[k] === v).length : 0);
+  const maxScore = state.quizTotal + 3 +
+    (state.examSubmitted ? Object.keys(state.examCorrectAnswers).length : 0);
+
+  document.getElementById('globalScore').textContent = scoreTotal + '/' + maxScore;
+}
+
+// ==========================================
+// STUDENT REGISTRATION
+// ==========================================
+function registerStudent() {
+  const nombres = document.getElementById('stuNombres').value.trim();
+  const apellidos = document.getElementById('stuApellidos').value.trim();
+  const id = document.getElementById('stuId').value.trim();
+  const email = document.getElementById('stuEmail').value.trim();
+
+  // Validate
+  const fields = [
+    { el: 'stuNombres', val: nombres },
+    { el: 'stuApellidos', val: apellidos },
+    { el: 'stuId', val: id },
+    { el: 'stuEmail', val: email }
+  ];
+
+  let valid = true;
+  fields.forEach(f => {
+    const input = document.getElementById(f.el);
+    if (!f.val) {
+      input.classList.add('invalid');
+      valid = false;
+    } else {
+      input.classList.remove('invalid');
+    }
+  });
+
+  if (!valid) {
+    document.getElementById('registerError').style.display = 'inline';
+    return;
+  }
+
+  // Email format check
+  if (!email.includes('@') || !email.includes('.')) {
+    document.getElementById('stuEmail').classList.add('invalid');
+    document.getElementById('registerError').textContent = 'Ingresa un correo válido';
+    document.getElementById('registerError').style.display = 'inline';
+    return;
+  }
+
+  state.student = { nombres, apellidos, id, email };
+  state.registered = true;
+
+  // Supabase: identifica la sesion para que los eventos siguientes lleven nombre.
+  if (window.CP) {
+    CP.identificar({ nombre: nombres + ' ' + apellidos, correo: email, id: id });
+    CP.evento('registro');
+  }
+
+  document.getElementById('studentRegister').style.display = 'none';
+  document.getElementById('studentBadgeArea').style.display = 'block';
+  document.getElementById('studentBadge').textContent = '👤 ' + nombres + ' ' + apellidos + ' — ' + id;
+}
+
+// ==========================================
+// BUILD RESULTS TEXT
+// ==========================================
+function buildResultsText() {
+  const s = state.student || { nombres: 'No registrado', apellidos: '', id: 'N/A', email: 'N/A' };
+  const fecha = new Date().toLocaleString('es-CO');
+
+  // Quiz parciales score
+  const quizPct = state.quizTotal > 0 ? Math.round(state.quizCorrect / state.quizTotal * 100) : 0;
+
+  // Exam score
+  let examCorrect = 0;
+  const examTotal = Object.keys(state.examCorrectAnswers).length;
+  for (const [qId, correctAns] of Object.entries(state.examCorrectAnswers)) {
+    if (state.examAnswers[qId] === correctAns) examCorrect++;
+  }
+  const examPct = examTotal > 0 ? Math.round(examCorrect / examTotal * 100) : 0;
+
+  // Exam answers detail
+  const examDetailLines = Object.entries(state.examCorrectAnswers).map(([qId, correct]) => {
+    const answered = state.examAnswers[qId] || 'sin respuesta';
+    const isRight = answered === correct;
+    return '  ' + qId.toUpperCase() + ': ' + answered.toUpperCase() + (isRight ? ' ✓' : ' ✗ (correcta: ' + correct.toUpperCase() + ')');
+  }).join('\n');
+
+  const text = `═══════════════════════════════════
+RESULTADOS — Plataforma Clase Interactiva
+Manejo del Dolor en Cuidados Paliativos
+Módulo 3 · Diplomado "El Misterio del Dolor y la Muerte"
+═══════════════════════════════════
+
+DATOS DEL ESTUDIANTE
+  Nombres:   ${s.nombres} ${s.apellidos}
+  ID/CC:     ${s.id}
+  Correo:    ${s.email}
+  Fecha:     ${fecha}
+
+───────────────────────────────────
+QUIZ PARCIALES (durante la clase)
+  Correctas: ${state.quizCorrect}/${state.quizTotal} (${quizPct}%)
+
+CASO CLÍNICO
+  Decisiones óptimas: ${state.caseScore}/3
+
+EVALUACIÓN FINAL
+  Estado:    ${state.examSubmitted ? 'Completada' : 'No completada'}
+  Correctas: ${examCorrect}/${examTotal} (${examPct}%)
+  Detalle:
+${examDetailLines}
+
+───────────────────────────────────
+PUNTAJE GLOBAL
+  Total: ${state.quizCorrect + state.caseScore + examCorrect}/${state.quizTotal + 3 + examTotal}
+  Porcentaje: ${Math.round((state.quizCorrect + state.caseScore + examCorrect) / (state.quizTotal + 3 + examTotal) * 100)}%
+═══════════════════════════════════`;
+
+  return text;
+}
+
+// ==========================================
+// SEND BY EMAIL
+// ==========================================
+function sendByEmail() {
+  if (!state.registered) { alert('Primero regístrate con tus datos.'); return; }
+
+  const s = state.student;
+  const subject = encodeURIComponent(
+    'Resultados Clase — ' + s.nombres + ' ' + s.apellidos + ' — ' + s.id
+  );
+  const body = encodeURIComponent(buildResultsText());
+  const mailto = 'mailto:' + state.teacherEmail
+    + '?subject=' + subject
+    + '&body=' + body;
+
+  window.open(mailto, '_blank');
+}
+
+// ==========================================
+// COPY TO CLIPBOARD
+// ==========================================
+function copyResults() {
+  if (!state.registered) { alert('Primero regístrate con tus datos.'); return; }
+
+  const text = buildResultsText();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('✓ Resultados copiados al portapapeles');
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('✓ Resultados copiados al portapapeles');
+  } catch (e) {
+    showToast('No se pudo copiar. Intenta manualmente.');
+  }
+  document.body.removeChild(ta);
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('copyToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ==========================================
+// SEND BY WHATSAPP
+// ==========================================
+function sendByWhatsApp() {
+  if (!state.registered) { alert('Primero regístrate con tus datos.'); return; }
+
+  const text = buildResultsText();
+  const encoded = encodeURIComponent(text);
+  window.open('https://wa.me/?text=' + encoded, '_blank');
+}
+
+// ==========================================
+// SEND TO GOOGLE SHEETS (Automático)
+// ==========================================
+function sendToGoogleSheets() {
+  if (!state.registered) { alert('Primero regístrate con tus datos.'); return; }
+
+  const s = state.student;
+  const btn = document.getElementById('btnSheets');
+  const statusEl = document.getElementById('sheetsStatus');
+
+  // Calculate exam score
+  let examCorrect = 0;
+  const examTotal = Object.keys(state.examCorrectAnswers).length;
+  for (const [qId, correctAns] of Object.entries(state.examCorrectAnswers)) {
+    if (state.examAnswers[qId] === correctAns) examCorrect++;
+  }
+
+  const puntajeGlobal = state.quizCorrect + state.caseScore + examCorrect;
+  const totalPosible = state.quizTotal + 3 + examTotal;
+
+  const payload = {
+    nombres: s.nombres,
+    apellidos: s.apellidos,
+    id: s.id,
+    correo: s.email,
+    quizCorrectas: state.quizCorrect,
+    quizTotal: state.quizTotal,
+    casoClinico: state.caseScore + '/3',
+    examenCorrectas: examCorrect,
+    examenTotal: examTotal,
+    puntajeGlobal: puntajeGlobal + '/' + totalPosible + ' (' + Math.round(puntajeGlobal / totalPosible * 100) + '%)'
+  };
+
+  // Supabase: envio en paralelo. Si falla, el envio a Sheets sigue su curso.
+  if (window.CP) CP.evento('resultado_final', {
+    puntaje: puntajeGlobal, total: totalPosible,
+    datos: {
+      quizCorrectas: state.quizCorrect, quizTotal: state.quizTotal,
+      casoClinico: state.caseScore, examenCorrectas: examCorrect, examenTotal: examTotal
+    }
+  });
+
+  // Show sending state
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando...';
+  statusEl.style.display = 'block';
+  statusEl.textContent = 'Conectando con el servidor...';
+  statusEl.style.color = 'var(--text-muted)';
+
+  fetch(state.googleSheetsURL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    btn.textContent = '✅ Enviado correctamente';
+    btn.style.background = 'var(--success)';
+    statusEl.textContent = '✓ Tus resultados fueron registrados en la hoja de cálculo del docente.';
+    statusEl.style.color = 'var(--success)';
+  })
+  .catch((error) => {
+    btn.textContent = '❌ Error al enviar';
+    btn.style.background = 'var(--error)';
+    btn.disabled = false;
+    statusEl.textContent = 'No se pudo enviar. Intenta de nuevo o usa las opciones de correo/WhatsApp.';
+    statusEl.style.color = 'var(--error)';
+    setTimeout(() => {
+      btn.textContent = '📊 Reintentar envío automático';
+      btn.style.background = 'var(--success)';
+    }, 3000);
+  });
+}
+
+// ==========================================
+// EXPORT RESULTS (JSON for teacher)
+// ==========================================
+function exportResults() {
+  const s = state.student || { nombres: 'N/A', apellidos: 'N/A', id: 'N/A', email: 'N/A' };
+
+  const data = {
+    fecha: new Date().toLocaleString('es-CO'),
+    modulo: 'Manejo del Dolor en Cuidados Paliativos',
+    estudiante: {
+      nombres: s.nombres + ' ' + s.apellidos,
+      id: s.id,
+      correo: s.email
+    },
+    quizParciales: {
+      correctas: state.quizCorrect,
+      total: state.quizTotal,
+      detalle: state.quizAnswers
+    },
+    casoClinico: {
+      puntuacion: state.caseScore + '/3'
+    },
+    evaluacionFinal: {
+      completada: state.examSubmitted,
+      respuestas: state.examAnswers,
+      correctas: state.examCorrectAnswers
+    }
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'resultados_' + (s.id || 'clase') + '_' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ==========================================
+// INIT
+// ==========================================
+state.examTimeLeft = state.examDuration * 60;
+
+// --- SECRET TEACHER ACCESS ---
+// Method 1: URL parameter → tuurl.html?docente=true
+// Method 2: Keyboard shortcut → Ctrl + Shift + D
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('docente') === 'true') {
+    const pass = prompt('Contraseña de docente:');
+    if (pass === state.teacherPass) {
+      document.getElementById('configPanel').style.display = 'block';
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+      e.preventDefault();
+      const pass = prompt('Contraseña de docente:');
+      if (pass === state.teacherPass) {
+        document.getElementById('configPanel').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (pass !== null) {
+        alert('Contraseña incorrecta');
+      }
+    }
+  });
+})();
+</script>
+
+<script src="../assets/js/tracker.js" data-curso="dolor-manejo"></script>
+</body>
+</html>

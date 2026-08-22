@@ -1,0 +1,10 @@
+# Archivos de trabajo que no deben publicarse
+papelera/
+borradores/
+*.gsheet
+*.tmp
+Thumbs.db
+.DS_Store
+# Nunca subir claves privadas
+.env
+*.service_role*
