@@ -10,9 +10,9 @@
     {
       "id": "opioides", "categoria": "calculadoras",
       "titulo": "Equianalgesia opioide",
-      "resumen": "Conversión entre 11 opioides y DEMO. Incluye morfina 3% en gotas (presentación colombiana) y rotación a metadona (Ripamonti, Ayonrinde).",
+      "resumen": "Conversión entre 11 opioides y DEMO. Incluye el cambio de morfina clorhidrato 3 % a morfina sulfato 2 % del FNE (Circular 006 de 2026) con módulo de entrenamiento, y rotación a metadona (Ripamonti, Ayonrinde).",
       "url": "calculadoras/opioides.html",
-      "etiquetas": ["DEMO", "rotación", "metadona"], "version": "v5.2", "destacado": true
+      "etiquetas": ["DEMO", "rotación", "metadona", "FNE", "morfina 2 %"], "version": "v5.4", "destacado": true
     },
     {
       "id": "escalas-clinicas", "categoria": "calculadoras",

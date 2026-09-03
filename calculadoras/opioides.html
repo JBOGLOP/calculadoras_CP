@@ -158,6 +158,54 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 .infusion-eq-card .eq-rate{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--text);margin-top:0.15rem;}
 .infusion-eq-card .eq-conc{font-size:0.68rem;color:var(--text-muted);margin-top:0.2rem;font-style:italic;line-height:1.4;}
 
+/* ── EDUCACIÓN: cambio 3 % → 2 % (v5.4) ── */
+.edu-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:0.8rem;align-items:stretch;margin:1rem 0;}
+.edu-card{border-radius:var(--radius);padding:1rem;border:1.5px solid var(--border);background:var(--surface);}
+.edu-card.old{border-color:var(--red-500);background:var(--red-100);}
+.edu-card.new{border-color:var(--green-600);background:var(--green-100);}
+.edu-card h4{margin:0 0 0.5rem;font-size:0.85rem;letter-spacing:0.02em;}
+.edu-card .edu-key{font-size:1.6rem;font-weight:800;line-height:1.1;margin:0.3rem 0;}
+.edu-card.old .edu-key{color:var(--red-600);}
+.edu-card.new .edu-key{color:var(--green-600);}
+.edu-card ul{margin:0.5rem 0 0 1rem;padding:0;font-size:0.78rem;line-height:1.6;}
+.edu-arrow{display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:var(--teal-600);font-weight:700;}
+@media(max-width:720px){.edu-compare{grid-template-columns:1fr;}.edu-arrow{transform:rotate(90deg);}}
+.edu-formula{background:var(--purple-100);border:1.5px solid var(--purple-600);border-radius:var(--radius);
+  padding:1rem;margin:1rem 0;text-align:center;font-size:1rem;line-height:2;}
+.edu-formula .frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 0.3rem;}
+.edu-formula .frac .num{display:block;border-bottom:2px solid var(--purple-600);padding:0 0.4rem;}
+.edu-formula .frac .den{display:block;padding:0 0.4rem;}
+.edu-out{background:var(--teal-100);border:1.5px solid var(--teal-600);border-radius:var(--radius);
+  padding:1rem;margin-top:0.8rem;font-size:0.85rem;line-height:1.7;}
+.edu-out .big{font-size:1.5rem;font-weight:800;color:var(--teal-700);}
+.edu-tables{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:720px){.edu-tables{grid-template-columns:1fr;}}
+/* Entrenador */
+.quiz-box{border:1.5px solid var(--teal-600);border-radius:var(--radius);padding:1.1rem;margin-top:1rem;background:var(--surface);}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.74rem;
+  text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:600;margin-bottom:0.6rem;}
+.quiz-bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:0.9rem;}
+.quiz-bar span{display:block;height:100%;background:var(--teal-600);transition:width 0.3s;}
+.quiz-q{font-size:0.92rem;line-height:1.6;margin-bottom:0.9rem;}
+.quiz-scenario{background:var(--surface-alt);border-left:3px solid var(--teal-500);padding:0.7rem 0.9rem;
+  border-radius:6px;margin-bottom:0.8rem;font-size:0.84rem;line-height:1.6;}
+.quiz-opts{display:grid;gap:0.5rem;}
+.quiz-opt{text-align:left;padding:0.7rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;
+  background:var(--surface);cursor:pointer;font-size:0.84rem;font-family:inherit;color:var(--text);transition:all 0.15s;}
+.quiz-opt:hover:not(:disabled){border-color:var(--teal-600);background:var(--teal-100);}
+.quiz-opt:disabled{cursor:default;opacity:0.75;}
+.quiz-opt.right{border-color:var(--green-600);background:var(--green-100);font-weight:600;opacity:1;}
+.quiz-opt.wrong{border-color:var(--red-600);background:var(--red-100);opacity:1;}
+.quiz-fb{margin-top:0.9rem;padding:0.8rem 1rem;border-radius:8px;font-size:0.82rem;line-height:1.6;}
+.quiz-fb.ok{background:var(--green-100);border-left:3px solid var(--green-600);}
+.quiz-fb.no{background:var(--red-100);border-left:3px solid var(--red-600);}
+.quiz-work{font-family:var(--mono,ui-monospace,'Cascadia Code',Consolas,monospace);font-size:0.76rem;
+  background:var(--surface);border-radius:6px;padding:0.6rem 0.8rem;margin-top:0.5rem;white-space:pre-wrap;line-height:1.6;}
+.quiz-score{text-align:center;padding:1.2rem;}
+.quiz-score .pct{font-size:2.6rem;font-weight:800;color:var(--teal-700);line-height:1;}
+.edu-check{list-style:none;padding:0;margin:0.6rem 0 0;font-size:0.82rem;line-height:1.7;}
+.edu-check li{padding-left:1.6rem;position:relative;margin-bottom:0.4rem;}
+.edu-check li::before{content:'☐';position:absolute;left:0;font-size:1rem;color:var(--teal-600);}
 /* ── FRASCOS FNE (v5.2) ── */
 .frascos-box{background:linear-gradient(135deg,var(--warm-100) 0%,#F8EFDF 100%);border:1.5px solid var(--warm-600);border-radius:var(--radius);padding:1.2rem;margin-top:1rem;}
 .frascos-box .frascos-title{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--warm-700);margin-bottom:0.6rem;}
@@ -202,12 +250,13 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 <header class="header">
   <h1>💊 Calculadora de Equianalgesia Opioide</h1>
   <p class="subtitle">Dosis Equivalente de Morfina Oral (DEMO) · Rotación de Opioides</p>
-  <div class="version">v5.2 · Mayo 2026 · Cálculo de frascos FNE para prescripción</div>
+  <div class="version">v5.4 · Septiembre 2026 · Cambio FNE morfina 3 % → 2 % · Módulo de entrenamiento</div>
   <div class="badge-row">
     <span class="badge">MASCC-ASCO 2025</span>
     <span class="badge">ANZCA Oct 2025</span>
     <span class="badge">CPIC 2024 (CYP2B6)</span>
     <span class="badge">Colombia 🇨🇴 FNE/INVIMA</span>
+    <span class="badge">Circular FNE 006/2026</span>
   </div>
 </header>
 
@@ -227,6 +276,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
   <button class="pill" onclick="showSection('rotacion',this)">🔄 Rotación</button>
   <button class="pill" onclick="showSection('colombia',this)">🇨🇴 Colombia</button>
   <button class="pill" onclick="showSection('frascos',this)">💊 Frascos FNE</button>
+  <button class="pill" onclick="showSection('edu',this)">🎓 Cambio 3 %→2 %</button>
   <button class="pill" onclick="showSection('refs',this)">📚 Referencias</button>
 </nav>
 
@@ -437,7 +487,19 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
     </div>
 
     <div class="alert alert-info" style="margin-top:0.8rem;">
-      <strong>🇨🇴 Morfina solución oral 3 % (Colombia):</strong> Presentación FNE (Fondo Nacional de Estupefacientes) — única forma oral de morfina disponible en el país por monopolio del Estado (Resolución 1478/2006). <strong>30 mg/mL · 1 gota ≈ 1,25 mg morfina</strong> (~0,042 mL/gota con gotero estándar). Equivalencias rápidas: 8 gotas ≈ 10 mg · 16 gotas ≈ 20 mg · 24 gotas ≈ 30 mg. La calculadora acepta dosis en gotas cuando se selecciona «Oral (solución 3 % — gotas)» para morfina.
+      <strong>🇨🇴 Morfina solución oral 3 % (Colombia):</strong> Presentación FNE (Fondo Nacional de Estupefacientes) — morfina <strong>clorhidrato</strong>, históricamente la única forma oral de morfina disponible en el país por monopolio del Estado (Resolución 1478/2006). <strong>30 mg/mL · 24 gotas/mL · 1 gota = 1,25 mg morfina</strong> (~0,042 mL/gota). Equivalencias rápidas: 10 gotas = 12,5 mg · 20 gotas = 25 mg · 24 gotas = 30 mg = 1 mL. <strong>⚠ En agotamiento:</strong> cerró el único laboratorio fabricante y el FNE está contratando uno nuevo, por lo que esta presentación <strong>no estará disponible</strong>; al agotarse el inventario se distribuirá la solución 2 % (Circular Externa FNE 006 de 2026). Ver la pestaña <strong>🎓 Cambio 3 %→2 %</strong> para el ajuste de dosis.
+    </div>
+
+    <div class="alert alert-info" style="margin-top:0.8rem;">
+      <strong>🆕 🇨🇴 Morfina sulfato solución oral 2 % — nueva concentración (INVIMA, Acta 08 de 2025):</strong> La Sala Especializada de Medicamentos y Productos Biológicos de la Comisión Revisora (Acta No. 08 de 2025, primera parte, numeral 3.1.6.1; expediente 20308861, radicado 20251152462) recomendó aprobar la <strong>evaluación farmacológica sin fines de registro sanitario</strong> de morfina sulfato solución oral 2 % e incluirla <strong>de manera temporal en el Listado de Medicamentos Vitales No Disponibles (LMVND)</strong>, con el <strong>FNE como titular y responsable exclusivo</strong> de su comercialización en el territorio nacional, y su inclusión en el «Anexo 3 — Listado de medicamentos de control especial monopolio del Estado» de la Resolución 315 de 2020.
+      <ul style="margin:0.5rem 0 0 1.1rem;line-height:1.7;">
+        <li><strong>Composición:</strong> 2 g de morfina sulfato / 100 mL → <strong>20 mg/mL</strong> (ATC N02AA01 · Norma farmacológica 19.2.0.0.N10 · venta con fórmula médica).</li>
+        <li><strong>Sal distinta a la del 3 %:</strong> el 3 % es morfina <em>clorhidrato</em>; el 2 % es morfina <em>sulfato</em>. Para efectos de equianalgesia se manejan como morfina oral (factor ×1 sobre DEMO); la diferencia relevante es la <strong>concentración</strong>, no la potencia.</li>
+        <li><strong>Dosificación del acta, en mg y mL:</strong> adultos 10–20 mg (0,5–1,0 mL) c/4 h, máx. 120 mg/día. Pediatría: 13–18 años 5–20 mg (0,25–1,0 mL) c/4 h, máx. 120 mg/día · 6–12 años 5–10 mg (0,25–0,5 mL) c/4 h, máx. 60 mg/día · 1–5 años 5 mg (0,25 mL) c/4 h, máx. 30 mg/día · <strong>menores de 1 año: no recomendado</strong>. Los topes son los del acta para la indicación «analgésico narcótico»; en dolor oncológico avanzado la titulación al alza bajo supervisión médica es práctica estándar.</li>
+        <li><strong>💧 Cuentagotas oficial — 22 gotas = 1 mL = 20 mg ⇒ 0,91 mg/gota:</strong> el FNE importó el producto de <strong>Kwality Pharmaceuticals</strong> en frasco de <strong>20 mL con cuentagotas (400 mg)</strong>. La equivalencia por gota fue precisada en la <strong>Fe de Errata</strong> del FNE tras el webinar «Socialización morfina solución oral 2 %» del 19 de marzo de 2026: en la sesión se dijo «~1 mg por gota» y <strong>el valor correcto es 0,91 mg/gota</strong> (1 mL = 22 gotas).</li>
+        <li><strong>🚨 NI las gotas NI los mL son intercambiables entre las dos soluciones:</strong> 1 gota de la 3 % = <strong>1,25 mg</strong>; 1 gota de la 2 % = <strong>0,91 mg</strong>. Mantener el mismo número de gotas al cambiar de presentación entrega <strong>27 % menos morfina</strong> — riesgo de dolor no controlado y de síndrome de abstinencia. Ecuación oficial de ajuste del FNE: <strong>gotas 2 % = gotas 3 % × 1,25 ÷ 0,91</strong> (≈ ×1,37). Y en volumen: 1 mL = 30 mg en la 3 % frente a 20 mg en la 2 %. Practicar el ajuste en la pestaña <strong>🎓 Cambio 3 %→2 %</strong>.</li>
+        <li><strong>⚠ Riesgo de error de dosificación:</strong> <strong>prescribir siempre en mg</strong>, acompañado del volumen o las gotas <em>y de la concentración</em> («morfina sulfato 2 % — 10 mg = 0,5 mL = 8 gotas c/4 h»). Verificar la etiqueta del frasco entregado; no reutilizar el cuentagotas de un frasco en otro.</li>
+      </ul>
     </div>
 
     <div class="alert alert-warning">
@@ -774,11 +836,12 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
     <h2>🇨🇴 Contexto Colombiano — Disponibilidad y Normativa</h2>
     <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">La práctica colombiana de equianalgesia opioide está condicionada por el monopolio del Estado sobre estupefacientes (Fondo Nacional de Estupefacientes — FNE, Resolución 1478/2006) y la disponibilidad limitada de algunas presentaciones.</p>
 
-    <h3 style="margin:0.8rem 0 0.6rem;">Disponibilidad por presentación (mayo 2026)</h3>
+    <h3 style="margin:0.8rem 0 0.6rem;">Disponibilidad por presentación (septiembre 2026)</h3>
     <table class="ref-table">
       <thead><tr><th>Opioide</th><th>Presentación</th><th>Vía</th><th>Disponibilidad</th></tr></thead>
       <tbody>
-        <tr><td><strong>Morfina</strong></td><td>Solución 3% (30 mg/mL) FNE</td><td>Oral</td><td style="color:var(--green-600);font-weight:600;">✓ Disponible (única forma oral)</td></tr>
+        <tr><td><strong>Morfina</strong></td><td>Solución 3 % (30 mg/mL) — clorhidrato, FNE<br><span style="font-size:0.72rem;color:var(--text-muted);">frasco 30 mL · 24 gotas/mL · 1,25 mg/gota</span></td><td>Oral</td><td style="color:var(--red-600);font-weight:600;">✗ En agotamiento — cerró el fabricante (Circ. FNE 006/2026)</td></tr>
+        <tr style="background:var(--warm-100);"><td><strong>Morfina</strong></td><td><strong>Solución 2 % (20 mg/mL) — sulfato, FNE</strong> 🆕<br><span style="font-size:0.72rem;color:var(--text-muted);">frasco 20 mL c/cuentagotas · 22 gotas/mL · 0,91 mg/gota · Kwality Pharmaceuticals</span></td><td>Oral</td><td style="color:var(--green-600);font-weight:600;">✓ Reemplaza a la 3 % — importada por el FNE</td></tr>
         <tr><td><strong>Morfina</strong></td><td>Ampolla 10 mg/mL FNE</td><td>IV / SC</td><td style="color:var(--green-600);font-weight:600;">✓ Disponible</td></tr>
         <tr><td><strong>Morfina</strong></td><td>Tabletas LI (Sevredol) / LP (MST)</td><td>Oral</td><td style="color:var(--red-600);font-weight:600;">✗ No disponible</td></tr>
         <tr><td><strong>Codeína</strong></td><td>Combinaciones (acetaminofén, AINE)</td><td>Oral</td><td style="color:var(--green-600);font-weight:600;">✓ Disponible</td></tr>
@@ -833,20 +896,36 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 <!-- ═══════════════════════════════════════ -->
 <div class="section" id="sec-frascos">
   <div class="card">
-    <h2>💊 Cálculo de Frascos — Morfina Solución 3 % FNE</h2>
-    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Calcular cuántos frascos de morfina solución oral 3 % del FNE (Fondo Nacional de Estupefacientes) se requieren para una prescripción, según dosis basal + rescates × periodo de validez de la fórmula. Específico del contexto colombiano por el monopolio del Estado sobre estupefacientes (Resolución 1478/2006).</p>
+    <h2>💊 Cálculo de Frascos — Morfina Solución Oral FNE (2 % y 3 %)</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Calcular cuántos frascos de morfina solución oral del FNE (Fondo Nacional de Estupefacientes) se requieren para una prescripción, según dosis basal + rescates × periodo de validez de la fórmula. Específico del contexto colombiano por el monopolio del Estado sobre estupefacientes (Resolución 1478/2006). Incluye la <strong>nueva concentración 2 % (morfina sulfato, 20 mg/mL)</strong> aprobada por INVIMA en el Acta 08 de 2025 SEMPB e incluida en el Listado de Medicamentos Vitales No Disponibles.</p>
 
-    <h3 style="margin:0.8rem 0 0.5rem;">📦 Datos de la presentación FNE</h3>
+    <h3 style="margin:0.8rem 0 0.5rem;">🧴 Presentación dispensada</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Concentración de la solución</label>
+        <select id="presSelect" onchange="onPresChange()">
+          <option value="3" selected>3 % — 30 mg/mL (morfina clorhidrato)</option>
+          <option value="2">2 % — 20 mg/mL (morfina sulfato) 🆕</option>
+        </select>
+        <span class="hint">Verificar la etiqueta del frasco entregado por la farmacia FNE</span>
+      </div>
+      <div class="form-group">
+        <label>Volumen por frasco (mL)</label>
+        <input type="number" id="frascoVol" min="1" step="any" value="30">
+        <span class="hint" id="frascoVolHint">Presentación FNE estándar: 30 mL</span>
+      </div>
+    </div>
+
+    <div class="alert alert-warning" style="margin-top:0.6rem;">
+      <strong>🚨 2 % y 3 % NO son intercambiables, ni en mL ni en gotas:</strong> 1 mL = <strong>20 mg</strong> en la 2 % y <strong>30 mg</strong> en la 3 %; 1 gota = <strong>0,91 mg</strong> en la 2 % (22 gotas/mL) y <strong>1,25 mg</strong> en la 3 % (24 gotas/mL). Repetir el mismo número de gotas al cambiar de frasco entrega <strong>27 % menos morfina</strong>. Confirmar la presentación dispensada antes de calcular y prescribir en <strong>mg + gotas + concentración</strong>.
+    </div>
+
+    <h3 style="margin:1.2rem 0 0.5rem;">📦 Datos de la presentación seleccionada</h3>
     <table class="ref-table">
       <thead><tr><th>Parámetro</th><th>Valor</th><th>Equivalencia</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Concentración</strong></td><td>30 mg/mL (3 %)</td><td>—</td></tr>
-        <tr><td><strong>Volumen por frasco</strong></td><td>30 mL</td><td>≈ 720 gotas</td></tr>
-        <tr style="background:var(--warm-100);"><td><strong>Morfina total por frasco</strong></td><td><strong>900 mg</strong></td><td>1 frasco = 900 mg morfina oral</td></tr>
-        <tr><td><strong>1 gota</strong></td><td>1,25 mg morfina</td><td>≈ 0,042 mL</td></tr>
-        <tr><td><strong>1 mL</strong></td><td>30 mg morfina</td><td>≈ 24 gotas</td></tr>
-      </tbody>
+      <tbody id="presTableBody"><!-- generado por JS --></tbody>
     </table>
+    <p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-top:0.4rem;" id="presTableNote"></p>
 
     <h3 style="margin:1.2rem 0 0.5rem;">💧 Dosis basal (mantenimiento)</h3>
     <div class="form-row">
@@ -862,6 +941,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
           <option value="mg">mg</option>
           <option value="mL">mL</option>
         </select>
+        <span class="hint" id="basalUnitHint">1 gota = 1,25 mg (sol. 3 %)</span>
       </div>
       <div class="form-group">
         <label>Frecuencia</label>
@@ -889,6 +969,7 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
           <option value="mg">mg</option>
           <option value="mL">mL</option>
         </select>
+        <span class="hint" id="rescueUnitHint">1 gota = 1,25 mg (sol. 3 %)</span>
       </div>
       <div class="form-group">
         <label>Rescates esperados/día</label>
@@ -915,15 +996,182 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
     <div id="frascosResult"></div>
 
     <div class="alert alert-info" style="margin-top:1.2rem;">
-      <strong>📋 Prescripción FNE en Colombia:</strong> La morfina solución oral 3 % se prescribe en formulario oficial controlado (recipe oficial, en duplicado o triplicado según jurisdicción). La fórmula tiene vigencia máxima de 30 días. Algunas EPS y aseguradoras limitan a 15 días. La dispensación se realiza únicamente en farmacias autorizadas FNE o Fondos Rotatorios de Estupefacientes departamentales. <strong>Anticipar 24–72 h</strong> el trámite de renovación para evitar interrupción del tratamiento.
+      <strong>📋 Prescripción FNE en Colombia:</strong> La morfina solución oral (2 % y 3 %) se prescribe en formulario oficial controlado (recipe oficial, en duplicado o triplicado según jurisdicción). La fórmula tiene vigencia máxima de 30 días. Algunas EPS y aseguradoras limitan a 15 días. La dispensación se realiza únicamente en farmacias autorizadas FNE o Fondos Rotatorios de Estupefacientes departamentales. <strong>Anticipar 24–72 h</strong> el trámite de renovación para evitar interrupción del tratamiento.
     </div>
 
     <div class="alert alert-warning" style="margin-top:0.5rem;">
       <strong>⚠ Desabastecimiento intermitente:</strong> El FNE tiene historial de desabastecimiento, particularmente en zonas rurales, PDET y municipios pequeños. Si la disponibilidad es incierta, considerar prescripción conjunta de un opioide alternativo (oxicodona LP comercial, fentanilo TD) como respaldo, o coordinar con la farmacia institucional la reserva del medicamento.
     </div>
 
+    <div class="alert alert-info" style="margin-top:0.5rem;">
+      <strong>🆕 Sobre la solución 2 % (morfina sulfato):</strong> Aprobada por INVIMA como <em>evaluación farmacológica sin fines de registro sanitario</em> e incluida <strong>temporalmente</strong> en el Listado de Medicamentos Vitales No Disponibles (Acta 08 de 2025 SEMPB, num. 3.1.6.1), con el FNE como titular exclusivo. El FNE la importó de <strong>Kwality Pharmaceuticals</strong> en <strong>frasco de 20 mL (400 mg)</strong> y la distribuirá al agotarse el inventario de la 3 % (Circular Externa 006 de 2026). Aplica la <strong>circular DG-100-00022-13</strong> sobre importación de vitales no disponibles, el reporte de eventos adversos al <strong>Programa Nacional de Farmacovigilancia</strong> y el reporte periódico a <strong>SISMED</strong>.
+      <br><br><strong>📒 Registro de control especial:</strong> las inscripciones vigentes ante el FNE o los Fondos Rotatorios que autorizaban la morfina clorhidrato 3 % <strong>se entienden extensivas a la morfina sulfato 2 %</strong> — no hay que tramitar modificación de resoluciones. Pero el movimiento de cada presentación debe registrarse <strong>por separado</strong>: al adquirir la 2 % hay que abrir una <strong>línea u hoja nueva</strong> en el libro de control, sin afectar el registro previo de la 3 %.
+    </div>
+
     <div class="alert alert-purple" style="margin-top:0.5rem;">
       <strong>📌 Almacenamiento y vida útil:</strong> Conservar a temperatura ambiente (15–25 °C), protegido de la luz. La solución abierta mantiene estabilidad química durante el periodo etiquetado por el fabricante (típicamente 4–6 semanas tras apertura). Educar al paciente/cuidador sobre: (a) técnica de goteo correcta (frasco invertido, gotero perpendicular), (b) almacenamiento seguro fuera del alcance de niños, (c) devolución del frasco vacío a la farmacia FNE (algunas jurisdicciones lo exigen).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION: EDUCACIÓN — CAMBIO 3 % → 2 %  -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="sec-edu">
+  <div class="card">
+    <h2>🎓 Cambio de presentación: morfina oral 3 % → 2 %</h2>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">Módulo de entrenamiento para el cambio de <strong>morfina clorhidrato 3 %</strong> (frasco 30 mL) a <strong>morfina sulfato 2 %</strong> (frasco 20 mL) en Colombia. Contenido basado en la <strong>Circular Externa 006 de 2026 del FNE</strong>, la <strong>Fe de Errata</strong> del webinar del 19 de marzo de 2026 y el <strong>Acta 08 de 2025 SEMPB del INVIMA</strong>.</p>
+
+    <div class="alert alert-warning">
+      <strong>📢 Por qué cambia:</strong> cerró el <strong>único laboratorio</strong> que fabricaba la morfina clorhidrato 3 % solución oral. Mientras el FNE contrata un nuevo fabricante, esa presentación <strong>no estará disponible</strong>. El FNE importó <strong>morfina sulfato 2 % solución oral, frasco × 20 mL</strong> (Kwality Pharmaceuticals) y la distribuirá <strong>una vez se agote el inventario de la 3 %</strong>. Es un <strong>reemplazo temporal</strong>, no una descontinuación definitiva.
+    </div>
+
+    <!-- ═══ 1. LOS CINCO CAMBIOS ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">1️⃣ Los cinco cambios del producto</h3>
+    <div class="edu-compare">
+      <div class="edu-card old">
+        <h4>😴 Morfina CLORHIDRATO 3 %</h4>
+        <div class="edu-key">1,25 mg<span style="font-size:0.9rem;font-weight:600;"> / gota</span></div>
+        <ul>
+          <li>Frasco <strong>30 mL</strong> = 900 mg</li>
+          <li><strong>30 mg/mL</strong> · 24 gotas/mL</li>
+          <li>Sal: <strong>clorhidrato</strong></li>
+          <li>Fabricación <strong>nacional</strong></li>
+          <li style="color:var(--red-600);font-weight:600;">Saliendo del mercado</li>
+        </ul>
+      </div>
+      <div class="edu-arrow">➜</div>
+      <div class="edu-card new">
+        <h4>🆕 Morfina SULFATO 2 %</h4>
+        <div class="edu-key">0,91 mg<span style="font-size:0.9rem;font-weight:600;"> / gota</span></div>
+        <ul>
+          <li>Frasco <strong>20 mL</strong> = 400 mg</li>
+          <li><strong>20 mg/mL</strong> · 22 gotas/mL</li>
+          <li>Sal: <strong>sulfato</strong></li>
+          <li><strong>Importado</strong> (Kwality Pharm.)</li>
+          <li style="color:var(--green-600);font-weight:600;">Reemplazo temporal</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-muted);font-style:italic;">Cambian <strong>cinco cosas a la vez</strong>: envase, sal, concentración, volumen y fabricante. El FNE aclara que el cambio de sal <em>no</em> altera el perfil farmacológico — clorhidrato y sulfato son la misma entidad terapéutica con potencia equivalente <strong>a dosis iguales de principio activo</strong> (OMS 2012). Lo que sí cambia la dosis entregada es la <strong>concentración y el cuentagotas</strong>.</p>
+
+    <!-- ═══ 2. EL ERROR QUE HAY QUE EVITAR ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">2️⃣ El error que hay que evitar</h3>
+    <div class="alert alert-danger">
+      <strong>🚨 Repetir el mismo número de gotas entrega 27 % menos morfina.</strong><br>
+      Si un paciente venía con <strong>20 gotas c/4 h de la 3 %</strong> (= 25 mg por toma) y se le entrega la 2 % con la <em>misma</em> orden de 20 gotas, recibe <strong>18,2 mg</strong> por toma: una reducción del 27 % que puede desencadenar <strong>dolor no controlado y síndrome de abstinencia</strong>. Toda fórmula vigente en gotas <strong>debe reescribirse</strong>.
+    </div>
+    <div class="alert alert-purple">
+      <strong>📌 Ojo con la cifra que circuló en el webinar:</strong> en la sesión de socialización del <strong>19 de marzo de 2026</strong> se mencionó «aproximadamente <strong>1 mg por gota</strong>». El FNE emitió una <strong>Fe de Errata</strong>: el valor correcto es <strong>0,91 mg/gota</strong> (1 mL = 22 gotas). Usar 1 mg/gota <strong>sobreestima</strong> lo que recibe el paciente en ~10 %.
+    </div>
+
+    <!-- ═══ 3. ECUACIÓN Y CONVERSOR ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">3️⃣ Ecuación oficial de ajuste</h3>
+    <div class="edu-formula">
+      <strong>ND<sub>2 %</sub></strong> =
+      <span class="frac"><span class="num">D<sub>3 %</sub> × 1,25 mg/gota</span><span class="den">0,91 mg/gota</span></span>
+      = D<sub>3 %</sub> × <strong>1,374</strong>
+      <div style="font-size:0.74rem;color:var(--text-muted);margin-top:0.4rem;line-height:1.5;">
+        <strong>D<sub>3 %</sub></strong>: gotas de morfina clorhidrato 3 % que se venían formulando ·
+        <strong>ND<sub>2 %</sub></strong>: nuevas gotas de morfina sulfato 2 % a formular
+      </div>
+    </div>
+
+    <h4 style="margin:1.2rem 0 0.5rem;font-size:0.9rem;">🔄 Conversor de fórmula</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dosis actual con la solución 3 %</label>
+        <input type="number" id="eduDose" min="0" step="any" placeholder="Ej: 20">
+        <span class="hint">Cantidad por toma</span>
+      </div>
+      <div class="form-group">
+        <label>Unidad</label>
+        <select id="eduUnit">
+          <option value="gotas">gotas</option>
+          <option value="mg">mg</option>
+          <option value="mL">mL</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Frecuencia</label>
+        <select id="eduFreq">
+          <option value="4" selected>Cada 4 h (×6/día)</option>
+          <option value="6">Cada 6 h (×4/día)</option>
+          <option value="8">Cada 8 h (×3/día)</option>
+          <option value="12">Cada 12 h (×2/día)</option>
+          <option value="24">Cada 24 h (×1/día)</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.8rem;">
+      <button class="btn btn-primary" onclick="eduConvertir()">🔄 Convertir a solución 2 %</button>
+      <button class="btn btn-secondary" onclick="eduLimpiar()">↺ Limpiar</button>
+    </div>
+    <div id="eduResult"></div>
+
+    <!-- ═══ 4. TABLA OFICIAL ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">4️⃣ Tabla oficial de equivalencia (FNE)</h3>
+    <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">Cada columna es la escala <em>gotas → mg</em> de su propia presentación. <strong>Las filas no se corresponden entre sí</strong>: para pasar de una a otra hay que igualar los <strong>mg</strong>, no el número de gotas.</p>
+    <div class="edu-tables">
+      <div>
+        <table class="ref-table" style="margin-top:0;">
+          <thead><tr><th colspan="2">💧 Morfina CLORHIDRATO 3 % · 1,25 mg/gota</th></tr>
+          <tr><th>Dosis (mg)</th><th># de gotas</th></tr></thead>
+          <tbody id="eduTabla3"></tbody>
+        </table>
+      </div>
+      <div>
+        <table class="ref-table" style="margin-top:0;">
+          <thead><tr><th colspan="2">💧 Morfina SULFATO 2 % · 0,91 mg/gota</th></tr>
+          <tr><th>Dosis (mg)</th><th># de gotas</th></tr></thead>
+          <tbody id="eduTabla2"></tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;">Bases de cálculo del FNE: 30 mg/mL ÷ 24 gotas/mL = 1,25 mg/gota · 20 mg/mL ÷ 22 gotas/mL = 0,91 mg/gota.</p>
+
+    <!-- ═══ 5. ENTRENADOR ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">5️⃣ Entrenador — practica el cambio</h3>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:0.6rem;">Ocho casos generados al azar: ajuste de fórmula, cálculo de gotas y mg, frascos a despachar y decisiones de seguridad. Cada respuesta muestra el desarrollo completo.</p>
+    <div id="quizContainer">
+      <button class="btn btn-primary" onclick="eduIniciarQuiz()">🎯 Iniciar entrenamiento</button>
+    </div>
+
+    <!-- ═══ 6. CHECKLIST ═══ -->
+    <h3 style="margin:1.4rem 0 0.5rem;">6️⃣ Lista de verificación para el cambio</h3>
+    <div class="alert alert-info">
+      <strong>👨‍⚕️ Prescriptor</strong>
+      <ul class="edu-check">
+        <li>Reescribir la fórmula: <strong>gotas 2 % = gotas 3 % × 1,374</strong> (redondear a gota entera).</li>
+        <li>Prescribir en <strong>mg</strong>, acompañado de gotas <em>y</em> de la concentración: «morfina sulfato 2 % — 25 mg = 28 gotas c/4 h».</li>
+        <li>Recalcular también la <strong>dosis de rescate</strong> (10–15 % de la dosis diaria).</li>
+        <li>Programar <strong>control clínico temprano</strong> tras el cambio (dolor y signos de abstinencia).</li>
+        <li>Verificar que el volumen despachado alcance: el frasco pasa de 900 mg a <strong>400 mg</strong>.</li>
+      </ul>
+    </div>
+    <div class="alert alert-info">
+      <strong>💊 Farmacia / servicio farmacéutico</strong>
+      <ul class="edu-check">
+        <li><strong>No</strong> se requiere modificar la resolución de inscripción: la autorización vigente para la 3 % <strong>se entiende extensiva</strong> a la 2 % (Circular FNE 006/2026).</li>
+        <li>Abrir una <strong>línea u hoja nueva</strong> en el libro de control especial para la morfina sulfato 2 %, sin afectar el registro de la 3 %.</li>
+        <li>Reportar consumos, devoluciones y movimientos <strong>por separado para cada presentación</strong>.</li>
+        <li>Mantener las mismas condiciones de almacenamiento, custodia y trazabilidad.</li>
+        <li>Alertar al prescriptor si llega una fórmula en gotas <strong>sin ajustar</strong>.</li>
+      </ul>
+    </div>
+    <div class="alert alert-info">
+      <strong>🧑‍🤝‍🧑 Paciente y cuidador</strong>
+      <ul class="edu-check">
+        <li>Explicar que <strong>el frasco cambia de aspecto</strong> (envase más pequeño, etiqueta en inglés «Morphine Sulfate Oral solution 20 mg/mL»).</li>
+        <li>Insistir en que <strong>el número de gotas cambia</strong> aunque la dosis en mg sea la misma.</li>
+        <li>Entregar la equivalencia por escrito y verificar que la repitan.</li>
+        <li>Usar <strong>siempre el cuentagotas del propio frasco</strong>; no intercambiar goteros.</li>
+        <li>Consultar si reaparece el dolor o hay bostezos, sudoración, diarrea o ansiedad (abstinencia).</li>
+      </ul>
+    </div>
+
+    <div class="alert alert-warning" style="margin-top:1rem;">
+      <strong>⚠ Alcance de este módulo:</strong> herramienta educativa. Las cifras provienen de comunicaciones oficiales del FNE vigentes a la fecha indicada; <strong>verificar siempre la etiqueta y el inserto del frasco efectivamente dispensado</strong>, ya que el fabricante importado puede cambiar en futuras adquisiciones y con él la calibración del cuentagotas.
     </div>
   </div>
 </div>
@@ -999,13 +1247,22 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
       <li><strong>McPherson ML.</strong> Demystifying Opioid Conversion Calculations: A Guide for Effective Dosing. 2nd ed. Bethesda, MD: ASHP; 2014.</li>
       <li><strong>Ley 1733 de 2014</strong> (Colombia, Ley Consuelo Devis Saavedra), modificada por <strong>Ley 2241 de 2022</strong>.</li>
       <li><strong>Resolución 1478 de 2006</strong> (MinSalud Colombia), modificada por Res. 0262/2009 y 2335/2009. Sobre el FNE.</li>
+      <li><strong>INVIMA — Comisión Revisora, Sala Especializada de Medicamentos y Productos Biológicos. Acta No. 08 de 2025, primera parte</strong> (sesión ordinaria 29–31 jul. y 1, 4, 5, 6 ago. 2025), numeral <strong>3.1.6.1 Morfina sulfato solución oral 2 %</strong> — expediente 20308861, radicado 20251152462. Evaluación farmacológica sin fines de registro sanitario e inclusión temporal en el Listado de Medicamentos Vitales No Disponibles; titular exclusivo FNE; inclusión en el Anexo 3 de la Resolución 315 de 2020.</li>
+      <li><strong>INVIMA — Comisión Revisora SEMPB. Acta No. 04 de 2025, segunda parte</strong>, numeral <strong>3.1.12.1 Morfina clorhidrato solución oral 3 %</strong> — radicado 20251016931. Inclusión temporal en el Listado de Medicamentos Vitales No Disponibles ante la cancelación de BPM del único fabricante; aclara que la sal aprobada en norma farmacológica 19.2.0.0.N10 es <em>clorhidrato</em> y que nuevas concentraciones requieren trámite previo de evaluación farmacológica.</li>
+      <li><strong>Decreto 481 de 2004</strong> y <strong>Decreto 2498 de 2018</strong> (Colombia). Reglamento técnico de medicamentos vitales no disponibles. <strong>Circular DG-100-00022-13</strong> (INVIMA): autorización de importación de vitales no disponibles para más de un paciente.</li>
+      <li><strong>Resolución 315 de 2020</strong> (MinSalud Colombia). Anexo 3 — Listado de medicamentos de control especial monopolio del Estado.</li>
+      <li><strong>U.A.E. Fondo Nacional de Estupefacientes. Circular Externa 006 de 2026</strong> (Bogotá, 27 de febrero de 2026; Director Milver Rojas). «Alcance de las autorizaciones vigentes para el manejo de Morfina solución oral, en sus diferentes sales y concentraciones». Informa la importación de <strong>Morfina Sulfato 2 % solución oral frasco × 20 mL</strong>, la <strong>no disponibilidad de la Morfina Clorhidrato 3 % frasco × 30 mL</strong> por cierre de su único fabricante, la <strong>extensión automática de las inscripciones vigentes</strong> a la nueva sal y la obligación de <strong>registro independiente por presentación</strong> en los libros de control especial. Fundamento: Decreto 120 de 2026 art. 40; Resolución 1478 de 2006 arts. 6 y 74; Resolución 0116 de 2026, Anexo Técnico 1.</li>
+      <li><strong>U.A.E. Fondo Nacional de Estupefacientes.</strong> «Aclaración técnica: corrección en equivalencia de dosis por gota» — <strong>Fe de Errata</strong> del webinar «Socialización morfina solución oral 2 %» (19 de marzo de 2026): la equivalencia correcta es de <strong>0,91 mg por gota</strong>, considerando que <strong>1 mL equivale a 22 gotas</strong>, y no el valor aproximado de 1 mg/gota indicado en la sesión. Incluye la tabla oficial de equivalencia de dosis y la ecuación de ajuste <em>ND<sub>2 %</sub> = D<sub>3 %</sub> × 1,25 ÷ 0,91</em>. Disponible en <a href="https://fne.minsalud.gov.co/" target="_blank" style="color:var(--teal-600);">fne.minsalud.gov.co</a>.</li>
+      <li><strong>Organización Mundial de la Salud (2012).</strong> Directrices sobre el tratamiento farmacológico del dolor persistente en niños con enfermedades médicas. — Referencia citada por el FNE para sustentar la equivalencia terapéutica entre morfina clorhidrato y morfina sulfato en formulaciones orales a dosis iguales de principio activo.</li>
       <li><strong>Resoluciones 1124/2016, 825/2018, 971/2021</strong> (MinSalud Colombia). Cuidados paliativos y final de vida.</li>
       <li><strong>GPC MinSalud-FNE-IETS 2022.</strong> Guía de Práctica Clínica para el tratamiento con opioides del dolor crónico no oncológico en población adulta y pediátrica en Colombia.</li>
     </ol>
 
     <details class="changelog">
       <summary>📋 Registro de cambios (changelog)</summary>
-      <p style="margin-top:0.5rem;"><strong>v5.2 — Mayo 2026:</strong> Nueva funcionalidad de <strong>cálculo de frascos FNE</strong> para prescripción de morfina solución oral 3 % (30 mL · 900 mg · monopolio FNE). Sección dedicada "💊 Frascos FNE" con inputs flexibles (gotas / mg / mL) para basal y rescate, frecuencia configurable, número estimado de rescates/día, y periodo de prescripción (max 30 días por vigencia FNE). Resultado con visualización gráfica (🧴), desglose completo del consumo diario y total, frascos requeridos redondeados al alza, y cobertura adicional del último frasco. Auto-cálculo integrado en el panel principal cuando se selecciona morfina sol 3 % gotas (asumiendo rescate de 12,5 % × 3 episodios/día, periodo de 30 días). Alertas inteligentes: consumo &gt;1 frasco/día, rescates &gt;50 % de basal (indicando basal insuficiente), almacenamiento y vida útil del frasco abierto.</p>
+      <p style="margin-top:0.5rem;"><strong>v5.4 — Septiembre 2026:</strong> <strong style="color:var(--red-600);">CORRECCIÓN CRÍTICA DE DATOS</strong> y nuevo módulo educativo, a partir de las comunicaciones oficiales del <strong>Fondo Nacional de Estupefacientes</strong>. (1) <strong>Cuentagotas de la solución 2 %: 1 mL = 22 gotas ⇒ 0,91 mg/gota</strong> (producto importado por el FNE, <strong>Kwality Pharmaceuticals</strong>, frasco × 20 mL = 400 mg), conforme a la Circular Externa 006 de 2026 y a la <strong>Fe de Errata</strong> del webinar del 19 de marzo de 2026 — que además corrige el valor de «~1 mg/gota» difundido en esa sesión. Esto <strong>sustituye</strong> la calibración provisional de la v5.3 (16 gotas/mL, 1,25 mg/gota), tomada de una ficha técnica internacional que no corresponde al producto adquirido. (2) <strong>Se retracta la afirmación de la v5.3</strong> de que «1 gota = 1,25 mg en ambas soluciones»: es <strong>falsa</strong>. Ni las gotas ni los mL son intercambiables — repetir el mismo número de gotas al pasar de la 3 % a la 2 % entrega <strong>27 % menos morfina</strong>, con riesgo de dolor no controlado y abstinencia. (3) Nueva pestaña <strong>🎓 Cambio 3 %→2 %</strong>: contexto del reemplazo, comparación de los cinco cambios del producto, ecuación oficial de ajuste (<em>gotas 2 % = gotas 3 % × 1,25 ÷ 0,91 ≈ ×1,374</em>), <strong>conversor de fórmula</strong> con desarrollo paso a paso y cálculo del déficit si no se ajusta, tablas oficiales de equivalencia del FNE, <strong>entrenador de 8 casos aleatorios</strong> con retroalimentación razonada y puntaje, y listas de verificación para prescriptor, farmacia y paciente. (4) La solución 3 % pasa a <strong>«en agotamiento»</strong>: cerró su único laboratorio fabricante y el FNE contrata uno nuevo; al agotarse el inventario se distribuye la 2 %. (5) Se documenta que las <strong>inscripciones vigentes ante el FNE se entienden extensivas</strong> a la nueva sal (no hay que modificar resoluciones), pero el <strong>libro de control especial exige línea u hoja independiente</strong> por presentación. (6) Referencias añadidas: Circular Externa FNE 006 de 2026, Fe de Errata del FNE y OMS 2012 (equivalencia clorhidrato/sulfato); se retira la ficha técnica internacional usada en la v5.3.</p>
+      <p><strong>v5.3 — Septiembre 2026:</strong> Incorporación de la <strong>solución oral 2 % (morfina sulfato, 20 mg/mL)</strong> aprobada por el <strong>Acta No. 08 de 2025 SEMPB del INVIMA</strong> (num. 3.1.6.1): evaluación farmacológica sin fines de registro sanitario, inclusión temporal en el Listado de Medicamentos Vitales No Disponibles, titular exclusivo FNE e inclusión en el Anexo 3 de la Resolución 315 de 2020. Nuevas vías de morfina «sol. 2 % — mL» y «sol. 2 % — gotas»; la sección <strong>💊 Frascos FNE</strong> permite elegir la concentración dispensada y editar el volumen del frasco; alerta al superar el tope de <strong>120 mg/día</strong> del acta en adultos; <strong>guardia anti-error</strong> ante valores de mL implausibles; dosificación oficial por grupo etario (pediatría 1–18 años; no recomendado en menores de 1 año); tabla de disponibilidad y referencias normativas actualizadas (Actas 04 y 08 de 2025, Decreto 481/2004, Decreto 2498/2018, circular DG-100-00022-13, Resolución 315/2020). <em style="color:var(--red-600);">Nota: la equivalencia por gota publicada en esta versión fue corregida en la v5.4.</em></p>
+      <p><strong>v5.2 — Mayo 2026:</strong> Nueva funcionalidad de <strong>cálculo de frascos FNE</strong> para prescripción de morfina solución oral 3 % (30 mL · 900 mg · monopolio FNE). Sección dedicada "💊 Frascos FNE" con inputs flexibles (gotas / mg / mL) para basal y rescate, frecuencia configurable, número estimado de rescates/día, y periodo de prescripción (max 30 días por vigencia FNE). Resultado con visualización gráfica (🧴), desglose completo del consumo diario y total, frascos requeridos redondeados al alza, y cobertura adicional del último frasco. Auto-cálculo integrado en el panel principal cuando se selecciona morfina sol 3 % gotas (asumiendo rescate de 12,5 % × 3 episodios/día, periodo de 30 días). Alertas inteligentes: consumo &gt;1 frasco/día, rescates &gt;50 % de basal (indicando basal insuficiente), almacenamiento y vida útil del frasco abierto.</p>
       <p><strong>v5.1 — Mayo 2026:</strong> Nueva funcionalidad de <strong>infusiones continuas IV/SC</strong> para los 5 opioides inyectables disponibles en Colombia (morfina, hidromorfona, fentanilo IV/SC, tramadol, oxicodona). Calculadora auxiliar con workflow clínico colombiano <strong>velocidad (mL/h) × concentración (mg/mL)</strong> → dosis horaria. <strong>Dosis de rescate automática</strong> (10–15 % de dosis diaria) calculada en dos formatos: opioide actual (mismo o equivalente apropiado) y morfina oral equivalente (DEMO + gotas FNE). Reglas inteligentes: para metadona advierte que NUNCA usar como rescate (vida media larga). Nuevo panel de <strong>equivalencias entre infusiones</strong> — muestra tasas de los 5 opioides inyectables con concentraciones típicas colombianas y mL/h calculados. Alertas específicas de modo infusión (obstrucción de línea, errores de bomba).</p>
       <p><strong>v5 — Mayo 2026:</strong> Revisión sistemática 2024–2026 de guías nacionales e internacionales. Cambios numéricos: (1) hidromorfona IV/SC ×15 → <strong>×11,5</strong> (Reddy 2017, MD Anderson, ratio PO:IV 2,5:1) con ANZCA ×15 como opción seleccionable; (2) tapentadol ×0,4 → <strong>×0,3</strong> (ratio 3,3:1, Mercadante 2013 + Imanaka 2014 + ANZCA 2025); (3) buprenorfina SL ×37,5 → <strong>×30</strong> (concordancia CDC/Nielsen 2016). Cambios estructurales: nueva sección de farmacogenética (CYP2D6 colombiano 18,4% UM, CYP2B6 metadona CPIC 2024); nueva sección Colombia con disponibilidad detallada por presentación y marco normativo; reglas absolutas para metadona (tope inicial 30–40 mg, ECG obligatorio, titulación c/5–7d); alerta asimetría bidireccional MASCC 2025; alerta caquexia/fentanilo TD. <strong>49 referencias verificadas DOI/PMID</strong>, &gt;60% del periodo 2022–2026.</p>
       <p><strong>v4 — Abril 2026:</strong> Corrección crítica: parches TD ya no dividen dosis por frecuencia. Morfina solución oral 3% (Colombia): acepta gotas (1 gota = 1,25 mg). Nota colombiana sobre presentación FNE.</p>
@@ -1027,44 +1284,146 @@ code,.mono{font-family:'JetBrains Mono',monospace;}
 </footer>
 
 <script>
-/* ══════════ FRASCOS FNE — Morfina Solución 3 % (v5.2) ══════════ */
-/* Datos clave:
-   - 1 frasco = 30 mL = 900 mg morfina = ~720 gotas
-   - 1 gota = 1,25 mg morfina ≈ 0,0417 mL
-   - 1 mL = 30 mg morfina ≈ 24 gotas
-   - 1 mg = 0,8 gotas ≈ 0,0333 mL
+/* ══════════ FRASCOS FNE — Morfina Solución Oral 2 % / 3 % (v5.3) ══════════ */
+/* Presentación 3 % — morfina CLORHIDRATO (histórica FNE, Res. 1478/2006)
+     - 30 mg/mL · 1 gota = 1,25 mg ≈ 0,0417 mL · 24 gotas/mL
+     - Frasco estándar 30 mL = 900 mg
+   Presentación 2 % — morfina SULFATO (INVIMA Acta 08 de 2025 SEMPB, num. 3.1.6.1)
+     - 2 g/100 mL = 20 mg/mL · ATC N02AA01 · Norma farmacológica 19.2.0.0.N10
+     - Vital no disponible; titular exclusivo FNE; Anexo 3 Res. 315/2020
+     - Producto importado por el FNE: Kwality Pharmaceuticals, frasco 20 mL = 400 mg
+     - Cuentagotas OFICIAL FNE: 1 mL = 22 gotas => 20/22 = 0,91 mg/gota
+       (Fe de Errata FNE del webinar 19-mar-2026: corrige el "~1 mg/gota" dicho en sesión)
+     - Nota de redondeo: 22 gotas x 0,91 = 20,02 mg (~20 mg). Se usa 0,91 mg/gota
+       para reproducir exactamente la tabla oficial del FNE.
+   ⚠ NI las gotas NI los mL son intercambiables entre las dos soluciones:
+       1 gota 3 % = 1,25 mg  vs  1 gota 2 % = 0,91 mg  (la 2 % rinde 27 % menos por gota)
+       Ecuación oficial de ajuste FNE:  gotas 2 % = gotas 3 % x 1,25 / 0,91
 */
-const FRASCO_VOL_ML=30;
-const FRASCO_MG=900;
-const MG_PER_GOTA=1.25;
-const MG_PER_ML=30;
-const GOTAS_PER_ML=24;
+const PRESENTACIONES_FNE={
+  '3':{clave:'3',pct:'3 %',sal:'morfina clorhidrato',mgPerMl:30,gotasPerMl:24,mgPerGota:1.25,
+       volDefault:30,gotero:true,fabricante:'Fabricación nacional (laboratorio cerrado)',
+       volNota:'Presentación FNE: frasco de 30 mL (900 mg)',
+       nota:'Presentación histórica del FNE (monopolio del Estado, Resolución 1478/2006). Incluida en el Listado de Medicamentos Vitales No Disponibles (INVIMA, Acta 04 de 2025 SEMPB, num. 3.1.12.1). ⚠ EN AGOTAMIENTO: cerró el único laboratorio fabricante; el FNE adelanta la contratación de uno nuevo y, entre tanto, esta presentación no estará disponible (Circular Externa FNE 006 de 2026).'},
+  '2':{clave:'2',pct:'2 %',sal:'morfina sulfato',mgPerMl:20,gotasPerMl:22,mgPerGota:0.91,
+       volDefault:20,gotero:true,fabricante:'Kwality Pharmaceuticals (importado)',
+       volNota:'Presentación FNE: frasco de 20 mL con cuentagotas (400 mg)',
+       nota:'INVIMA, Acta 08 de 2025 SEMPB (primera parte), num. 3.1.6.1 — evaluación farmacológica sin fines de registro sanitario e inclusión temporal en el Listado de Medicamentos Vitales No Disponibles; titular y responsable exclusivo: FNE; Anexo 3 (control especial, monopolio del Estado) de la Resolución 315 de 2020. El FNE importó el producto (Kwality Pharmaceuticals) en frasco de 20 mL con cuentagotas y lo distribuirá al agotarse el inventario de la solución 3 % (Circular Externa FNE 006 de 2026). Cuentagotas oficial: 1 mL = 22 gotas ⇒ 0,91 mg/gota (Fe de Errata del FNE, webinar del 19 de marzo de 2026, que corrige el valor de ~1 mg/gota informado en la sesión). Dosificación del acta: adultos 10–20 mg (0,5–1,0 mL) c/4 h, máx. 120 mg/día.'}
+};
 
-function convertToMg(value,unit){
+function getPres(clave){return PRESENTACIONES_FNE[clave]||PRESENTACIONES_FNE['3'];}
+
+/* Factor oficial de ajuste FNE: gotas 2 % = gotas 3 % × 1,25 / 0,91 ≈ × 1,374 */
+const FACTOR_GOTAS_3A2=PRESENTACIONES_FNE['3'].mgPerGota/PRESENTACIONES_FNE['2'].mgPerGota;
+
+/* Convierte una orden en gotas de la 3 % a gotas de la 2 % (misma dosis en mg) */
+function gotas3aGotas2(gotas3){return gotas3*FACTOR_GOTAS_3A2;}
+
+function getPresActual(){
+  const el=document.getElementById('presSelect');
+  return getPres(el?el.value:'3');
+}
+
+function getFrascoVolMl(pres){
+  const el=document.getElementById('frascoVol');
+  const v=el?parseFloat(el.value):NaN;
+  return (!isNaN(v)&&v>0)?v:pres.volDefault;
+}
+
+function convertToMg(value,unit,pres){
+  pres=pres||getPres('3');
   if(isNaN(value)||value<=0) return 0;
   switch(unit){
-    case 'gotas': return value*MG_PER_GOTA;
+    case 'gotas': return pres.gotero?value*pres.mgPerGota:0;
     case 'mg': return value;
-    case 'mL': return value*MG_PER_ML;
+    case 'mL': return value*pres.mgPerMl;
   }
   return 0;
 }
 
-function mgToGotas(mg){return mg/MG_PER_GOTA;}
-function mgToMl(mg){return mg/MG_PER_ML;}
+function mgToGotas(mg,pres){pres=pres||getPres('3');return pres.gotero?mg/pres.mgPerGota:null;}
+function mgToMl(mg,pres){pres=pres||getPres('3');return mg/pres.mgPerMl;}
 
-function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context){
+/* Formatea una cantidad de mg en las unidades disponibles de la presentación */
+function fmtDosis(mg,pres){
+  const ml=mgToMl(mg,pres).toFixed(2)+' mL';
+  if(!pres.gotero) return ml;
+  return mgToGotas(mg,pres).toFixed(0)+' gotas · '+ml;
+}
+
+/* Sincroniza la UI de la sección de frascos con la presentación elegida */
+function onPresChange(){
+  const pres=getPresActual();
+  const volInput=document.getElementById('frascoVol');
+  if(volInput) volInput.value=pres.volDefault;
+  const volHint=document.getElementById('frascoVolHint');
+  if(volHint) volHint.textContent=pres.volNota;
+
+  ['basalUnit','rescueUnitFr'].forEach(function(id){
+    const sel=document.getElementById(id);
+    if(!sel) return;
+    const optGotas=sel.querySelector('option[value="gotas"]');
+    if(optGotas){
+      optGotas.disabled=!pres.gotero;
+      optGotas.textContent=pres.gotero?'gotas':'gotas (no aplica al 2 %)';
+    }
+    if(!pres.gotero&&sel.value==='gotas') sel.value='mL';
+  });
+  const bHint=document.getElementById('basalUnitHint');
+  const rHint=document.getElementById('rescueUnitHint');
+  const hintTxt=pres.gotero
+    ? `1 gota = ${pres.mgPerGota} mg · 1 mL = ${pres.mgPerMl} mg (${pres.gotasPerMl} gotas/mL, sol. ${pres.pct})`
+    : `1 mL = ${pres.mgPerMl} mg (sol. ${pres.pct}) · sin equivalencia por gota definida`;
+  if(bHint) bHint.textContent=hintTxt;
+  if(rHint) rHint.textContent=hintTxt;
+
+  renderPresTable();
+  const res=document.getElementById('frascosResult');
+  if(res) res.innerHTML='';
+}
+
+/* Tabla de datos de la presentación seleccionada */
+function renderPresTable(){
+  const tbody=document.getElementById('presTableBody');
+  if(!tbody) return;
+  const pres=getPresActual();
+  const vol=getFrascoVolMl(pres);
+  const mgFrasco=vol*pres.mgPerMl;
+  let rows='';
+  rows+='<tr><td><strong>Sal</strong></td><td>'+pres.sal+'</td><td>Equianalgesia: morfina oral (×1 sobre DEMO)</td></tr>';
+  rows+='<tr><td><strong>Fabricante</strong></td><td>'+(pres.fabricante||'—')+'</td><td>'+(pres.clave==='2'?'Importado por el FNE':'Circ. FNE 006/2026: en agotamiento')+'</td></tr>';
+  rows+='<tr><td><strong>Concentración</strong></td><td>'+pres.mgPerMl+' mg/mL ('+pres.pct+')</td><td>—</td></tr>';
+  rows+='<tr><td><strong>Volumen por frasco</strong></td><td>'+vol+' mL</td><td>'+(pres.gotero?'≈ '+(vol*pres.gotasPerMl).toFixed(0)+' gotas':'medir con jeringa dosificadora')+'</td></tr>';
+  rows+='<tr style="background:var(--warm-100);"><td><strong>Morfina total por frasco</strong></td><td><strong>'+mgFrasco.toFixed(0)+' mg</strong></td><td>1 frasco = '+mgFrasco.toFixed(0)+' mg morfina oral</td></tr>';
+  if(pres.gotero){
+    rows+='<tr><td><strong>1 gota</strong></td><td>'+pres.mgPerGota+' mg morfina</td><td>≈ '+(1/pres.gotasPerMl).toFixed(3)+' mL</td></tr>';
+    rows+='<tr><td><strong>1 mL</strong></td><td>'+pres.mgPerMl+' mg morfina</td><td>≈ '+pres.gotasPerMl+' gotas</td></tr>';
+  } else {
+    rows+='<tr><td><strong>1 mL</strong></td><td>'+pres.mgPerMl+' mg morfina</td><td>—</td></tr>';
+  }
+  if(pres.clave==='2'){
+    rows+='<tr><td><strong>Dosis adulto (acta INVIMA)</strong></td><td>10–20 mg (0,5–1,0 mL) c/4 h</td><td>11–22 gotas · máx. 120 mg/día</td></tr>';
+  }
+  tbody.innerHTML=rows;
+  const note=document.getElementById('presTableNote');
+  if(note) note.textContent=pres.nota;
+}
+
+function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context,presKey,volMlArg){
   // context: 'main' (auto-display) or 'dedicated' (full section)
+  const pres=presKey?getPres(presKey):getPresActual();
+  const frascoVolMl=(volMlArg&&volMlArg>0)?volMlArg:(context==='dedicated'?getFrascoVolMl(pres):pres.volDefault);
+  const frascoMg=frascoVolMl*pres.mgPerMl;
+
   const totalMgPerDay=basalMgPerDay+rescueMgPerDay;
-  const totalGotasPerDay=mgToGotas(totalMgPerDay);
-  const totalMlPerDay=mgToMl(totalMgPerDay);
-  
+  const totalMlPerDay=mgToMl(totalMgPerDay,pres);
+
   const totalMgPeriod=totalMgPerDay*periodDays;
-  const totalMlPeriod=mgToMl(totalMgPeriod);
-  
-  const frascosNeeded=Math.ceil(totalMgPeriod/FRASCO_MG);
-  const totalMgDelivered=frascosNeeded*FRASCO_MG;
-  const totalMlDelivered=frascosNeeded*FRASCO_VOL_ML;
+  const totalMlPeriod=mgToMl(totalMgPeriod,pres);
+
+  const frascosNeeded=Math.ceil(totalMgPeriod/frascoMg);
+  const totalMgDelivered=frascosNeeded*frascoMg;
+  const totalMlDelivered=frascosNeeded*frascoVolMl;
   const extraMg=totalMgDelivered-totalMgPeriod;
   const extraDays=totalMgPerDay>0?(extraMg/totalMgPerDay).toFixed(1):'0';
   
@@ -1076,28 +1435,33 @@ function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context){
   
   // Warnings
   let warnings='';
-  if(totalMgPerDay>FRASCO_MG){
+  if(totalMgPerDay>frascoMg){
     warnings+=`<div class="alert alert-danger" style="margin-top:0.6rem;"><strong>🚨 Consumo &gt; 1 frasco/día (${totalMgPerDay.toFixed(0)} mg/día):</strong> Revisar dosis basal. A dosis tan altas, considerar opioide alternativo (fentanilo TD, hidromorfona, rotación a metadona con supervisión especializada). El volumen requerido (${totalMlPerDay.toFixed(0)} mL/día) puede ser práctico de administrar oralmente con dificultad.</div>`;
-  } else if(totalMgPerDay>450){
+  } else if(totalMgPerDay>frascoMg/2){
     warnings+=`<div class="alert alert-warning" style="margin-top:0.6rem;"><strong>⚠ Consumo &gt; ½ frasco/día (${totalMgPerDay.toFixed(0)} mg/día):</strong> DEMO elevada; descartar hiperalgesia inducida por opioides, revisar adherencia y considerar coadyuvantes.</div>`;
   }
   if(rescueMgPerDay>basalMgPerDay*0.5&&basalMgPerDay>0){
     warnings+=`<div class="alert alert-warning" style="margin-top:0.6rem;"><strong>⚠ Rescates representan &gt; 50 % de la dosis basal:</strong> Dosis basal probablemente insuficiente. Incrementar dosis basal en 25–50 % y reevaluar.</div>`;
   }
+  if(pres.clave==='2'&&totalMgPerDay>120){
+    warnings+=`<div class="alert alert-warning" style="margin-top:0.6rem;"><strong>⚠ Supera la dosis máxima del acta INVIMA para la solución 2 % (120 mg/día en adultos):</strong> ${totalMgPerDay.toFixed(0)} mg/día. El acta 08 de 2025 fija ese tope para la indicación aprobada «analgésico narcótico»; en dolor oncológico avanzado la titulación al alza es práctica estándar bajo supervisión médica, pero debe quedar documentada en la historia clínica.</div>`;
+  }
+  warnings+=`<div class="alert alert-info" style="margin-top:0.6rem;"><strong>🧴 Presentación usada en este cálculo:</strong> solución oral <strong>${pres.pct}</strong> (${pres.sal}, <strong>${pres.mgPerMl} mg/mL</strong>), frasco de <strong>${frascoVolMl} mL = ${frascoMg.toFixed(0)} mg</strong>. Si la farmacia dispensa la otra concentración, el número de frascos y los mL por toma cambian — recalcular.</div>`;
   
   // Breakdown depending on context
   let breakdown='';
   if(context==='dedicated'){
     breakdown=`<div class="frascos-breakdown">
-<span class="label">DOSIS BASAL:</span>     ${basalMgPerDay.toFixed(1)} mg/día = ${mgToGotas(basalMgPerDay).toFixed(0)} gotas/día = ${mgToMl(basalMgPerDay).toFixed(2)} mL/día
-<span class="label">DOSIS RESCATE:</span>   ${rescueMgPerDay.toFixed(1)} mg/día = ${mgToGotas(rescueMgPerDay).toFixed(0)} gotas/día = ${mgToMl(rescueMgPerDay).toFixed(2)} mL/día
-<span class="label">TOTAL DIARIO:</span>    ${totalMgPerDay.toFixed(1)} mg/día = ${totalGotasPerDay.toFixed(0)} gotas/día = ${totalMlPerDay.toFixed(2)} mL/día
+<span class="label">PRESENTACIÓN:</span>    Morfina solución oral ${pres.pct} (${pres.sal}) · ${pres.mgPerMl} mg/mL · frasco ${frascoVolMl} mL = ${frascoMg.toFixed(0)} mg
+<span class="label">DOSIS BASAL:</span>     ${basalMgPerDay.toFixed(1)} mg/día = ${fmtDosis(basalMgPerDay,pres)}/día
+<span class="label">DOSIS RESCATE:</span>   ${rescueMgPerDay.toFixed(1)} mg/día = ${fmtDosis(rescueMgPerDay,pres)}/día
+<span class="label">TOTAL DIARIO:</span>    ${totalMgPerDay.toFixed(1)} mg/día = ${fmtDosis(totalMgPerDay,pres)}/día
 
 <span class="label">PARA ${periodDays} DÍAS:</span>
   • Morfina requerida:    ${totalMgPeriod.toFixed(0)} mg
   • Volumen requerido:    ${totalMlPeriod.toFixed(1)} mL
-  • Frascos necesarios:   ⌈${totalMgPeriod.toFixed(0)} / 900⌉ = <span class="label">${frascosNeeded} frascos</span>
-  • Morfina entregada:    ${totalMgDelivered} mg (${totalMlDelivered} mL)
+  • Frascos necesarios:   ⌈${totalMgPeriod.toFixed(0)} / ${frascoMg.toFixed(0)}⌉ = <span class="label">${frascosNeeded} frascos</span>
+  • Morfina entregada:    ${totalMgDelivered.toFixed(0)} mg (${totalMlDelivered.toFixed(0)} mL)
   • Excedente:            ${extraMg.toFixed(0)} mg ≈ ${extraDays} días adicionales</div>`;
   }
   
@@ -1106,7 +1470,7 @@ function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context){
       <div class="frascos-detail-card">
         <div class="fd-label">Dosis diaria total</div>
         <div class="fd-value">${totalMgPerDay.toFixed(1)} mg</div>
-        <div class="fd-extra">${totalGotasPerDay.toFixed(0)} gotas · ${totalMlPerDay.toFixed(2)} mL</div>
+        <div class="fd-extra">${fmtDosis(totalMgPerDay,pres)}</div>
       </div>
       <div class="frascos-detail-card">
         <div class="fd-label">Total ${periodDays} días</div>
@@ -1121,12 +1485,12 @@ function buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,context){
     </div>`;
   
   return `<div class="frascos-box">
-    <div class="frascos-title">💊 Prescripción FNE — Frascos requeridos para ${periodDays} días</div>
+    <div class="frascos-title">💊 Prescripción FNE — Frascos requeridos para ${periodDays} días · solución ${pres.pct}</div>
     <div class="frascos-headline">
       <div class="frascos-icons">${bottleIcons}</div>
       <div style="text-align:center;">
         <div class="frascos-number">${frascosNeeded}<span class="unit"> frascos</span></div>
-        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem;">de morfina sol. 3 % FNE (30 mL c/u)</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem;">de morfina sol. ${pres.pct} FNE (${frascoVolMl} mL · ${frascoMg.toFixed(0)} mg c/u)</div>
       </div>
     </div>
     ${detailCards}
@@ -1153,22 +1517,26 @@ function calculateFrascos(){
     return;
   }
   
-  const basalMgPerDose=convertToMg(basalDose,basalUnit);
+  const pres=getPresActual();
+  const frascoVolMl=getFrascoVolMl(pres);
+
+  const basalMgPerDose=convertToMg(basalDose,basalUnit,pres);
   const dosesPerDay=24/basalFreqHrs;
   const basalMgPerDay=basalMgPerDose*dosesPerDay;
-  
+
   let rescueMgPerDay=0;
   if(!isNaN(rescueDose)&&rescueDose>0&&rescueCount>0){
-    rescueMgPerDay=convertToMg(rescueDose,rescueUnit)*rescueCount;
+    rescueMgPerDay=convertToMg(rescueDose,rescueUnit,pres)*rescueCount;
   }
-  
-  const html=buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,'dedicated');
+
+  const html=buildFrascosBox(basalMgPerDay,rescueMgPerDay,periodDays,'dedicated',pres.clave,frascoVolMl);
   const result=document.getElementById('frascosResult');
   result.innerHTML=html;
   result.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function resetFrascos(){
+  renderPresTable();
   document.getElementById('basalDose').value='';
   document.getElementById('rescueDoseFr').value='';
   document.getElementById('rescueCountFr').value='3';
@@ -1305,7 +1673,7 @@ function updateRoutes(){
   } else {
     // Morfina, oxicodona, hidromorfona (oral + IV/SC)
     if(opioid==='morfina'){
-      routeSel.innerHTML='<option value="oral">Oral (tabletas / cápsulas)</option><option value="oral_sol">Oral (solución 3% FNE — gotas) 🇨🇴</option><option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
+      routeSel.innerHTML='<option value="oral">Oral (tabletas / cápsulas)</option><option value="oral_sol">Oral · sol. 3 % FNE (30 mg/mL) — gotas 🇨🇴</option><option value="oral_sol2">Oral · sol. 2 % FNE (20 mg/mL) — mL 🇨🇴 🆕</option><option value="oral_sol2_got">Oral · sol. 2 % FNE (20 mg/mL) — gotas 🇨🇴 🆕</option><option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
     } else {
       routeSel.innerHTML='<option value="oral">Oral</option><option value="iv">Intravenosa (IV)</option><option value="sc">Subcutánea (SC)</option>';
     }
@@ -1320,7 +1688,13 @@ function updateRoutes(){
   routeSel.onchange=function(){
     if(this.value==='oral_sol'){
       doseLabel.textContent='Dosis (gotas)';
-      doseHint.textContent='1 gota = 1,25 mg morfina (solución oral FNE al 3%, 30 mg/mL)';
+      doseHint.textContent='1 gota = 1,25 mg morfina clorhidrato (solución oral FNE al 3 %, 30 mg/mL)';
+    } else if(this.value==='oral_sol2'){
+      doseLabel.textContent='Dosis (mL)';
+      doseHint.textContent='⚠ mL, NO gotas · 1 mL = 20 mg morfina sulfato (sol. 2 %, INVIMA Acta 08/2025) · adulto: 0,5–1,0 mL c/4 h';
+    } else if(this.value==='oral_sol2_got'){
+      doseLabel.textContent='Dosis (gotas)';
+      doseHint.textContent='1 gota = 0,91 mg · 22 gotas = 1 mL = 20 mg (cuentagotas FNE del frasco de 20 mL) · adulto: 11–22 gotas c/4 h';
     } else if(patchOpioids.includes(opioid)){
       doseLabel.textContent='Dosis (mcg/h)';
     } else if(ivOnly.includes(opioid)){
@@ -1360,6 +1734,16 @@ function calculate(){
   if(isNaN(dose)||dose<=0){
     alert('Por favor ingrese una dosis válida mayor que 0.');
     return;
+  }
+
+  // Guardia anti-error: la solución 2 % se dosifica en mL (0,25–1,0 mL por toma).
+  // Un valor alto sugiere que se escribieron GOTAS en el campo de mL (error de 16×).
+  if(route==='oral_sol2'&&dose>10){
+    if(!confirm('⚠ Ingresó '+dose+' mL por toma de la solución 2 % (= '+(dose*20).toFixed(0)+' mg por toma).\n\n'+
+                'La dosis habitual en adultos es de 0,5–1,0 mL por toma. Si lo que quiso escribir fueron GOTAS, '+
+                'cancele y use la vía «sol. 2 % — gotas» (22 gotas = 1 mL).\n\n¿Continuar de todos modos?')){
+      return;
+    }
   }
   
   // Calculate total daily dose
@@ -1410,7 +1794,15 @@ function calculate(){
       } else if(route==='oral_sol'){
         const dailyMg=dailyDose*1.25;
         demo=dailyMg;
-        explanation=`🇨🇴 Morfina solución oral 3% FNE: ${dailyDose.toFixed(0)} gotas/día × 1,25 mg/gota = ${dailyMg.toFixed(1)} mg/día = ${demo.toFixed(1)} mg DEMO`;
+        explanation=`🇨🇴 Morfina solución oral 3 % FNE (clorhidrato): ${dailyDose.toFixed(0)} gotas/día × 1,25 mg/gota = ${dailyMg.toFixed(1)} mg/día = ${demo.toFixed(1)} mg DEMO`;
+      } else if(route==='oral_sol2'){
+        const dailyMg=dailyDose*20;
+        demo=dailyMg;
+        explanation=`🇨🇴 Morfina solución oral 2 % FNE (sulfato, INVIMA Acta 08/2025): ${dailyDose.toFixed(2)} mL/día × 20 mg/mL = ${dailyMg.toFixed(1)} mg/día = ${demo.toFixed(1)} mg DEMO (≈ ${(dailyDose*22).toFixed(0)} gotas/día)`;
+      } else if(route==='oral_sol2_got'){
+        const dailyMg=dailyDose*0.91;
+        demo=dailyMg;
+        explanation=`🇨🇴 Morfina solución oral 2 % FNE (sulfato): ${dailyDose.toFixed(0)} gotas/día × 0,91 mg/gota = ${dailyMg.toFixed(1)} mg/día = ${demo.toFixed(1)} mg DEMO (≈ ${(dailyDose/22).toFixed(2)} mL/día; 22 gotas = 1 mL)`;
       } else if(isInfusion){
         demo=dailyDose*3;
         explanation=`Morfina infusión IV/SC ${dose} mg/h × 24h = ${dailyDose.toFixed(1)} mg/día × 3 = ${demo.toFixed(1)} mg DEMO (3:1 PO:IV)`;
@@ -1500,17 +1892,19 @@ function calculate(){
   // Generate rescue dose
   document.getElementById('rescueContainer').innerHTML=generateRescueDose(demo,opioid,route,isInfusion);
   
-  // Auto-display frascos FNE when morfina sol 3% is the current opioid
+  // Auto-display frascos FNE when morfina solución oral (2 % o 3 %) is the current opioid
   const frascosAuto=document.getElementById('frascosAutoContainer');
-  if(opioid==='morfina'&&route==='oral_sol'){
-    // dailyDose is in gotas; convert to mg
-    const basalMg=dailyDose*1.25;
+  if(opioid==='morfina'&&(route==='oral_sol'||route==='oral_sol2'||route==='oral_sol2_got')){
+    const presKey=(route==='oral_sol')?'3':'2';
+    const presAuto=getPres(presKey);
+    // dailyDose viene en mL sólo en la vía 'oral_sol2'; en las demás viene en gotas
+    const basalMg=(route==='oral_sol2')?dailyDose*presAuto.mgPerMl:dailyDose*presAuto.mgPerGota;
     // Estimate rescue: 12.5% of daily dose per episode × 3 episodes/day (conservative middle estimate)
     const rescuePerEpisodeMg=basalMg*0.125;
     const rescueMgPerDay=rescuePerEpisodeMg*3;
-    let autoHtml=buildFrascosBox(basalMg,rescueMgPerDay,30,'main');
+    let autoHtml=buildFrascosBox(basalMg,rescueMgPerDay,30,'main',presKey,presAuto.volDefault);
     // Add note explaining the assumptions
-    autoHtml+=`<p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-top:0.5rem;line-height:1.5;">📌 Estimación automática: basal = dosis ingresada; rescate asumido en 12,5 % de dosis diaria × 3 episodios/día (estimación clínica intermedia); periodo = 30 días (vigencia FNE estándar). Para cálculo preciso con tu propio escenario de rescates, usar la pestaña <strong>💊 Frascos FNE</strong>.</p>`;
+    autoHtml+=`<p style="font-size:0.72rem;color:var(--text-muted);font-style:italic;margin-top:0.5rem;line-height:1.5;">📌 Estimación automática: presentación = solución ${presAuto.pct} con frasco de ${presAuto.volDefault} mL; basal = dosis ingresada; rescate asumido en 12,5 % de dosis diaria × 3 episodios/día (estimación clínica intermedia); periodo = 30 días (vigencia FNE estándar). Para cálculo preciso con tu propio escenario de rescates ${presKey==='2'?'y el volumen real del frasco 2 % ':''}, usar la pestaña <strong>💊 Frascos FNE</strong>.</p>`;
     frascosAuto.innerHTML=autoHtml;
   } else {
     frascosAuto.innerHTML='';
@@ -1551,12 +1945,22 @@ function generateRescueDose(demo,opioid,route,isInfusion){
         sameOpioidLabel='Morfina oral LI';
         intervalPrn='c/1–4 h PRN';
       } else if(route==='oral_sol'){
-        const gotasLow=(demo*0.10/1.25).toFixed(0);
-        const gotasHigh=(demo*0.15/1.25).toFixed(0);
-        sameOpioidLow=gotasLow;
-        sameOpioidHigh=gotasHigh;
+        sameOpioidLow=(demo*0.10/1.25).toFixed(0);
+        sameOpioidHigh=(demo*0.15/1.25).toFixed(0);
         sameOpioidUnit='gotas';
         sameOpioidLabel='Morfina sol. 3 % FNE 🇨🇴';
+        intervalPrn='c/1–4 h PRN';
+      } else if(route==='oral_sol2'){
+        sameOpioidLow=(demo*0.10/20).toFixed(2);
+        sameOpioidHigh=(demo*0.15/20).toFixed(2);
+        sameOpioidUnit='mL';
+        sameOpioidLabel='Morfina sol. 2 % FNE 🇨🇴';
+        intervalPrn='c/1–4 h PRN';
+      } else if(route==='oral_sol2_got'){
+        sameOpioidLow=(demo*0.10/0.91).toFixed(0);
+        sameOpioidHigh=(demo*0.15/0.91).toFixed(0);
+        sameOpioidUnit='gotas';
+        sameOpioidLabel='Morfina sol. 2 % FNE 🇨🇴';
         intervalPrn='c/1–4 h PRN';
       } else {
         // IV/SC
@@ -1827,7 +2231,7 @@ function generateConversions(demo,currentOpioid){
   const conversions=[
     {name:'Codeína',route:'Oral',dose:(demo*10).toFixed(0),unit:'mg/día',type:'weak',note:demo*10>360?'⚠ Excede dosis máx. (360 mg/día)':'⚠ CYP2D6: ~23% colombianos PM/UM',max:360,id:'codeina',ev:'D'},
     {name:'Tramadol',route:'Oral',dose:(demo*5).toFixed(0),unit:'mg/día',type:'weak',note:demo*5>400?'⚠ Excede dosis máx. (400 mg/día)':'⚠ Riesgo serotoninérgico',max:400,id:'tramadol',ev:'D'},
-    {name:'Morfina',route:'Oral',dose:demo.toFixed(1),unit:'mg/día',type:'strong',note:`≈ ${(demo/1.25).toFixed(0)} gotas/día (sol. 3% FNE)`,id:'morfina_oral',ev:'A'},
+    {name:'Morfina',route:'Oral',dose:demo.toFixed(1),unit:'mg/día',type:'strong',note:`sol. 2 % (actual): ${(demo/0.91).toFixed(0)} gotas = ${(demo/20).toFixed(2)} mL · sol. 3 %: ${(demo/1.25).toFixed(0)} gotas = ${(demo/30).toFixed(2)} mL`,id:'morfina_oral',ev:'A'},
     {name:'Morfina',route:'IV / SC',dose:(demo/3).toFixed(1),unit:'mg/día',type:'strong',note:'PO:IV 3:1 (rango 2:1–3:1)',id:'morfina_iv',ev:'C'},
     {name:'Oxicodona',route:'Oral',dose:(demo/1.5).toFixed(1),unit:'mg/día',type:'strong',note:'',id:'oxicodona',ev:'B'},
     {name:'Hidromorfona',route:'Oral',dose:(demo/5).toFixed(1),unit:'mg/día',type:'strong',note:'',id:'hidromorfona',ev:'B'},
@@ -1881,8 +2285,316 @@ function resetCalc(){
   updateRoutes();
 }
 
+/* ══════════ EDUCACIÓN — cambio 3 % → 2 % (v5.4) ══════════ */
+const P3=PRESENTACIONES_FNE['3'], P2=PRESENTACIONES_FNE['2'];
+const nf=(x,d)=>x.toLocaleString('es-CO',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* ── Tablas oficiales del FNE ── */
+const TABLA_FNE_3=[1,10,15,20,25,30,35,40,45,50];
+const TABLA_FNE_2=[1,6,11,16,22,28,33,39,44,50];
+
+/* Formatea los mg como en la tabla publicada por el FNE:
+   - solución 3 %: valores exactos (múltiplos de 1,25) → hasta 2 decimales
+   - solución 2 %: redondeados a 1 decimal, salvo la fila de 1 gota (0,91)
+   En ambos casos se recortan los ceros finales: 25,00 → 25 · 20,0 → 20 */
+function fmtMgTabla(mg,pres){
+  const dec=(pres.clave==='2')?(mg<1?2:1):2;
+  return mg.toFixed(dec).replace('.',',').replace(/,?0+$/,'');
+}
+
+function eduPintarTablas(){
+  const t3=document.getElementById('eduTabla3'), t2=document.getElementById('eduTabla2');
+  if(!t3||!t2) return;
+  const fila=(g,pres)=>`<tr><td><strong>${fmtMgTabla(g*pres.mgPerGota,pres)}</strong></td><td>${g}</td></tr>`;
+  t3.innerHTML=TABLA_FNE_3.map(g=>fila(g,P3)).join('');
+  t2.innerHTML=TABLA_FNE_2.map(g=>fila(g,P2)).join('');
+}
+
+/* ── Conversor de fórmula 3 % → 2 % ── */
+function eduConvertir(){
+  const val=parseFloat(document.getElementById('eduDose').value);
+  const unit=document.getElementById('eduUnit').value;
+  const horas=parseFloat(document.getElementById('eduFreq').value);
+  const out=document.getElementById('eduResult');
+  if(isNaN(val)||val<=0){ alert('Ingrese la dosis actual con la solución 3 % (mayor que 0).'); return; }
+
+  const mgToma=convertToMg(val,unit,P3);
+  const gotas3=mgToma/P3.mgPerGota;
+  const gotas2Exact=mgToma/P2.mgPerGota;
+  const gotas2=Math.round(gotas2Exact);
+  const mgReal=gotas2*P2.mgPerGota;
+  const tomas=24/horas;
+  const mgDia=mgReal*tomas;
+  const mlDia=mgDia/P2.mgPerMl;
+  const frascos30d=Math.ceil((mgDia*30)/(P2.volDefault*P2.mgPerMl));
+  const mgSiNoAjusta=Math.round(gotas3)*P2.mgPerGota;
+  const perdida=100*(1-mgSiNoAjusta/mgToma);
+  const desvio=100*(mgReal-mgToma)/mgToma;
+
+  out.innerHTML=`<div class="edu-out">
+    <div style="text-align:center;margin-bottom:0.6rem;">
+      <div style="font-size:0.74rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);font-weight:600;">Nueva fórmula — morfina sulfato 2 %</div>
+      <div class="big">${gotas2} gotas cada ${horas} h</div>
+      <div style="font-size:0.8rem;">= ${nf(mgReal,1)} mg por toma · ${nf(mgDia,1)} mg/día · ${nf(mlDia,2)} mL/día</div>
+    </div>
+    <div class="quiz-work">Dosis actual:   ${nf(gotas3,1)} gotas de sol. 3 % × 1,25 mg/gota = ${nf(mgToma,2)} mg por toma
+Ajuste FNE:     ${nf(gotas3,1)} × 1,25 ÷ 0,91 = ${nf(gotas2Exact,2)} gotas → se redondea a ${gotas2} gotas
+Comprobación:   ${gotas2} gotas × 0,91 mg/gota = ${nf(mgReal,2)} mg por toma (desvío ${desvio>=0?'+':''}${nf(desvio,1)} % por redondeo)
+Día completo:   ${nf(mgReal,2)} mg × ${tomas} tomas = ${nf(mgDia,1)} mg/día
+Frascos 30 días: ⌈${nf(mgDia*30,0)} mg ÷ 400 mg⌉ = ${frascos30d} frascos de 20 mL</div>
+    <div class="alert alert-danger" style="margin:0.8rem 0 0;">
+      <strong>🚨 Si NO se ajusta la fórmula:</strong> mantener ${Math.round(gotas3)} gotas con la solución 2 % entrega
+      <strong>${nf(mgSiNoAjusta,1)} mg</strong> en lugar de ${nf(mgToma,1)} mg por toma —
+      <strong>${nf(perdida,0)} % menos morfina</strong> (${nf(mgSiNoAjusta*tomas,1)} mg/día frente a ${nf(mgToma*tomas,1)} mg/día).
+    </div>
+    <p style="font-size:0.74rem;color:var(--text-muted);font-style:italic;margin:0.6rem 0 0;">Redondear siempre a gota entera y reevaluar clínicamente: el redondeo introduce un desvío de hasta ±0,5 gota (±0,46 mg). Recalcular también la dosis de rescate.</p>
+  </div>`;
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(typeof CP!=='undefined') CP.evento('edu_conversion',{datos:{mgToma:+mgToma.toFixed(2),gotas2:gotas2}});
+}
+
+function eduLimpiar(){
+  document.getElementById('eduDose').value='';
+  document.getElementById('eduResult').innerHTML='';
+}
+
+/* ══════════ ENTRENADOR ══════════ */
+let quizEstado=null;
+const QUIZ_TOTAL=8;
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function barajar(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+/* Construye una pregunta de opción múltiple a partir de un valor correcto y distractores.
+   La opción correcta SIEMPRE se conserva; se descartan los distractores repetidos,
+   nulos o iguales a la correcta, y se toman hasta 3 de los restantes. */
+function opcionesNum(correcta,distractores,sufijo){
+  const vistos=new Set([correcta]);
+  const utiles=[];
+  distractores.forEach(d=>{
+    if(d>0&&!vistos.has(d)){ vistos.add(d); utiles.push(d); }
+  });
+  const elegidos=barajar(utiles).slice(0,3);
+  const et=v=>numES(v)+' '+sufijo;
+  const opts=[{txt:et(correcta),ok:true}]
+    .concat(elegidos.map(d=>({txt:et(d),ok:false})));
+  return barajar(opts);
+}
+
+/* Número con separador decimal español y sin ceros finales: 25.5 → «25,5» · 27 → «27» */
+function numES(x){
+  return (Math.round(x*100)/100).toFixed(2).replace(/\.?0+$/,'').replace('.',',');
+}
+
+const GENERADORES=[
+  /* 1. Ajuste de fórmula: gotas 3 % → gotas 2 % */
+  function(){
+    const g3=pick([10,12,15,16,18,20,24,25,30,36,40]);
+    const h=pick([4,6]);
+    const mg=g3*P3.mgPerGota;
+    const g2=Math.round(mg/P2.mgPerGota);
+    return {
+      escenario:`Paciente oncológico estable con <strong>morfina clorhidrato 3 %, ${g3} gotas cada ${h} h</strong>. La farmacia informa que solo hay morfina sulfato 2 %.`,
+      pregunta:'¿Cuántas gotas de la solución 2 % debe indicar para mantener la misma dosis?',
+      opciones:opcionesNum(g2,[g3,Math.round(g3*0.73),Math.round(g3*1.5),g2+3],'gotas'),
+      desarrollo:`Dosis actual:  ${g3} gotas × 1,25 mg/gota = ${nf(mg,2)} mg por toma\n`+
+                 `Ajuste FNE:    ${g3} × 1,25 ÷ 0,91 = ${nf(mg/P2.mgPerGota,2)} → ${g2} gotas\n`+
+                 `Comprobación:  ${g2} × 0,91 = ${nf(g2*P2.mgPerGota,2)} mg ✓`,
+      clave:`Mantener las mismas ${g3} gotas habría entregado solo ${nf(g3*P2.mgPerGota,1)} mg (27 % menos).`
+    };
+  },
+  /* 2. Gotas 2 % → mg */
+  function(){
+    const g2=pick([6,11,16,22,28,33,39,44]);
+    const mg=g2*P2.mgPerGota;
+    return {
+      escenario:`La fórmula indica <strong>${g2} gotas de morfina sulfato 2 %</strong> por toma.`,
+      pregunta:'¿A cuántos miligramos de morfina equivale esa toma?',
+      opciones:opcionesNum(+mg.toFixed(1),[+(g2*1.25).toFixed(1),+(g2*1.0).toFixed(1),+(g2*0.5).toFixed(1)],'mg'),
+      desarrollo:`${g2} gotas × 0,91 mg/gota = ${nf(mg,2)} mg\n`+
+                 `(el cuentagotas del FNE entrega 22 gotas por mL: 20 mg ÷ 22 = 0,91 mg/gota)`,
+      clave:'Usar 1,25 mg/gota (valor de la 3 %) sobreestimaría la dosis en un 37 %.'
+    };
+  },
+  /* 3. mg → gotas 2 % */
+  function(){
+    const mg=pick([5,10,15,20,25,30]);
+    const g2=Math.round(mg/P2.mgPerGota);
+    return {
+      escenario:`Se decide iniciar morfina sulfato 2 % a <strong>${mg} mg por toma</strong>.`,
+      pregunta:'¿Cuántas gotas corresponden?',
+      opciones:opcionesNum(g2,[Math.round(mg/1.25),Math.round(mg/1.0),Math.round(mg/0.5)],'gotas'),
+      desarrollo:`${mg} mg ÷ 0,91 mg/gota = ${nf(mg/P2.mgPerGota,2)} → ${g2} gotas\n`+
+                 `Comprobación: ${g2} × 0,91 = ${nf(g2*P2.mgPerGota,2)} mg`,
+      clave:'Con la solución 3 % la misma dosis habrían sido '+Math.round(mg/1.25)+' gotas.'
+    };
+  },
+  /* 4. Frascos a despachar */
+  function(){
+    const g2=pick([11,16,22,28]);
+    const h=pick([4,6]);
+    const tomas=24/h;
+    const mgDia=g2*P2.mgPerGota*tomas;
+    const dias=pick([15,30]);
+    const fr=Math.ceil(mgDia*dias/(P2.volDefault*P2.mgPerMl));
+    return {
+      escenario:`Fórmula: <strong>morfina sulfato 2 %, ${g2} gotas cada ${h} h</strong>, para <strong>${dias} días</strong>. Frasco de 20 mL (400 mg).`,
+      pregunta:'¿Cuántos frascos hay que despachar?',
+      opciones:opcionesNum(fr,[Math.max(1,fr-1),fr+1,Math.max(1,Math.ceil(fr/2))],'frascos'),
+      desarrollo:`Dosis diaria:  ${g2} gotas × 0,91 × ${tomas} tomas = ${nf(mgDia,1)} mg/día\n`+
+                 `Total ${dias} días: ${nf(mgDia*dias,0)} mg\n`+
+                 `Frascos:       ⌈${nf(mgDia*dias,0)} ÷ 400⌉ = ${fr} frascos`,
+      clave:'El frasco de 2 % rinde 400 mg, menos de la mitad de los 900 mg del frasco de 3 %.'
+    };
+  },
+  /* 5. Consecuencia de no ajustar (conceptual) */
+  function(){
+    const g=pick([16,20,24,30]);
+    const perdida=Math.round(100*(1-P2.mgPerGota/P3.mgPerGota));
+    return {
+      escenario:`Un paciente con <strong>${g} gotas c/4 h de morfina 3 %</strong> recibe el frasco de morfina sulfato 2 % y <strong>nadie ajusta la fórmula</strong>: sigue tomando ${g} gotas.`,
+      pregunta:'¿Qué ocurre y qué se espera clínicamente?',
+      opciones:barajar([
+        {txt:`Recibe ~${perdida} % MENOS morfina → riesgo de dolor no controlado y abstinencia`,ok:true},
+        {txt:`Recibe ~${perdida} % MÁS morfina → riesgo de sedación y depresión respiratoria`,ok:false},
+        {txt:'Recibe la misma dosis: el cuentagotas está calibrado igual en ambos frascos',ok:false},
+        {txt:'Recibe la misma dosis: el cambio de sal compensa el cambio de concentración',ok:false}
+      ]),
+      desarrollo:`Antes: ${g} × 1,25 = ${nf(g*P3.mgPerGota,2)} mg por toma\n`+
+                 `Ahora: ${g} × 0,91 = ${nf(g*P2.mgPerGota,2)} mg por toma\n`+
+                 `Diferencia: −${perdida} % de morfina en cada toma`,
+      clave:'Vigilar reaparición del dolor y signos de abstinencia (bostezos, sudoración, diarrea, ansiedad) en las primeras 24–48 h.'
+    };
+  },
+  /* 6. Fe de errata: 1 mg/gota */
+  function(){
+    const g=pick([22,28,33]);
+    return {
+      escenario:'En una sesión de capacitación se afirmó que la morfina sulfato 2 % equivale a <strong>«aproximadamente 1 mg por gota»</strong>.',
+      pregunta:'¿Cuál es el valor oficial vigente?',
+      opciones:barajar([
+        {txt:'0,91 mg/gota — el FNE emitió Fe de Errata (1 mL = 22 gotas)',ok:true},
+        {txt:'1,00 mg/gota — la cifra del webinar es la correcta',ok:false},
+        {txt:'1,25 mg/gota — igual que la solución 3 %',ok:false},
+        {txt:'0,83 mg/gota — 24 gotas por mL, como la solución 3 %',ok:false}
+      ]),
+      desarrollo:`20 mg/mL ÷ 22 gotas/mL = 0,91 mg/gota\n`+
+                 `Con ${g} gotas: valor correcto ${nf(g*P2.mgPerGota,2)} mg · con el dato erróneo ${nf(g*1.0,2)} mg\n`+
+                 `El error de usar 1 mg/gota sobreestima la dosis administrada en ~10 %`,
+      clave:'La Fe de Errata del FNE corrige el dato del webinar del 19 de marzo de 2026.'
+    };
+  },
+  /* 7. Trámite administrativo */
+  function(){
+    return {
+      escenario:'Una IPS tiene resolución de inscripción vigente ante el Fondo Rotatorio departamental que autoriza <strong>morfina clorhidrato 3 % solución oral</strong>. Va a recibir morfina sulfato 2 %.',
+      pregunta:'¿Qué debe hacer, según la Circular Externa 006 de 2026 del FNE?',
+      opciones:barajar([
+        {txt:'Nada en la resolución: la autorización se entiende extensiva a la 2 %. Pero debe abrir una línea u hoja NUEVA en el libro de control para registrarla por separado',ok:true},
+        {txt:'Tramitar una modificación de la resolución antes de poder recibir la nueva sal',ok:false},
+        {txt:'Nada: puede registrar ambas presentaciones en la misma línea del libro de control',ok:false},
+        {txt:'Solicitar una nueva inscripción como si fuera un medicamento distinto',ok:false}
+      ]),
+      desarrollo:'Circular Externa FNE 006 de 2026:\n'+
+                 '• Las inscripciones vigentes para la 3 % se entienden EXTENSIVAS a la 2 %\n'+
+                 '  (el cambio de sal no modifica sustancialmente el principio activo)\n'+
+                 '• No se requiere tramitar modificación de resoluciones\n'+
+                 '• PERO el registro de movimientos e informes periódicos debe llevarse\n'+
+                 '  de manera INDEPENDIENTE por cada presentación',
+      clave:'Se mantienen íntegras las condiciones de almacenamiento, custodia, dispensación y trazabilidad.'
+    };
+  },
+  /* 8. Trampa del mL */
+  function(){
+    const ml=pick([0.5,1]);
+    const mg3=ml*P3.mgPerMl, mg2=ml*P2.mgPerMl;
+    return {
+      escenario:`Una fórmula antigua dice <strong>«morfina solución oral, ${nf(ml,1)} mL cada 4 h»</strong> sin especificar la concentración.`,
+      pregunta:'¿Por qué es una prescripción insegura?',
+      opciones:barajar([
+        {txt:`Porque ${nf(ml,1)} mL son ${nf(mg3,1)} mg con la 3 % y ${nf(mg2,1)} mg con la 2 %: un 33 % de diferencia`,ok:true},
+        {txt:'Porque el volumen en mL no puede medirse con cuentagotas',ok:false},
+        {txt:'Porque la morfina siempre debe prescribirse en gotas, nunca en mL',ok:false},
+        {txt:'No es insegura: al ser la misma entidad terapéutica, los mL son equivalentes',ok:false}
+      ]),
+      desarrollo:`Con solución 3 %: ${nf(ml,1)} mL × 30 mg/mL = ${nf(mg3,1)} mg\n`+
+                 `Con solución 2 %: ${nf(ml,1)} mL × 20 mg/mL = ${nf(mg2,1)} mg\n`+
+                 `Toda orden debe llevar mg + gotas (o mL) + CONCENTRACIÓN`,
+      clave:'Escribir siempre: «morfina sulfato 2 % — X mg = Y gotas c/Z h».'
+    };
+  }
+];
+
+function eduIniciarQuiz(){
+  quizEstado={i:0,aciertos:0,preguntas:barajar(GENERADORES).slice(0,QUIZ_TOTAL).map(f=>f()),respondida:false};
+  eduPintarPregunta();
+  if(typeof CP!=='undefined') CP.evento('edu_quiz_iniciado',{datos:{total:QUIZ_TOTAL}});
+}
+
+function eduPintarPregunta(){
+  const q=quizEstado.preguntas[quizEstado.i];
+  const pct=Math.round(100*quizEstado.i/quizEstado.preguntas.length);
+  document.getElementById('quizContainer').innerHTML=`<div class="quiz-box">
+    <div class="quiz-meta"><span>Caso ${quizEstado.i+1} de ${quizEstado.preguntas.length}</span><span>Aciertos: ${quizEstado.aciertos}</span></div>
+    <div class="quiz-bar"><span style="width:${pct}%"></span></div>
+    <div class="quiz-scenario">${q.escenario}</div>
+    <div class="quiz-q"><strong>${q.pregunta}</strong></div>
+    <div class="quiz-opts">${q.opciones.map((o,k)=>`<button class="quiz-opt" id="qopt${k}" onclick="eduResponder(${k})">${o.txt}</button>`).join('')}</div>
+    <div id="quizFeedback"></div>
+  </div>`;
+  quizEstado.respondida=false;
+}
+
+function eduResponder(k){
+  if(quizEstado.respondida) return;
+  quizEstado.respondida=true;
+  const q=quizEstado.preguntas[quizEstado.i];
+  const acierto=q.opciones[k].ok;
+  if(acierto) quizEstado.aciertos++;
+  q.opciones.forEach((o,j)=>{
+    const b=document.getElementById('qopt'+j);
+    b.disabled=true;
+    if(o.ok) b.classList.add('right');
+    else if(j===k) b.classList.add('wrong');
+  });
+  const ultima=quizEstado.i===quizEstado.preguntas.length-1;
+  document.getElementById('quizFeedback').innerHTML=`<div class="quiz-fb ${acierto?'ok':'no'}">
+    <strong>${acierto?'✔ Correcto':'✘ Incorrecto'}</strong> — ${q.clave}
+    <div class="quiz-work">${q.desarrollo}</div>
+    <button class="btn btn-primary" style="margin-top:0.8rem;" onclick="eduSiguiente()">${ultima?'📊 Ver resultado':'Siguiente caso →'}</button>
+  </div>`;
+}
+
+function eduSiguiente(){
+  if(quizEstado.i<quizEstado.preguntas.length-1){ quizEstado.i++; eduPintarPregunta(); return; }
+  const n=quizEstado.preguntas.length, a=quizEstado.aciertos, pct=Math.round(100*a/n);
+  let veredicto,color;
+  if(pct>=87){ veredicto='Excelente — dominas el ajuste de dosis.'; color='var(--green-600)'; }
+  else if(pct>=62){ veredicto='Aceptable — repasa los casos fallados antes de aplicarlo en la práctica.'; color='var(--warm-700)'; }
+  else { veredicto='Insuficiente — vuelve a la ecuación de ajuste y a la tabla oficial, y repite el entrenamiento.'; color='var(--red-600)'; }
+  document.getElementById('quizContainer').innerHTML=`<div class="quiz-box">
+    <div class="quiz-score">
+      <div class="pct" style="color:${color};">${pct} %</div>
+      <div style="font-size:0.9rem;margin:0.4rem 0 0.6rem;"><strong>${a} de ${n}</strong> casos correctos</div>
+      <div style="font-size:0.84rem;color:${color};font-weight:600;">${veredicto}</div>
+      <div style="margin-top:1rem;display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="eduIniciarQuiz()">🔄 Repetir con casos nuevos</button>
+        <button class="btn btn-secondary" onclick="showSection('edu',document.querySelector('.pill.active'));window.scrollTo({top:0,behavior:'smooth'});">📖 Repasar el módulo</button>
+      </div>
+    </div>
+    <div class="alert alert-purple" style="margin-bottom:0;">
+      <strong>🔑 Las tres cifras que hay que recordar:</strong> 1 gota de la <strong>3 % = 1,25 mg</strong> · 1 gota de la <strong>2 % = 0,91 mg</strong> · para conservar la dosis, <strong>gotas 2 % = gotas 3 % × 1,374</strong>.
+    </div>
+  </div>`;
+  if(typeof CP!=='undefined') CP.evento('quiz_completado',{datos:{modulo:'cambio_morfina_3a2'},puntaje:a,total:n});
+}
+
 /* ══════════ INIT ══════════ */
 updateRoutes();
+onPresChange();
+eduPintarTablas();
+const frascoVolEl=document.getElementById('frascoVol');
+if(frascoVolEl) frascoVolEl.addEventListener('input',renderPresTable);
 </script>
 <script src="../assets/js/tracker.js" data-curso="opioides"></script>
 </body>

@@ -37,7 +37,7 @@ funcionando: quedaron como redirecciones automáticas a la nueva ubicación.
 
 | Herramienta | Contenido |
 |---|---|
-| [Equianalgesia opioide](./calculadoras/opioides.html) `v5.2` | 11 opioides, DEMO, morfina 3% en gotas, rotación a metadona (Ripamonti, Ayonrinde) |
+| [Equianalgesia opioide](./calculadoras/opioides.html) `v5.4` | 11 opioides, DEMO, **cambio FNE morfina 3 %→2 %** con módulo de entrenamiento, cálculo de frascos, rotación a metadona (Ripamonti, Ayonrinde) |
 | [Escalas pronósticas y de valoración](./calculadoras/escalas-clinicas.html) | PPS, PPI, PaP, NECPAL, PROFUND, Karnofsky, Barthel, ESAS, Zarit |
 | [Escalas por tipo de ACV](./calculadoras/neuropaliativos-escalas-acv.html) | Pronóstico neuropaliativo según subtipo de ataque cerebrovascular |
 
