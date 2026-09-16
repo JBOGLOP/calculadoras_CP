@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fibromialgia: calculadora ACR 2016</title>
+<meta name="description" content="Criterios ACR 2016 (Wolfe) en contraste con la regla de la Figura 1 de Williams y Clauw (NEJM 2026), seguimiento de severidad, contexto clínico y explorador auditado de la evidencia terapéutica.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F4F6F5; --surface:#FFFFFF; --ink:#18232B; --muted:#56646C; --line:#D5DDDC;
+  --accent:#0E6A70; --accent-soft:#DCEDEC;
+  --ok:#2E7A4C; --ok-soft:#DDEFE3;
+  --warn:#9A6212; --warn-soft:#F6E8CF;
+  --bad:#A8384A; --bad-soft:#F5DEE2;
+  --none:#E7ECEB; --na:#EEF1F0;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --navh:46px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#11181C; --surface:#182227; --ink:#E4EBEA; --muted:#9AA9AE; --line:#2C3A40;
+    --accent:#5CC2C4; --accent-soft:#16383B;
+    --ok:#6CC58F; --ok-soft:#173526;
+    --warn:#E0A64E; --warn-soft:#3A2C14;
+    --bad:#E88595; --bad-soft:#3E1D24;
+    --none:#1F2B30; --na:#172024;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#11181C; --surface:#182227; --ink:#E4EBEA; --muted:#9AA9AE; --line:#2C3A40;
+  --accent:#5CC2C4; --accent-soft:#16383B;
+  --ok:#6CC58F; --ok-soft:#173526;
+  --warn:#E0A64E; --warn-soft:#3A2C14;
+  --bad:#E88595; --bad-soft:#3E1D24;
+  --none:#1F2B30; --na:#172024;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--navh) + 12px)}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(1.9rem,4.5vw,2.8rem)}
+h2{font-size:1.6rem;margin-bottom:.6rem}
+h3{font-size:1.15rem}
+p{margin:0}
+.prose{max-width:68ch;display:flex;flex-direction:column;gap:.8rem}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.cite{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+header{display:flex;flex-direction:column;gap:.7rem;padding-bottom:26px;border-bottom:1px solid var(--line)}
+header .lede{font-size:1.08rem;color:var(--muted);max-width:66ch}
+section{padding-block:34px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* barra superior y navegación de secciones */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:.85rem;margin-bottom:18px}
+.topbar a{text-decoration:none}
+.topbar a:hover{text-decoration:underline}
+.secnav{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line);height:var(--navh)}
+.secnav ul{list-style:none;margin:0 auto;padding:0 20px;max-width:1080px;height:100%;display:flex;gap:4px;align-items:center;overflow-x:auto;scrollbar-width:thin}
+.secnav a{display:block;white-space:nowrap;font-size:.8rem;text-decoration:none;color:var(--muted);padding:.3rem .65rem;border-radius:999px}
+.secnav a:hover,.secnav a.cur{color:var(--accent);background:var(--accent-soft)}
+.warnbar{background:var(--warn-soft);border-radius:6px;padding:10px 14px;font-size:.84rem;max-width:80ch}
+
+/* contraste de reglas */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:.55rem}
+.rule .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rule ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.25rem}
+.rule.src{border-color:var(--accent)}
+.formula{font-family:var(--mono);font-size:.9rem;background:var(--accent-soft);padding:.45rem .6rem;border-radius:4px}
+.callout{margin-top:16px;background:var(--warn-soft);border-radius:6px;padding:14px 16px;max-width:78ch}
+.callout strong{color:var(--warn)}
+.note{margin-top:14px;background:var(--accent-soft);border-radius:6px;padding:12px 16px;max-width:78ch;font-size:.9rem}
+
+/* calculadora */
+.calc{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;margin-top:18px;align-items:start}
+@media (max-width:820px){.calc{grid-template-columns:1fr}}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.35rem .85rem;cursor:pointer}
+button:hover{border-color:var(--accent);color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:16px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.count{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.regions{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+fieldset{border:1px solid var(--line);border-radius:5px;padding:10px 12px;margin:0;min-width:0}
+fieldset.on{border-color:var(--accent);background:var(--accent-soft)}
+legend{font-size:.8rem;font-weight:600;padding:0 4px;max-width:100%}
+legend .st{font-family:var(--mono);font-weight:400;color:var(--muted)}
+label.chk{display:flex;gap:.45rem;align-items:center;font-size:.9rem;padding:2px 0;cursor:pointer}
+label.chk input{accent-color:var(--accent);width:16px;height:16px;flex:none}
+.ex{font-family:var(--mono);font-size:.68rem;color:var(--warn);border:1px solid currentColor;border-radius:3px;padding:0 3px}
+.sev{display:grid;gap:10px}
+.sevrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.seg label{cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;font-family:var(--mono);font-size:.85rem;padding:.25rem .6rem;border-left:1px solid var(--line)}
+.seg label:first-child span{border-left:0}
+.seg input:checked + span{background:var(--accent);color:var(--surface)}
+.seg input:focus-visible + span{outline:2px solid var(--accent);outline-offset:-2px}
+.hint{font-size:.78rem;color:var(--muted)}
+
+.result{position:sticky;top:calc(var(--navh) + 12px + env(safe-area-inset-top,0px))}
+.scores{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.score{border:1px solid var(--line);border-radius:5px;padding:8px 10px}
+.score b{display:block;font-family:var(--mono);font-size:1.6rem;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.1}
+.score small{font-size:.72rem;color:var(--muted)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:.88rem}
+.checks li{display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:start}
+.mk{font-family:var(--mono);font-weight:600;text-align:center;border-radius:3px}
+.mk.y{color:var(--ok);background:var(--ok-soft)}
+.mk.n{color:var(--bad);background:var(--bad-soft)}
+.verdicts{display:grid;gap:8px}
+.verdict{border-radius:5px;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:.9rem}
+.verdict .pill{font-family:var(--mono);font-size:.75rem;font-weight:500;padding:.15rem .5rem;border-radius:999px;white-space:nowrap}
+.verdict.y{background:var(--ok-soft)} .verdict.y .pill{background:var(--ok);color:var(--surface)}
+.verdict.n{background:var(--none)} .verdict.n .pill{background:var(--muted);color:var(--surface)}
+.agree{border-radius:5px;padding:12px;font-size:.9rem}
+.agree.same{background:var(--accent-soft)}
+.agree.diff{background:var(--warn-soft)}
+.agree strong{display:block;margin-bottom:2px}
+.disclaimer{font-size:.76rem;color:var(--muted)}
+
+/* mapa de discordancia */
+.mapwrap{overflow-x:auto;margin-top:16px;padding-bottom:6px}
+.map{display:grid;grid-template-columns:34px repeat(20,24px);gap:2px;width:max-content;font-family:var(--mono);font-size:.66rem}
+.map .c{width:24px;height:22px;border-radius:2px}
+.map .ax{color:var(--muted);display:flex;align-items:center;justify-content:center}
+.c.both{background:var(--ok)}
+.c.wolfe{background:var(--accent)}
+.c.nejm{background:var(--bad)}
+.c.neither{background:var(--none)}
+.c.na{background:var(--na);background-image:repeating-linear-gradient(45deg,transparent 0 4px,var(--line) 4px 5px)}
+.c.me{outline:2.5px solid var(--ink);outline-offset:-1px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:2px;display:inline-block}
+.maplab{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+/* herramientas complementarias */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-top:18px;align-items:start}
+.numrow{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.num label{display:block;font-size:.8rem;font-weight:600;margin-bottom:3px}
+.num input{font:inherit;font-family:var(--mono);width:6.5rem;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)}
+.num input:focus-visible{outline:2px solid var(--accent);outline-offset:0}
+.out{border-radius:5px;padding:12px;font-size:.9rem;background:var(--none)}
+.out.good{background:var(--ok-soft)}
+.out.info{background:var(--accent-soft)}
+.out.alert{background:var(--warn-soft)}
+.out ul{margin:.4rem 0 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.2rem}
+.delta{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.radios{display:flex;flex-direction:column;gap:2px}
+.radios label{display:flex;gap:.45rem;align-items:center;font-size:.9rem;cursor:pointer}
+.radios input{accent-color:var(--accent);width:16px;height:16px;flex:none}
+.sub{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+
+/* explorador de evidencia */
+.filters{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;margin-top:16px}
+.filters select{font:inherit;font-size:.9rem;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--ink)}
+.filters .f label.t{display:block;font-size:.8rem;font-weight:600;margin-bottom:3px}
+.evsum{font-size:.86rem;color:var(--muted);margin-top:12px}
+.ev{min-width:860px}
+.ev td{vertical-align:middle}
+.ev .who{font-weight:600}
+.chip{display:inline-block;font-family:var(--mono);font-size:.66rem;letter-spacing:.03em;border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:4px;color:var(--muted);vertical-align:middle}
+.chip.f{border-color:var(--accent);color:var(--accent)}
+.chip.co-no{border-color:var(--bad);color:var(--bad)}
+.chip.co-parcial{border-color:var(--warn);color:var(--warn)}
+.track{position:relative;height:18px;width:200px;background:linear-gradient(to right,transparent calc(9.09% - 1px),var(--line) calc(9.09% - 1px) 9.09%,transparent 9.09% calc(22.73% - 1px),var(--line) calc(22.73% - 1px) 22.73%,transparent 22.73% calc(36.36% - 1px),var(--line) calc(36.36% - 1px) 36.36%,transparent 36.36%)}
+.track .ci{position:absolute;top:8px;height:2px;background:var(--muted)}
+.track .pt{position:absolute;top:4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--accent)}
+.track .pt.f{background:var(--ink);border-radius:2px}
+.lbl{font-size:.8rem;white-space:nowrap}
+.lbl s{color:var(--muted)}
+.flag{display:inline-block;font-family:var(--mono);font-size:.7rem;font-weight:600;border-radius:3px;padding:0 5px;margin:1px 2px 1px 0;cursor:help}
+.flag.e{background:var(--bad-soft);color:var(--bad)}
+.flag.i{background:var(--accent-soft);color:var(--accent)}
+.scale{display:flex;justify-content:space-between;width:200px;font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+details.auditlog{margin-top:14px;max-width:80ch}
+details.auditlog summary{cursor:pointer;font-weight:600}
+details.auditlog ol{margin:.5rem 0 0;padding-left:1.2rem;display:flex;flex-direction:column;gap:.4rem;font-size:.9rem}
+.plan{counter-reset:paso;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.plan li{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px 12px 48px;position:relative}
+.plan li::before{counter-increment:paso;content:counter(paso);position:absolute;left:14px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--surface);font-family:var(--mono);font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.plan .loc{display:block;margin-top:6px;font-size:.84rem;background:var(--warn-soft);border-radius:4px;padding:6px 8px}
+
+/* tablas y listas */
+.tbl{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;margin-top:10px}
+ol.tips,ul.crit{margin:0;padding-left:1.25rem;display:flex;flex-direction:column;gap:.5rem;max-width:74ch}
+ul.crit ul{margin:.3rem 0 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.2rem}
+.src{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.inf{font-family:var(--mono);font-size:.7rem;color:var(--warn);border:1px solid currentColor;border-radius:3px;padding:0 4px;white-space:nowrap}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.q ol{margin:.4rem 0 0;padding-left:1.2rem;display:flex;flex-direction:column;gap:.45rem}
+.refs{font-size:.85rem;display:flex;flex-direction:column;gap:.35rem;max-width:84ch}
+.refs h3{font-size:1rem;margin-top:.8rem}
+@media (prefers-reduced-motion:no-preference){.verdict,.agree,.out{transition:background-color .2s}}
+</style>
+</head>
+<body>
+
+<nav class="secnav" aria-label="Secciones">
+  <ul>
+    <li><a href="#calculadora">Diagnóstico</a></li>
+    <li><a href="#mapa">Mapa</a></li>
+    <li><a href="#seguimiento">Seguimiento</a></li>
+    <li><a href="#contexto">Contexto clínico</a></li>
+    <li><a href="#evidencia">Evidencia</a></li>
+    <li><a href="#manejo">Manejo</a></li>
+    <li><a href="#critica">Lectura crítica</a></li>
+    <li><a href="#seminario">Seminario</a></li>
+    <li><a href="#fuentes">Fuentes</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+<div class="topbar">
+  <a href="../">← Portal de herramientas</a>
+  <a href="../revision-temas/fibromialgia.html">Revisión de tema: dolor nociplástico</a>
+</div>
+
+<header>
+  <span class="eyebrow">Maestría en Cuidados Paliativos · Calculadora y lectura crítica</span>
+  <h1>Fibromialgia: diagnóstico, seguimiento y evidencia</h1>
+  <p class="lede">Herramienta docente construida sobre la revisión <em>Clinical Practice</em> de Williams y Clauw (NEJM, 2026) y verificada contra los criterios originales de Wolfe et al. (2016). Contrasta el resumen diagnóstico de la Figura 1 con la fuente primaria, sigue la severidad en el tiempo, organiza el estudio clínico y audita las Tablas 1 y 2 del artículo.</p>
+  <span class="cite">Williams DA, Clauw DJ. N Engl J Med 2026;395:267-77 · doi:10.1056/NEJMcp2411656</span>
+  <p class="warnbar"><strong>Herramienta educativa.</strong> Los criterios apoyan, pero no sustituyen, el juicio clínico. Wolfe 2016 indica aplicarlos solo después de acotar las posibilidades diagnósticas con entrevista, examen físico y los estudios necesarios.</p>
+</header>
+
+<section id="contraste">
+  <span class="eyebrow">El problema</span>
+  <h2>Dos lecturas del mismo criterio</h2>
+  <div class="prose">
+    <p>La Figura 1 del artículo resume el diagnóstico en una sola regla basada en la escala de severidad (FS). La publicación original de los criterios ACR 2016 usa otra lógica: combinaciones de WPI y SSS, más dos condiciones que la figura no menciona.</p>
+  </div>
+  <div class="rules">
+    <div class="rule">
+      <span class="tag">Resumen en NEJM 2026 · Figura 1</span>
+      <h3>Regla de la severidad</h3>
+      <ul>
+        <li>Dolor en ≥4 de 5 regiones del mapa corporal del WPI</li>
+        <li>FS mayor de 13</li>
+      </ul>
+      <div class="formula">FS = WPI (0–19) + SSS (0–12) &gt; 13</div>
+      <p class="hint">No menciona la duración ni qué sitios quedan fuera del conteo de regiones.</p>
+    </div>
+    <div class="rule src">
+      <span class="tag">Fuente original · Wolfe et al. 2016</span>
+      <h3>Criterios ACR 2016 (los cuatro deben cumplirse)</h3>
+      <ul>
+        <li><strong>WPI ≥7 y SSS ≥5</strong>, o <strong>WPI 4–6 y SSS ≥9</strong></li>
+        <li>Dolor generalizado: ≥4 de 5 regiones; <strong>mandíbula, tórax y abdomen no cuentan</strong> para esta definición</li>
+        <li>Síntomas presentes de forma similar durante <strong>≥3 meses</strong></li>
+        <li>El diagnóstico es válido aunque existan otros diagnósticos</li>
+      </ul>
+      <p class="hint">La FS (0–31) es una medida continua. Es imposible cumplir los criterios con FS &lt;12, y el 92–96 % de quienes tienen FS ≥12 los cumplen.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>Consecuencia práctica.</strong> Quien cumple Wolfe con WPI 7 + SSS 5 tiene FS = 12, y con WPI 4 + SSS 9 tiene FS = 13. Ninguno de los dos supera 13, así que la regla de la figura los clasificaría como negativos. Al revés, WPI 6 + SSS 8 da FS 14, que pasa la regla de la figura pero no cumple Wolfe. Para enseñar y diagnosticar, use la fuente original.
+  </div>
+</section>
+
+<section id="calculadora">
+  <span class="eyebrow">Herramienta 1</span>
+  <h2>Calculadora ACR 2016 con contraste</h2>
+  <div class="prose"><p>Marque los sitios con dolor en la última semana y la severidad de los síntomas. El panel compara en vivo ambas reglas. Los ejemplos cargan casos didácticos.</p></div>
+  <div class="presets" role="group" aria-label="Casos de ejemplo">
+    <button type="button" data-preset="caso" aria-pressed="true">Caso de la viñeta (ilustrativo)</button>
+    <button type="button" data-preset="a" aria-pressed="false">Discordancia A: FS 12</button>
+    <button type="button" data-preset="b" aria-pressed="false">Discordancia B: FS 14</button>
+    <button type="button" data-preset="c" aria-pressed="false">Regiones excluidas</button>
+    <button type="button" data-preset="clear" aria-pressed="false">Limpiar</button>
+  </div>
+
+  <div class="calc">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="panel">
+        <div class="panel-h"><h3>1 · Widespread Pain Index (WPI)</h3><span class="count" id="wpiCount">0 / 19 sitios</span></div>
+        <div class="regions" id="regions"></div>
+        <p class="hint"><span class="ex">excl.</span> Sitio que suma al WPI pero no cuenta para definir dolor generalizado.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-h"><h3>2 · Symptom Severity Scale (SSS)</h3><span class="count" id="sssCount">0 / 12</span></div>
+        <div>
+          <p class="hint" style="margin-bottom:8px">Severidad en la última semana: 0 sin problema · 1 leve · 2 moderado · 3 grave</p>
+          <div class="sev" id="sev"></div>
+        </div>
+        <div>
+          <p class="hint" style="margin-bottom:4px">Presente en los últimos 6 meses (1 punto cada uno)</p>
+          <div id="somatic"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>3 · Duración</h3>
+        <label class="chk"><input type="checkbox" id="dur"> Síntomas presentes de forma similar durante al menos 3 meses</label>
+      </div>
+    </div>
+
+    <aside class="panel result" aria-live="polite">
+      <h3>Resultado</h3>
+      <div class="scores">
+        <div class="score"><small>WPI</small><b id="oWpi">0</b><small>de 19</small></div>
+        <div class="score"><small>SSS</small><b id="oSss">0</b><small>de 12</small></div>
+        <div class="score"><small>FS</small><b id="oFs">0</b><small>de 31</small></div>
+      </div>
+      <ul class="checks" id="checks"></ul>
+      <div class="verdicts">
+        <div class="verdict" id="vW"><span>Criterios ACR 2016 (Wolfe)</span><span class="pill"></span></div>
+        <div class="verdict" id="vN"><span>Regla de la figura NEJM</span><span class="pill"></span></div>
+      </div>
+      <div class="agree" id="agree"></div>
+      <p class="disclaimer">Herramienta docente. Los criterios apoyan, pero no sustituyen, el juicio clínico ni la evaluación de condiciones coexistentes.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="mapa">
+  <span class="eyebrow">Dónde discrepan</span>
+  <h2>Mapa WPI × SSS</h2>
+  <div class="prose"><p>Cada celda es una combinación posible de puntajes, suponiendo que se cumplen el dolor generalizado y la duración. El recuadro oscuro marca el paciente cargado en la calculadora. Las celdas en color intenso son las que cambian de clasificación según la regla usada.</p></div>
+  <div class="mapwrap"><div class="map" id="map" role="img" aria-label="Mapa de concordancia entre criterios Wolfe 2016 y regla FS mayor de 13"></div></div>
+  <p class="maplab">Eje horizontal: WPI (0–19) · Eje vertical: SSS (12 arriba, 0 abajo)</p>
+  <div class="legend">
+    <span><i class="c both"></i> Ambas positivas</span>
+    <span><i class="c wolfe"></i> Solo Wolfe (falso negativo de la figura)</span>
+    <span><i class="c nejm"></i> Solo figura NEJM (falso positivo)</span>
+    <span><i class="c neither"></i> Ambas negativas</span>
+    <span><i class="c na"></i> WPI &lt;4: no alcanza 4 regiones</span>
+  </div>
+  <p class="hint" style="margin-top:10px" id="mapStats"></p>
+</section>
+
+<section id="seguimiento">
+  <span class="eyebrow">Herramienta 2</span>
+  <h2>Seguimiento de la severidad (FS)</h2>
+  <div class="prose">
+    <p>La FS no sirve solo para diagnosticar. Wolfe 2016 la propone como medida aproximada de severidad en quien cumple los criterios y señala que, en un paciente con diagnóstico previo, <strong>un puntaje posterior &lt;12 puede usarse como medida de mejoría o del estado actual</strong>. La Figura 1 del artículo la presenta además como medida continua de la carga de síntomas y aproximación al grado de nociplasticidad.</p>
+    <p>Registre los puntajes de la consulta anterior. Los valores actuales salen de la calculadora de arriba.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Consulta anterior (basal)</h3>
+      <div class="numrow">
+        <div class="num"><label for="bWpi">WPI basal (0–19)</label><input type="number" id="bWpi" min="0" max="19" step="1" inputmode="numeric"></div>
+        <div class="num"><label for="bSss">SSS basal (0–12)</label><input type="number" id="bSss" min="0" max="12" step="1" inputmode="numeric"></div>
+      </div>
+      <div><button type="button" id="bTake">Usar los valores actuales como basal</button></div>
+      <p class="hint">Útil en clase: cargue un caso, tómelo como basal y luego modifique la calculadora para simular el control.</p>
+    </div>
+    <div class="panel" aria-live="polite">
+      <h3>Comparación</h3>
+      <div id="fOut" class="out">Ingrese el WPI y la SSS de la consulta anterior.</div>
+      <p class="disclaimer">Ni Wolfe 2016 ni el artículo definen una diferencia mínima clínicamente importante para la FS: interprete el cambio junto con la función y los objetivos del paciente. Para medir impacto, el artículo sugiere el PROMIS-29+2 (puntajes T, media 50 y DE 10, recuerdo de 7 días), que esta herramienta no calcula porque requiere las tablas oficiales de conversión.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contexto">
+  <span class="eyebrow">Herramienta 3</span>
+  <h2>Contexto clínico</h2>
+  <div class="prose"><p>Dos preguntas que el artículo pone antes del tratamiento: qué otras condiciones de dolor crónico acompañan al paciente y cuánto estudio necesita.</p></div>
+  <div class="grid2">
+    <div class="panel">
+      <div class="panel-h"><h3>Condiciones de dolor crónico superpuestas</h3><span class="count" id="copcCount">0 / 9</span></div>
+      <p class="hint">En 2016 los NIH identificaron 10 condiciones que coexisten con la fibromialgia más de lo esperado, predominan en mujeres, responden mal a las intervenciones biomédicas tradicionales y probablemente comparten un mecanismo nociplástico. La fibromialgia es la décima.</p>
+      <div id="copc"></div>
+      <div>
+        <p class="sub" style="margin-bottom:2px">Síntoma asociado</p>
+        <label class="chk"><input type="checkbox" id="copc_sens"> Sensibilidad a estímulos no dolorosos (luz, ruido u olores)</label>
+      </div>
+      <div><button type="button" id="copcCase">Cargar antecedentes de la viñeta</button></div>
+      <div id="copcOut" class="out" aria-live="polite"></div>
+    </div>
+    <div class="panel">
+      <h3>Estudio y remisión</h3>
+      <div>
+        <p class="sub" style="margin-bottom:2px">Forma de inicio</p>
+        <div class="radios" role="radiogroup" aria-label="Forma de inicio">
+          <label><input type="radio" name="onset" value="cronico"> Dolor generalizado desde la infancia, de evolución lenta</label>
+          <label><input type="radio" name="onset" value="agudo"> Inicio agudo o subagudo</label>
+        </div>
+      </div>
+      <div>
+        <p class="sub" style="margin-bottom:2px">Considerar consulta especializada si</p>
+        <label class="chk"><input type="checkbox" id="ref_auto"> Sospecha de enfermedad autoinmune</label>
+        <label class="chk"><input type="checkbox" id="ref_neuro"> Sospecha de neuropatía</label>
+        <label class="chk"><input type="checkbox" id="ref_radic"> Sospecha de radiculopatía</label>
+        <label class="chk"><input type="checkbox" id="ref_refr"> Caso refractario o complejo</label>
+      </div>
+      <div id="workOut" class="out" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section id="evidencia">
+  <span class="eyebrow">Herramienta 4</span>
+  <h2>Explorador de evidencia terapéutica</h2>
+  <div class="prose">
+    <p>Las 54 estimaciones de las Tablas 1 y 2 del artículo, filtrables por desenlace. Cada fila se audita automáticamente contra las reglas que la propia tabla declara: los umbrales de tamaño del efecto (|DME| &lt;0,20 despreciable; 0,20–0,49 pequeño; 0,50–0,79 mediano; ≥0,80 grande) y la nota «P&lt;0,05 para todas las comparaciones».</p>
+    <p><strong>Ordenar por magnitud es un ejercicio didáctico, no una comparación válida:</strong> las estimaciones vienen de metaanálisis distintos, con poblaciones, comparadores e instrumentos diferentes. Los fármacos provienen sobre todo de un metaanálisis en red con intervalos de credibilidad; las intervenciones no farmacológicas, de ensayos pequeños, heterogéneos y sin ciego posible.</p>
+  </div>
+  <div class="filters">
+    <div class="f"><label class="t" for="evOut">Desenlace</label>
+      <select id="evOut">
+        <option value="all">Todos</option>
+        <option value="dolor" selected>Dolor</option>
+        <option value="sueno">Sueño</option>
+        <option value="fatiga">Fatiga</option>
+        <option value="depresion">Depresión</option>
+        <option value="ansiedad">Ansiedad</option>
+        <option value="sintomas">Síntomas de fibromialgia</option>
+        <option value="cv">Calidad de vida relacionada con la salud</option>
+        <option value="funcion">Función</option>
+      </select></div>
+    <div class="f"><label class="t" for="evTipo">Tipo</label>
+      <select id="evTipo">
+        <option value="all">Todas</option>
+        <option value="nf">No farmacológicas (Tabla 1)</option>
+        <option value="f">Farmacológicas (Tabla 2)</option>
+      </select></div>
+    <div class="f">
+      <label class="chk"><input type="checkbox" id="evSort" checked> Ordenar por magnitud</label>
+      <label class="chk"><input type="checkbox" id="evFlag"> Solo filas con hallazgos de auditoría</label>
+    </div>
+  </div>
+  <p class="evsum" id="evSum" aria-live="polite"></p>
+  <div class="tbl"><table class="ev">
+    <thead><tr><th>Intervención</th><th>Desenlace</th><th>Magnitud del beneficio</th><th>DME (IC 95 %)</th><th>Tamaño: publicado → recalculado</th><th>Auditoría</th></tr></thead>
+    <tbody id="evBody"></tbody>
+  </table></div>
+  <p class="hint" style="margin-top:8px">La barra muestra el valor absoluto de la DME en escala 0–2,2, con líneas guía en 0,2, 0,5 y 0,8. ● no farmacológica · ■ farmacológica. <span class="chip co-no">CO: sin registro</span> sin registro sanitario vigente en el CUM del INVIMA (consulta del 16 de septiembre de 2026).</p>
+  <details class="auditlog" id="auditLog">
+    <summary>Hallazgos de la auditoría automática</summary>
+    <ol id="auditList"></ol>
+  </details>
+</section>
+
+<section id="manejo">
+  <span class="eyebrow">Qué hacer con la evidencia</span>
+  <h2>Manejo según el artículo, adaptado a Colombia</h2>
+  <div class="cols">
+    <div class="prose">
+      <p><strong>Principios.</strong> Ninguna terapia disponible tiene más que efectos modestos y suele requerir varios intentos. Introduzca los tratamientos <strong>uno a la vez</strong> para evaluar beneficio y efectos adversos, y decida junto con el paciente: su participación es clave para el éxito de lo no farmacológico.</p>
+      <p><strong>Terapia combinada.</strong> Un gabapentinoide en la noche y un IRSN en el día lograron alivio global moderado o mayor a las 6 semanas en el 68 %, frente a 42 % con duloxetina sola, 39 % con pregabalina sola y 18 % con placebo <span class="src">(Gilron 2016)</span>.</p>
+      <p><strong>Qué no sirve para la fibromialgia.</strong> Acetaminofén, AINE y opioides. Los dos primeros pueden ayudar si coexiste dolor nociceptivo, como artrosis. Los opioides deben evitarse: la liberación excesiva de opioides endógenos puede promover hiperalgesia, hay riesgo de sobredosis y adicción, y la mortalidad por todas las causas casi se duplica. Si se usan, el artículo prefiere tramadol, buprenorfina o tapentadol; algo de evidencia apoya la naltrexona a dosis baja.</p>
+      <p><strong>Terapias complementarias.</strong> Son de uso frecuente (sanación espiritual 54 %, masaje 50 %, aromaterapia 39 %, quiropraxia 38 %). Una revisión sistemática dio recomendación fuerte a qigong, tai chi y yoga, y «considerada» a acupuntura y a dieta si hay obesidad.</p>
+    </div>
+    <div>
+      <h3 style="margin-bottom:10px">Secuencia propuesta para el caso</h3>
+      <ol class="plan">
+        <li><strong>Educación y autocuidado.</strong> Explicar que el dolor puede originarse en el procesamiento del SNC, que la condición es crónica pero manejable y no pone en riesgo la vida, y promover actividad física, higiene del sueño, manejo del estrés y entrenamiento en resiliencia. No indicar cirugía.</li>
+        <li><strong>Tricíclico nocturno a dosis baja y actividad física graduada.</strong> El artículo sugiere ciclobenzaprina o nortriptilina, en dosis única unas horas antes de dormir y titulada despacio hasta que mejore el sueño, con un plan de yoga o caminata que empiece bajo y progrese despacio.
+          <span class="loc"><strong>En Colombia</strong> <span class="inf">adaptación local</span> la nortriptilina no tiene registro vigente en el CUM del INVIMA. La ciclobenzaprina está registrada solo en formas orales, mientras los datos de la Tabla 2 provienen de la formulación sublingual (TNX-102 SL). La amitriptilina sí tiene registro y es el tricíclico con mayores efectos en la Tabla 2 (sueño −0,97; calidad de vida −0,80; fatiga −0,64), aunque la tabla no le reporta desenlace de dolor.</span></li>
+        <li><strong>Si no hay respuesta.</strong> Probar otras clases de analgésicos no opioides de acción central (IRSN o gabapentinoides) y terapias integrativas no farmacológicas (variantes de TCC, terapias de movimiento, neuroestimulación).
+          <span class="loc"><strong>En Colombia</strong> <span class="inf">adaptación local</span> duloxetina y pregabalina tienen registro vigente; el milnaciprán y la esreboxetina, no.</span></li>
+      </ol>
+      <p class="hint" style="margin-top:10px">El artículo no especifica dosis. Esta herramienta tampoco las propone.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tips">
+  <span class="eyebrow">Para la práctica</span>
+  <h2>Tips clínicos</h2>
+  <ol class="tips">
+    <li>Sospéchela ante dolor en varias regiones, condiciones de dolor crónico superpuestas e hipersensibilidad a luz, ruido u olores, también en hombres: la viñeta del artículo es un hombre a propósito.</li>
+    <li>Es un diagnóstico positivo, no de exclusión: aplique WPI y SSS aunque exista otra enfermedad.</li>
+    <li>Pida VSG, PCR, TSH, hemograma y función hepática para buscar condiciones que la imitan. Si el cuadro es de larga evolución desde la infancia, basta poco estudio; si el inicio es agudo o subagudo, estudie más.</li>
+    <li>No opere ni infiltre por hallazgos de imagen leves en un cuadro nociplástico.</li>
+    <li>Tricíclico en dosis única unas horas antes de dormir, titulado lentamente hasta que mejore el sueño.</li>
+    <li>Ejercicio con la regla «empezar bajo, ir despacio»: progresar rápido empeora los síntomas.</li>
+    <li>Si la respuesta es parcial, combine un gabapentinoide en la noche con un IRSN en el día. Prefiera IRSN con actividad noradrenérgica a ISRS muy selectivos.</li>
+    <li>Evite los opioides. Si ya los usa, el artículo prefiere tramadol, buprenorfina o tapentadol.</li>
+    <li>Siga la evolución con la FS y el PROMIS-29+2, y tamice condiciones superpuestas con el COPC-S.</li>
+    <li>En paliativos, el cáncer figura entre las causas de sensibilización «de abajo arriba». Ante un dolor oncológico desproporcionado, considere un componente nociplástico. <span class="inf">inferencia docente</span></li>
+  </ol>
+</section>
+
+<section id="critica">
+  <span class="eyebrow">Colador metodológico</span>
+  <h2>Hallazgos de lectura crítica</h2>
+  <ul class="crit">
+    <li><strong>Umbral diagnóstico.</strong> La regla «FS &gt;13» de la Figura 1 no coincide con Wolfe 2016. Entre las combinaciones con WPI ≥4, 4 cumplen Wolfe sin pasar la regla y 41 pasan la regla sin cumplir Wolfe (ver el mapa).</li>
+    <li><strong>Etiquetas de tamaño del efecto que contradicen los umbrales de la propia tabla:</strong>
+      <ul>
+        <li>TCC/dolor (−0,45) y mindfulness/fatiga (−0,49) y depresión (−0,46) figuran como «medianos»; serían pequeños.</li>
+        <li>Duloxetina/fatiga (−0,12) figura como «pequeño»; sería despreciable.</li>
+      </ul>
+    </li>
+    <li><strong>Intervalos de confianza problemáticos, presentes en el original:</strong>
+      <ul>
+        <li>Estiramiento/depresión: el IC llega a 0,00, aunque la tabla declara P&lt;0,05 para todas las comparaciones.</li>
+        <li>Electroacupuntura/sueño: los límites están invertidos (−0,01 a −0,79).</li>
+        <li>Qigong/fatiga: el IC es asimétrico respecto al estimado (−0,56; −1,07 a −0,34). Su límite superior es idéntico al de la fila de sueño inmediatamente anterior, lo que sugiere un error de transcripción. <span class="inf">hipótesis</span></li>
+      </ul>
+    </li>
+    <li><strong>Polaridad de la calidad de vida.</strong> Ejercicio y estiramiento reportan «CVRS física/mental» con valores positivos marcados con §, mientras electroacupuntura, yoga y los fármacos reportan «CVRS» con valores negativos. Según la nota al pie, ambos indican beneficio: no es un error, pero se agrupan bajo el mismo rótulo instrumentos de polaridad opuesta y el lector debe revisar la dirección fila por fila.</li>
+    <li><strong>Recomendación vs. evidencia.</strong> Para el caso recomiendan ciclobenzaprina o nortriptilina. La nortriptilina no está en la Tabla 2. Los datos de ciclobenzaprina vienen de la formulación sublingual y muestran efectos pequeños a despreciables. La amitriptilina, con los mayores efectos entre los tricíclicos, no tiene desenlace de dolor reportado en la tabla.</li>
+    <li><strong>Aprobación regulatoria vs. tamaño del efecto.</strong> El milnaciprán está aprobado por la FDA para fibromialgia, pero sus tres estimaciones son despreciables (dolor −0,17; depresión −0,10; fatiga −0,10).</li>
+    <li><strong>Extrapolación.</strong> La afirmación de que la mortalidad «casi se duplica» con opioides viene de una cohorte de opioides de larga acción en dolor crónico no oncológico (Ray 2016), no de pacientes con fibromialgia.</li>
+    <li><strong>Terminología.</strong> Llamar «agonista mixto» a la buprenorfina (agonista parcial μ) y al tapentadol (agonista μ con inhibición de la recaptación de noradrenalina) es impreciso.</li>
+    <li><strong>Evidencia asimétrica.</strong> Los efectos farmacológicos salen principalmente de un metaanálisis en red con intervalos de credibilidad (Farag 2022). Los de terapias complementarias salen de una guía alemana con revisión de revisiones sistemáticas (Langhorst 2017).</li>
+    <li><strong>Autocitación.</strong> Al menos 11 de las 51 referencias listan a Clauw entre sus autores, varias de ellas centrales para el argumento; con «et al.» podrían ser más. Las declaraciones de conflicto de interés están en NEJM.org, no en el PDF.</li>
+    <li><strong>Contexto colombiano.</strong> Nortriptilina, milnaciprán y esreboxetina no tienen registro sanitario vigente en el CUM del INVIMA, y la ciclobenzaprina solo está registrada en formas orales (consulta del 16 de septiembre de 2026).</li>
+  </ul>
+</section>
+
+<section id="seminario">
+  <span class="eyebrow">Para el seminario</span>
+  <h2>Preguntas de discusión</h2>
+  <div class="q"><ol>
+    <li>Con la calculadora, construya un paciente que cumpla Wolfe 2016 y sea negativo con la regla de la figura. ¿Qué implicaciones tendría usar esa regla como criterio de inclusión en un estudio?</li>
+    <li>¿Por qué los criterios excluyen mandíbula, tórax y abdomen de la definición de dolor generalizado? ¿Qué diagnósticos diferenciales protege esa exclusión?</li>
+    <li>La FS se propone como medida continua de nociplasticidad. ¿Qué ventajas y riesgos tiene dicotomizar una escala continua? ¿Cómo interpretaría un cambio de FS sin una diferencia mínima clínicamente importante definida?</li>
+    <li>En el explorador, compare la magnitud de fortalecimiento muscular (−1,39) con la de duloxetina (−0,33) para dolor. ¿Por qué no se puede concluir que el ejercicio es cuatro veces más eficaz? Use GRADE.</li>
+    <li>El artículo recomienda nortriptilina o ciclobenzaprina sublingual, ninguna disponible en Colombia. Proponga una alternativa y justifique con la Tabla 2 qué desenlaces respalda y cuáles no.</li>
+    <li>Proponga una pregunta PICO sobre dolor nociplástico en pacientes oncológicos en cuidado paliativo.</li>
+  </ol></div>
+</section>
+
+<section id="fuentes">
+  <span class="eyebrow">Referencias</span>
+  <h2>Fuentes</h2>
+  <div class="refs">
+    <h3>Primarias</h3>
+    <p>Williams DA, Clauw DJ. Fibromyalgia. <em>N Engl J Med</em> 2026;395:267-77. doi:10.1056/NEJMcp2411656</p>
+    <p>Wolfe F, Clauw DJ, Fitzcharles MA, et al. 2016 Revisions to the 2010/2011 fibromyalgia diagnostic criteria. <em>Semin Arthritis Rheum</em> 2016;46:319-29. <a href="https://www.sciencedirect.com/science/article/abs/pii/S0049017216302086" target="_blank" rel="noopener">ScienceDirect</a> · <a href="https://www.fai2r.org/wp-content/uploads/2018/11/Anx_tuto_fibromyalgie_FAI2R-wolfe2016.pdf" target="_blank" rel="noopener">texto completo (PDF)</a></p>
+    <h3>Citadas por el artículo y usadas en esta herramienta</h3>
+    <p>[8] Maixner W, Fillingim RB, Williams DA, Smith SB, Slade GD. Overlapping chronic pain conditions: implications for diagnosis and classification. <em>J Pain</em> 2016;17(Suppl 9):T93-T107.</p>
+    <p>[10] Hays RD, Spritzer KL, Schalet BD, Cella D. PROMIS®-29 v2.0 profile physical and mental health summary scores. <em>Qual Life Res</em> 2018;27:1885-91.</p>
+    <p>[11] Schrepf A, Maixner W, Fillingim R, et al. The chronic overlapping pain condition screener. <em>J Pain</em> 2024;25:265-72.</p>
+    <p>[22] Eastwood F, Godfrey E. The efficacy, acceptability and safety of acceptance and commitment therapy for fibromyalgia — a systematic review and meta-analysis. <em>Br J Pain</em> 2024;18:243-56.</p>
+    <p>[24] Sosa-Reina MD, Nunez-Nagy S, Gallego-Izquierdo T, et al. Effectiveness of therapeutic exercise in fibromyalgia syndrome: a systematic review and meta-analysis of randomized clinical trials. <em>Biomed Res Int</em> 2017;2017:2356346.</p>
+    <p>[25] Kundakci B, Kaur J, Goh SL, et al. Efficacy of nonpharmacological interventions for individual features of fibromyalgia: a systematic review and meta-analysis of randomised controlled trials. <em>Pain</em> 2022;163:1432-45.</p>
+    <p>[26] Langhorst J, Heldmann P, Henningsen P, et al. Complementary and alternative procedures for fibromyalgia syndrome: updated guidelines 2017 and overview of systematic review articles. <em>Schmerz</em> 2017;31:289-95.</p>
+    <p>[32] Farag HM, Yunusa I, Goswami H, et al. Comparison of amitriptyline and US Food and Drug Administration-approved treatments for fibromyalgia: a systematic review and network meta-analysis. <em>JAMA Netw Open</em> 2022;5(5):e2212939.</p>
+    <p>[33] Maggi BG, Lima NL, de Lara LHC, et al. Efficacy and safety of TNX-102 SL in patients with fibromyalgia: a systematic review and meta-analysis. <em>Pain Manag</em> 2025;15:1055-63.</p>
+    <p>[39] Gilron I, Chaparro LE, Tu D, et al. Combination of pregabalin with duloxetine for fibromyalgia: a randomized controlled trial. <em>Pain</em> 2016;157:1532-40.</p>
+    <p>[41] Ray WA, Chung CP, Murray KT, Hall K, Stein CM. Prescription of long-acting opioids and mortality in patients with chronic noncancer pain. <em>JAMA</em> 2016;315:2415-23.</p>
+    <h3>Contexto colombiano</h3>
+    <p>Instituto Nacional de Vigilancia de Medicamentos y Alimentos (INVIMA). Código Único de Medicamentos vigentes. Datos Abiertos Colombia, conjunto <span class="src">i7cb-raxc</span>. <a href="https://www.datos.gov.co/Salud-y-Protecci-n-Social/C-DIGO-NICO-DE-MEDICAMENTOS-VIGENTES/i7cb-raxc" target="_blank" rel="noopener">datos.gov.co</a>. Consultado el 16 de septiembre de 2026. Un registro vigente no garantiza que el producto esté comercializado ni disponible.</p>
+  </div>
+</section>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+
+  /* ═══════════ 1 · CALCULADORA ACR 2016 (lógica verificada contra Wolfe 2016; ver CLAUDE.md) ═══════════ */
+  var REGIONS=[
+    {name:"R1 · Superior izq.", sites:[["jawL","Mandíbula izq.",1],["shL","Cintura escapular izq."],["uaL","Brazo izq."],["laL","Antebrazo izq."]]},
+    {name:"R2 · Superior der.", sites:[["jawR","Mandíbula der.",1],["shR","Cintura escapular der."],["uaR","Brazo der."],["laR","Antebrazo der."]]},
+    {name:"R3 · Inferior izq.", sites:[["hipL","Cadera (glúteo, trocánter) izq."],["ulL","Muslo izq."],["llL","Pierna izq."]]},
+    {name:"R4 · Inferior der.", sites:[["hipR","Cadera (glúteo, trocánter) der."],["ulR","Muslo der."],["llR","Pierna der."]]},
+    {name:"R5 · Axial", sites:[["neck","Cuello"],["ub","Espalda alta"],["lb","Espalda baja"],["chest","Tórax",1],["abd","Abdomen",1]]}
+  ];
+  var SEV=[["fat","Fatiga"],["unref","Sueño no reparador"],["cog","Síntomas cognitivos"]];
+  var SOM=[["head","Cefalea"],["abdp","Dolor o cólicos en abdomen inferior"],["dep","Depresión"]];
+
+  var reg=$("regions");
+  REGIONS.forEach(function(r,i){
+    var fs=document.createElement("fieldset"); fs.id="fs"+i;
+    var html='<legend>'+r.name+' <span class="st" id="rs'+i+'"></span></legend>';
+    r.sites.forEach(function(s){
+      html+='<label class="chk"><input type="checkbox" id="s_'+s[0]+'" data-site="'+s[0]+'"> '+s[1]+(s[2]?' <span class="ex">excl.</span>':'')+'</label>';
+    });
+    fs.innerHTML=html; reg.appendChild(fs);
+  });
+  var sev=$("sev");
+  SEV.forEach(function(s){
+    var row=document.createElement("div"); row.className="sevrow";
+    var h='<span>'+s[1]+'</span><span class="seg" role="radiogroup" aria-label="'+s[1]+'">';
+    for(var v=0;v<=3;v++){h+='<label><input type="radio" name="'+s[0]+'" id="'+s[0]+v+'" value="'+v+'"'+(v===0?' checked':'')+'><span>'+v+'</span></label>';}
+    row.innerHTML=h+'</span>'; sev.appendChild(row);
+  });
+  var som=$("somatic");
+  SOM.forEach(function(s){
+    som.insertAdjacentHTML("beforeend",'<label class="chk"><input type="checkbox" id="m_'+s[0]+'"> '+s[1]+'</label>');
+  });
+
+  function wolfeA(w,s){return (w>=7&&s>=5)||(w>=4&&w<=6&&s>=9);}
+
+  function state(){
+    var wpi=0, regionsPos=0;
+    REGIONS.forEach(function(r,i){
+      var n=0, cnt=0;
+      r.sites.forEach(function(s){ if($("s_"+s[0]).checked){wpi++; n++; if(!s[2]) cnt++;} });
+      var pos=cnt>0; if(pos) regionsPos++;
+      $("fs"+i).classList.toggle("on",pos);
+      $("rs"+i).textContent=n? ("("+n+(pos?")":", no cuenta)")) : "";
+    });
+    var sevSum=0;
+    SEV.forEach(function(s){ var c=document.querySelector('input[name="'+s[0]+'"]:checked'); sevSum+= c?+c.value:0; });
+    var somN=0; SOM.forEach(function(s){ if($("m_"+s[0]).checked) somN++; });
+    return {wpi:wpi, sss:sevSum+somN, regionsPos:regionsPos, dur:$("dur").checked};
+  }
+
+  function mk(ok){return '<span class="mk '+(ok?'y':'n')+'">'+(ok?'✓':'✗')+'</span>';}
+  function setV(el,ok){el.className="verdict "+(ok?"y":"n"); el.querySelector(".pill").textContent= ok?"Cumple":"No cumple";}
+
+  var actual={wpi:0,sss:0,fs:0};
+
+  function render(){
+    var st=state(), fs=st.wpi+st.sss;
+    var a=wolfeA(st.wpi,st.sss), g=st.regionsPos>=4;
+    var W=a&&g&&st.dur, N=g&&fs>13;
+    actual={wpi:st.wpi,sss:st.sss,fs:fs};
+    $("wpiCount").textContent=st.wpi+" / 19 sitios";
+    $("sssCount").textContent=st.sss+" / 12";
+    $("oWpi").textContent=st.wpi; $("oSss").textContent=st.sss; $("oFs").textContent=fs;
+    $("checks").innerHTML=
+      '<li>'+mk(a)+'<span>Umbral WPI/SSS: '+(st.wpi>=7?'WPI ≥7 exige SSS ≥5':(st.wpi>=4?'WPI 4–6 exige SSS ≥9':'WPI &lt;4 no alcanza ningún umbral'))+'</span></li>'+
+      '<li>'+mk(g)+'<span>Dolor generalizado: '+st.regionsPos+' de 5 regiones (se requieren 4)</span></li>'+
+      '<li>'+mk(st.dur)+'<span>Duración ≥3 meses</span></li>'+
+      '<li>'+mk(fs>13)+'<span>FS &gt;13 (solo regla NEJM)</span></li>';
+    setV($("vW"),W); setV($("vN"),N);
+    var ag=$("agree"), msg;
+    if(W===N){
+      ag.className="agree same";
+      msg='<strong>Las dos reglas coinciden.</strong>'+(W?'Ambas clasifican al paciente como positivo.':'Ambas lo clasifican como negativo.');
+    } else {
+      ag.className="agree diff";
+      if(W&&!N) msg='<strong>Falso negativo de la figura.</strong>Cumple Wolfe 2016 con FS = '+fs+'; la regla "FS &gt;13" lo excluiría.';
+      else {
+        var why=[]; if(!a) why.push('no alcanza la combinación WPI/SSS'); if(!st.dur) why.push('no documenta duración ≥3 meses');
+        msg='<strong>Falso positivo de la figura.</strong>FS = '+fs+' supera 13, pero '+why.join(' y ')+'.';
+      }
+    }
+    ag.innerHTML=msg;
+    drawMap(st.wpi,st.sss);
+    renderSeguimiento();
+    registrar(st,fs,W,N);
+  }
+
+  var mapBuilt=false;
+  function drawMap(cw,cs){
+    var m=$("map");
+    if(!mapBuilt){
+      var h="", only_w=0, only_n=0;
+      for(var s=12;s>=0;s--){
+        h+='<div class="ax">'+s+'</div>';
+        for(var w=0;w<=19;w++){
+          var cls;
+          if(w<4) cls="na";
+          else { var A=wolfeA(w,s), B=(w+s)>13;
+            cls= A&&B?"both": A?"wolfe": B?"nejm":"neither";
+            if(cls==="wolfe")only_w++; if(cls==="nejm")only_n++; }
+          h+='<div class="c '+cls+'" id="c'+w+'_'+s+'" title="WPI '+w+' · SSS '+s+' · FS '+(w+s)+'"></div>';
+        }
+      }
+      h+='<div></div>'; for(var x=0;x<=19;x++){h+='<div class="ax">'+x+'</div>';}
+      m.innerHTML=h; mapBuilt=true;
+      $("mapStats").textContent="Entre las combinaciones con WPI ≥4, "+only_w+" cumplen Wolfe pero no la regla de la figura, y "+only_n+" pasan la regla de la figura sin cumplir Wolfe.";
+    }
+    var prev=m.querySelector(".me"); if(prev) prev.classList.remove("me");
+    var cell=$("c"+cw+"_"+cs); if(cell) cell.classList.add("me");
+  }
+
+  var PRESETS={
+    caso:{sites:["shL","shR","ub","lb","ulL","ulR","llL","llR"],sev:{fat:2,unref:2,cog:1},som:["head"],dur:true},
+    a:{sites:["shL","uaR","hipL","ulR","neck","lb","laL"],sev:{fat:2,unref:2,cog:1},som:[],dur:true},
+    b:{sites:["shL","shR","hipL","hipR","lb","neck"],sev:{fat:2,unref:2,cog:1},som:["head","abdp","dep"],dur:false},
+    c:{sites:["jawL","jawR","chest","abd","hipL","hipR","ulL","ulR"],sev:{fat:3,unref:2,cog:2},som:["head"],dur:true},
+    clear:{sites:[],sev:{},som:[],dur:false}
+  };
+  function load(k){
+    var p=PRESETS[k];
+    document.querySelectorAll("[data-site]").forEach(function(el){el.checked=p.sites.indexOf(el.dataset.site)>=0;});
+    SEV.forEach(function(s){ $(s[0]+(p.sev[s[0]]||0)).checked=true; });
+    SOM.forEach(function(s){ $("m_"+s[0]).checked=p.som.indexOf(s[0])>=0; });
+    $("dur").checked=p.dur;
+    document.querySelectorAll("[data-preset]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.preset===k?"true":"false");});
+    render();
+  }
+
+  /* Registro anónimo de uso (tracker.js): solo puntajes, sin identificadores.
+     Se envía tras 4 s sin cambios y nunca dos veces el mismo estado. */
+  var tRegistro=null, ultimoEnviado="";
+  function registrar(st,fs,W,N){
+    if(typeof CP==="undefined"||!CP.evento) return;
+    if(tRegistro) clearTimeout(tRegistro);
+    if(st.wpi+st.sss===0) return;
+    tRegistro=setTimeout(function(){
+      var clave=[st.wpi,st.sss,st.regionsPos,st.dur?1:0].join("-");
+      if(clave===ultimoEnviado) return;
+      ultimoEnviado=clave;
+      CP.evento("calculo_realizado",{modulo:"acr2016",datos:{wpi:st.wpi,sss:st.sss,fs:fs,regiones:st.regionsPos,duracion:st.dur,wolfe:W,nejm:N,discordancia:W!==N}});
+    },4000);
+  }
+
+  /* ═══════════ 2 · SEGUIMIENTO DE LA FS ═══════════ */
+  function leerEntero(id,max){
+    var v=$(id).value;
+    if(v===""||v===null) return null;
+    var n=Number(v);
+    if(!isFinite(n)||n<0||n>max||Math.floor(n)!==n) return NaN;
+    return n;
+  }
+  function signo(d){return d>0?"+"+d:(d<0?"−"+Math.abs(d):"0");}
+
+  function renderSeguimiento(){
+    var bw=leerEntero("bWpi",19), bs=leerEntero("bSss",12), out=$("fOut");
+    if(bw===null||bs===null){ out.className="out"; out.innerHTML="Ingrese el WPI y la SSS de la consulta anterior."; return; }
+    if(isNaN(bw)||isNaN(bs)){ out.className="out alert"; out.innerHTML="Revise los valores: el WPI va de 0 a 19 y la SSS de 0 a 12, en números enteros."; return; }
+    var bf=bw+bs, dw=actual.wpi-bw, ds=actual.sss-bs, df=actual.fs-bf;
+    var html='<div class="scores" style="margin-bottom:10px">'+
+      '<div class="score"><small>FS basal</small><b>'+bf+'</b></div>'+
+      '<div class="score"><small>FS actual</small><b>'+actual.fs+'</b></div>'+
+      '<div class="score"><small>Cambio</small><b class="delta">'+signo(df)+'</b></div></div>'+
+      '<p class="delta" style="font-size:.85rem">WPI '+bw+' → '+actual.wpi+' ('+signo(dw)+') · SSS '+bs+' → '+actual.sss+' ('+signo(ds)+')</p>';
+    var cls="out info", msg;
+    if(bf>=12&&actual.fs<12){
+      cls="out good";
+      msg='<strong>La FS bajó de ≥12 a &lt;12.</strong> Según Wolfe 2016, en un paciente con diagnóstico previo un puntaje posterior &lt;12 puede usarse como medida de mejoría o del estado actual.';
+    } else if(bf<12&&actual.fs>=12){
+      cls="out alert";
+      msg='<strong>La FS pasó de &lt;12 a ≥12.</strong> Con FS ≥12, el 92–96 % cumple criterios: reaplique la calculadora completa, incluidos dolor generalizado y duración.';
+    } else if(df<0){
+      msg='<strong>La FS disminuyó '+Math.abs(df)+' puntos</strong> y sigue '+(actual.fs>=12?'≥12':'&lt;12')+'. Como no hay diferencia mínima clínicamente importante definida, valore el cambio junto con la función y los objetivos del paciente.';
+    } else if(df>0){
+      cls="out alert";
+      msg='<strong>La FS aumentó '+df+' puntos.</strong> Revise adherencia, sueño, estrés, cambios de actividad y condiciones coexistentes.';
+    } else {
+      msg='<strong>Sin cambio en la FS.</strong> Un mismo total puede esconder cambios opuestos en WPI y SSS: revise ambos componentes.';
+    }
+    out.className=cls;
+    out.innerHTML=html+'<p style="margin-top:8px">'+msg+'</p>';
+  }
+
+  /* ═══════════ 3 · CONTEXTO CLÍNICO ═══════════ */
+  var COPC=[
+    ["tmd","Trastorno temporomandibular"],
+    ["ibs","Síndrome de colon irritable"],
+    ["tth","Cefalea tensional crónica"],
+    ["mig","Migraña crónica"],
+    ["upp","Dolor pélvico urológico crónico"],
+    ["lbp","Lumbalgia crónica"],
+    ["endo","Endometriosis dolorosa"],
+    ["vulv","Vulvodinia"],
+    ["me","Encefalomielitis miálgica (síndrome de fatiga crónica)"]
+  ];
+  var copcBox=$("copc");
+  COPC.forEach(function(c){
+    copcBox.insertAdjacentHTML("beforeend",'<label class="chk"><input type="checkbox" id="copc_'+c[0]+'"> '+c[1]+'</label>');
+  });
+
+  function renderCOPC(){
+    var sel=[];
+    COPC.forEach(function(c){ if($("copc_"+c[0]).checked) sel.push(c[1]); });
+    var sens=$("copc_sens").checked;
+    $("copcCount").textContent=sel.length+" / 9";
+    var out=$("copcOut");
+    if(!sel.length&&!sens){ out.className="out"; out.innerHTML="Marque las condiciones presentes."; return; }
+    out.className="out info";
+    var h='<strong>'+sel.length+' de 9 condiciones superpuestas'+(sens?' y sensibilidad sensorial':'')+'.</strong> ';
+    h+='El artículo no propone un punto de corte. Su presencia apoya la sospecha de un mecanismo nociplástico compartido y anticipa mala respuesta a intervenciones dirigidas a tejidos periféricos. ';
+    h+='Para tamizarlas formalmente use el <strong>COPC-S</strong> (Schrepf 2024), que aplica criterios diagnósticos estandarizados a cada condición en 10–15 minutos. Esta lista es didáctica y no reemplaza el instrumento.';
+    out.innerHTML=h;
+  }
+
+  function renderWorkup(){
+    var o=document.querySelector('input[name="onset"]:checked');
+    var refs=[];
+    if($("ref_auto").checked) refs.push("enfermedad autoinmune");
+    if($("ref_neuro").checked) refs.push("neuropatía");
+    if($("ref_radic").checked) refs.push("radiculopatía");
+    var refr=$("ref_refr").checked;
+    var h='<strong>Paraclínicos básicos</strong> para buscar condiciones que imitan la fibromialgia:<ul>'+
+      '<li>VSG y PCR (condiciones inflamatorias)</li><li>TSH (alteraciones tiroideas)</li><li>Hemograma y pruebas de función hepática (condiciones médicas generales)</li></ul>';
+    var cls="out info";
+    if(!o){
+      h+='<p style="margin-top:8px">Indique la forma de inicio para orientar la extensión del estudio.</p>';
+    } else if(o.value==="cronico"){
+      h+='<p style="margin-top:8px"><strong>Poco estudio adicional.</strong> Quien tiene dolor generalizado desde la infancia con evolución lenta necesita muy poco estudio.</p>';
+    } else {
+      cls="out alert";
+      h+='<p style="margin-top:8px"><strong>Estudio más amplio.</strong> El inicio agudo o subagudo exige descartar con más cuidado otras causas antes de atribuir el cuadro a fibromialgia.</p>';
+    }
+    if(refs.length){
+      cls="out alert";
+      h+='<p style="margin-top:8px"><strong>Consulta especializada única</strong> por sospecha de '+refs.join(", ")+': el artículo la considera útil cuando puede haber una de estas condiciones de base.</p>';
+    }
+    if(refr){
+      cls="out alert";
+      h+='<p style="margin-top:8px"><strong>Remisión por caso refractario o complejo</strong> a reumatología o neurología, para confirmar el diagnóstico o descartar imitadores, o a manejo del dolor.</p>';
+    }
+    if(!refs.length&&!refr&&o){
+      h+='<p style="margin-top:8px">Sin motivos de remisión marcados: la mayoría de los casos se maneja en atención primaria.</p>';
+    }
+    h+='<p class="hint" style="margin-top:8px">La fibromialgia es un diagnóstico positivo: un hallazgo en estos estudios no la descarta si se cumplen los criterios.</p>';
+    $("workOut").className=cls;
+    $("workOut").innerHTML=h;
+  }
+
+  $("copcCase").addEventListener("click",function(){
+    COPC.forEach(function(c){ $("copc_"+c[0]).checked=(c[0]==="tth"||c[0]==="upp"||c[0]==="lbp"); });
+    $("copc_sens").checked=true;
+    renderCOPC();
+    $("copcOut").insertAdjacentHTML("beforeend",'<p class="hint" style="margin-top:8px">Viñeta: lumbalgia crónica, cefalea tensional, prostatitis crónica (asimilada aquí a dolor pélvico urológico crónico) y sensibilidad a luces brillantes. También refiere dolor torácico no cardiaco, que no está en la lista.</p>');
+  });
+
+  /* ═══════════ 4 · EXPLORADOR DE EVIDENCIA (Tablas 1 y 2, transcritas del artículo) ═══════════
+     [intervención, tipo, desenlace, rótulo del desenlace, DME, límite 1, límite 2, tamaño publicado, ref, §]
+     Los límites se guardan en el orden publicado para poder detectar intervalos invertidos.
+     § = la tabla marca que un valor POSITIVO indica beneficio. */
+  var EV=[
+    ["Ejercicio","nf","dolor","Dolor",-1.11,-1.52,-0.71,"Grande",24],
+    ["Ejercicio","nf","sintomas","Síntomas de FM",-0.67,-0.89,-0.45,"Mediano",24],
+    ["Ejercicio","nf","cv","CVRS física",0.77,0.47,1.08,"Mediano",24,1],
+    ["Ejercicio","nf","cv","CVRS mental",0.39,0.27,0.52,"Pequeño",24,1],
+    ["Ejercicio","nf","depresion","Depresión",-0.40,-0.55,-0.24,"Pequeño",24],
+    ["Ejercicio aeróbico","nf","dolor","Dolor",-1.05,-1.78,-0.33,"Grande",24],
+    ["Ejercicio aeróbico","nf","sintomas","Síntomas de FM",-0.65,-1.14,-0.16,"Mediano",24],
+    ["Ejercicio aeróbico","nf","depresion","Depresión",-0.39,-0.77,-0.01,"Pequeño",24],
+    ["Fortalecimiento muscular","nf","dolor","Dolor",-1.39,-2.16,-0.62,"Grande",24],
+    ["Fortalecimiento muscular","nf","sintomas","Síntomas de FM",-0.84,-1.23,-0.45,"Grande",24],
+    ["Fortalecimiento muscular","nf","cv","CVRS física",0.72,0.23,1.21,"Mediano",24,1],
+    ["Fortalecimiento muscular","nf","cv","CVRS mental",0.44,0.17,0.71,"Pequeño",24,1],
+    ["Fortalecimiento muscular","nf","depresion","Depresión",-0.37,-0.61,-0.13,"Pequeño",24],
+    ["Estiramiento","nf","cv","CVRS física",1.15,0.61,1.69,"Grande",24,1],
+    ["Estiramiento","nf","cv","CVRS mental",0.57,0.06,1.08,"Mediano",24,1],
+    ["Estiramiento","nf","depresion","Depresión",-0.36,-0.72,0.00,"Pequeño",24],
+    ["Terapia cognitivo-conductual","nf","dolor","Dolor",-0.45,-0.80,-0.10,"Mediano",25],
+    ["Terapia de aceptación y compromiso","nf","sintomas","Síntomas de FM",-1.43,-2.17,-0.69,"Grande",22],
+    ["Terapia de aceptación y compromiso","nf","depresion","Depresión",-0.81,-1.31,-0.31,"Grande",22],
+    ["Terapia de aceptación y compromiso","nf","ansiedad","Ansiedad",-0.94,-1.29,-0.59,"Grande",22],
+    ["Mindfulness","nf","fatiga","Fatiga",-0.49,-0.91,-0.07,"Mediano",25],
+    ["Mindfulness","nf","depresion","Depresión",-0.46,-0.75,-0.17,"Mediano",25],
+    ["Tratamiento multidisciplinario","nf","dolor","Dolor",-1.33,-2.16,-0.49,"Grande",25],
+    ["Tratamiento multidisciplinario","nf","sueno","Sueño",-1.15,-2.11,-0.18,"Grande",25],
+    ["Tratamiento multidisciplinario","nf","depresion","Depresión",-1.26,-2.06,-0.45,"Grande",25],
+    ["Electroacupuntura","nf","dolor","Dolor",-0.63,-1.02,-0.23,"Mediano",26],
+    ["Electroacupuntura","nf","sueno","Sueño",-0.40,-0.01,-0.79,"Pequeño",26],
+    ["Electroacupuntura","nf","cv","CVRS",-0.65,-1.05,-0.26,"Mediano",26],
+    ["Qigong","nf","dolor","Dolor",-0.69,-1.25,-0.12,"Mediano",26],
+    ["Qigong","nf","sueno","Sueño",-0.67,-1.01,-0.34,"Mediano",26],
+    ["Qigong","nf","fatiga","Fatiga",-0.56,-1.07,-0.34,"Mediano",26],
+    ["Tai chi","nf","sueno","Sueño",-0.71,-1.28,-0.13,"Mediano",26],
+    ["Yoga","nf","dolor","Dolor",-0.54,-0.96,-0.11,"Mediano",26],
+    ["Yoga","nf","cv","CVRS",-0.72,-1.32,-0.12,"Mediano",26],
+    ["Amitriptilina","f","sueno","Sueño",-0.97,-1.10,-0.83,"Grande",32],
+    ["Amitriptilina","f","fatiga","Fatiga",-0.64,-0.75,-0.53,"Mediano",32],
+    ["Amitriptilina","f","cv","CVRS",-0.80,-0.94,-0.65,"Grande",32],
+    ["Ciclobenzaprina (sublingual)","f","dolor","Dolor",-0.25,-0.34,-0.16,"Pequeño",33],
+    ["Ciclobenzaprina (sublingual)","f","sueno","Sueño",-0.21,-0.32,-0.11,"Pequeño",33],
+    ["Ciclobenzaprina (sublingual)","f","funcion","Función",-0.18,-0.35,-0.02,"Despreciable",33],
+    ["Ciclobenzaprina (sublingual)","f","sintomas","Síntomas de FM",-0.23,-0.33,-0.13,"Pequeño",33],
+    ["Duloxetina","f","dolor","Dolor",-0.33,-0.36,-0.30,"Pequeño",32],
+    ["Duloxetina","f","sueno","Sueño",-0.21,-0.30,-0.13,"Pequeño",32],
+    ["Duloxetina","f","depresion","Depresión",-0.25,-0.32,-0.17,"Pequeño",32],
+    ["Duloxetina","f","fatiga","Fatiga",-0.12,-0.16,-0.08,"Pequeño",32],
+    ["Duloxetina","f","cv","CVRS",-0.39,-0.55,-0.23,"Pequeño",32],
+    ["Milnaciprán","f","dolor","Dolor",-0.17,-0.20,-0.15,"Despreciable",32],
+    ["Milnaciprán","f","depresion","Depresión",-0.10,-0.12,-0.07,"Despreciable",32],
+    ["Milnaciprán","f","fatiga","Fatiga",-0.10,-0.14,-0.05,"Despreciable",32],
+    ["Pregabalina","f","dolor","Dolor",-0.30,-0.32,-0.27,"Pequeño",32],
+    ["Pregabalina","f","sueno","Sueño",-0.60,-0.67,-0.54,"Mediano",32],
+    ["Pregabalina","f","depresion","Depresión",-0.22,-0.26,-0.19,"Pequeño",32],
+    ["Pregabalina","f","fatiga","Fatiga",-0.27,-0.29,-0.24,"Pequeño",32],
+    ["Pregabalina","f","cv","CVRS",-0.18,-0.29,-0.06,"Despreciable",32]
+  ];
+
+  /* Disponibilidad en Colombia: CUM vigentes del INVIMA, consulta del 16-sep-2026 */
+  var COLOMBIA={
+    "Amitriptilina":{c:"si",t:"Registro vigente en el CUM del INVIMA."},
+    "Ciclobenzaprina (sublingual)":{c:"parcial",t:"La ciclobenzaprina solo tiene registro en formas orales (tabletas y cápsulas); la formulación sublingual evaluada (TNX-102 SL) no tiene registro."},
+    "Duloxetina":{c:"si",t:"Registro vigente en el CUM del INVIMA."},
+    "Milnaciprán":{c:"no",t:"Sin registro sanitario vigente en el CUM del INVIMA."},
+    "Pregabalina":{c:"si",t:"Registro vigente en el CUM del INVIMA."}
+  };
+
+  var FUENTE={
+    22:"Eastwood 2024 · MA de ensayos",
+    24:"Sosa-Reina 2017 · MA de ECA",
+    25:"Kundakci 2022 · MA de ECA",
+    26:"Langhorst 2017 · guía y revisión de revisiones",
+    32:"Farag 2022 · MA en red, intervalo de credibilidad",
+    33:"Maggi 2025 · MA de TNX-102 SL"
+  };
+
+  function tamano(d){ var a=Math.abs(d); return a<0.20?"Despreciable":a<0.50?"Pequeño":a<0.80?"Mediano":"Grande"; }
+
+  /* Auditoría de una fila contra las reglas que declara la propia tabla */
+  function auditar(r){
+    var smd=r[4], l1=r[5], l2=r[6], lo=Math.min(l1,l2), hi=Math.max(l1,l2), h=[];
+    var rec=tamano(smd);
+    if(rec!==r[7]) h.push({k:"e",c:"TAMAÑO",t:"Etiquetado como «"+r[7].toLowerCase()+"», pero |"+fmt(smd)+"| corresponde a «"+rec.toLowerCase()+"» según los umbrales de la tabla."});
+    if(l1>l2) h.push({k:"e",c:"IC INV",t:"Límites publicados en orden invertido ("+fmt(l1)+" a "+fmt(l2)+")."});
+    if(Math.abs((smd-lo)-(hi-smd))>0.05) h.push({k:"e",c:"IC ASIM",t:"IC asimétrico respecto al estimado: "+fmt(smd-lo,true)+" hacia un lado y "+fmt(hi-smd,true)+" hacia el otro. Las DME suelen tener intervalos simétricos."});
+    if(lo<=0&&hi>=0) h.push({k:"e",c:"P",t:"El IC incluye o toca el 0 ("+fmt(lo)+" a "+fmt(hi)+"), aunque la tabla declara P<0,05 para todas las comparaciones."});
+    if(r[3].indexOf("CVRS")===0&&!r[9]&&smd<0) h.push({k:"i",c:"POLAR",t:"CVRS con valor negativo sin §: según la nota al pie indica beneficio (instrumento en el que menor puntaje es mejor). No es error, pero exige leer la dirección fila por fila."});
+    return {rec:rec,h:h,lo:lo,hi:hi};
+  }
+
+  function fmt(x,abs){
+    var v=abs?Math.abs(x):x;
+    var s=Math.abs(v).toFixed(2).replace(".",",");
+    return (v<0?"−":"")+s;
+  }
+
+  var ESCALA=2.2;
+  function pct(x){ return Math.max(0,Math.min(100,100*x/ESCALA)); }
+
+  function renderEvidencia(){
+    var out=$("evOut").value, tipo=$("evTipo").value, sortMag=$("evSort").checked, soloFlag=$("evFlag").checked;
+    var filas=[], conHallazgos=0;
+    EV.forEach(function(r,idx){
+      if(out!=="all"&&r[2]!==out) return;
+      if(tipo!=="all"&&r[1]!==tipo) return;
+      var a=auditar(r);
+      var errores=a.h.filter(function(x){return x.k==="e";}).length;
+      if(errores) conHallazgos++;
+      if(soloFlag&&!errores) return;
+      filas.push({r:r,a:a,idx:idx});
+    });
+    if(sortMag) filas.sort(function(x,y){ return Math.abs(y.r[4])-Math.abs(x.r[4]) || x.idx-y.idx; });
+
+    var html="";
+    filas.forEach(function(f){
+      var r=f.r, a=f.a, pos=r[9]===1;
+      /* magnitud del beneficio: valor absoluto; el IC se proyecta en la misma escala */
+      var m=Math.abs(r[4]);
+      var cLo=pos?a.lo:-a.hi, cHi=pos?a.hi:-a.lo;
+      var co=COLOMBIA[r[0]];
+      var chips='<span class="chip'+(r[1]==="f"?' f':'')+'">'+(r[1]==="f"?"FARM":"NO FARM")+'</span>';
+      if(co&&co.c==="no") chips+=' <span class="chip co-no" title="'+co.t+'">CO: sin registro</span>';
+      if(co&&co.c==="parcial") chips+=' <span class="chip co-parcial" title="'+co.t+'">CO: solo oral</span>';
+      var flags=a.h.map(function(x){return '<span class="flag '+x.k+'" title="'+x.t.replace(/"/g,"&quot;")+'">'+x.c+'</span>';}).join("");
+      var lbl= a.rec===r[7] ? '<span class="lbl">'+r[7]+'</span>' : '<span class="lbl"><s>'+r[7]+'</s> → <strong>'+a.rec+'</strong></span>';
+      html+='<tr>'+
+        '<td><span class="who">'+r[0]+'</span> '+chips+'<br><span class="src">['+r[8]+'] '+FUENTE[r[8]]+'</span></td>'+
+        '<td>'+r[3]+(pos?' <span class="src" title="La tabla marca que un valor positivo indica beneficio">§</span>':'')+'</td>'+
+        '<td><div class="track" role="img" aria-label="Magnitud '+fmt(m)+'">'+
+          '<span class="ci" style="left:'+pct(Math.max(0,cLo))+'%;width:'+Math.max(0,pct(cHi)-pct(Math.max(0,cLo)))+'%"></span>'+
+          '<span class="pt'+(r[1]==="f"?' f':'')+'" style="left:'+pct(m)+'%"></span></div></td>'+
+        '<td class="n">'+fmt(r[4])+' ('+fmt(r[5])+' a '+fmt(r[6])+')</td>'+
+        '<td>'+lbl+'</td>'+
+        '<td>'+(flags||'<span class="hint">—</span>')+'</td>'+
+        '</tr>';
+    });
+    if(!filas.length) html='<tr><td colspan="6" class="hint">No hay estimaciones para esta combinación de filtros.</td></tr>';
+    $("evBody").innerHTML=html;
+
+    var etiqueta=$("evOut").options[$("evOut").selectedIndex].text.toLowerCase();
+    $("evSum").textContent=filas.length+" estimaciones"+(out==="all"?"":" para "+etiqueta)+
+      (soloFlag?"":" · "+conHallazgos+" con hallazgos de auditoría")+
+      ". Pase el cursor por los códigos para ver la explicación.";
+  }
+
+  function renderAuditLog(){
+    var items=[];
+    EV.forEach(function(r){
+      auditar(r).h.forEach(function(x){
+        if(x.k!=="e") return;
+        items.push('<li><strong>'+r[0]+' / '+r[3].toLowerCase()+'</strong> ('+fmt(r[4])+'; '+fmt(r[5])+' a '+fmt(r[6])+') — '+x.t+'</li>');
+      });
+    });
+    $("auditList").innerHTML=items.join("");
+    $("auditLog").querySelector("summary").textContent="Hallazgos de la auditoría automática ("+items.length+")";
+  }
+
+  /* ═══════════ eventos e inicio ═══════════ */
+  document.querySelectorAll("[data-preset]").forEach(function(b){b.addEventListener("click",function(){load(b.dataset.preset);});});
+  document.querySelector(".calc").addEventListener("change",function(){
+    document.querySelectorAll("[data-preset]").forEach(function(b){b.setAttribute("aria-pressed","false");});
+    render();
+  });
+  ["bWpi","bSss"].forEach(function(id){ $(id).addEventListener("input",renderSeguimiento); });
+  $("bTake").addEventListener("click",function(){ $("bWpi").value=actual.wpi; $("bSss").value=actual.sss; renderSeguimiento(); });
+  $("contexto").addEventListener("change",function(e){
+    if(e.target.id&&e.target.id.indexOf("copc_")===0) renderCOPC(); else renderWorkup();
+  });
+  ["evOut","evTipo","evSort","evFlag"].forEach(function(id){ $(id).addEventListener("change",renderEvidencia); });
+
+  /* resaltar la sección visible en la barra de navegación */
+  if("IntersectionObserver" in window){
+    var links={};
+    document.querySelectorAll(".secnav a").forEach(function(a){ links[a.getAttribute("href").slice(1)]=a; });
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting&&links[en.target.id]){
+          document.querySelectorAll(".secnav a.cur").forEach(function(x){x.classList.remove("cur");});
+          links[en.target.id].classList.add("cur");
+        }
+      });
+    },{rootMargin:"-40% 0px -55% 0px"});
+    Object.keys(links).forEach(function(id){ var s=$(id); if(s) io.observe(s); });
+  }
+
+  load("caso");
+  renderCOPC();
+  renderWorkup();
+  renderEvidencia();
+  renderAuditLog();
+})();
+</script>
+<script src="../assets/js/tracker.js" data-curso="fibromialgia"></script>
+</body>
+</html>

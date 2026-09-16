@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-08-22",
+  "actualizado": "2026-09-16",
   "categorias": [
     { "id": "calculadoras",   "nombre": "Calculadoras clínicas", "icono": "💊", "descripcion": "Cálculo en tiempo real para decisiones al lado de la cama." },
     { "id": "clases",         "nombre": "Clases interactivas",   "icono": "🎓", "descripcion": "Contenido, caso clínico y evaluación con envío automático de resultados." },
@@ -27,6 +27,13 @@
       "resumen": "Herramientas neuropaliativas específicas según el subtipo de ataque cerebrovascular.",
       "url": "calculadoras/neuropaliativos-escalas-acv.html",
       "etiquetas": ["ACV", "neuropaliativos"]
+    },
+    {
+      "id": "fibromialgia-calc", "categoria": "calculadoras",
+      "titulo": "Fibromialgia: criterios ACR 2016 y evidencia",
+      "resumen": "Criterios de Wolfe 2016 en contraste con la regla de Williams y Clauw (NEJM 2026), seguimiento de la FS, contexto clínico y explorador auditado de las 54 estimaciones terapéuticas del artículo, con disponibilidad en Colombia.",
+      "url": "fibromialgia/",
+      "etiquetas": ["fibromialgia", "ACR 2016", "nociplástico", "NEJM 2026", "lectura crítica"], "destacado": true
     },
     {
       "id": "clase-dolor", "categoria": "clases",

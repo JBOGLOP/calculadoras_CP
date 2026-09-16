@@ -22,6 +22,7 @@ calculadoras_CP/
 ├── clases/                 Clases interactivas con evaluación
 ├── revision-temas/         Síntesis de evidencia
 ├── herramientas/           Apoyo metodológico para la Maestría
+├── fibromialgia/           Calculadora ACR 2016 y evidencia de Williams y Clauw (NEJM 2026)
 ├── panel/                  Estadísticas de uso (requiere sesión del docente)
 └── CONTRIBUTING.md         Guía para crear un módulo nuevo
 ```
@@ -40,6 +41,7 @@ funcionando: quedaron como redirecciones automáticas a la nueva ubicación.
 | [Equianalgesia opioide](./calculadoras/opioides.html) `v5.4` | 11 opioides, DEMO, **cambio FNE morfina 3 %→2 %** con módulo de entrenamiento, cálculo de frascos, rotación a metadona (Ripamonti, Ayonrinde) |
 | [Escalas pronósticas y de valoración](./calculadoras/escalas-clinicas.html) | PPS, PPI, PaP, NECPAL, PROFUND, Karnofsky, Barthel, ESAS, Zarit |
 | [Escalas por tipo de ACV](./calculadoras/neuropaliativos-escalas-acv.html) | Pronóstico neuropaliativo según subtipo de ataque cerebrovascular |
+| [Fibromialgia: criterios ACR 2016 y evidencia](./fibromialgia/) | Wolfe 2016 vs. regla de NEJM 2026, seguimiento de la FS, contexto clínico y explorador auditado de la evidencia terapéutica |
 
 ### 🎓 Clases interactivas
 
