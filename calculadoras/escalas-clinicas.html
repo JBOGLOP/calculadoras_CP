@@ -222,6 +222,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
   <a class="nav-link" href="#funcional" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-func)"></span>Índice de Barthel</a>
   <a class="nav-link" href="#funcional" onclick="closeMobileNav();switchTabGlobal('fast')"><span class="cat-dot" style="background:var(--cat-func)"></span>FAST (demencia)</a>
   <a class="nav-link" href="#funcional" onclick="closeMobileNav();switchTabGlobal('alsfrs')"><span class="cat-dot" style="background:var(--cat-func)"></span>ALSFRS-R (ELA)</a>
+  <a class="nav-link" href="#funcional" onclick="closeMobileNav();switchTabGlobal('escorial')"><span class="cat-dot" style="background:var(--cat-func)"></span>El Escorial (ELA)</a>
 
   <div class="nav-section-label nav-cat-cui">● Cuidador</div>
   <a class="nav-link" href="#cuidador" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-cui)"></span>Zarit abreviado</a>
@@ -1149,6 +1150,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
     <button class="tab-btn active" onclick="switchTab('barthel',this,'funcional')">Índice de Barthel</button>
     <button class="tab-btn" onclick="switchTab('fast',this,'funcional')">FAST (demencia)</button>
     <button class="tab-btn" onclick="switchTab('alsfrs',this,'funcional')">ALSFRS-R (ELA)</button>
+    <button class="tab-btn" onclick="switchTab('escorial',this,'funcional')">El Escorial (ELA)</button>
   </div>
 
   <!-- BARTHEL -->
@@ -1253,6 +1255,43 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
             <tr><td>Ritmo de progresión (ΔFS)</td><td>(48 − total) ÷ meses desde el inicio de los síntomas</td><td>Puntos perdidos por mes. Supone que la persona partió de 48</td></tr>
             <tr><td>Cambio clínicamente importante</td><td>En ensayos se ha usado una diferencia de 4 puntos a 12 meses entre grupos</td><td>Umbral para comparar grupos, no validado para una sola persona</td></tr>
             <tr><td>Lo que no mide</td><td colspan="2">Dolor, ánimo, cognición, calidad de vida y carga del cuidador: combinar con ESAS-r, PAINAD o Zarit según el caso</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EL ESCORIAL REVISADO -->
+  <!-- Criterios descritos con palabras propias (Brooks et al., 2000). Es una clasificación
+       de certeza diagnóstica pensada para investigación: no mide función ni gravedad. -->
+  <div class="tab-content" id="tab-escorial">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div>
+          <h3>Criterios de El Escorial revisados — certeza diagnóstica de la ELA</h3>
+          <div class="tool-when">Clasifica según en cuántas regiones hay signos de motoneurona superior e inferior · Estándar de entrada a ensayos clínicos · No mide gravedad: para función usar ALSFRS-R · Brooks BR et al., 2000</div>
+        </div>
+        <span class="tool-badge">Interactivo</span>
+      </div>
+      <div class="tool-inner">
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.6rem;"><strong>Motoneurona superior:</strong> hiperreflexia, espasticidad, Babinski, Hoffmann, reflejo mandibular vivo. <strong>Motoneurona inferior:</strong> debilidad, atrofia, fasciculaciones. Marca en qué regiones hay signos de cada una.</p>
+        <div id="escItems"></div>
+        <div class="sub-cat" style="color:var(--teal-600);">Electrofisiología</div>
+        <label class="check-item"><input type="checkbox" id="esc-emg" onchange="calcEscorial()"><span class="check-box"></span><span class="check-text">Electromiografía con denervación aguda y crónica en al menos dos extremidades</span></label>
+        <div class="result-panel" id="escorialResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="escorialScore" style="font-size:1.6rem;">—</div><div class="result-label">Categoría diagnóstica</div></div>
+          </div>
+          <div class="result-interp" id="escorialInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>Categoría</th><th>Signos necesarios</th></tr></thead>
+          <tbody>
+            <tr><td>Definida</td><td>Motoneurona superior e inferior en 3 regiones</td></tr>
+            <tr><td>Probable</td><td>Motoneurona superior e inferior en 2 regiones, con algún signo de motoneurona superior por encima de los de la inferior</td></tr>
+            <tr><td>Probable con apoyo de laboratorio</td><td>Ambas en 1 región, o solo motoneurona superior en 1 o más, más denervación en la electromiografía de al menos 2 extremidades</td></tr>
+            <tr><td>Posible</td><td>Ambas en 1 sola región; o solo motoneurona superior en 2 o más; o motoneurona inferior por encima de la superior</td></tr>
+            <tr><td colspan="2" style="color:var(--text-muted);">En todas: la enfermedad debe progresar y deben descartarse otras causas con electrofisiología, neuroimagen o laboratorio. Los criterios de Gold Coast (Shefner JM et al., 2020) simplifican la clasificación a una sola categoría diagnóstica. El diagnóstico lo establece neurología.</td></tr>
           </tbody>
         </table>
       </div>
@@ -2017,6 +2056,50 @@ function calcALSFRS(){
   if(alsfrsSel[11]<4)txt+='<br>Requiere apoyo ventilatorio (ítem 12 &lt; 4): revisar la planificación anticipada de decisiones sobre ventilación.';
   if(alsfrsSel[2]<=1)txt+='<br>Deglución muy comprometida (ítem 3 ≤ 1): valorar nutrición, riesgo de aspiración y decisiones sobre gastrostomía.';
   ie.style.display='block';ie.className='result-interp '+(pct>=75?'green':pct>=50?'yellow':'red');ie.innerHTML=txt;
+}
+
+// ══ EL ESCORIAL REVISADO ══
+// Regiones de arriba abajo: el índice menor es la región más rostral.
+const escRegiones=[
+  {n:'Bulbar',d:'habla, deglución, lengua, cara'},
+  {n:'Cervical',d:'cuello, brazos, manos, diafragma'},
+  {n:'Torácica',d:'espalda, abdomen'},
+  {n:'Lumbosacra',d:'espalda baja, abdomen bajo, piernas, pies'},
+];
+(function(){
+  const c=document.getElementById('escItems');
+  escRegiones.forEach((r,i)=>{
+    const h=document.createElement('div');h.className='sub-cat';h.style.cssText='color:var(--teal-600);';
+    h.textContent=r.n+' · '+r.d;c.appendChild(h);
+    [['sup','Signos de motoneurona superior'],['inf','Signos de motoneurona inferior']].forEach(([t,l])=>{
+      const lab=document.createElement('label');lab.className='check-item';
+      lab.innerHTML=`<input type="checkbox" id="esc-${t}${i}"><span class="check-box"></span><span class="check-text">${l}</span>`;
+      lab.querySelector('input').addEventListener('change',calcEscorial);
+      c.appendChild(lab);
+    });
+  });
+})();
+function calcEscorial(){
+  const sup=[],inf=[];
+  for(let i=0;i<4;i++){sup.push(document.getElementById('esc-sup'+i).checked);inf.push(document.getElementById('esc-inf'+i).checked);}
+  const emg=document.getElementById('esc-emg').checked;
+  let ambas=0,soloSup=0;
+  for(let k=0;k<4;k++){if(sup[k]&&inf[k])ambas++;if(sup[k]&&!inf[k])soloSup++;}
+  const haySup=sup.includes(true),hayInf=inf.includes(true);
+  const infPorEncima=haySup&&hayInf&&inf.indexOf(true)<sup.indexOf(true);
+  let nombre,txt,cls,nivel;
+  if(ambas>=3){nombre='Definida';nivel='';cls='';txt=`Signos de motoneurona superior e inferior en ${ambas} regiones.`;}
+  else if(ambas===2){nombre='Probable';nivel='';cls='';txt='Signos de ambas motoneuronas en 2 regiones.';}
+  else if((ambas===1||haySup)&&emg){nombre='Probable (laboratorio)';nivel='';cls='';txt='Signos clínicos en una región, completados por la electromiografía en al menos dos extremidades.';}
+  else if(ambas===1||soloSup>=2||infPorEncima){nombre='Posible';nivel='';cls='';
+    txt=ambas===1?'Signos de ambas motoneuronas en una sola región.':soloSup>=2?`Solo signos de motoneurona superior, en ${soloSup} regiones.`:'Signos de motoneurona inferior por encima de los de motoneurona superior.';}
+  else if(haySup||hayInf){nombre='Sin categoría';nivel='';cls='';
+    txt=(haySup?'Solo signos de motoneurona superior en una región.':'Solo signos de motoneurona inferior.')+' No alcanza ninguna categoría: la electromiografía y el seguimiento deciden.';}
+  else{document.getElementById('escorialScore').textContent='—';document.getElementById('escorialInterp').style.display='none';return;}
+  const sc=document.getElementById('escorialScore');sc.textContent=nombre;sc.className='result-score '+nivel;
+  document.getElementById('escorialResult').classList.add('active');
+  const ie=document.getElementById('escorialInterp');ie.style.display='block';ie.className='result-interp';ie.style.cssText='background:rgba(78,141,160,0.08);color:var(--slate-700);border-left:3px solid var(--teal-600);';
+  ie.innerHTML=`<strong>${nombre}.</strong> ${txt}<br>La categoría expresa certeza diagnóstica, no gravedad ni pronóstico: para la función usar la ALSFRS-R. Requiere progresión y exclusión de otras causas.`;
 }
 
 // ══ ZARIT ══
