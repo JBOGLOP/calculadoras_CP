@@ -221,6 +221,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
   <div class="nav-section-label nav-cat-func">● Funcionalidad</div>
   <a class="nav-link" href="#funcional" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-func)"></span>Índice de Barthel</a>
   <a class="nav-link" href="#funcional" onclick="closeMobileNav();switchTabGlobal('fast')"><span class="cat-dot" style="background:var(--cat-func)"></span>FAST (demencia)</a>
+  <a class="nav-link" href="#funcional" onclick="closeMobileNav();switchTabGlobal('alsfrs')"><span class="cat-dot" style="background:var(--cat-func)"></span>ALSFRS-R (ELA)</a>
 
   <div class="nav-section-label nav-cat-cui">● Cuidador</div>
   <a class="nav-link" href="#cuidador" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-cui)"></span>Zarit abreviado</a>
@@ -1147,6 +1148,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('barthel',this,'funcional')">Índice de Barthel</button>
     <button class="tab-btn" onclick="switchTab('fast',this,'funcional')">FAST (demencia)</button>
+    <button class="tab-btn" onclick="switchTab('alsfrs',this,'funcional')">ALSFRS-R (ELA)</button>
   </div>
 
   <!-- BARTHEL -->
@@ -1211,6 +1213,46 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
             <tr><td>5</td><td>Demencia moderada</td><td>Necesita ayuda en AVD instrumentales</td></tr>
             <tr><td>6a–6e</td><td>Moderada-avanzada</td><td>Pérdida AVD básicas · Incontinencia</td></tr>
             <tr><td style="color:var(--rose-500);font-weight:600;">7a–7f</td><td style="color:var(--rose-500);font-weight:600;">Muy avanzada</td><td>Pérdida lenguaje · No deambula · Dependencia total — <strong>Evaluar CP activo</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALSFRS-R -->
+  <!-- Nombres de los ítems y extremos descritos con palabras propias: no se reproduce
+       el texto oficial de los niveles (Cedarbaum et al., 1999). -->
+  <div class="tab-content" id="tab-alsfrs">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div>
+          <h3>ALSFRS-R — Escala funcional revisada para la ELA</h3>
+          <div class="tool-when">12 ítems de 0 a 4 · total 0–48 (48 = función normal) · 4 subescalas: bulbar, motora fina, motora gruesa, respiratoria · Cedarbaum JM et al., J Neurol Sci 1999;169:13-21</div>
+        </div>
+        <span class="tool-badge">Interactivo</span>
+      </div>
+      <div class="tool-inner">
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.6rem;">4 = normal · 3 = leve · 2 = moderado · 1 = grave · 0 = pérdida completa. Las descripciones resumen solo los extremos de cada ítem y son orientativas: para medir se usa el formulario validado de la escala.</p>
+        <div id="alsfrsItems"></div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;margin:1rem 0 0.4rem;">
+          <label for="alsfrsMeses" style="font-size:0.82rem;font-weight:600;color:var(--slate-600);">Meses desde el inicio de los síntomas</label>
+          <input id="alsfrsMeses" type="number" min="1" max="600" step="1" inputmode="numeric" placeholder="p. ej. 16" oninput="calcALSFRS()"
+            style="font:inherit;font-size:0.85rem;width:7rem;padding:0.4rem 0.6rem;border:1.5px solid var(--border);border-radius:10px;background:var(--bg-surface);color:var(--text-body);">
+        </div>
+        <div class="result-panel" id="alsfrsResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="alsfrsScore">—</div><div class="result-label">ALSFRS-R (0–48)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="alsfrsBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="alsfrsInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>Dato</th><th>Cómo se calcula</th><th>Cómo leerlo</th></tr></thead>
+          <tbody>
+            <tr><td>Subescalas</td><td>Bulbar (1–3) · motora fina (4–6) · motora gruesa (7–9) · respiratoria (10–12), 0–12 cada una</td><td>El mismo total puede esconder perfiles muy distintos: mirar siempre las subescalas</td></tr>
+            <tr><td>Ritmo de progresión (ΔFS)</td><td>(48 − total) ÷ meses desde el inicio de los síntomas</td><td>Puntos perdidos por mes. Supone que la persona partió de 48</td></tr>
+            <tr><td>Cambio clínicamente importante</td><td>En ensayos se ha usado una diferencia de 4 puntos a 12 meses entre grupos</td><td>Umbral para comparar grupos, no validado para una sola persona</td></tr>
+            <tr><td>Lo que no mide</td><td colspan="2">Dolor, ánimo, cognición, calidad de vida y carga del cuidador: combinar con ESAS-r, PAINAD o Zarit según el caso</td></tr>
           </tbody>
         </table>
       </div>
@@ -1908,6 +1950,74 @@ const fastData=[
     c.appendChild(d);
   });
 })();
+
+// ══ ALSFRS-R ══
+// Ítems con extremos descritos con palabras propias (no es el texto oficial de la escala).
+const alsfrsData=[
+  {d:'Bulbar',n:'Habla',x:'De normal a no poder comunicarse con la voz'},
+  {d:'Bulbar',n:'Salivación',x:'De normal a babeo constante que exige pañuelo'},
+  {d:'Bulbar',n:'Deglución',x:'De comer normal a no tragar nada por boca'},
+  {d:'Motora fina',n:'Escritura',x:'De normal a no poder sostener el lápiz'},
+  {d:'Motora fina',n:'Cortar alimentos y usar cubiertos',x:'De normal a necesitar que le den de comer (con gastrostomía: a no manejar la sonda)'},
+  {d:'Motora fina',n:'Vestirse e higiene',x:'De normal a dependencia total'},
+  {d:'Motora gruesa',n:'Girarse en la cama y ajustar las cobijas',x:'De normal a no poder hacerlo'},
+  {d:'Motora gruesa',n:'Marcha',x:'De normal a ningún movimiento útil de las piernas'},
+  {d:'Motora gruesa',n:'Subir escaleras',x:'De normal a no poder subirlas'},
+  {d:'Respiratoria',n:'Disnea',x:'De nada a ahogo que exige apoyo ventilatorio importante'},
+  {d:'Respiratoria',n:'Ortopnea',x:'De dormir plano a no poder dormir sin apoyo'},
+  {d:'Respiratoria',n:'Insuficiencia respiratoria',x:'De ningún apoyo a ventilación invasiva'},
+];
+const alsfrsSel=new Array(12).fill(null);
+(function(){
+  const c=document.getElementById('alsfrsItems');
+  let dom='';
+  alsfrsData.forEach((it,i)=>{
+    if(it.d!==dom){
+      dom=it.d;
+      const h=document.createElement('div');h.className='sub-cat';h.style.cssText='color:var(--teal-600);margin-top:0.8rem;';
+      h.textContent=dom+' · ítems '+(i+1)+'–'+(i+3);c.appendChild(h);
+    }
+    const row=document.createElement('div');
+    row.style.cssText='padding:0.65rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:0.84rem;font-weight:600;color:var(--slate-600);">${i+1}. ${it.n}</div><div style="font-size:0.74rem;color:var(--text-muted);margin:0.15rem 0 0.45rem;">${it.x}.</div><div class="scale-options" id="alsOpts${i}"></div>`;
+    c.appendChild(row);
+    const optsC=document.getElementById('alsOpts'+i);
+    [4,3,2,1,0].forEach(v=>{
+      const btn=document.createElement('div');btn.className='scale-opt';btn.textContent=v;
+      btn.style.cssText='min-width:2.6rem;text-align:center;font-weight:600;';
+      btn.setAttribute('role','button');btn.tabIndex=0;btn.setAttribute('aria-label',it.n+': '+v);
+      const elegir=()=>{optsC.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));btn.classList.add('selected');alsfrsSel[i]=v;calcALSFRS();};
+      btn.onclick=elegir;
+      btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();elegir();}};
+      optsC.appendChild(btn);
+    });
+  });
+})();
+function calcALSFRS(){
+  const faltan=alsfrsSel.filter(v=>v===null).length;
+  const ie=document.getElementById('alsfrsInterp');
+  if(faltan>0){
+    if(faltan<12){ie.style.display='block';ie.className='result-interp yellow';ie.innerHTML=`Faltan <strong>${faltan}</strong> ítem(s) por puntuar.`;}
+    return;
+  }
+  const total=alsfrsSel.reduce((a,v)=>a+v,0);
+  const sub=k=>alsfrsSel.slice(k*3,k*3+3).reduce((a,v)=>a+v,0);
+  const sc=document.getElementById('alsfrsScore');sc.textContent=total;
+  const pct=total/48*100;
+  const col=pct>=75?'var(--green-500)':pct>=50?'var(--warm-600)':'var(--rose-500)';
+  sc.className='result-score '+(pct>=75?'high':pct>=50?'medium':'low');
+  const bar=document.getElementById('alsfrsBar');bar.style.width=pct+'%';bar.style.background=col;
+  document.getElementById('alsfrsResult').classList.add('active');
+  let txt=`<strong>ALSFRS-R ${total}/48.</strong> Bulbar ${sub(0)}/12 · Motora fina ${sub(1)}/12 · Motora gruesa ${sub(2)}/12 · Respiratoria ${sub(3)}/12.`;
+  const meses=Number(document.getElementById('alsfrsMeses').value);
+  if(meses>0){
+    const df=(48-total)/meses;
+    txt+=`<br>Ritmo de progresión (ΔFS): <strong>${df.toFixed(2).replace('.',',')} puntos/mes</strong> desde el inicio de los síntomas.`;
+  }
+  if(alsfrsSel[11]<4)txt+='<br>Requiere apoyo ventilatorio (ítem 12 &lt; 4): revisar la planificación anticipada de decisiones sobre ventilación.';
+  if(alsfrsSel[2]<=1)txt+='<br>Deglución muy comprometida (ítem 3 ≤ 1): valorar nutrición, riesgo de aspiración y decisiones sobre gastrostomía.';
+  ie.style.display='block';ie.className='result-interp '+(pct>=75?'green':pct>=50?'yellow':'red');ie.innerHTML=txt;
+}
 
 // ══ ZARIT ══
 const zaritQ=[
