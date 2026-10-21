@@ -216,6 +216,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
 
   <div class="nav-section-label nav-cat-sint">● Control sintomático</div>
   <a class="nav-link" href="#sintomas" onclick="closeMobileNav()"><span class="cat-dot" style="background:var(--cat-sint)"></span>ESAS-r Edmonton</a>
+  <a class="nav-link" href="#sintomas" onclick="closeMobileNav();switchTabGlobal('ipos')"><span class="cat-dot" style="background:var(--cat-sint)"></span>IPOS (puntuación)</a>
   <a class="nav-link" href="#sintomas" onclick="closeMobileNav();switchTabGlobal('painad')"><span class="cat-dot" style="background:var(--cat-sint)"></span>PAINAD (demencia)</a>
   <a class="nav-link" href="#sintomas" onclick="closeMobileNav();switchTabGlobal('pacslac')"><span class="cat-dot" style="background:var(--cat-sint)"></span>PACSLAC (ficha)</a>
   <a class="nav-link" href="#sintomas" onclick="closeMobileNav();switchTabGlobal('paic15')"><span class="cat-dot" style="background:var(--cat-sint)"></span>PAIC15 (ficha)</a>
@@ -1039,6 +1040,7 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('esas',this,'sintomas')">ESAS-r Edmonton</button>
+    <button class="tab-btn" onclick="switchTab('ipos',this,'sintomas')">IPOS</button>
     <button class="tab-btn" onclick="switchTab('painad',this,'sintomas')">PAINAD (demencia)</button>
     <button class="tab-btn" onclick="switchTab('pacslac',this,'sintomas')">PACSLAC (ficha)</button>
     <button class="tab-btn" onclick="switchTab('paic15',this,'sintomas')">PAIC15 (ficha)</button>
@@ -1075,6 +1077,50 @@ input[type="range"]{width:100%;accent-color:var(--teal-500);cursor:pointer;heigh
             <tr><td>7–10 (severo)</td><td>Intervención prioritaria e inmediata</td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- IPOS · calculadora de puntuación -->
+  <!-- No reproduce el cuestionario: sus condiciones de uso exigen registro y prohíben
+       cambiar la redacción de los ítems. Aquí solo se ingresan las puntuaciones obtenidas
+       con el formulario oficial; los rótulos son los nombres de los ítems. -->
+  <div class="tab-content" id="tab-ipos">
+    <div class="tool-box">
+      <div class="tool-top">
+        <div>
+          <h3>IPOS — Integrated Palliative care Outcome Scale · calculadora de puntuación</h3>
+          <div class="tool-when">17 ítems de 0 (mejor) a 4 (peor) · total 0–68 · 3 subescalas: física (10), emocional (4), comunicación y aspectos prácticos (3) · versión del paciente o del equipo · Murtagh FE et al., Palliat Med 2019</div>
+        </div>
+        <span class="tool-badge">Interactivo</span>
+      </div>
+      <div class="tool-inner">
+        <div class="result-interp" style="display:block;background:rgba(78,141,160,0.08);color:var(--slate-700);border-left:3px solid var(--teal-600);margin-top:0;margin-bottom:0.8rem;">
+          <strong>Cómo usarla.</strong> Aplique primero el <strong>formulario oficial del IPOS</strong>, que se descarga gratis tras registrarse en <a href="https://pos-pal.org" target="_blank" rel="noopener">pos-pal.org</a>, y luego ingrese aquí la puntuación de cada ítem. Esta página no reproduce las preguntas ni sus opciones de respuesta: sus condiciones de uso exigen registro y no permiten cambiar la redacción.
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-bottom:0.4rem;">
+          <span style="font-size:0.82rem;font-weight:600;color:var(--slate-600);">Versión aplicada:</span>
+          <div class="scale-options" id="iposVersion"></div>
+        </div>
+        <div id="iposItems"></div>
+        <div class="result-panel" id="iposResult">
+          <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+            <div><div class="result-score" id="iposScore">—</div><div class="result-label">IPOS total (0–68)</div></div>
+            <div style="flex:1;min-width:160px;"><div class="progress-track"><div class="progress-fill" id="iposBar" style="width:0%;"></div></div></div>
+          </div>
+          <div class="result-interp" id="iposInterp" style="display:none;"></div>
+        </div>
+        <table class="styled-table" style="margin-top:1rem;">
+          <thead><tr><th>Puntuación</th><th>Ítems</th><th>Rango</th></tr></thead>
+          <tbody>
+            <tr><td>Subescala física</td><td>Dolor, disnea, debilidad o falta de energía, náusea, vómito, poco apetito, estreñimiento, boca seca o dolorida, somnolencia, movilidad reducida</td><td>0–40</td></tr>
+            <tr><td>Subescala emocional</td><td>Ansiedad del paciente, ansiedad de la familia, depresión, sentirse en paz</td><td>0–16</td></tr>
+            <tr><td>Comunicación y aspectos prácticos</td><td>Compartir sentimientos, información, asuntos prácticos</td><td>0–12</td></tr>
+            <tr><td><strong>Total</strong></td><td>Los 17 ítems estandarizados (las preguntas abiertas no suman)</td><td>0–68</td></tr>
+            <tr><td colspan="3" style="color:var(--text-muted);">No hay un punto de corte universal: el IPOS sirve para identificar los problemas que más pesan y para seguir a la misma persona en el tiempo. Puntuación más alta = más problemas. Validado en autorreporte y en versión aplicada por el equipo (α 0,77 para el total), con buena sensibilidad al cambio.</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:0.8rem;">IPOS © Cicely Saunders Institute of Palliative Care, Policy &amp; Rehabilitation; uso gratuito con registro en pos-pal.org. Estructura y puntuación según Murtagh FE, Ramsenthaler C, Firth A, et al. A brief, patient- and proxy-reported outcome measure in advanced illness: validity, reliability and responsiveness of the Integrated Palliative care Outcome Scale (IPOS). Palliat Med. 2019;33(8):1045-1057. doi:10.1177/0269216319854264</p>
       </div>
     </div>
   </div>
@@ -1975,6 +2021,72 @@ function updESAS(i,val){
   if(!high.length&&!mod.length)txt+='Todos los síntomas en rango leve (0–3). Continuar monitoreo.';
   ie.className='result-interp '+(high.length?'red':mod.length?'yellow':'green');
   ie.innerHTML=txt;
+}
+
+// ══ IPOS (puntuación) ══
+// Solo nombres de ítems y cifras: el cuestionario se aplica con el formulario oficial.
+const iposData=[
+  {d:'fis',n:'Dolor'},{d:'fis',n:'Disnea'},{d:'fis',n:'Debilidad o falta de energía'},{d:'fis',n:'Náusea'},
+  {d:'fis',n:'Vómito'},{d:'fis',n:'Poco apetito'},{d:'fis',n:'Estreñimiento'},{d:'fis',n:'Boca seca o dolorida'},
+  {d:'fis',n:'Somnolencia'},{d:'fis',n:'Movilidad reducida'},
+  {d:'emo',n:'Ansiedad del paciente'},{d:'emo',n:'Ansiedad de la familia'},{d:'emo',n:'Depresión'},{d:'emo',n:'Sentirse en paz'},
+  {d:'com',n:'Compartir sentimientos'},{d:'com',n:'Información'},{d:'com',n:'Asuntos prácticos'},
+];
+const iposDom={fis:'Subescala física · ítems 1–10',emo:'Subescala emocional · ítems 11–14',com:'Comunicación y aspectos prácticos · ítems 15–17'};
+const iposSel=new Array(iposData.length).fill(null);
+let iposVer='Paciente (autorreporte)';
+(function(){
+  const v=document.getElementById('iposVersion');
+  ['Paciente (autorreporte)','Equipo (heterorreporte)'].forEach((l,i)=>{
+    const b=document.createElement('div');b.className='scale-opt'+(i===0?' selected':'');b.textContent=l;
+    b.setAttribute('role','button');b.tabIndex=0;
+    const el=()=>{v.querySelectorAll('.scale-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');iposVer=l;calcIPOS();};
+    b.onclick=el;b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el();}};
+    v.appendChild(b);
+  });
+  const c=document.getElementById('iposItems');
+  let dom='';
+  iposData.forEach((it,i)=>{
+    if(it.d!==dom){dom=it.d;const h=document.createElement('div');h.className='sub-cat';h.style.cssText='color:var(--teal-600);';h.textContent=iposDom[dom];c.appendChild(h);}
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;flex-wrap:wrap;gap:0.4rem 0.8rem;align-items:center;padding:0.45rem 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<div style="font-size:0.84rem;font-weight:600;color:var(--slate-600);flex:1 1 12rem;">${i+1}. ${it.n}</div><div class="scale-options" id="iposOpts${i}"></div>`;
+    c.appendChild(row);
+    const o=document.getElementById('iposOpts'+i);
+    [0,1,2,3,4,'—'].forEach(val=>{
+      const b=document.createElement('div');b.className='scale-opt';b.textContent=val;
+      b.style.cssText='min-width:2.4rem;text-align:center;font-weight:600;';
+      b.setAttribute('role','button');b.tabIndex=0;b.setAttribute('aria-label',it.n+': '+(val==='—'?'sin dato':val));
+      if(val==='—')b.title='Sin dato o no respondido';
+      const el=()=>{o.querySelectorAll('.scale-opt').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');iposSel[i]=(val==='—'?'nd':val);calcIPOS();};
+      b.onclick=el;b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el();}};
+      o.appendChild(b);
+    });
+  });
+})();
+function calcIPOS(){
+  const ie=document.getElementById('iposInterp');
+  const faltan=iposSel.filter(v=>v===null).length;
+  if(faltan===iposData.length)return;
+  const suma=d=>iposData.reduce((a,it,i)=>a+(it.d===d&&typeof iposSel[i]==='number'?iposSel[i]:0),0);
+  const sinDato=d=>iposData.filter((it,i)=>it.d===d&&iposSel[i]==='nd').length;
+  const fis=suma('fis'),emo=suma('emo'),com=suma('com'),total=fis+emo+com;
+  const nd=iposSel.filter(v=>v==='nd').length;
+  const altos=iposData.map((it,i)=>({n:it.n,v:iposSel[i]})).filter(x=>typeof x.v==='number'&&x.v>=3).sort((a,b)=>b.v-a.v);
+  const sc=document.getElementById('iposScore');sc.textContent=total;
+  const pct=total/68*100;
+  // Sin colores de gravedad: el IPOS no tiene puntos de corte validados.
+  const col='var(--teal-600)';
+  sc.className='result-score';
+  const bar=document.getElementById('iposBar');bar.style.width=pct+'%';bar.style.background=col;
+  document.getElementById('iposResult').classList.add('active');
+  let txt=`<strong>IPOS ${total}/68</strong> · ${iposVer}.<br>Física ${fis}/40 · Emocional ${emo}/16 · Comunicación y aspectos prácticos ${com}/12.`;
+  if(faltan>0)txt+=`<br>Faltan <strong>${faltan}</strong> ítem(s) por ingresar: el total aún es parcial.`;
+  if(nd>0)txt+=`<br>${nd} ítem(s) sin dato: el total y las subescalas son incompletos y no deben compararse con mediciones completas.`;
+  if(altos.length)txt+=`<br><strong>Problemas que más pesan (3–4):</strong> ${altos.map(x=>x.n+' ('+x.v+')').join(', ')}. Priorícelos en el plan de cuidado.`;
+  else if(faltan===0)txt+='<br>Ningún ítem en 3–4.';
+  txt+='<br><span style="font-size:0.8rem;">No hay punto de corte universal: compare con las mediciones previas de la misma persona.</span>';
+  ie.style.display='block';ie.className='result-interp';ie.style.cssText='background:rgba(78,141,160,0.08);color:var(--slate-700);border-left:3px solid var(--teal-600);';ie.innerHTML=txt;
 }
 
 // ══ PAINAD ══
