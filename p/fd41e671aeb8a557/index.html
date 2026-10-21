@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Manejo del paciente paliativo en hospitalización</title>
+<meta name="description" content="Presentación interactiva de 60 minutos para el equipo hospitalario: identificación, modelos de atención, control de síntomas, comunicación y marco legal colombiano, paciente no oncológico y cuidado interdisciplinario.">
+<!-- ===========================================================================
+     Presentación interactiva · 60 minutos · 7 bloques.
+     Funciona sin internet: todo el CSS y el JavaScript están en este archivo,
+     sin fuentes web ni librerías externas.
+     Teclas: ← → o espacio (navegar) · N (notas del presentador) · M (mapa)
+             F (pantalla completa) · T (cronómetro) · Inicio / Fin.
+     Las citas [n] usan la misma numeración de la revisión de tema en Word.
+     =========================================================================== -->
+<style>
+:root{
+  --azul:#1F5F8B; --azul-osc:#143F5E; --azul-suave:#DCEAF4;
+  --teal:#1C7C78; --teal-osc:#125653; --teal-suave:#D6EEEC;
+  --ambar:#9A6212; --ambar-suave:#F7ECD8;
+  --rojo:#A8322D; --rojo-suave:#F6DEDC;
+  --verde:#2E7D4F; --verde-suave:#DCEFE3;
+  --tinta:#16232E; --tinta-2:#33475A; --gris:#5A6B7A; --gris-claro:#98A6B3;
+  --linea:#D6E0E8; --blanco:#FFFFFF; --fondo:#F3F6F9;
+  --sombra:0 1px 2px rgba(22,35,46,.06), 0 8px 24px rgba(22,35,46,.08);
+  --r:14px; --r-sm:9px;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif;
+  --mono:ui-monospace,'Cascadia Mono','Segoe UI Mono',Consolas,monospace;
+  --b1:#1F5F8B; --b2:#2B6CB0; --b3:#3A5A8C; --b4:#1C7C78; --b5:#6B4C9A; --b6:#2E7D4F; --b7:#9A6212;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--sans);color:var(--tinta);background:var(--fondo);line-height:1.5;overflow:hidden}
+button{font:inherit}
+:focus-visible{outline:3px solid var(--azul);outline-offset:2px}
+h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus{outline:none}
+
+/* ── Barra superior ───────────────────────────────────────────── */
+.barra{position:fixed;inset:0 0 auto 0;height:48px;display:flex;align-items:center;gap:.6rem;padding:0 14px;
+  background:var(--blanco);border-bottom:1px solid var(--linea);z-index:20;font-size:.85rem}
+.barra__bloque{display:flex;align-items:center;gap:.5rem;min-width:0;flex:1}
+.barra__chip{color:var(--blanco);font-weight:700;border-radius:999px;padding:.15rem .65rem;white-space:nowrap;font-size:.78rem}
+.barra__titulo{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tinta-2)}
+.barra__plan{font-family:var(--mono);font-size:.76rem;color:var(--gris);white-space:nowrap}
+.barra button{border:1px solid var(--linea);background:var(--blanco);color:var(--tinta-2);border-radius:999px;padding:.25rem .65rem;cursor:pointer;white-space:nowrap}
+.barra button:hover{background:var(--azul-suave)}
+.barra button[aria-pressed="true"]{background:var(--azul);color:var(--blanco);border-color:var(--azul)}
+#reloj{font-family:var(--mono)}
+#reloj.tarde{background:var(--ambar-suave);border-color:var(--ambar);color:var(--ambar)}
+.progreso{position:fixed;top:48px;left:0;height:4px;background:var(--azul);z-index:21;transition:width .25s}
+@media (max-width:700px){.barra__plan,.barra .solo-ancho{display:none}}
+
+/* ── Diapositivas ─────────────────────────────────────────────── */
+.deck{position:fixed;inset:52px 0 56px 0}
+.slide{position:absolute;inset:0;overflow:auto;padding:clamp(16px,3vw,40px) clamp(16px,5vw,72px);display:none}
+.slide.activa{display:block;animation:entra .3s ease}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.slide__in{max-width:1120px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);margin:0 0 .4rem}
+h1,h2{font-family:var(--serif);line-height:1.15;margin:0 0 .7rem;color:var(--azul-osc)}
+h1{font-size:clamp(2rem,5vw,3.4rem)}
+h2{font-size:clamp(1.45rem,3.2vw,2.3rem)}
+h3{font-size:clamp(1rem,1.6vw,1.2rem);margin:0 0 .35rem;color:var(--tinta)}
+p,li{font-size:clamp(.98rem,1.5vw,1.18rem)}
+.lead{font-size:clamp(1.05rem,1.9vw,1.4rem);color:var(--tinta-2);max-width:62ch}
+.cita{font-family:var(--mono);font-size:.78em;color:var(--gris);white-space:nowrap}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));margin:1rem 0}
+.grid-2{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));margin:1rem 0}
+.card{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1rem 1.15rem;border-top:4px solid var(--acento,var(--azul))}
+.card p{margin:.25rem 0}
+.num{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;color:var(--acento,var(--azul));font-weight:700}
+.num small{font-size:.45em;font-weight:400}
+.aviso{background:var(--ambar-suave);border-left:5px solid var(--ambar);border-radius:var(--r-sm);padding:.75rem 1rem;margin:1rem 0;color:#5E3D0C}
+.aviso p{margin:.2rem 0;font-size:clamp(.92rem,1.35vw,1.05rem)}
+.ok{background:var(--verde-suave);border-left:5px solid var(--verde);border-radius:var(--r-sm);padding:.75rem 1rem;margin:1rem 0}
+.mal{background:var(--rojo-suave);border-left:5px solid var(--rojo);border-radius:var(--r-sm);padding:.75rem 1rem;margin:1rem 0}
+.neutro{background:var(--azul-suave);border-left:5px solid var(--azul);border-radius:var(--r-sm);padding:.75rem 1rem;margin:1rem 0}
+.ok p,.mal p,.neutro p{margin:.2rem 0}
+.tabla{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;background:var(--blanco);box-shadow:var(--sombra);border-radius:var(--r-sm);overflow:hidden;font-size:clamp(.88rem,1.3vw,1.02rem)}
+th{background:var(--azul-osc);color:var(--blanco);text-align:left;padding:.55rem .7rem;font-weight:600}
+td{padding:.5rem .7rem;border-top:1px solid var(--linea);vertical-align:top}
+.btn{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--azul);background:var(--blanco);color:var(--azul-osc);
+  border-radius:999px;padding:.5rem 1rem;cursor:pointer;font-weight:600;font-size:clamp(.9rem,1.3vw,1rem)}
+.btn:hover{background:var(--azul-suave)}
+.btn.primario{background:var(--azul);color:var(--blanco)}
+.btn.primario:hover{background:var(--azul-osc)}
+.fila-btn{display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0}
+.oculto{display:none}
+.revelado{animation:entra .3s ease}
+.etiqueta{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.1rem .5rem;border-radius:999px;background:var(--azul-suave);color:var(--azul-osc);margin-right:.3rem}
+.etiqueta.baja{background:var(--ambar-suave);color:var(--ambar)}
+
+/* Portada */
+.portada{display:flex;flex-direction:column;justify-content:center;min-height:100%}
+.portada .lead{margin-bottom:1.5rem}
+.agenda{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));margin-top:1rem}
+.agenda div{background:var(--blanco);border-radius:var(--r-sm);box-shadow:var(--sombra);padding:.55rem .8rem;border-left:5px solid var(--c)}
+.agenda b{display:block;font-size:.95rem}
+.agenda span{font-family:var(--mono);font-size:.76rem;color:var(--gris)}
+
+/* Barras de comparación */
+.barras{display:grid;gap:.7rem;margin:1rem 0;max-width:760px}
+.barra-c{display:grid;grid-template-columns:minmax(8rem,14rem) 1fr 4.5rem;gap:.7rem;align-items:center}
+.barra-c .pista{height:1.3rem;background:var(--linea);border-radius:999px;overflow:hidden}
+.barra-c .pista i{display:block;height:100%;width:0;background:var(--c,var(--azul));border-radius:999px;transition:width 1s ease}
+.barra-c .v{font-family:var(--mono);font-weight:700;text-align:right}
+@media (max-width:560px){.barra-c{grid-template-columns:1fr 3.6rem}.barra-c .pista{grid-column:1/-1;order:3}}
+
+/* Encuesta */
+.encuesta{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1.2rem;max-width:760px}
+.encuesta input[type=range]{width:100%;accent-color:var(--azul);height:2rem}
+.encuesta .valor{font-family:var(--serif);font-size:2.6rem;color:var(--azul);font-weight:700}
+
+/* 2x2 */
+.dosxdos{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:.5rem;max-width:760px;margin:1rem 0}
+@media (max-width:520px){.dosxdos{gap:.3rem;grid-template-columns:4.6rem minmax(0,1fr) minmax(0,1fr)}.dosxdos .cab{font-size:.72rem}.celda{padding:.55rem;font-size:.8rem}.celda b{font-size:.88rem}}
+.dosxdos .cab{font-weight:700;color:var(--gris);font-size:.9rem;display:flex;align-items:center;justify-content:center;text-align:center}
+.celda{border:0;border-radius:var(--r-sm);padding:1rem;cursor:pointer;text-align:left;box-shadow:var(--sombra);background:var(--blanco);min-width:0;overflow-wrap:break-word;hyphens:auto}
+.celda b{display:block;font-size:1.05rem}
+.celda.vp{background:var(--verde-suave)} .celda.vn{background:var(--verde-suave)}
+.celda.fp{background:var(--ambar-suave)} .celda.fn{background:var(--rojo-suave)}
+.celda[aria-pressed="true"]{outline:3px solid var(--azul)}
+
+/* Pestañas */
+.tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0}
+.tabs button{border:1.5px solid var(--linea);background:var(--blanco);border-radius:999px;padding:.45rem .95rem;cursor:pointer;font-weight:600;color:var(--tinta-2)}
+.tabs button[aria-selected="true"]{background:var(--azul-osc);color:var(--blanco);border-color:var(--azul-osc)}
+.panel{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1rem 1.2rem}
+
+/* Escalera de niveles (SVG) */
+.svgbox{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1rem;margin:1rem 0}
+.svgbox svg{width:100%;height:auto;display:block}
+
+/* Votación */
+.voto{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.voto .contador{font-family:var(--mono);font-weight:700;min-width:2.2rem;text-align:center;font-size:1.2rem}
+
+/* Caso con tarjetas de decisión */
+.paso{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1rem 1.2rem;margin:.8rem 0}
+.paso.bloqueado{opacity:.45;pointer-events:none}
+.opciones{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));margin:.6rem 0}
+.opcion{border:1.5px solid var(--linea);background:var(--fondo);border-radius:var(--r-sm);padding:.7rem .85rem;cursor:pointer;text-align:left;font-size:clamp(.92rem,1.3vw,1.02rem)}
+.opcion:hover{border-color:var(--azul)}
+.opcion.correcta{background:var(--verde-suave);border-color:var(--verde)}
+.opcion.incorrecta{background:var(--rojo-suave);border-color:var(--rojo)}
+.retro{margin-top:.5rem}
+
+/* Tarjetas que giran */
+.giro{border:0;padding:0;background:none;cursor:pointer;text-align:left;width:100%;perspective:1000px;min-height:11rem}
+.giro__in{position:relative;width:100%;min-height:11rem;transition:transform .5s;transform-style:preserve-3d}
+.giro[aria-pressed="true"] .giro__in{transform:rotateY(180deg)}
+.giro__cara{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);box-shadow:var(--sombra);padding:1rem 1.1rem;overflow:auto}
+.giro__cara.frente{background:var(--blanco);border-top:4px solid var(--rojo)}
+.giro__cara.dorso{background:var(--verde-suave);transform:rotateY(180deg);border-top:4px solid var(--verde)}
+.giro__cara p{margin:.25rem 0;font-size:clamp(.9rem,1.3vw,1.02rem)}
+.giro__cara .tipo{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gris)}
+@media (prefers-reduced-motion:reduce){.giro__in{transition:none}.slide.activa,.revelado{animation:none}.barra-c .pista i{transition:none}}
+
+/* Pasos del protocolo */
+.stepper{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0}
+.stepper button{border:1.5px solid var(--linea);background:var(--blanco);border-radius:var(--r-sm);padding:.5rem .8rem;cursor:pointer;font-weight:600;color:var(--tinta-2)}
+.stepper button span{font-family:var(--mono);margin-right:.35rem;color:var(--gris)}
+.stepper button[aria-selected="true"]{background:var(--b5);color:var(--blanco);border-color:var(--b5)}
+.stepper button[aria-selected="true"] span{color:var(--blanco)}
+
+/* Juego de roles */
+.cuenta{font-family:var(--mono);font-size:2.4rem;font-weight:700;color:var(--b5)}
+.checklist{list-style:none;padding:0;margin:.5rem 0;display:grid;gap:.35rem}
+.checklist label{display:flex;gap:.6rem;align-items:flex-start;background:var(--blanco);border-radius:var(--r-sm);padding:.5rem .7rem;box-shadow:var(--sombra);cursor:pointer;font-size:clamp(.92rem,1.3vw,1.02rem)}
+.checklist input{width:1.2rem;height:1.2rem;margin-top:.15rem;accent-color:var(--b5)}
+
+/* Arrastrar tareas */
+.tareas{display:flex;flex-wrap:wrap;gap:.5rem;min-height:3rem;background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:.8rem;margin:.8rem 0}
+.tarea{border:1.5px solid var(--b6);background:var(--verde-suave);color:var(--tinta);border-radius:var(--r-sm);padding:.45rem .7rem;cursor:grab;font-size:clamp(.86rem,1.2vw,.98rem);text-align:left;max-width:22rem}
+.tarea[aria-pressed="true"]{outline:3px solid var(--azul);background:var(--azul-suave)}
+.tarea.bien{border-color:var(--verde);background:#C7E8D2}
+.tarea.malo{border-color:var(--rojo);background:var(--rojo-suave)}
+.zonas{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr))}
+.zona{background:var(--blanco);border:2px dashed var(--linea);border-radius:var(--r);padding:.6rem;min-height:7rem;cursor:pointer}
+.zona h3{font-size:.95rem;margin:0 0 .4rem;color:var(--b6)}
+.zona.sobre{border-color:var(--b6);background:var(--verde-suave)}
+.zona .tarea{display:block;width:100%;margin-bottom:.35rem}
+
+/* Cuestionario */
+.pregunta{background:var(--blanco);border-radius:var(--r);box-shadow:var(--sombra);padding:1rem 1.2rem;margin:.8rem 0}
+.puntaje{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--azul)}
+
+/* Texto libre */
+textarea{width:100%;min-height:7rem;font:inherit;padding:.7rem;border:1.5px solid var(--linea);border-radius:var(--r-sm)}
+
+/* Referencias */
+.refs{font-size:.86rem;columns:2 28rem;column-gap:2rem;padding-left:0;list-style:none}
+.refs li{break-inside:avoid;margin:0 0 .5rem;font-size:.86rem;color:var(--tinta-2)}
+.refs a{color:var(--azul)}
+.refs li{overflow-wrap:anywhere}
+
+/* Pie de navegación */
+.pie{position:fixed;inset:auto 0 0 0;height:56px;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:0 14px;background:var(--blanco);border-top:1px solid var(--linea);z-index:20}
+.pie button{border:1.5px solid var(--azul);background:var(--blanco);color:var(--azul-osc);border-radius:999px;padding:.45rem 1rem;cursor:pointer;font-weight:600}
+.pie button:hover{background:var(--azul-suave)}
+#contador{font-family:var(--mono);font-size:.85rem;color:var(--gris)}
+
+/* Notas del presentador */
+.notas{display:none}
+body.con-notas .deck{bottom:calc(56px + 32vh)}
+#panelNotas{position:fixed;left:0;right:0;bottom:56px;height:32vh;overflow:auto;background:#10202D;color:#E6EEF4;padding:.8rem 1.2rem;z-index:19;display:none;font-size:clamp(.9rem,1.3vw,1.05rem)}
+body.con-notas #panelNotas{display:block}
+#panelNotas h4{margin:0 0 .3rem;font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#9FC3DD}
+#panelNotas p,#panelNotas li{font-size:inherit;margin:.25rem 0}
+
+/* Mapa */
+#mapa{position:fixed;inset:0;background:rgba(16,32,45,.6);z-index:40;display:none;padding:4vh 4vw;overflow:auto}
+#mapa.abierto{display:block}
+#mapa .caja{background:var(--fondo);border-radius:var(--r);padding:1rem 1.2rem;max-width:1100px;margin:0 auto}
+#mapa .grupo{margin:.6rem 0}
+#mapa .grupo h3{margin:.2rem 0 .4rem}
+#mapa .lista{display:flex;flex-wrap:wrap;gap:.4rem}
+#mapa .lista button{border:1px solid var(--linea);background:var(--blanco);border-radius:var(--r-sm);padding:.35rem .6rem;cursor:pointer;font-size:.85rem;text-align:left}
+#mapa .lista button.actual{background:var(--azul);color:var(--blanco)}
+
+/* Impresión: todas las diapositivas, con respuestas visibles */
+@media print{
+  body{overflow:visible;background:#fff}
+  .barra,.pie,.progreso,#panelNotas,#mapa,.btn,.fila-btn,.no-imprimir{display:none!important}
+  .deck{position:static}
+  .slide{display:block!important;position:static;overflow:visible;page-break-after:always;break-after:page;padding:12mm}
+  .oculto{display:block!important}
+  .giro{min-height:0}.giro__in{transform:none!important;min-height:0}
+  .giro__cara{position:static;margin-bottom:.5rem;transform:none!important}
+  .paso.bloqueado{opacity:1}
+  .card,.panel,.paso,table,.pregunta,.encuesta,.svgbox{box-shadow:none;border:1px solid var(--linea)}
+  .barra-c .pista i{transition:none}
+  .notas{display:block;border-top:1px dashed #999;margin-top:1rem;padding-top:.5rem;font-size:.85rem;color:#333}
+  .notas::before{content:"Notas del presentador";display:block;font-weight:700;font-size:.8rem;text-transform:uppercase}
+}
+</style>
+</head>
+<body>
+
+<header class="barra" role="banner">
+  <div class="barra__bloque">
+    <span class="barra__chip" id="chipBloque">Bloque 1</span>
+    <span class="barra__titulo" id="tituloBloque">Apertura</span>
+    <span class="barra__plan" id="planBloque">0–5 min</span>
+  </div>
+  <button type="button" id="btnReloj" aria-pressed="false" title="Cronómetro de la sesión (T)"><span id="reloj">00:00</span> <span class="solo-ancho">/ 60:00</span></button>
+  <button type="button" id="btnNotas" aria-pressed="false" title="Notas del presentador (N)">Notas</button>
+  <button type="button" id="btnMapa" title="Mapa de diapositivas (M)">Mapa</button>
+  <button type="button" id="btnFull" class="solo-ancho" title="Pantalla completa (F)">Pantalla completa</button>
+</header>
+<div class="progreso" id="progreso" style="width:0"></div>
+
+<main class="deck" id="deck">
+
+<!-- ═════════════════════════ BLOQUE 1 · APERTURA (0–5) ═════════════════════════ -->
+<section class="slide" data-bloque="1" data-titulo="Portada">
+  <div class="slide__in portada">
+    <p class="eyebrow">Revisión de tema · equipo hospitalario</p>
+    <h1>Manejo del paciente paliativo en hospitalización</h1>
+    <p class="lead">Identificar, aliviar y decidir desde el ingreso. Una sesión de 60 minutos para medicina, enfermería y profesionales de apoyo.</p>
+    <div class="agenda" id="agenda"></div>
+  </div>
+  <aside class="notas">
+    <p>Bienvenida (1 min). La sesión tiene siete bloques con tiempos fijos; el cronómetro de arriba ayuda a mantenerlos. Hoy NO veremos últimos días de vida ni sedación paliativa: quedan para una segunda sesión.</p>
+    <p>Teclas: flechas para avanzar, N para estas notas, M para el mapa, T para el cronómetro.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="1" data-titulo="Encuesta: ¿cuántos morirán en un año?">
+  <div class="slide__in">
+    <p class="eyebrow">Encuesta rápida</p>
+    <h2>De los pacientes que tienen hoy en su sala, ¿qué porcentaje habrá muerto en 12 meses?</h2>
+    <div class="encuesta no-imprimir">
+      <label for="estimacion">Estimación del grupo</label>
+      <div class="valor"><span id="valorEstimacion">10</span> %</div>
+      <input type="range" id="estimacion" min="0" max="60" step="1" value="10" aria-describedby="ayudaEstimacion">
+      <p id="ayudaEstimacion" style="font-size:.9rem;color:var(--gris);margin:.2rem 0 .6rem">Pida estimaciones a mano alzada y mueva el control al valor más repetido.</p>
+      <button type="button" class="btn primario" id="btnRevelarEncuesta">Revelar el dato</button>
+    </div>
+    <div class="oculto" id="resultadoEncuesta">
+      <div class="barras">
+        <div class="barra-c"><span>Estimación del grupo</span><span class="pista"><i id="barEst" style="--c:var(--gris-claro)"></i></span><span class="v" id="vEst">—</span></div>
+        <div class="barra-c"><span>Cohorte de hospitalizados</span><span class="pista"><i data-w="28.8"></i></span><span class="v">28,8 %</span></div>
+        <div class="barra-c"><span>Mayores de 85 años</span><span class="pista"><i data-w="45.6" style="--c:var(--rojo)"></i></span><span class="v">45,6 %</span></div>
+        <div class="barra-c"><span>Menores de 60 años</span><span class="pista"><i data-w="13.1" style="--c:var(--teal)"></i></span><span class="v">13,1 %</span></div>
+      </div>
+      <p>En una cohorte de 10 743 hospitalizados censados un día cualquiera, <strong>murió el 28,8 % en el año siguiente</strong>; un tercio de esas muertes ocurrió en el mismo ingreso. <span class="cita">[1]</span></p>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>Pregunte antes de mostrar cualquier dato (2 min). Casi siempre el grupo subestima.</p>
+    <p>Al revelar: "uno de cada tres o cuatro de los que vemos hoy está en su último año". En ingresos médicos urgentes, la mortalidad a un año fue del 22,4 % [2].</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="1" data-titulo="El equipo ve la mitad">
+  <div class="slide__in">
+    <p class="eyebrow">El problema</p>
+    <h2>Un tercio de la sala tiene necesidades paliativas, y el equipo ve la mitad</h2>
+    <div class="grid">
+      <div class="card"><div class="num">36 %</div><p>de los hospitalizados cumplía criterios de necesidad paliativa en dos hospitales de agudos <span class="cita">[3]</span></p></div>
+      <div class="card" style="--acento:var(--rojo)"><div class="num">15,5 %</div><p>identificados por los médicos; <strong>17,4 %</strong> por enfermería <span class="cita">[3]</span></p></div>
+      <div class="card" style="--acento:var(--ambar)"><div class="num">8,2 %</div><p>recibía atención especializada <span class="cita">[4]</span></p></div>
+      <div class="card" style="--acento:var(--teal)"><div class="num">69 %</div><p>de quienes tenían necesidad paliativa (33,6 % del hospital) <strong>no tenía cáncer</strong>, en un hospital terciario de habla hispana <span class="cita">[5]</span></p></div>
+    </div>
+    <div class="neutro"><p><strong>En Colombia:</strong> se estiman unos 250 000 adultos al año con necesidad de cuidados paliativos <span class="cita">[7]</span>. No hay una cifra verificada de prevalencia hospitalaria en el país.</p></div>
+  </div>
+  <aside class="notas">
+    <p>Mensaje del bloque (1 min): el paciente paliativo ya está en nuestras salas, y casi siempre no tiene cáncer. La mitad de ellos no tenía ninguna remisión a psicología, trabajo social ni paliativos [5].</p>
+  </aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 2 · IDENTIFICACIÓN (5–15) ═════════════════════════ -->
+<section class="slide" data-bloque="2" data-titulo="La pregunta sorpresa">
+  <div class="slide__in">
+    <p class="eyebrow">Identificación · primer filtro</p>
+    <h2>«¿Me sorprendería que esta persona muriera en los próximos 12 meses?»</h2>
+    <p>Metaanálisis de 16 estudios y 11 621 pacientes <span class="cita">[8]</span>. Toque cada cifra.</p>
+    <div class="dosxdos" role="group" aria-label="Rendimiento de la pregunta sorpresa">
+      <span></span><span class="cab">Murió en 12 meses</span><span class="cab">No murió</span>
+      <span class="cab">«No me sorprendería»</span>
+      <button type="button" class="celda vp" data-exp="Sensibilidad del 67 %: de cada 3 personas que mueren en el año, la pregunta identifica a 2."><b>Sensibilidad 67 %</b>verdaderos positivos</button>
+      <button type="button" class="celda fp" data-exp="Valor predictivo positivo del 37 %: muchos 'no me sorprendería' no mueren en el año. Por eso un positivo activa una valoración, no una remisión automática."><b>VPP 37 %</b>falsos positivos frecuentes</button>
+      <span class="cab">«Me sorprendería»</span>
+      <button type="button" class="celda fn" data-exp="Una de cada 3 muertes del año ocurre en personas por las que el clínico sí se habría sorprendido."><b>1 de cada 3 muertes</b>se escapa</button>
+      <button type="button" class="celda vn" data-exp="Especificidad del 80 % y valor predictivo negativo del 93 %: cuando la respuesta es 'me sorprendería', casi se descarta la muerte en el año."><b>VPN 93 %</b>especificidad 80 %</button>
+    </div>
+    <div class="neutro" id="expPS" aria-live="polite"><p>Rinde peor en no oncológicos (AUC 0,77) que en cáncer (0,83). <span class="cita">[8]</span></p></div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Lo importante es el VPP bajo: la pregunta sorpresa es un filtro barato y sensible, no un diagnóstico. Por eso se sigue de SPICT o NECPAL.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="2" data-titulo="Tamizaje en dos pasos">
+  <div class="slide__in">
+    <p class="eyebrow">Identificación · cómo hacerlo</p>
+    <h2>Tamizaje en dos pasos al ingreso</h2>
+    <div class="svgbox">
+      <svg viewBox="0 0 960 220" role="img" aria-labelledby="t2p d2p">
+        <title id="t2p">Tamizaje en dos pasos</title>
+        <desc id="d2p">Pregunta sorpresa al ingreso; si no sorprendería, se aplican SPICT o NECPAL; si son positivos, el equipo tratante valora necesidades y decide si basta el cuidado paliativo primario o se requiere interconsulta.</desc>
+        <defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#5A6B7A"/></marker></defs>
+        <g font-family="system-ui,Segoe UI,sans-serif">
+          <rect x="10" y="50" width="200" height="110" rx="14" fill="#DCEAF4"/>
+          <text x="110" y="92" text-anchor="middle" font-size="18" font-weight="700" fill="#143F5E">1 · Pregunta</text>
+          <text x="110" y="116" text-anchor="middle" font-size="18" font-weight="700" fill="#143F5E">sorpresa</text>
+          <text x="110" y="142" text-anchor="middle" font-size="14" fill="#33475A">a todos al ingreso</text>
+          <line x1="215" y1="105" x2="295" y2="105" stroke="#5A6B7A" stroke-width="3" marker-end="url(#fl)"/>
+          <text x="255" y="92" text-anchor="middle" font-size="13" fill="#5A6B7A">«no me</text>
+          <text x="255" y="128" text-anchor="middle" font-size="13" fill="#5A6B7A">sorprendería»</text>
+          <rect x="300" y="50" width="200" height="110" rx="14" fill="#D6EEEC"/>
+          <text x="400" y="92" text-anchor="middle" font-size="18" font-weight="700" fill="#125653">2 · SPICT o</text>
+          <text x="400" y="116" text-anchor="middle" font-size="18" font-weight="700" fill="#125653">NECPAL</text>
+          <text x="400" y="142" text-anchor="middle" font-size="14" fill="#33475A">indicadores clínicos</text>
+          <line x1="505" y1="105" x2="585" y2="105" stroke="#5A6B7A" stroke-width="3" marker-end="url(#fl)"/>
+          <text x="545" y="92" text-anchor="middle" font-size="13" fill="#5A6B7A">positivo</text>
+          <rect x="590" y="50" width="360" height="110" rx="14" fill="#DCEFE3"/>
+          <text x="770" y="88" text-anchor="middle" font-size="18" font-weight="700" fill="#1F5B3A">Valoración por el equipo tratante</text>
+          <text x="770" y="114" text-anchor="middle" font-size="14" fill="#33475A">síntomas · objetivos de cuidado · familia</text>
+          <text x="770" y="138" text-anchor="middle" font-size="14" fill="#33475A">¿basta lo primario o hay complejidad?</text>
+        </g>
+      </svg>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>Rendimiento</h3><p>AUC agrupada de 0,80 para SPICT y 0,78 para NECPAL; en hospital, SPICT con sensibilidad del 79,8 % y especificidad del 59,1 % <span class="cita">[10]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Límite</h3><p>Casi todas las herramientas usan la muerte como sustituto de la necesidad, con capacidad predictiva moderada <span class="cita">[10,11]</span>.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>Disparadores automáticos</h3><p>Una alerta de aprendizaje automático aumentó las interconsultas un 44 % (IRR 1,44) en un ensayo por conglomerados <span class="cita">[12]</span>.</p></div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Insista: un tamizaje positivo no obliga a remitir; activa la valoración por el propio equipo. Los falsos positivos son aceptables.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="2" data-titulo="Tres viñetas para tamizar">
+  <div class="slide__in">
+    <p class="eyebrow">Actividad en parejas · 4 min</p>
+    <h2>¿Les sorprendería que esta persona muriera en 12 meses?</h2>
+    <div class="tabs" role="tablist" aria-label="Viñetas">
+      <button type="button" role="tab" aria-selected="true" aria-controls="vin1" id="tvin1">Insuficiencia cardíaca</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="vin2" id="tvin2">Demencia avanzada</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="vin3" id="tvin3">Cáncer metastásico</button>
+    </div>
+    <div class="panel" role="tabpanel" id="vin1" aria-labelledby="tvin1">
+      <p><strong>Persona de 79 años</strong>, tercer ingreso en el año por insuficiencia cardíaca descompensada, disnea con mínimos esfuerzos, pérdida de peso y dependencia para bañarse.</p>
+      <div class="fila-btn"><button type="button" class="btn" data-vin="1" data-r="no">No me sorprendería</button><button type="button" class="btn" data-vin="1" data-r="si">Sí me sorprendería</button></div>
+      <div class="oculto retro-vin" id="rv1"><div class="neutro"><p>Ingresos repetidos, declive funcional y nutricional: son indicadores de enfermedad avanzada. En insuficiencia orgánica el pronóstico se construye con la trayectoria, no con una sola cifra <span class="cita">[14]</span>. Siguiente paso: SPICT y conversación sobre objetivos, incluido el desfibrilador si lo tiene <span class="cita">[79]</span>.</p></div></div>
+    </div>
+    <div class="panel oculto" role="tabpanel" id="vin2" aria-labelledby="tvin2">
+      <p><strong>Persona de 86 años</strong> con demencia avanzada, ya no camina ni se comunica con frases, ingresa por neumonía y tiene problemas para tragar.</p>
+      <div class="fila-btn"><button type="button" class="btn" data-vin="2" data-r="no">No me sorprendería</button><button type="button" class="btn" data-vin="2" data-r="si">Sí me sorprendería</button></div>
+      <div class="oculto retro-vin" id="rv2"><div class="neutro"><p>En demencia avanzada, la mortalidad a 6 meses tras una neumonía fue del 46,7 % <span class="cita">[86]</span>. Las herramientas pronósticas discriminan peor en demencia (AUC 0,58) <span class="cita">[14]</span>, pero el contexto clínico es claro: la neumonía y la disfagia son parte de la enfermedad.</p></div></div>
+    </div>
+    <div class="panel oculto" role="tabpanel" id="vin3" aria-labelledby="tvin3">
+      <p><strong>Persona de 58 años</strong> con cáncer de pulmón metastásico, pasa la mayor parte del día en cama, come poco y tiene dolor mal controlado.</p>
+      <div class="fila-btn"><button type="button" class="btn" data-vin="3" data-r="no">No me sorprendería</button><button type="button" class="btn" data-vin="3" data-r="si">Sí me sorprendería</button></div>
+      <div class="oculto retro-vin" id="rv3"><div class="neutro"><p>Aquí sí sirven las herramientas pronósticas de cáncer: PPS en todos y, para semanas a meses, PaP o PPI, siempre con juicio clínico <span class="cita">[13]</span>. Un PPS ≤50 predijo mortalidad en una cohorte sudamericana <span class="cita">[6]</span>.</p></div></div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>4 min. Lea la viñeta, pida a las parejas que voten y luego muestre la retroalimentación. Casi nadie se sorprendería en ninguno de los tres: la diferencia es que el paciente oncológico suele recibir la etiqueta "paliativo" y los otros dos no.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="2" data-titulo="El pronóstico planifica, no excluye">
+  <div class="slide__in">
+    <p class="eyebrow">Pronóstico</p>
+    <h2>El pronóstico orienta la planificación, no la elegibilidad</h2>
+    <div class="tabla"><table>
+      <thead><tr><th>Herramienta</th><th>Para qué</th><th>Qué recordar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>PPS</strong> o estado funcional</td><td>Distinguir grupos pronósticos en todos</td><td>Base de cualquier estimación <span class="cita">[13]</span></td></tr>
+        <tr><td><strong>PaP</strong></td><td>Supervivencia a 30 días: &gt;70 %, 30–70 % o &lt;30 %</td><td>Validado en cáncer avanzado <span class="cita">[13]</span></td></tr>
+        <tr><td><strong>PPI</strong></td><td>Más de 6 puntos sugiere menos de 3 semanas</td><td>Validado en cáncer avanzado <span class="cita">[13]</span></td></tr>
+        <tr><td><strong>Modelo NECPAL</strong></td><td>Pronóstico en enfermedad crónica avanzada</td><td>AUC 0,78 en cáncer, solo 0,58 en demencia <span class="cita">[14]</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="aviso"><p><strong>Los clínicos sobreestiman la supervivencia.</strong> Ningún modelo debe usarse solo, y ningún ensayo ha demostrado que usar herramientas pronósticas mejore los desenlaces <span class="cita">[13]</span>.</p></div>
+  </div>
+  <aside class="notas">
+    <p>2 min. El pronóstico sirve para planificar objetivos, lugar de cuidado y proporcionalidad, no para decidir quién "merece" cuidados paliativos.</p>
+  </aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 3 · MODELOS (15–20) ═════════════════════════ -->
+<section class="slide" data-bloque="3" data-titulo="Lo que logra la interconsulta">
+  <div class="slide__in">
+    <p class="eyebrow">Modelos de atención</p>
+    <h2>La interconsulta especializada mejora la experiencia, no la estancia</h2>
+    <div class="tabla"><table>
+      <thead><tr><th>Desenlace</th><th>Efecto (42 ensayos, 7779 participantes)</th><th>Certeza</th></tr></thead>
+      <tbody>
+        <tr><td>Calidad de vida</td><td>DME +0,26</td><td><span class="etiqueta baja">baja</span></td></tr>
+        <tr><td>Carga sintomática</td><td>DME −0,26</td><td><span class="etiqueta baja">muy baja</span></td></tr>
+        <tr><td>Satisfacción</td><td>DME +0,36</td><td><span class="etiqueta baja">baja</span></td></tr>
+        <tr><td>Muerte en casa</td><td>OR 1,63</td><td><span class="etiqueta baja">baja</span></td></tr>
+        <tr><td>Dolor, carga del cuidador</td><td>Sin diferencia demostrada</td><td><span class="etiqueta baja">muy baja</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="cita">Revisión sistemática de 2020 [15]</p>
+    <div class="grid-2">
+      <div class="card"><h3>Interconsulta por defecto</h3><p>En 24 065 pacientes, la interconsulta pasó del 16,6 % al 43,9 %. <strong>La estancia no cambió</strong>; aumentaron las órdenes de no reanimación y los egresos a cuidado de hospicio <span class="cita">[19]</span>.</p></div>
+      <div class="card" style="--acento:var(--rojo)"><h3>Una advertencia</h3><p>Reuniones familiares estandarizadas en enfermedad crítica crónica aumentaron el estrés postraumático de las familias <span class="cita">[21]</span>: adaptar, no imponer protocolos.</p></div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Prometer ahorro sería prometer lo que los ensayos no muestran: los datos económicos favorables son observacionales [18]. Lo que sí está respaldado es calidad del cuidado.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="3" data-titulo="Modelo escalonado">
+  <div class="slide__in">
+    <p class="eyebrow">Modelos de atención</p>
+    <h2>El modelo escalonado es la única respuesta realista</h2>
+    <div class="grid-2">
+      <div class="svgbox" style="margin:0">
+        <svg viewBox="0 0 420 300" role="img" aria-labelledby="tesc desc2">
+          <title id="tesc">Modelo de tres niveles</title>
+          <desc id="desc2">Nivel 1, tamizaje universal al ingreso; nivel 2, cuidados paliativos primarios del equipo tratante; nivel 3, interconsulta especializada por complejidad. La base es la más ancha.</desc>
+          <g font-family="system-ui,Segoe UI,sans-serif" text-anchor="middle">
+            <polygon points="150,20 270,20 300,100 120,100" fill="#6B4C9A"/>
+            <text x="210" y="55" font-size="15" font-weight="700" fill="#fff">3 · Interconsulta</text>
+            <text x="210" y="78" font-size="13" fill="#fff">por complejidad</text>
+            <polygon points="115,110 305,110 345,190 75,190" fill="#1C7C78"/>
+            <text x="210" y="145" font-size="15" font-weight="700" fill="#fff">2 · Paliativos primarios</text>
+            <text x="210" y="168" font-size="13" fill="#fff">equipo tratante</text>
+            <polygon points="70,200 350,200 400,285 20,285" fill="#1F5F8B"/>
+            <text x="210" y="238" font-size="15" font-weight="700" fill="#fff">1 · Tamizaje universal</text>
+            <text x="210" y="261" font-size="13" fill="#fff">al ingreso</text>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="card" style="--acento:var(--rojo)"><div class="num">6 <small>días</small></div><p>mediana entre el inicio de cuidados paliativos y la muerte cuando la atención se da en sala general (18,9 días en general), cuando los beneficios completos requerirían 3 a 4 meses <span class="cita">[22]</span>.</p></div>
+        <div class="neutro"><p>Criterios de remisión por complejidad: síntomas graves, solicitud de muerte acelerada, crisis espiritual, ayuda con decisiones, solicitud del paciente, delirium, compresión medular. Provienen de un consenso para remisión ambulatoria: usarlos en sala es una extrapolación <span class="cita">[23]</span>.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>1 min. "En el hospital estamos ofreciendo cuidados de final de vida, no cuidados paliativos." Las barreras conocidas incluyen la condición no oncológica, la cultura curativa y la dificultad para pronosticar [24].</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="3" data-titulo="Votación: ¿interconsulta o primarios?">
+  <div class="slide__in">
+    <p class="eyebrow">Votación · 2 min</p>
+    <h2>¿Este paciente necesita interconsulta o le bastan los cuidados paliativos primarios?</h2>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Caso A</h3>
+        <p>Persona con insuficiencia cardíaca avanzada, disnea controlada con su tratamiento, que pregunta "¿cuánto me queda?" y quiere hablar del futuro con su familia.</p>
+        <div class="voto"><button type="button" class="btn" data-voto="a1">Interconsulta</button><span class="contador" id="a1">0</span>
+          <button type="button" class="btn" data-voto="a2">Primarios</button><span class="contador" id="a2">0</span></div>
+        <div class="fila-btn"><button type="button" class="btn primario" data-revela="rvA">Ver respuesta</button></div>
+        <div class="oculto" id="rvA"><div class="ok"><p><strong>Primarios.</strong> Conversar sobre pronóstico y objetivos es tarea del equipo tratante. No hay criterios de complejidad.</p></div></div>
+      </div>
+      <div class="panel">
+        <h3>Caso B</h3>
+        <p>Persona con cáncer metastásico, dolor intenso que no cede tras varios ajustes, y que pide "que esto se acabe ya".</p>
+        <div class="voto"><button type="button" class="btn" data-voto="b1">Interconsulta</button><span class="contador" id="b1">0</span>
+          <button type="button" class="btn" data-voto="b2">Primarios</button><span class="contador" id="b2">0</span></div>
+        <div class="fila-btn"><button type="button" class="btn primario" data-revela="rvB">Ver respuesta</button></div>
+        <div class="oculto" id="rvB"><div class="ok"><p><strong>Interconsulta.</strong> Síntoma grave refractario y solicitud de muerte acelerada son criterios mayores de remisión <span class="cita">[23]</span>. El equipo tratante sigue a cargo mientras tanto.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Cuente manos y súmelas con los botones. El mensaje: el nivel 2 es el que más pacientes atiende.</p>
+  </aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 4 · SÍNTOMAS (20–35) ═════════════════════════ -->
+<section class="slide" data-bloque="4" data-titulo="Dolor: principios y equianalgesia">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · dolor</p>
+    <h2>Opioides: menor dosis eficaz, reevaluar pronto, titular a menudo</h2>
+    <p>Una guía de 2023 recomienda ofrecer opioides en el dolor moderado a severo por cáncer, iniciando a la menor dosis eficaz y con titulación frecuente <span class="cita">[25]</span>.</p>
+    <div class="tabla"><table>
+      <thead><tr><th>Opioide</th><th>Aproximadamente equivalente a 30 mg de morfina oral</th></tr></thead>
+      <tbody>
+        <tr><td>Morfina IV</td><td>10 mg</td></tr>
+        <tr><td>Oxicodona oral</td><td>20 mg</td></tr>
+        <tr><td>Hidromorfona</td><td>6–7,5 mg oral ≈ 1,5 mg IV</td></tr>
+        <tr><td>Tapentadol</td><td>100 mg ≈ 30–40 mg de morfina oral</td></tr>
+        <tr><td>Tramadol</td><td>150 mg ≈ 25 mg de morfina oral (menos de 400 mg/día)</td></tr>
+        <tr><td>Fentanilo transdérmico</td><td>12 µg/h ≈ 25 mg/día de morfina oral</td></tr>
+        <tr><td>Metadona</td><td>Conversión muy variable: solo con equipo con experiencia</td></tr>
+      </tbody>
+    </table></div>
+    <p class="cita">Resumen de evidencia para profesionales, actualizado en 2025 [26]. Hay variabilidad individual.</p>
+    <div class="aviso"><p><strong>Dosis de rescate, reducción al rotar y dosis de inicio: según el protocolo institucional.</strong> No se verificaron en fuente primaria en esta revisión.</p></div>
+  </div>
+  <aside class="notas">
+    <p>2 min. No lea la tabla: muestre que existe y que está en el documento. En Colombia hay barreras documentadas de disponibilidad, prescripción y costo de opioides [28].</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Riñón, hígado y neurotoxicidad">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · dolor</p>
+    <h2>La función de los órganos decide el opioide</h2>
+    <div class="grid">
+      <div class="card" style="--acento:var(--rojo)"><h3>Morfina</h3><p>«No deseable» con TFG menor de 59 mL/min, por sus metabolitos activos <span class="cita">[26]</span>.</p></div>
+      <div class="card" style="--acento:var(--verde)"><h3>Fentanilo y metadona</h3><p>Los más seguros en falla renal y hepática <span class="cita">[26]</span>. Una revisión de 18 estudios favorece al fentanilo por farmacocinética, con evidencia de baja calidad <span class="cita">[27]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Neurotoxicidad</h3><p>Sedación, alucinaciones, delirium, mioclonías, convulsiones, hiperalgesia. La sufrió el 15 % en una cohorte de 390 pacientes; casi siempre obliga a rotar <span class="cita">[26]</span>.</p></div>
+    </div>
+    <div class="neutro"><p>Dolor neuropático: gabapentina hasta 3600 mg/día y pregabalina hasta 300 mg/día <span class="cita">[26]</span>; el ajuste renal, según protocolo. Dolor óseo: la radioterapia en fracción única actuó más rápido que un bisfosfonato <span class="cita">[26]</span>.</p></div>
+  </div>
+  <aside class="notas">
+    <p>1 min. Puente al caso: el escenario típico de sala es morfina + deterioro renal + mioclonías.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Caso evolutivo: morfina y riñón">
+  <div class="slide__in">
+    <p class="eyebrow">Caso con tarjetas de decisión · 5 min</p>
+    <h2>Persona de 74 años con cáncer de próstata metastásico</h2>
+    <p>Recibe morfina oral por dolor óseo. Ingresa por infección urinaria; la TFG es de 25 mL/min. Enfermería reporta somnolencia, sacudidas en brazos y que "ve cosas en la pared".</p>
+    <div class="paso" data-paso="1">
+      <h3>1 · ¿Qué sospecha primero?</h3>
+      <div class="opciones">
+        <button type="button" class="opcion" data-ok="0" data-retro="La progresión puede coexistir, pero el cuadro (sedación, mioclonías, alucinaciones con morfina y TFG baja) sugiere otra causa reversible.">Progresión de la enfermedad al sistema nervioso</button>
+        <button type="button" class="opcion" data-ok="1" data-retro="Correcto. Morfina + deterioro renal + infección: acumulación de metabolitos activos y neurotoxicidad inducida por opioides [26].">Neurotoxicidad inducida por opioides</button>
+        <button type="button" class="opcion" data-ok="0" data-retro="El delirium está presente, pero es la manifestación, no la causa. Hay que buscar qué lo precipita.">Delirium primario por la edad</button>
+      </div>
+      <div class="retro" aria-live="polite"></div>
+    </div>
+    <div class="paso bloqueado" data-paso="2">
+      <h3>2 · ¿Qué hace con el opioide?</h3>
+      <div class="opciones">
+        <button type="button" class="opcion" data-ok="0" data-retro="Aumentar la morfina empeora la acumulación de metabolitos.">Aumentar la morfina porque tiene dolor</button>
+        <button type="button" class="opcion" data-ok="1" data-retro="Correcto. Rotar a un opioide más seguro en falla renal (fentanilo o metadona con experiencia), con la conversión y la reducción del protocolo institucional [26,27].">Rotar a un opioide más seguro en falla renal</button>
+        <button type="button" class="opcion" data-ok="0" data-retro="Suspender toda analgesia deja el dolor óseo sin control y no es necesario: basta con rotar.">Suspender toda la analgesia</button>
+        <button type="button" class="opcion" data-ok="0" data-retro="Un antipsicótico no trata la causa; en delirium leve a moderado los antipsicóticos orales empeoraron los síntomas [42].">Añadir haloperidol y mantener la morfina</button>
+      </div>
+      <div class="retro" aria-live="polite"></div>
+    </div>
+    <div class="paso bloqueado" data-paso="3">
+      <h3>3 · ¿Qué más hace hoy?</h3>
+      <div class="opciones">
+        <button type="button" class="opcion" data-ok="1" data-retro="Correcto. Infección, deshidratación y disfunción renal aumentan el riesgo de neurotoxicidad: tratar los precipitantes es parte del manejo [26]. Y laxante pautado con el nuevo opioide.">Tratar la infección, revisar hidratación y fármacos, y pautar laxante</button>
+        <button type="button" class="opcion" data-ok="0" data-retro="El cuadro es tratable: no es momento de sedar. La sedación paliativa es para síntomas refractarios y se verá en la segunda sesión.">Iniciar sedación porque está agitado</button>
+        <button type="button" class="opcion" data-ok="0" data-retro="Las alucinaciones por neurotoxicidad no requieren primero neuroimagen; reevalúe tras rotar y tratar precipitantes.">Solicitar neuroimagen urgente antes de cambiar nada</button>
+      </div>
+      <div class="retro" aria-live="polite"></div>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>5 min. Haga votar cada paso antes de tocar una tarjeta. Las tarjetas incorrectas dan retroalimentación; solo la correcta abre el paso siguiente.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Disnea">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · disnea</p>
+    <h2>Ventilador antes que oxígeno, y prudencia con la morfina</h2>
+    <div class="grid">
+      <div class="card"><h3>1 · Causas reversibles</h3><p>Tratar lo tratable primero <span class="cita">[29,30]</span>.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>2 · No farmacológico</h3><p>Ventilador de mano dirigido a la cara, posiciones de alivio, educación y dosificación de actividades <span class="cita">[29,30]</span>.</p></div>
+      <div class="card" style="--acento:var(--rojo)"><h3>3 · Oxígeno solo con hipoxemia</h3><p>No se recomienda con SpO₂ ≥90 % <span class="cita">[29]</span>; frente a aire ambiente no hubo diferencia en 239 pacientes no hipoxémicos <span class="cita">[31]</span>.</p></div>
+      <div class="card" style="--acento:var(--b5)"><h3>4 · Opioides</h3><p>Sin opioide previo: morfina oral programada de 10 a 30 mg en 24 h, titulada, rescates ≈ 1/6 de la dosis diaria <span class="cita">[29]</span>. Benzodiacepinas: no en primera línea <span class="cita">[29,32]</span>.</p></div>
+    </div>
+    <div class="aviso"><p>En disnea crónica, sobre todo no oncológica, la morfina de liberación prolongada a dosis bajas fijas <strong>no superó al placebo</strong> en tres ensayos, y la mirtazapina tampoco funcionó <span class="cita">[33–36]</span>. Extrapolarlos a la disnea aguda del hospitalizado con cáncer es incierto. Dosis parenterales o subcutáneas: según protocolo.</p></div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Recomiende profilaxis laxante a todos los que inician opioide [29].</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Desaprender: cinco rutinas">
+  <div class="slide__in">
+    <p class="eyebrow">Desaprender · toque cada tarjeta</p>
+    <h2>Cinco rutinas que la evidencia obliga a revisar</h2>
+    <div class="grid">
+      <button type="button" class="giro" aria-pressed="false"><span class="giro__in">
+        <span class="giro__cara frente"><span class="tipo">Rutina</span><p><strong>Oxígeno para la disnea</strong> aunque la saturación sea normal.</p></span>
+        <span class="giro__cara dorso"><span class="tipo">Evidencia</span><p>Sin hipoxemia, el oxígeno no alivió más que el aire ambiente. Ventilador de mano y posición primero <span class="cita">[29,31]</span>.</p></span></span></button>
+      <button type="button" class="giro" aria-pressed="false"><span class="giro__in">
+        <span class="giro__cara frente"><span class="tipo">Rutina</span><p><strong>Antipsicótico oral</strong> para todo delirium.</p></span>
+        <span class="giro__cara dorso"><span class="tipo">Evidencia</span><p>En delirium leve a moderado empeoraron los síntomas; el haloperidol se asoció a más mortalidad (HR 1,73) <span class="cita">[42,43]</span>.</p></span></span></button>
+      <button type="button" class="giro" aria-pressed="false"><span class="giro__in">
+        <span class="giro__cara frente"><span class="tipo">Rutina</span><p><strong>Morfina de liberación prolongada fija</strong> para la disnea crónica.</p></span>
+        <span class="giro__cara dorso"><span class="tipo">Evidencia</span><p>Tres ensayos negativos, uno con más eventos adversos <span class="cita">[33–35]</span>.</p></span></span></button>
+      <button type="button" class="giro" aria-pressed="false"><span class="giro__in">
+        <span class="giro__cara frente"><span class="tipo">Rutina</span><p><strong>Laxante "si es necesario"</strong> con el opioide.</p></span>
+        <span class="giro__cara dorso"><span class="tipo">Evidencia</span><p>Pautado desde el inicio del opioide; descartar impactación u obstrucción antes de escalar <span class="cita">[26,40,41]</span>.</p></span></span></button>
+      <button type="button" class="giro" aria-pressed="false"><span class="giro__in">
+        <span class="giro__cara frente"><span class="tipo">Rutina</span><p><strong>Sonda de alimentación</strong> en demencia avanzada con disfagia.</p></span>
+        <span class="giro__cara dorso"><span class="tipo">Evidencia</span><p>No prolonga la supervivencia y aumenta las úlceras por presión <span class="cita">[87,88]</span>. Alimentación oral asistida y de confort.</p></span></span></button>
+    </div>
+  </div>
+  <aside class="notas">
+    <p>2 min. Pida al grupo que diga cuál de las cinco rutinas ve más en su servicio antes de girar la tarjeta.</p>
+  </aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Náusea, obstrucción y estreñimiento">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · digestivo</p>
+    <h2>Náusea, obstrucción intestinal y estreñimiento</h2>
+    <div class="grid">
+      <div class="card"><h3>Náusea crónica</h3><p>En un piloto doble ciego de 30 pacientes, olanzapina 5 mg/día bajó la náusea mediana de 9/10 a 1/10 en una semana. Muestra pequeña: requiere confirmación <span class="cita">[37]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Obstrucción maligna inoperable</h3><p>Octreótido como elección según una guía de 2021 <span class="cita">[38]</span>, pero un ensayo doble ciego no mostró más días libres de vómito <span class="cita">[39]</span>: primera línea con evidencia mixta, dentro de un paquete con corticoide, antiemético y descompresión.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>Estreñimiento</h3><p>Laxante pautado. Si falla, antagonista periférico del receptor mu, contraindicado si se sospecha obstrucción mecánica <span class="cita">[26,40,41]</span>.</p></div>
+    </div>
+    <div class="aviso"><p>Dosis de antieméticos y de antagonistas periféricos: según el protocolo institucional.</p></div>
+  </div>
+  <aside class="notas"><p>1 min. Diapositiva de referencia; no se detenga.</p></aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Delirium">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · delirium</p>
+    <h2>Buscar la causa, no sedar por reflejo</h2>
+    <div class="grid-2">
+      <div class="card" style="--acento:var(--rojo)"><div class="num">HR 1,73</div><p>En 247 pacientes con delirium leve a moderado, risperidona y haloperidol orales <strong>empeoraron los síntomas</strong> frente al placebo, con más extrapiramidalismos; el haloperidol se asoció a mayor mortalidad <span class="cita">[42]</span>. Una revisión de 2020 coincide <span class="cita">[43]</span>.</p></div>
+      <div class="card" style="--acento:var(--verde)"><h3>Lo que sí</h3><ul><li>Identificar y tratar precipitantes: fármacos, infección, deshidratación, retención urinaria, neurotoxicidad por opioides.</li><li>Medidas no farmacológicas.</li><li>Antipsicótico solo si hay distrés significativo o riesgo, a la menor dosis y por el menor tiempo.</li></ul></div>
+    </div>
+    <div class="neutro"><p>Agitación severa refractaria: evidencia preliminar de dos ensayos unicéntricos (añadir lorazepam al haloperidol; escalar, rotar o combinar con clorpromazina, con hipotensión del 21 al 40 %) <span class="cita">[44,45]</span>. Dosis según protocolo.</p></div>
+  </div>
+  <aside class="notas"><p>2 min. Este es el hallazgo que más debe cambiar la práctica en sala.</p></aside>
+</section>
+
+<section class="slide" data-bloque="4" data-titulo="Emergencias, caquexia y vía subcutánea">
+  <div class="slide__in">
+    <p class="eyebrow">Control de síntomas · situaciones especiales</p>
+    <h2>Lo que no puede esperar y lo que facilita el cuidado</h2>
+    <div class="grid">
+      <div class="card" style="--acento:var(--rojo)"><h3>Compresión medular</h3><p>Dexametasona 16 mg lo antes posible, sin esperar la RM, y RM de toda la columna en 24 horas si hay signos neurológicos <span class="cita">[50]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Hipercalcemia maligna</h3><p>Denosumab o bisfosfonato IV (recomendación fuerte); en casos graves, añadir calcitonina al inicio <span class="cita">[49]</span>. Dosis según protocolo.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>Anorexia-caquexia</h3><p>Consejería nutricional; no sondas ni nutrición parenteral de rutina <span class="cita">[46]</span>. Olanzapina 2,5 mg/día: ganó más del 5 % de peso el 60 % frente al 9 % <span class="cita">[47,48]</span>.</p></div>
+      <div class="card"><h3>Infusión subcutánea continua</h3><p>Mantiene el control cuando se pierde la vía oral. Mediana de 3 fármacos por jeringa y muchas mezclas sin datos de compatibilidad <span class="cita">[51]</span>: limitar fármacos y consultar las tablas institucionales.</p></div>
+    </div>
+  </div>
+  <aside class="notas"><p>1 min. El dato de compresión medular proviene de un resumen visual de una guía de 2023, no del texto de sus recomendaciones.</p></aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 5 · COMUNICACIÓN Y LEY (35–47) ═════════════════════════ -->
+<section class="slide" data-bloque="5" data-titulo="Documentar no es cumplir">
+  <div class="slide__in">
+    <p class="eyebrow">Comunicación y decisiones</p>
+    <h2>Documentar no es lo mismo que cumplir lo que la persona quiere</h2>
+    <div class="barras">
+      <div class="barra-c"><span>Conversación documentada, sin intervención</span><span class="pista"><i data-w="30.4" style="--c:var(--gris-claro)"></i></span><span class="v">30,4 %</span></div>
+      <div class="barra-c"><span>Con guía de una página para el clínico</span><span class="pista"><i data-w="34.5" style="--c:var(--b5)"></i></span><span class="v">34,5 %</span></div>
+    </div>
+    <p class="cita">Ensayo con 2512 hospitalizados con enfermedad grave [52]</p>
+    <div class="grid">
+      <div class="card"><p>Un programa de conversación estructurada <strong>no mejoró el cuidado concordante</strong>, pero redujo a la mitad la ansiedad moderada-grave <span class="cita">[53]</span>.</p></div>
+      <div class="card"><p>69 ensayos de planificación anticipada: mejoran comunicación y malestar del subrogado, no la concordancia ni la calidad de vida <span class="cita">[55]</span>.</p></div>
+      <div class="card" style="--acento:var(--verde)"><p><strong>Hablar no daña:</strong> las conversaciones sobre el final de la vida no se asociaron a más depresión y sí a menos ventilación, reanimación e ingreso a UCI <span class="cita">[57]</span>.</p></div>
+    </div>
+    <div class="neutro"><p>Foco del ingreso: las <strong>decisiones reales e inminentes</strong>, como reanimación, UCI, ventilación y alimentación <span class="cita">[56]</span>.</p></div>
+  </div>
+  <aside class="notas"><p>2 min. Sin intervención, solo tres de cada diez hospitalizados graves tienen la conversación documentada.</p></aside>
+</section>
+
+<section class="slide" data-bloque="5" data-titulo="Protocolo de seis pasos">
+  <div class="slide__in">
+    <p class="eyebrow">Comunicación · dar malas noticias</p>
+    <h2>Seis pasos para estructurar la conversación</h2>
+    <div class="stepper" role="tablist" aria-label="Pasos del protocolo" id="stepper"></div>
+    <div class="panel" id="pasoDetalle" aria-live="polite"></div>
+    <div class="grid">
+      <div class="card" style="--acento:var(--b5)"><h3>Preguntar–informar–preguntar</h3><p>Y responder a la emoción: nombrar, comprender, respetar, apoyar, explorar <span class="cita">[59]</span>.</p></div>
+      <div class="card" style="--acento:var(--b5)"><h3>Mejor caso, peor caso, caso más probable</h3><p>Herramienta gráfica para decisiones de alto riesgo <span class="cita">[60]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Lo que sí tiene evidencia</h3><p>Anticipar, escuchar más que hablar (la familia habló 14 minutos frente a 5 y bajó el estrés postraumático del 69 % al 45 %), información escrita y contacto tras la muerte <span class="cita">[61]</span>.</p></div>
+    </div>
+    <p style="font-size:.9rem;color:var(--gris)">Los marcos estructuran la tarea; su beneficio clínico aislado no se ha probado <span class="cita">[58]</span>.</p>
+  </div>
+  <aside class="notas"><p>2 min. Recorra los pasos con los botones o las flechas del propio componente. En sala, el único ensayo de reuniones familiares estructuradas redujo el malestar del cuidador [63].</p></aside>
+</section>
+
+<section class="slide" data-bloque="5" data-titulo="Juego de roles">
+  <div class="slide__in">
+    <p class="eyebrow">Juego de roles · 4 minutos en tríos</p>
+    <h2>Conversar sobre el código de reanimación con un familiar</h2>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Escenario</h3>
+        <p>La hija de una persona de 88 años con fragilidad grave (escala clínica 7) y neumonía pregunta: "¿Y si se le para el corazón, la van a reanimar, verdad?"</p>
+        <p><strong>Roles:</strong> clínico · hija · observador con la lista.</p>
+        <div class="cuenta" id="cuentaRol" aria-live="off">04:00</div>
+        <div class="fila-btn"><button type="button" class="btn primario" id="btnRol">Iniciar</button><button type="button" class="btn" id="btnRolReset">Reiniciar</button></div>
+        <div class="neutro"><p>Dato para el clínico: tras la reanimación intrahospitalaria, la mortalidad hospitalaria fue del 84 % con fragilidad de 6 o más <span class="cita">[65]</span>.</p></div>
+      </div>
+      <div>
+        <h3>Lista del observador · <span id="puntajeRol">0/8</span></h3>
+        <ul class="checklist" id="checklistRol">
+          <li><label><input type="checkbox">Preparó el entorno y se presentó</label></li>
+          <li><label><input type="checkbox">Preguntó qué sabe la hija sobre el estado de su madre</label></li>
+          <li><label><input type="checkbox">Preguntó cuánto quiere saber</label></li>
+          <li><label><input type="checkbox">Dio la información en porciones, sin tecnicismos</label></li>
+          <li><label><input type="checkbox">Respondió a la emoción antes de seguir</label></li>
+          <li><label><input type="checkbox">Hizo una recomendación basada en los objetivos, no un menú neutro</label></li>
+          <li><label><input type="checkbox">Preguntó por un documento de voluntad anticipada</label></li>
+          <li><label><input type="checkbox">Escuchó más de lo que habló, resumió y planificó</label></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notas"><p>5 min: 4 de juego y 1 de devolución. Pida al observador que diga qué punto de la lista costó más. Casi siempre es la recomendación: tendemos a ofrecer la reanimación como un menú.</p></aside>
+</section>
+
+<section class="slide" data-bloque="5" data-titulo="Reanimación y ensayo limitado en el tiempo">
+  <div class="slide__in">
+    <p class="eyebrow">Decisiones del ingreso</p>
+    <h2>La reanimación se informa con una recomendación</h2>
+    <div class="grid">
+      <div class="card" style="--acento:var(--rojo)"><div class="num">5,6 %</div><p>supervivencia al alta tras reanimación intrahospitalaria con cáncer metastásico (6,2 % en cáncer en general), según un metaanálisis antiguo que probablemente sobreestima <span class="cita">[64]</span></p></div>
+      <div class="card" style="--acento:var(--rojo)"><div class="num">84 %</div><p>mortalidad hospitalaria tras la reanimación en mayores de 65 años con fragilidad de 6 o más (73,1 % en general) <span class="cita">[65]</span></p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>Ensayo limitado en el tiempo</h3><p>Plan pactado de soporte vital por un tiempo definido: considerar, planificar, apoyar y reevaluar (16 elementos) <span class="cita">[66]</span>. En UCI redujo estancia y ventilación sin cambiar la mortalidad <span class="cita">[67]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Antibióticos al final de la vida</h3><p>En dos tercios de 72 estudios, más de la mitad de los pacientes los recibió, sin beneficio claro <span class="cita">[68]</span>.</p></div>
+    </div>
+  </div>
+  <aside class="notas"><p>2 min. Enlace con el juego de roles: la cifra del 84 % es la que debía usarse en la conversación.</p></aside>
+</section>
+
+<section class="slide" data-bloque="5" data-titulo="Marco legal colombiano">
+  <div class="slide__in">
+    <p class="eyebrow">Marco legal colombiano</p>
+    <h2>La norma respalda la adecuación del esfuerzo terapéutico</h2>
+    <div class="grid">
+      <div class="card"><h3>Ley 1733 de 2014</h3><p>Derecho a cuidados paliativos, a información clara, a segunda opinión, a suscribir voluntad anticipada, a participar en las decisiones y a <strong>desistir de tratamientos desproporcionados</strong>. Fija el orden de quién decide por el adulto inconsciente <span class="cita">[71]</span>.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>Resolución 2665 de 2018</h3><p>Documento de voluntad anticipada ante notario, <strong>ante dos testigos o ante el médico tratante</strong>; nadie puede exigir la vía notarial. El médico pregunta si existe y lo anexa a la historia <span class="cita">[72]</span>.</p></div>
+      <div class="card" style="--acento:var(--b5)"><h3>Resolución 000813 de 2026</h3><p>Deroga la 971 de 2021. La adecuación de los esfuerzos terapéuticos queda en la autonomía del equipo tratante, <strong>sin comité obligatorio</strong>; el comité de ética es consultivo si hay desacuerdo <span class="cita">[73]</span>.</p></div>
+    </div>
+    <div class="aviso"><p><strong>Confirmar en la fuente oficial:</strong> la Resolución 000813 de 2026 se leyó en una compilación normativa secundaria, no en el documento oficial.</p></div>
+    <div class="ok"><p>No reanimar, no iniciar o retirar un tratamiento desproporcionado y ofrecer cuidados paliativos son decisiones clínicas concertadas y documentadas. <strong>No requieren el procedimiento de eutanasia</strong>, que es una vía distinta.</p></div>
+  </div>
+  <aside class="notas"><p>2 min. Muchos protocolos aún citan la Resolución 971 de 2021: hay que actualizarlos, una vez confirmada la nueva norma en la fuente oficial.</p></aside>
+</section>
+
+<section class="slide" data-bloque="5" data-titulo="Familia y duelo">
+  <div class="slide__in">
+    <p class="eyebrow">La familia</p>
+    <h2>La muerte hospitalaria marca el duelo</h2>
+    <div class="barras">
+      <div class="barra-c"><span>Duelo prolongado: muerte en el hospital</span><span class="pista"><i data-w="21.6" style="--c:var(--rojo)"></i></span><span class="v">21,6 %</span></div>
+      <div class="barra-c"><span>Muerte en casa con hospicio</span><span class="pista"><i data-w="5.2" style="--c:var(--verde)"></i></span><span class="v">5,2 %</span></div>
+    </div>
+    <p class="cita">Cohorte de cuidadores de pacientes con cáncer avanzado; intervalos amplios [69]</p>
+    <div class="grid-2">
+      <div class="card"><h3>Predictores más fuertes</h3><p>Síntomas de duelo antes de la pérdida, depresión y muerte inesperada, en 120 estudios <span class="cita">[70]</span>.</p></div>
+      <div class="card" style="--acento:var(--verde)"><h3>Lo que la sala puede hacer</h3><p>Preparar a la familia, detectar el duelo anticipado intenso y la depresión del cuidador, y ofrecer contacto tras la muerte. En UCI, preparar, acompañar y reunirse después redujo el duelo prolongado del 21 % al 15 % <span class="cita">[62]</span>.</p></div>
+    </div>
+  </div>
+  <aside class="notas"><p>1 min. Cierre del bloque: los predictores del duelo prolongado son modificables desde la sala.</p></aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 6 · NO ONCOLÓGICOS Y EQUIPO (47–56) ═════════════════════════ -->
+<section class="slide" data-bloque="6" data-titulo="El no oncológico llega tarde">
+  <div class="slide__in">
+    <p class="eyebrow">Paciente no oncológico</p>
+    <h2>Llega tarde y depende del equipo de sala</h2>
+    <p>Inicio de cuidados paliativos más de 90 días antes de la muerte, en 145 709 adultos fallecidos <span class="cita">[74]</span>:</p>
+    <div class="barras">
+      <div class="barra-c"><span>Cáncer</span><span class="pista"><i data-w="28.9"></i></span><span class="v">28,9 %</span></div>
+      <div class="barra-c"><span>Falla orgánica</span><span class="pista"><i data-w="15.9" style="--c:var(--teal)"></i></span><span class="v">15,9 %</span></div>
+      <div class="barra-c"><span>Demencia</span><span class="pista"><i data-w="15.3" style="--c:var(--b6)"></i></span><span class="v">15,3 %</span></div>
+    </div>
+    <div class="neutro"><p>Cuando sí los recibieron, en falla orgánica hubo menos ingresos a UCI (RR 0,59) y más muertes en casa (OR 1,67); en demencia, la asociación fue inversa <span class="cita">[75]</span>. Son datos observacionales: no son causales.</p></div>
+  </div>
+  <aside class="notas"><p>1 min. Conclusión: el equipo tratante es el proveedor principal de cuidados paliativos básicos del paciente no oncológico.</p></aside>
+</section>
+
+<section class="slide" data-bloque="6" data-titulo="Por enfermedad">
+  <div class="slide__in">
+    <p class="eyebrow">Paciente no oncológico · por enfermedad</p>
+    <h2>Lo que cambia según el órgano</h2>
+    <div class="tabs" role="tablist" aria-label="Enfermedades" data-grupo="enf">
+      <button type="button" role="tab" aria-selected="true" aria-controls="enf1" id="tenf1">Insuficiencia cardíaca</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="enf2" id="tenf2">EPOC e intersticial</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="enf3" id="tenf3">Enfermedad renal</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="enf4" id="tenf4">Cirrosis</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="enf5" id="tenf5">ACV y Parkinson</button>
+    </div>
+    <div class="panel" role="tabpanel" id="enf1" aria-labelledby="tenf1"><p>Las intervenciones paliativas redujeron las hospitalizaciones (<strong>OR 0,56</strong>) y mejoraron modestamente la calidad de vida, sin daño en la mortalidad <span class="cita">[76,77]</span>. Desactivar el desfibrilador implantable a solicitud es ética y legalmente permisible y evita descargas dolorosas: anticipar la conversación al ingreso <span class="cita">[79]</span>.</p></div>
+    <div class="panel oculto" role="tabpanel" id="enf2" aria-labelledby="tenf2"><p>Considerar cuidados paliativos cuando la valoración integral identifique necesidades, ofrecer planificación anticipada y apoyar al cuidador <span class="cita">[80]</span>. En disnea crónica, priorizar medidas no farmacológicas <span class="cita">[33–36]</span>.</p></div>
+    <div class="panel oculto" role="tabpanel" id="enf3" aria-labelledby="tenf3"><p>Supervivencia media tras suspender la diálisis: <strong>7,4 días</strong> <span class="cita">[81]</span>. Esa decisión activa de inmediato el plan de final de vida. Manejo conservador en adultos mayores: medianas de 32 meses en aptos para diálisis y 18 en menos aptos <span class="cita">[82]</span>.</p></div>
+    <div class="panel oculto" role="tabpanel" id="enf4" aria-labelledby="tenf4"><p>La ascitis refractaria causa reingresos; el estándar son las paracentesis repetidas. Los drenajes tunelizados de larga duración mostraron factibilidad y su ensayo definitivo está en curso <span class="cita">[83]</span>.</p></div>
+    <div class="panel oculto" role="tabpanel" id="enf5" aria-labelledby="tenf5"><p>En ACV, las necesidades paliativas son comunes y poco atendidas desde todas las etapas <span class="cita">[84]</span>. En Parkinson, un ensayo ambulatorio mostró mejor calidad de vida con cuidados paliativos integrados <span class="cita">[85]</span>.</p></div>
+  </div>
+  <aside class="notas"><p>2 min. Elija las pestañas según el público de su servicio.</p></aside>
+</section>
+
+<section class="slide" data-bloque="6" data-titulo="Demencia avanzada y fragilidad">
+  <div class="slide__in">
+    <p class="eyebrow">Demencia avanzada y fragilidad</p>
+    <h2>La neumonía y la disfagia son parte de la enfermedad</h2>
+    <div class="grid">
+      <div class="card"><div class="num">85,8 %</div><p>tuvo problemas de alimentación y el 41,1 % neumonía en 18 meses; mortalidad a 6 meses tras neumonía del 46,7 % <span class="cita">[86]</span></p></div>
+      <div class="card" style="--acento:var(--verde)"><div class="num">OR 0,12</div><p>intervenciones gravosas cuando el representante comprendía el pronóstico <span class="cita">[86]</span></p></div>
+      <div class="card" style="--acento:var(--rojo)"><h3>Sonda</h3><p>Sin efecto en supervivencia y más úlceras por presión (2,27 veces si se coloca durante la hospitalización) <span class="cita">[87,88]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Antibióticos</h3><p>Prolongaron la supervivencia, con peor confort: decidir según el objetivo pactado <span class="cita">[89]</span>.</p></div>
+    </div>
+    <div class="neutro"><p><strong>Fragilidad:</strong> la escala clínica predijo mortalidad en el 87 % de las asociaciones evaluadas <span class="cita">[92]</span>; un puntaje derivado de diagnósticos discriminó modestamente <span class="cita">[91]</span>. Registrarla al ingreso como insumo, no como criterio de exclusión.</p></div>
+  </div>
+  <aside class="notas"><p>1 min. Una ayuda de decisión en video redujo a la mitad los traslados hospitalarios desde residencias [90].</p></aside>
+</section>
+
+<section class="slide" data-bloque="6" data-titulo="Actividad: ¿quién hace qué?">
+  <div class="slide__in">
+    <p class="eyebrow">Arrastrar y ordenar · 3 min</p>
+    <h2>Persona de 86 años con demencia avanzada y neumonía: ¿quién hace qué?</h2>
+    <p style="font-size:.95rem;color:var(--gris)">Arrastre cada tarea a una disciplina, o tóquela y luego toque la disciplina. Varias tareas son compartidas: se busca el responsable principal.</p>
+    <div class="tareas" id="bancoTareas" aria-label="Tareas por asignar"></div>
+    <div class="zonas" id="zonas"></div>
+    <div class="fila-btn"><button type="button" class="btn primario" id="btnRevisarTareas">Revisar</button><button type="button" class="btn" id="btnReiniciarTareas">Reiniciar</button></div>
+    <div id="resTareas" aria-live="polite"></div>
+  </div>
+  <aside class="notas"><p>3 min. Haga la actividad con el grupo en voz alta. No hay ensayos específicos de los roles en hospitalización, pero los ensayos positivos usaron equipos interdisciplinarios [78,85].</p></aside>
+</section>
+
+<section class="slide" data-bloque="6" data-titulo="Valoración diaria de enfermería">
+  <div class="slide__in">
+    <p class="eyebrow">Enfermería y equipo</p>
+    <h2>Propuesta operativa para cada turno</h2>
+    <div class="grid">
+      <div class="card"><h3>IPOS o ESAS-r</h3><p>Al ingreso y a diario. IPOS es válido en autorreporte y aplicado por el personal, y responde al cambio <span class="cita">[93]</span>.</p></div>
+      <div class="card" style="--acento:var(--teal)"><h3>PAINAD</h3><p>Si la persona no puede autorreportar el dolor <span class="cita">[94]</span>. Usar el instrumento validado.</p></div>
+      <div class="card" style="--acento:var(--b5)"><h3>«¿Está usted en paz?»</h3><p>Se correlacionó con el bienestar emocional y espiritual en cáncer, insuficiencia cardíaca y EPOC <span class="cita">[96]</span>. Es una puerta de entrada, no un diagnóstico <span class="cita">[97]</span>.</p></div>
+      <div class="card" style="--acento:var(--ambar)"><h3>Piel y cuidador</h3><p>Reposicionamiento con certeza muy baja <span class="cita">[95]</span>: en quien se deteriora, la meta pasa de curar a dar confort. Registrar quién es el cuidador principal y qué necesita <span class="cita">[80]</span>.</p></div>
+    </div>
+  </div>
+  <aside class="notas"><p>1 min. Que el confort como meta de la piel sea consenso de práctica, no resultado de ensayos.</p></aside>
+</section>
+
+<!-- ═════════════════════════ BLOQUE 7 · CIERRE (56–60) ═════════════════════════ -->
+<section class="slide" data-bloque="7" data-titulo="Tres cambios para mañana">
+  <div class="slide__in">
+    <p class="eyebrow">Cierre</p>
+    <h2>Tres cambios para mañana</h2>
+    <div class="grid">
+      <div class="card"><div class="num">1</div><h3>Tamizar</h3><p>Pregunta sorpresa a todos al ingreso y SPICT o NECPAL si no sorprendería, sobre todo en el paciente no oncológico.</p></div>
+      <div class="card" style="--acento:var(--rojo)"><div class="num">2</div><h3>Dejar de hacer</h3><p>Oxígeno sin hipoxemia, antipsicóticos para el delirium leve, sondas en demencia avanzada, reanimación como menú neutro.</p></div>
+      <div class="card" style="--acento:var(--b5)"><div class="num">3</div><h3>Conversar</h3><p>Sobre decisiones reales, con el respaldo de la Ley 1733 y de la norma vigente sobre adecuación del esfuerzo terapéutico.</p></div>
+    </div>
+    <div class="neutro"><p>La pregunta ya no es cuándo llamar a paliativos, sino <strong>a cuál de los pacientes que ya tenemos le está fallando hoy</strong> el control de síntomas, la información o las decisiones.</p></div>
+  </div>
+  <aside class="notas"><p>1 min. Pida a cada persona que elija uno de los tres cambios para aplicar esta semana.</p></aside>
+</section>
+
+<section class="slide" data-bloque="7" data-titulo="Abrebocas: segunda sesión">
+  <div class="slide__in">
+    <p class="eyebrow">Abrebocas · segunda sesión</p>
+    <h2>Últimos días, sedación paliativa y alta</h2>
+    <ul>
+      <li>¿Cómo reconocemos que una persona entró en sus últimos días?</li>
+      <li>¿Qué medicación anticipatoria debe quedar formulada?</li>
+      <li>¿Cuándo está indicada la sedación paliativa, cómo se distingue de la eutanasia y cómo se documenta?</li>
+      <li>¿Cómo organizamos un alta segura cuando la persona desea morir en casa?</li>
+    </ul>
+    <div class="panel">
+      <label for="respuestaSueros"><strong>Para pensar:</strong> «La familia pide sueros porque ya no come, ¿qué le responde?»</label>
+      <textarea id="respuestaSueros" placeholder="Escriba las respuestas que surjan en el grupo; quedan guardadas en este equipo para la próxima sesión."></textarea>
+      <div class="fila-btn"><button type="button" class="btn" id="btnBorrarSueros">Borrar</button><span id="estadoSueros" style="font-size:.85rem;color:var(--gris);align-self:center"></span></div>
+    </div>
+    <p style="font-size:.95rem;color:var(--gris)">Adelanto: la hidratación parenteral no mejoró los síntomas de deshidratación, el delirium ni la supervivencia en un ensayo doble ciego <span class="cita">[98]</span>; la evidencia es incierta y la decisión es individual <span class="cita">[99,100]</span>. Lo discutiremos en la segunda sesión.</p>
+  </div>
+  <aside class="notas"><p>2 min. No responda la pregunta: recoja respuestas y guárdelas para abrir la segunda sesión con ellas.</p></aside>
+</section>
+
+<section class="slide" data-bloque="7" data-titulo="Cuestionario final">
+  <div class="slide__in">
+    <p class="eyebrow">Cuestionario final · <span class="puntaje" id="puntajeQuiz">0/6</span></p>
+    <h2>Comprobemos</h2>
+    <div id="quiz"></div>
+  </div>
+  <aside class="notas"><p>Si no hay tiempo, deje el cuestionario como tarea: funciona sin conexión y da retroalimentación inmediata.</p></aside>
+</section>
+
+<section class="slide" data-bloque="7" data-titulo="Referencias">
+  <div class="slide__in">
+    <p class="eyebrow">Referencias · misma numeración que la revisión de tema</p>
+    <h2>Referencias</h2>
+    <ol class="refs" id="refs"></ol>
+  </div>
+  <aside class="notas"><p>Las referencias completas, con DOI o PMID, están también en el documento de revisión de tema.</p></aside>
+</section>
+
+</main>
+
+<div id="panelNotas" aria-live="polite"><h4>Notas del presentador</h4><div id="textoNotas"></div></div>
+
+<div id="mapa" role="dialog" aria-modal="true" aria-label="Mapa de diapositivas">
+  <div class="caja">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Mapa de la sesión</h2><button type="button" class="btn" id="btnCerrarMapa">Cerrar (Esc)</button></div>
+    <div id="mapaGrupos"></div>
+  </div>
+</div>
+
+<nav class="pie" aria-label="Navegación de diapositivas">
+  <button type="button" id="btnAnt" aria-label="Diapositiva anterior">← Anterior</button>
+  <span id="contador">1 / 1</span>
+  <button type="button" id="btnSig" aria-label="Diapositiva siguiente">Siguiente →</button>
+</nav>
+
+<script>
+(function () {
+  'use strict';
+  var REFS = ["Clark D, Armstrong M, Allan A, et al. Imminence of death among hospital inpatients: prevalent cohort study. Palliat Med. 2014;28(6):474-479. doi:10.1177/0269216314526443. PMID 24637342.", "Moore E, Munoz-Arroyo R, Schofield L, et al. Death within 1 year among emergency medical admissions to Scottish hospitals: incident cohort study. BMJ Open. 2018;8:e021432. doi:10.1136/bmjopen-2017-021432. PMID 29961029.", "Gardiner C, Gott M, Ingleton C, et al. Extent of palliative care need in the acute hospital setting: a survey of two acute hospitals in the UK. Palliat Med. 2013;27(1):76-83. doi:10.1177/0269216312447592. PMID 22619261.", "Ryan T, Ingleton C, Gardiner C, et al. Symptom burden, palliative care need and predictors of physical and psychological discomfort in two UK hospitals. BMC Palliat Care. 2013;12:11. doi:10.1186/1472-684X-12-11. PMID 23442926.", "Calsina-Berna A, Amblàs Novellas J, González-Barboteo J, et al. Prevalence and clinical characteristics of patients with advanced chronic illness and palliative care needs, identified with the NECPAL CCOMS-ICO© tool at a tertiary care hospital. BMC Palliat Care. 2022;21:210. doi:10.1186/s12904-022-01101-4. PMID 36443761.", "Tripodoro VA, Llanos V, Daud ML, et al. Palliative and prognostic approach in cancer patients identified in the multicentre NECesidades PALiativas 2 study in Argentina. Ecancermedicalscience. 2021;15:1316. doi:10.3332/ecancer.2021.1316. PMID 35047067.", "Pastrana T, De Lima L, Knaul F, et al. How universal is palliative care in Colombia? A health policy and systems analysis. J Pain Symptom Manage. 2022;63(1):e124-e133. doi:10.1016/j.jpainsymman.2021.07.007. PMID 34363955.", "Downar J, Goldman R, Pinto R, et al. The \"surprise question\" for predicting death in seriously ill patients: a systematic review and meta-analysis. CMAJ. 2017;189(13):E484-E493. doi:10.1503/cmaj.160775. PMID 28385893.", "White N, Kupeli N, Vickerstaff V, Stone P. How accurate is the 'Surprise Question' at identifying patients at the end of life? A systematic review and meta-analysis. BMC Med. 2017;15:139. doi:10.1186/s12916-017-0907-4. PMID 28764757.", "Xie Z, Ding J, Jiao J, Tang S, Huang C. Screening instruments for early identification of unmet palliative care needs: a systematic review and meta-analysis. BMJ Support Palliat Care. 2024;14(3):256-268. doi:10.1136/spcare-2023-004465. PMID 38154921.", "Bustamante-Fermosel A, Chacón-Moreno AD, Hennekinne L, et al. Screening tools for the early identification of palliative care needs in patients with advanced chronic conditions: an updated systematic review. J Clin Med. 2026;15(3):919. doi:10.3390/jcm15030919. PMID 41682603.", "Wilson PM, Ramar P, Philpot LM, et al. Effect of an artificial intelligence decision support tool on palliative care referral in hospitalized patients: a randomized clinical trial. J Pain Symptom Manage. 2023;66(1):24-32. doi:10.1016/j.jpainsymman.2023.02.317. PMID 36842541.", "Stone P, Buckle P, Dolan R, et al. Prognostic evaluation in patients with advanced cancer in the last months of life: ESMO Clinical Practice Guideline. ESMO Open. 2023;8(2):101195. doi:10.1016/j.esmoop.2023.101195. PMID 37087198.", "Turrillas P, Peñafiel J, Tebé C, et al. NECPAL prognostic tool: a palliative medicine retrospective cohort study. BMJ Support Palliat Care. 2021. doi:10.1136/bmjspcare-2020-002567. PMID 33593868.", "Bajwah S, Oluyase AO, Yi D, et al. The effectiveness and cost-effectiveness of hospital-based specialist palliative care for adults with advanced illness and their caregivers. Cochrane Database Syst Rev. 2020;9:CD012780. doi:10.1002/14651858.CD012780.pub2. PMID 32996586.", "Gaertner J, Siemens W, Meerpohl JJ, et al. Effect of specialist palliative care services on quality of life in adults with advanced incurable illness in hospital, hospice, or community settings: systematic review and meta-analysis. BMJ. 2017;357:j2925. doi:10.1136/bmj.j2925. PMID 28676557.", "Kavalieratos D, et al. Association between palliative care and patient and caregiver outcomes: a systematic review and meta-analysis. JAMA. 2016;316(20):2104-2114. doi:10.1001/jama.2016.16840. PMID 27893131.", "May P, Normand C, Cassel JB, et al. Economics of palliative care for hospitalized adults with serious illness: a meta-analysis. JAMA Intern Med. 2018;178(6):820-829. doi:10.1001/jamainternmed.2018.0750. PMID 29710177.", "Courtright KR, Madden V, Bayes B, et al. Default palliative care consultation for seriously ill hospitalized patients: a pragmatic cluster randomized trial. JAMA. 2024;331(3):224-232. doi:10.1001/jama.2023.25092. PMID 38227032.", "Gade G, Venohr I, Conner D, et al. Impact of an inpatient palliative care team: a randomized control trial. J Palliat Med. 2008;11(2):180-190. doi:10.1089/jpm.2007.0055. PMID 18333732.", "Carson SS, Cox CE, Wallenstein S, et al. Effect of palliative care-led meetings for families of patients with chronic critical illness: a randomized clinical trial. JAMA. 2016;316(1):51-62. doi:10.1001/jama.2016.8474. PMID 27380343.", "Jordan RI, Allsop MJ, ElMokhallalati Y, et al. Duration of palliative care before death in international routine practice: a systematic review and meta-analysis. BMC Med. 2020;18:368. doi:10.1186/s12916-020-01829-x. PMID 33239021.", "Hui D, Mori M, Watanabe SM, et al. Referral criteria for outpatient specialty palliative cancer care: an international consensus. Lancet Oncol. 2016;17(12):e552-e559. doi:10.1016/S1470-2045(16)30577-0. PMID 27924753.", "Pitzer S, Kutschar P, Paal P, et al. Barriers for adult patients to access palliative care in hospitals: a mixed methods systematic review. J Pain Symptom Manage. 2024;67(1):e16-e33. doi:10.1016/j.jpainsymman.2023.09.012. PMID 37717708.", "Paice JA, et al. Use of opioids for adults with pain from cancer or cancer treatment: ASCO guideline. J Clin Oncol. 2023. doi:10.1200/JCO.22.02198. PMID 36469839.", "PDQ Supportive and Palliative Care Editorial Board. Cancer Pain (PDQ®)–Health Professional Version. National Cancer Institute; actualizado 24/04/2025. Disponible en: https://www.cancer.gov/about-cancer/treatment/side-effects/pain/pain-hp-pdq", "Sande TA, et al. The use of opioids in cancer patients with renal impairment: a systematic review. Support Care Cancer. 2017;25:661-675. doi:10.1007/s00520-016-3447-0. PMID 27744535.", "Availability and accessibility of opioids for pain and palliative care in Colombia: a survey study. Rev Colomb Anestesiol. 2021. doi:10.5554/22562087.e1011. (Autores no verificados.)", "Hui D, et al. Management of breathlessness in patients with cancer: ESMO Clinical Practice Guidelines. ESMO Open. 2020;5:e001038. doi:10.1136/esmoopen-2020-001038. PMID 33303485.", "Hui D, et al. Management of dyspnea in advanced cancer: ASCO guideline. J Clin Oncol. 2021;39:1389-1411. doi:10.1200/JCO.20.03465. PMID 33617290.", "Abernethy AP, et al. Effect of palliative oxygen versus room air in relief of breathlessness in patients with refractory dyspnoea. Lancet. 2010;376:784-793. doi:10.1016/S0140-6736(10)61115-4. PMID 20816546.", "Simon ST, et al. Benzodiazepines for the relief of breathlessness in advanced malignant and non-malignant diseases in adults. Cochrane Database Syst Rev. 2016. doi:10.1002/14651858.CD007354.pub3. PMID 27764523.", "Currow D, et al. Regular, sustained-release morphine for chronic breathlessness: a multicentre, double-blind, randomised, placebo-controlled trial. Thorax. 2020;75:50-56. doi:10.1136/thoraxjnl-2019-213681. PMID 31558624.", "Ekström M, et al. Effect of regular, low-dose, extended-release morphine on chronic breathlessness in COPD: the BEAMS randomized clinical trial. JAMA. 2022;328:2022-2032. doi:10.1001/jama.2022.20206. PMID 36413230.", "Johnson MJ, et al. Lancet Respir Med. 2025;13:967-977. doi:10.1016/S2213-2600(25)00205-X. PMID 41033333.", "Higginson IJ, et al. Lancet Respir Med. 2024;12:763-774. doi:10.1016/S2213-2600(24)00187-5. PMID 39265600.", "Navari RM, et al. Olanzapine for the treatment of advanced cancer-related chronic nausea and/or vomiting: a randomized pilot trial. JAMA Oncol. 2020;6:895-899. doi:10.1001/jamaoncol.2020.1052. PMID 32379269.", "Davis M, et al. Medical management of malignant bowel obstruction in patients with advanced cancer: 2021 MASCC guideline update. Support Care Cancer. 2021;29:8089-8096. doi:10.1007/s00520-021-06438-9. PMID 34390398.", "Currow DC, et al. Double-blind, placebo-controlled, randomized trial of octreotide in malignant bowel obstruction. J Pain Symptom Manage. 2015;49:814-821. doi:10.1016/j.jpainsymman.2014.09.013. PMID 25462210.", "Davies A, et al. MASCC recommendations on the management of constipation in patients with advanced cancer. Support Care Cancer. 2020;28:23-33. doi:10.1007/s00520-019-05016-4. PMID 31396746.", "Thomas J, et al. Methylnaltrexone for opioid-induced constipation in advanced illness. N Engl J Med. 2008;358:2332-2343. doi:10.1056/NEJMoa0707377. (DOI verificado; PMID no verificado.)", "Agar MR, et al. Efficacy of oral risperidone, haloperidol, or placebo for symptoms of delirium among patients in palliative care: a randomized clinical trial. JAMA Intern Med. 2017;177:34-42. doi:10.1001/jamainternmed.2016.7491. PMID 27918778.", "Finucane AM, et al. Drug therapy for delirium in terminally ill adults. Cochrane Database Syst Rev. 2020. doi:10.1002/14651858.CD004770.pub3. PMID 31960954.", "Hui D, et al. Effect of lorazepam with haloperidol vs haloperidol alone on agitated delirium in patients with advanced cancer receiving palliative care: a randomized clinical trial. JAMA. 2017;318:1047-1056. doi:10.1001/jama.2017.11468. PMID 28975307.", "Hui D, et al. Neuroleptic strategies for terminal agitation in patients with cancer and delirium at an acute palliative care unit: a single-centre, double-blind, parallel-group, randomised trial. Lancet Oncol. 2020;21:989-998. doi:10.1016/S1470-2045(20)30307-7. PMID 32479786.", "Roeland EJ, et al. Management of cancer cachexia: ASCO guideline. J Clin Oncol. 2020;38:2438-2453. doi:10.1200/JCO.20.00611. PMID 32432946.", "Roeland EJ, et al. Cancer cachexia: ASCO guideline rapid recommendation update. J Clin Oncol. 2023;41:4178-4179. doi:10.1200/JCO.23.01280. PMID 37467399.", "Sandhya L, et al. Randomized double-blind placebo-controlled study of olanzapine for chemotherapy-related anorexia in patients with locally advanced or metastatic gastric, hepatopancreaticobiliary, and lung cancer. J Clin Oncol. 2023. doi:10.1200/JCO.22.01997. (DOI verificado; PMID no verificado.)", "El-Hajj Fuleihan G, et al. Treatment of hypercalcemia of malignancy in adults: an Endocrine Society clinical practice guideline. J Clin Endocrinol Metab. 2023;108:507-528. doi:10.1210/clinem/dgac621. PMID 36545746.", "National Institute for Health and Care Excellence. Spinal metastases and metastatic spinal cord compression (NG234). 2023. Resumen visual disponible en: https://ncbi.nlm.nih.gov/books/NBK595817/ (datos tomados del resumen visual y de una fuente secundaria; la página de recomendaciones no fue accesible).", "Wilcock A, et al. Identification of drug combinations administered by continuous subcutaneous infusion that require analysis for compatibility and stability. BMC Palliat Care. 2017;16:20. doi:10.1186/s12904-017-0195-y. PMID 28335763.", "Curtis JR, Lee RY, Brumback LC, et al. Intervention to promote communication about goals of care for hospitalized patients with serious illness: a randomized clinical trial. JAMA. 2023;329(23):2028-2037. doi:10.1001/jama.2023.8812. PMID 37210665.", "Bernacki R, Paladino J, Neville BA, et al. Effect of the Serious Illness Care Program in outpatient oncology: a cluster randomized clinical trial. JAMA Intern Med. 2019;179(6):751-759. doi:10.1001/jamainternmed.2019.0077. PMID 30870563.", "Volandes AE, Chang Y, Lakin JR, et al. An intervention to increase advance care planning among older adults with advanced cancer: a randomized clinical trial. JAMA Netw Open. 2025;8(5):e259150. doi:10.1001/jamanetworkopen.2025.9150. PMID 40343696.", "McMahan RD, Tellez I, Sudore RL. Deconstructing the complexities of advance care planning outcomes: a scoping review. J Am Geriatr Soc. 2021;69(1):234-244. doi:10.1111/jgs.16801. PMID 32894787.", "Morrison RS, Meier DE, Arnold RM. What's wrong with advance care planning? JAMA. 2021;326(16):1575-1576. doi:10.1001/jama.2021.16430. PMID 34623373.", "Wright AA, Zhang B, Ray A, et al. Associations between end-of-life discussions, patient mental health, medical care near death, and caregiver bereavement adjustment. JAMA. 2008;300(14):1665-1673. doi:10.1001/jama.300.14.1665. PMID 18840840.", "Baile WF, Buckman R, Lenzi R, et al. SPIKES—a six-step protocol for delivering bad news: application to the patient with cancer. Oncologist. 2000;5(4):302-311. doi:10.1634/theoncologist.5-4-302. PMID 10964998.", "Back AL, Arnold RM, Baile WF, Tulsky JA, Fryer-Edwards K. Approaching difficult communication tasks in oncology. CA Cancer J Clin. 2005;55(3):164-177. doi:10.3322/canjclin.55.3.164. PMID 15890639.", "Kruser JM, Nabozny MJ, Steffens NM, et al. \"Best Case/Worst Case\": training surgeons to use a novel communication tool for high-risk acute surgical problems. J Pain Symptom Manage. 2017;53(4):711-719.e5. doi:10.1016/j.jpainsymman.2016.11.014. PMID 28062349.", "Lautrette A, Darmon M, Megarbane B, et al. A communication strategy and brochure for relatives of patients dying in the ICU. N Engl J Med. 2007;356(5):469-478. doi:10.1056/NEJMoa063446. PMID 17267907.", "Kentish-Barnes N, Chevret S, Valade S, et al. A three-step support strategy for relatives of patients dying in the intensive care unit: a cluster randomised trial. Lancet. 2022;399(10325):656-664. doi:10.1016/S0140-6736(21)02176-0. PMID 35065008.", "Hudson P, Girgis A, Thomas K, et al. Do family meetings for hospitalised palliative care patients improve outcomes and reduce health care costs? A cluster randomised trial. Palliat Med. 2021;35(1):188-199. doi:10.1177/0269216320967282. PMID 33135552.", "Reisfield GM, Wallace SK, Munsell MF, et al. Survival in cancer patients undergoing in-hospital cardiopulmonary resuscitation: a meta-analysis. Resuscitation. 2006;71(2):152-160. doi:10.1016/j.resuscitation.2006.02.022. PMID 16987581.", "Hu FY, Streiter S, O'Mara L, et al. Frailty and survival after in-hospital cardiopulmonary resuscitation. J Gen Intern Med. 2022;37(14):3554-3561. doi:10.1007/s11606-021-07199-1. PMID 34981346.", "Kruser JM, Ashana DC, Courtright KR, et al. Defining the time-limited trial for patients with critical illness: an official American Thoracic Society workshop report. Ann Am Thorac Soc. 2024;21(2):187-199. doi:10.1513/AnnalsATS.202310-925ST. PMID 38063572.", "Chang DW, Neville TH, Parrish J, et al. Evaluation of time-limited trials among critically ill patients with advanced medical illnesses and reduction of nonbeneficial ICU treatments. JAMA Intern Med. 2021;181(6):786-794. doi:10.1001/jamainternmed.2021.1000. PMID 33843946.", "Marra AR, Puig-Asensio M, Balkenende E, et al. Antibiotic use during end-of-life care: a systematic literature review and meta-analysis. Infect Control Hosp Epidemiol. 2021;42(5):523-529. doi:10.1017/ice.2020.1241. PMID 33172507.", "Wright AA, Keating NL, Balboni TA, et al. Place of death: correlations with quality of life of patients with cancer and predictors of bereaved caregivers' mental health. J Clin Oncol. 2010;28(29):4457-4464. doi:10.1200/JCO.2009.26.3863. PMID 20837950.", "Buur C, Zachariae R, Komischke-Konnerup KB, et al. Risk factors for prolonged grief symptoms: a systematic review and meta-analysis. Clin Psychol Rev. 2024;107:102375. doi:10.1016/j.cpr.2023.102375. PMID 38181586.", "Ley 1733 de 2014 (8 de septiembre). Texto consultado en el Gestor Normativo de Función Pública. Disponible en: https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=59379", "Resolución 2665 de 2018 (25 de junio), Ministerio de Salud y Protección Social, que reglamenta el documento de voluntad anticipada (deroga la Resolución 1051 de 2016). Diario Oficial 50.635. Disponible en: https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?i=79092", "Resolución 000813 de 2026 (28 de abril), Ministerio de Salud y Protección Social, sobre el derecho a morir dignamente. Diario Oficial 53.476. Deroga las Resoluciones 971 de 2021 y 825 de 2018 y modifica parcialmente la Resolución 13437 de 1991. Leída en una compilación secundaria; pendiente de confirmar en la fuente oficial. Disponible en: https://normograma.com/keralty/compilacion/docs/resolucion_minsaludps_0813_2026.htm", "Quinn KL, et al. JAMA Netw Open. 2021;4(3):e210677. doi:10.1001/jamanetworkopen.2021.0677. PMID 33662135.", "Quinn KL, et al. BMJ. 2020;370:m2257. doi:10.1136/bmj.m2257. PMID 32631907.", "Sahlollbey N, et al. Eur J Heart Fail. 2020;22:2340-2346. doi:10.1002/ejhf.1783. PMID 32176831.", "Chotalia R, et al. Am J Hosp Palliat Care. 2026. doi:10.1177/10499091261446602. PMID 42029288.", "Rogers JG, et al. J Am Coll Cardiol. 2017;70:331-341. doi:10.1016/j.jacc.2017.05.030. PMID 28705314.", "Courtès MG, et al. Curr Heart Fail Rep. 2026;23:40. doi:10.1007/s11897-026-00772-x. PMID 42593585.", "Janssen DJA, et al. Eur Respir J. 2023;62:2202014. doi:10.1183/13993003.02014-2022. PMID 37290789.", "O'Connor NR, et al. Clin J Am Soc Nephrol. 2013;8:2117-2122. doi:10.2215/CJN.04110413. PMID 24202133.", "Jongejan M, et al. Kidney Med. 2026;8:101430. doi:10.1016/j.xkme.2026.101430. PMID 42529257.", "Haddadin Y, et al. Trials. 2025;26:193. doi:10.1186/s13063-025-08873-z. PMID 40468365.", "Creutzfeldt CJ, et al. Stroke. 2025;56:e75-e86. doi:10.1161/STR.0000000000000479. PMID 39676661.", "Kluger BM, et al. JAMA Neurol. 2020;77:551-560. doi:10.1001/jamaneurol.2019.4992. PMID 32040141.", "Mitchell SL, et al. N Engl J Med. 2009;361:1529-1538. doi:10.1056/NEJMoa0902234. PMID 19828530.", "Davies N, et al. Cochrane Database Syst Rev. 2021;8:CD013503. doi:10.1002/14651858.CD013503.pub2. PMID 34387363.", "Teno JM, et al. Arch Intern Med. 2012;172:697-701. doi:10.1001/archinternmed.2012.1200. PMID 22782196.", "Givens JL, et al. Arch Intern Med. 2010;170:1102-1107. doi:10.1001/archinternmed.2010.181. PMID 20625013.", "Hanson LC, et al. JAMA Intern Med. 2017;177:24-31. doi:10.1001/jamainternmed.2016.7031. PMID 27893884.", "Gilbert T, et al. Lancet. 2018;391:1775-1782. doi:10.1016/S0140-6736(18)30668-8. PMID 29706364.", "Church S, et al. BMC Geriatr. 2020;20:393. doi:10.1186/s12877-020-01801-7. PMID 33028215.", "Murtagh FEM, et al. Palliat Med. 2019;33:1045-1057. doi:10.1177/0269216319854264. PMID 31185804.", "Warden V, et al. J Am Med Dir Assoc. 2003;4:9-15. doi:10.1097/01.JAM.0000043422.31640.F7. PMID 12807591. (Referencia verificada; contenido no extraído.)", "Dewidar O, et al. Palliat Med. 2026;40:21-30. doi:10.1177/02692163251393817. PMID 41299841.", "Steinhauser KE, et al. Arch Intern Med. 2006;166:101-105. doi:10.1001/archinte.166.1.101. PMID 16401817.", "Fitchett G, et al. J Health Care Chaplain. 2017;23:98-112. doi:10.1080/08854726.2017.1294861. PMID 28368718.", "Bruera E, Hui D, Dalal S, et al. Parenteral hydration in patients with advanced cancer: a multicenter, double-blind, placebo-controlled randomized trial. J Clin Oncol. 2013;31(1):111-118. doi:10.1200/JCO.2012.44.6518. PMID 23169523.", "Buchan EJ, Haywood A, Syrmis W, Good P. Medically assisted hydration for adults receiving palliative care. Cochrane Database Syst Rev. 2023;12:CD006273. doi:10.1002/14651858.CD006273.pub4. PMID 38095590.", "Good P, Richard R, Syrmis W, Jenkins-Marsh S, Stephens J. Medically assisted nutrition for adult palliative care patients. Cochrane Database Syst Rev. 2014;(4):CD006274. doi:10.1002/14651858.CD006274.pub3. PMID 24760679."];
+  var BLOQUES = [
+    { n: 1, nombre: 'Apertura', ini: 0, fin: 5, color: 'var(--b1)' },
+    { n: 2, nombre: 'Identificación y pronóstico', ini: 5, fin: 15, color: 'var(--b2)' },
+    { n: 3, nombre: 'Modelos de atención', ini: 15, fin: 20, color: 'var(--b3)' },
+    { n: 4, nombre: 'Control de síntomas', ini: 20, fin: 35, color: 'var(--b4)' },
+    { n: 5, nombre: 'Comunicación y marco legal', ini: 35, fin: 47, color: 'var(--b5)' },
+    { n: 6, nombre: 'No oncológicos y equipo', ini: 47, fin: 56, color: 'var(--b6)' },
+    { n: 7, nombre: 'Cierre y abrebocas', ini: 56, fin: 60, color: 'var(--b7)' }
+  ];
+  function $(id) { return document.getElementById(id); }
+  function guardar(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+  function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var actual = 0;
+
+  /* ── Agenda de la portada ── */
+  var ag = $('agenda');
+  BLOQUES.forEach(function (b) {
+    var d = document.createElement('div');
+    d.style.setProperty('--c', b.color);
+    var t = document.createElement('b'); t.textContent = b.n + ' · ' + b.nombre;
+    var s = document.createElement('span'); s.textContent = b.ini + '–' + b.fin + ' min';
+    d.appendChild(t); d.appendChild(s); ag.appendChild(d);
+  });
+
+  /* ── Navegación ── */
+  function animarBarras(slide) {
+    [].forEach.call(slide.querySelectorAll('.pista i[data-w]'), function (i) {
+      if (i.closest('.oculto')) return;
+      i.style.width = '0';
+      requestAnimationFrame(function () { requestAnimationFrame(function () { i.style.width = (Number(i.dataset.w) / 60 * 100) + '%'; }); });
+    });
+  }
+  function mostrar(n, sinHash) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    slides[actual].classList.remove('activa');
+    actual = n;
+    var s = slides[actual];
+    s.classList.add('activa');
+    s.scrollTop = 0;
+    var b = BLOQUES[Number(s.dataset.bloque) - 1];
+    $('chipBloque').textContent = 'Bloque ' + b.n;
+    $('chipBloque').style.background = b.color;
+    $('tituloBloque').textContent = b.nombre + ' · ' + s.dataset.titulo;
+    $('planBloque').textContent = 'plan ' + b.ini + '–' + b.fin + ' min';
+    $('contador').textContent = (actual + 1) + ' / ' + slides.length;
+    $('progreso').style.width = ((actual + 1) / slides.length * 100) + '%';
+    var notas = s.querySelector('.notas');
+    $('textoNotas').innerHTML = notas ? notas.innerHTML : '<p>Sin notas.</p>';
+    animarBarras(s);
+    pintarReloj();
+    if (!sinHash) { try { history.replaceState(null, '', '#' + (actual + 1)); } catch (e) {} }
+    var h = s.querySelector('h1,h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  $('btnAnt').addEventListener('click', function () { mostrar(actual - 1); });
+  $('btnSig').addEventListener('click', function () { mostrar(actual + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    var escribiendo = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+    if ($('mapa').classList.contains('abierto')) { if (e.key === 'Escape') cerrarMapa(); return; }
+    if (escribiendo) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && t.tagName !== 'BUTTON')) { e.preventDefault(); mostrar(actual + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); mostrar(actual - 1); }
+    else if (e.key === 'Home') { mostrar(0); }
+    else if (e.key === 'End') { mostrar(slides.length - 1); }
+    else if (e.key === 'n' || e.key === 'N') { alternarNotas(); }
+    else if (e.key === 'm' || e.key === 'M') { abrirMapa(); }
+    else if (e.key === 'f' || e.key === 'F') { pantallaCompleta(); }
+    else if (e.key === 't' || e.key === 'T') { alternarReloj(); }
+  });
+
+  /* deslizar en pantallas táctiles */
+  var x0 = null;
+  $('deck').addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  $('deck').addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 70) mostrar(actual + (dx < 0 ? 1 : -1));
+  });
+
+  /* ── Notas, mapa, pantalla completa ── */
+  function alternarNotas() {
+    var on = document.body.classList.toggle('con-notas');
+    $('btnNotas').setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  $('btnNotas').addEventListener('click', alternarNotas);
+  function abrirMapa() {
+    var cont = $('mapaGrupos'); cont.textContent = '';
+    BLOQUES.forEach(function (b) {
+      var g = document.createElement('div'); g.className = 'grupo';
+      var h = document.createElement('h3'); h.textContent = 'Bloque ' + b.n + ' · ' + b.nombre + ' (' + b.ini + '–' + b.fin + ' min)';
+      h.style.color = b.color; g.appendChild(h);
+      var l = document.createElement('div'); l.className = 'lista';
+      slides.forEach(function (s, i) {
+        if (Number(s.dataset.bloque) !== b.n) return;
+        var bt = document.createElement('button'); bt.type = 'button';
+        bt.textContent = (i + 1) + '. ' + s.dataset.titulo;
+        if (i === actual) bt.className = 'actual';
+        bt.addEventListener('click', function () { cerrarMapa(); mostrar(i); });
+        l.appendChild(bt);
+      });
+      g.appendChild(l); cont.appendChild(g);
+    });
+    $('mapa').classList.add('abierto');
+    $('btnCerrarMapa').focus();
+  }
+  function cerrarMapa() { $('mapa').classList.remove('abierto'); }
+  $('btnMapa').addEventListener('click', abrirMapa);
+  $('btnCerrarMapa').addEventListener('click', cerrarMapa);
+  function pantallaCompleta() {
+    try {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    } catch (e) {}
+  }
+  $('btnFull').addEventListener('click', pantallaCompleta);
+
+  /* ── Cronómetro de la sesión ── */
+  var seg = 0, marcha = null;
+  function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r; }
+  function pintarReloj() {
+    $('reloj').textContent = fmt(seg);
+    var b = BLOQUES[Number(slides[actual].dataset.bloque) - 1];
+    $('btnReloj').classList.toggle('tarde', seg > b.fin * 60);
+    $('reloj').classList.toggle('tarde', seg > b.fin * 60);
+    $('btnReloj').title = 'Cronómetro (T) · este bloque termina en el minuto ' + b.fin;
+  }
+  function alternarReloj() {
+    if (marcha) { clearInterval(marcha); marcha = null; $('btnReloj').setAttribute('aria-pressed', 'false'); }
+    else { marcha = setInterval(function () { seg++; pintarReloj(); }, 1000); $('btnReloj').setAttribute('aria-pressed', 'true'); }
+  }
+  $('btnReloj').addEventListener('click', alternarReloj);
+
+  /* ── Revelar genérico ── */
+  [].forEach.call(document.querySelectorAll('[data-revela]'), function (b) {
+    b.addEventListener('click', function () {
+      var t = $(b.dataset.revela); t.classList.remove('oculto'); t.classList.add('revelado'); animarBarras(t);
+    });
+  });
+
+  /* ── Encuesta inicial ── */
+  $('estimacion').addEventListener('input', function () { $('valorEstimacion').textContent = this.value; });
+  $('btnRevelarEncuesta').addEventListener('click', function () {
+    var v = Number($('estimacion').value);
+    var r = $('resultadoEncuesta'); r.classList.remove('oculto'); r.classList.add('revelado');
+    $('vEst').textContent = v + ' %';
+    $('barEst').style.width = '0';
+    requestAnimationFrame(function () { requestAnimationFrame(function () { $('barEst').style.width = (v / 60 * 100) + '%'; }); });
+    [].forEach.call(r.querySelectorAll('.pista i[data-w]'), function (i) {
+      i.style.width = '0';
+      requestAnimationFrame(function () { requestAnimationFrame(function () { i.style.width = (Number(i.dataset.w) / 60 * 100) + '%'; }); });
+    });
+  });
+
+  /* ── 2x2 de la pregunta sorpresa ── */
+  [].forEach.call(document.querySelectorAll('.celda'), function (c) {
+    c.setAttribute('aria-pressed', 'false');
+    c.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('.celda'), function (o) { o.setAttribute('aria-pressed', 'false'); });
+      c.setAttribute('aria-pressed', 'true');
+      $('expPS').innerHTML = '<p></p>'; $('expPS').firstChild.textContent = c.dataset.exp;
+    });
+  });
+
+  /* ── Pestañas (viñetas y enfermedades) ── */
+  [].forEach.call(document.querySelectorAll('.tabs[role=tablist]'), function (lista) {
+    var tabs = [].slice.call(lista.querySelectorAll('[role=tab]'));
+    function activar(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        $(t.getAttribute('aria-controls')).classList.toggle('oculto', !on);
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.tabIndex = i === 0 ? 0 : -1;
+      t.addEventListener('click', function () { activar(t); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault(); e.stopPropagation();
+          var j = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+          activar(tabs[j]); tabs[j].focus();
+        }
+      });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-vin]'), function (b) {
+    b.addEventListener('click', function () {
+      var r = $('rv' + b.dataset.vin); r.classList.remove('oculto'); r.classList.add('revelado');
+    });
+  });
+
+  /* ── Votación ── */
+  [].forEach.call(document.querySelectorAll('[data-voto]'), function (b) {
+    b.addEventListener('click', function () { var c = $(b.dataset.voto); c.textContent = Number(c.textContent) + 1; });
+  });
+
+  /* ── Caso con tarjetas de decisión ── */
+  [].forEach.call(document.querySelectorAll('.paso'), function (paso) {
+    var retro = paso.querySelector('.retro');
+    [].forEach.call(paso.querySelectorAll('.opcion'), function (op) {
+      op.addEventListener('click', function () {
+        var ok = op.dataset.ok === '1';
+        op.classList.add(ok ? 'correcta' : 'incorrecta');
+        retro.innerHTML = '<div class="' + (ok ? 'ok' : 'mal') + '"><p></p></div>';
+        retro.querySelector('p').textContent = op.dataset.retro;
+        if (ok) {
+          var sig = paso.nextElementSibling;
+          if (sig && sig.classList.contains('paso')) { sig.classList.remove('bloqueado'); }
+        }
+      });
+    });
+  });
+
+  /* ── Tarjetas que giran ── */
+  [].forEach.call(document.querySelectorAll('.giro'), function (g) {
+    g.addEventListener('click', function () { g.setAttribute('aria-pressed', g.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); });
+  });
+
+  /* ── Protocolo de seis pasos ── */
+  var PASOS = [
+    ['Entorno', 'Preparar el entorno: lugar privado, sentarse, apagar interrupciones, invitar a quien la persona quiera.'],
+    ['Percepción', 'Explorar la percepción: «¿Qué le han explicado hasta ahora sobre su enfermedad?»'],
+    ['Invitación', 'Obtener la invitación: averiguar cuánto quiere saber la persona y quién más debe estar.'],
+    ['Información', 'Dar la información en porciones pequeñas, sin tecnicismos, comprobando qué se entendió.'],
+    ['Emoción', 'Responder a la emoción: nombrarla, validarla y dar silencio antes de seguir.'],
+    ['Plan', 'Resumir y planificar: próximos pasos, qué se hará para el confort y cuándo se vuelve a hablar.']
+  ];
+  var stp = $('stepper'), det = $('pasoDetalle'), pasoAct = 0;
+  function pintarPaso(i) {
+    pasoAct = i;
+    [].forEach.call(stp.children, function (b, k) { b.setAttribute('aria-selected', k === i ? 'true' : 'false'); b.tabIndex = k === i ? 0 : -1; });
+    det.innerHTML = '<h3></h3><p></p>';
+    det.querySelector('h3').textContent = (i + 1) + ' · ' + PASOS[i][0];
+    det.querySelector('p').textContent = PASOS[i][1];
+  }
+  PASOS.forEach(function (p, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab');
+    b.innerHTML = '<span>' + (i + 1) + '</span>'; b.appendChild(document.createTextNode(p[0]));
+    b.addEventListener('click', function () { pintarPaso(i); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault(); e.stopPropagation();
+        var j = (pasoAct + (e.key === 'ArrowRight' ? 1 : PASOS.length - 1)) % PASOS.length;
+        pintarPaso(j); stp.children[j].focus();
+      }
+    });
+    stp.appendChild(b);
+  });
+  pintarPaso(0);
+
+  /* ── Juego de roles: cuenta regresiva y lista ── */
+  var restante = 240, rolInt = null;
+  function pintarRol() { $('cuentaRol').textContent = fmt(restante); }
+  $('btnRol').addEventListener('click', function () {
+    if (rolInt) { clearInterval(rolInt); rolInt = null; this.textContent = 'Continuar'; return; }
+    this.textContent = 'Pausar';
+    rolInt = setInterval(function () {
+      restante = Math.max(0, restante - 1); pintarRol();
+      if (!restante) { clearInterval(rolInt); rolInt = null; $('btnRol').textContent = 'Iniciar'; $('cuentaRol').textContent = '¡Tiempo!'; }
+    }, 1000);
+  });
+  $('btnRolReset').addEventListener('click', function () {
+    clearInterval(rolInt); rolInt = null; restante = 240; pintarRol(); $('btnRol').textContent = 'Iniciar';
+    [].forEach.call($('checklistRol').querySelectorAll('input'), function (c) { c.checked = false; });
+    contarRol();
+  });
+  function contarRol() {
+    var c = $('checklistRol').querySelectorAll('input'), n = 0;
+    [].forEach.call(c, function (x) { if (x.checked) n++; });
+    $('puntajeRol').textContent = n + '/' + c.length;
+  }
+  $('checklistRol').addEventListener('change', contarRol);
+
+  /* ── Arrastrar tareas ── */
+  var DISC = [['enf', 'Enfermería'], ['ts', 'Trabajo social'], ['psi', 'Psicología'], ['esp', 'Acompañamiento espiritual'], ['fis', 'Fisioterapia']];
+  var TAREAS = [
+    ['Aplicar PAINAD y registrar el dolor en cada turno', 'enf'],
+    ['Reposicionar y cuidar la piel con meta de confort', 'enf'],
+    ['Higiene de la boca y valoración del confort al alimentar', 'enf'],
+    ['Identificar al cuidador principal y su red de apoyo para el alta', 'ts'],
+    ['Orientar trámites y apoyos administrativos de la familia', 'ts'],
+    ['Explorar temores de la familia ante la decisión sobre antibióticos', 'psi'],
+    ['Tamizar sobrecarga y duelo anticipado del cuidador', 'psi'],
+    ['Preguntar a la familia si está en paz y ofrecer acompañamiento según sus creencias', 'esp'],
+    ['Movilización suave y posiciones que alivien la respiración', 'fis']
+  ];
+  var banco = $('bancoTareas'), zonas = $('zonas'), elegida = null;
+  function crearTarea(t, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'tarea'; b.draggable = true;
+    b.textContent = t[0]; b.dataset.ok = t[1]; b.id = 'tarea' + i; b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('dragstart', function (e) { try { e.dataTransfer.setData('text/plain', b.id); } catch (x) {} });
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (elegida === b) { b.setAttribute('aria-pressed', 'false'); elegida = null; return; }
+      if (elegida) elegida.setAttribute('aria-pressed', 'false');
+      elegida = b; b.setAttribute('aria-pressed', 'true');
+    });
+    return b;
+  }
+  function montarTareas() {
+    banco.textContent = ''; zonas.textContent = ''; elegida = null; $('resTareas').textContent = '';
+    DISC.forEach(function (d) {
+      var z = document.createElement('div'); z.className = 'zona'; z.dataset.disc = d[0];
+      z.setAttribute('role', 'button'); z.tabIndex = 0; z.setAttribute('aria-label', 'Asignar a ' + d[1]);
+      var h = document.createElement('h3'); h.textContent = d[1]; z.appendChild(h);
+      z.addEventListener('dragover', function (e) { e.preventDefault(); z.classList.add('sobre'); });
+      z.addEventListener('dragleave', function () { z.classList.remove('sobre'); });
+      z.addEventListener('drop', function (e) {
+        e.preventDefault(); z.classList.remove('sobre');
+        var id = ''; try { id = e.dataTransfer.getData('text/plain'); } catch (x) {}
+        var t = id && $(id); if (t) z.appendChild(t);
+      });
+      function soltarElegida() { if (elegida) { z.appendChild(elegida); elegida.setAttribute('aria-pressed', 'false'); elegida = null; } }
+      z.addEventListener('click', soltarElegida);
+      z.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); soltarElegida(); } });
+      zonas.appendChild(z);
+    });
+    var orden = TAREAS.map(function (t, i) { return [t, i]; });
+    for (var k = orden.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var tmp = orden[k]; orden[k] = orden[j]; orden[j] = tmp; }
+    orden.forEach(function (o) { banco.appendChild(crearTarea(o[0], o[1])); });
+  }
+  banco.addEventListener('click', function () { if (elegida) { banco.appendChild(elegida); elegida.setAttribute('aria-pressed', 'false'); elegida = null; } });
+  $('btnRevisarTareas').addEventListener('click', function () {
+    var bien = 0, total = TAREAS.length, sin = banco.querySelectorAll('.tarea').length;
+    [].forEach.call(zonas.querySelectorAll('.tarea'), function (t) {
+      var ok = t.parentNode.dataset.disc === t.dataset.ok;
+      t.classList.toggle('bien', ok); t.classList.toggle('malo', !ok);
+      if (ok) bien++;
+    });
+    var r = $('resTareas');
+    r.innerHTML = '<div class="neutro"><p></p></div>';
+    r.querySelector('p').textContent = bien + ' de ' + total + ' en su disciplina principal' + (sin ? ' · faltan ' + sin + ' por asignar' : '') +
+      '. Varias tareas son compartidas: lo importante es que cada una tenga un responsable y que el plan se hable en equipo.';
+  });
+  $('btnReiniciarTareas').addEventListener('click', montarTareas);
+  montarTareas();
+
+  /* ── Texto libre del abrebocas ── */
+  var ta = $('respuestaSueros');
+  var previo = leer('paliativo-hosp-sueros');
+  if (previo) ta.value = previo;
+  ta.addEventListener('input', function () {
+    $('estadoSueros').textContent = guardar('paliativo-hosp-sueros', ta.value) ? 'Guardado en este equipo' : 'No se pudo guardar en este navegador';
+  });
+  $('btnBorrarSueros').addEventListener('click', function () { ta.value = ''; guardar('paliativo-hosp-sueros', ''); $('estadoSueros').textContent = 'Borrado'; });
+
+  /* ── Cuestionario final ── */
+  var QUIZ = [
+    { q: 'La pregunta sorpresa tiene un VPN del 93 % y un VPP del 37 %. ¿Qué implica?',
+      o: ['Un «no me sorprendería» confirma que la persona morirá en el año', 'Es un buen primer filtro, que debe seguirse de SPICT o NECPAL y de una valoración', 'No sirve en pacientes no oncológicos'], c: 1,
+      r: 'Su VPN alto casi descarta muerte al año cuando sí sorprendería; su VPP bajo obliga a un segundo paso [8,10].' },
+    { q: '¿Qué mostró el ensayo más grande de interconsulta por defecto en hospitalizados?',
+      o: ['Redujo la estancia hospitalaria', 'Aumentó interconsultas, órdenes de no reanimación y egresos a hospicio, sin cambiar la estancia', 'Aumentó la mortalidad'], c: 1,
+      r: 'La interconsulta pasó del 16,6 % al 43,9 %; la estancia, desenlace primario, no cambió [19].' },
+    { q: 'Persona con morfina, TFG de 25 mL/min y mioclonías. ¿Cuál es el mejor paso?',
+      o: ['Aumentar la morfina', 'Añadir haloperidol', 'Rotar a un opioide más seguro en falla renal y tratar precipitantes'], c: 2,
+      r: 'Sugiere neurotoxicidad inducida por opioides: rotar y tratar infección, deshidratación y fármacos [26,27].' },
+    { q: 'Disnea con SpO₂ de 94 %. ¿Qué recomienda la guía consultada?',
+      o: ['Oxígeno por cánula a todos', 'Medidas no farmacológicas como el ventilador de mano; oxígeno solo si hay hipoxemia', 'Benzodiacepina como primera línea'], c: 1,
+      r: 'No se recomienda oxígeno con SpO₂ ≥90 %; las benzodiacepinas no son primera línea [29,31,32].' },
+    { q: 'En delirium leve a moderado, los antipsicóticos orales…',
+      o: ['Mejoraron los síntomas frente al placebo', 'Empeoraron los síntomas, y el haloperidol se asoció a mayor mortalidad', 'No tuvieron efectos adversos'], c: 1,
+      r: 'Ensayo doble ciego de 247 pacientes: HR de mortalidad 1,73 con haloperidol [42].' },
+    { q: 'Según la Resolución 2665 de 2018, el documento de voluntad anticipada puede formalizarse…',
+      o: ['Solo ante notario', 'Ante notario, ante dos testigos o ante el médico tratante', 'Solo con aprobación del comité de ética'], c: 1,
+      r: 'Ningún tercero puede exigir la vía notarial; el médico debe preguntar si existe y anexarlo a la historia [72].' }
+  ];
+  var aciertos = 0, quiz = $('quiz');
+  QUIZ.forEach(function (it, i) {
+    var p = document.createElement('div'); p.className = 'pregunta';
+    var h = document.createElement('h3'); h.textContent = (i + 1) + '. ' + it.q; p.appendChild(h);
+    var ops = document.createElement('div'); ops.className = 'opciones';
+    var retro = document.createElement('div'); retro.className = 'retro'; retro.setAttribute('aria-live', 'polite');
+    var resp = false;
+    it.o.forEach(function (t, k) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'opcion'; b.textContent = t;
+      b.addEventListener('click', function () {
+        var ok = k === it.c;
+        b.classList.add(ok ? 'correcta' : 'incorrecta');
+        if (!resp) { resp = true; if (ok) aciertos++; $('puntajeQuiz').textContent = aciertos + '/' + QUIZ.length; }
+        retro.innerHTML = '<div class="' + (ok ? 'ok' : 'mal') + '"><p></p></div>';
+        retro.querySelector('p').textContent = (ok ? 'Correcto. ' : 'No. ') + it.r;
+      });
+      ops.appendChild(b);
+    });
+    p.appendChild(ops);
+    var clave = document.createElement('div'); clave.className = 'oculto';
+    clave.innerHTML = '<div class="ok"><p></p></div>';
+    clave.querySelector('p').textContent = 'Respuesta: ' + it.o[it.c] + '. ' + it.r;
+    p.appendChild(retro); p.appendChild(clave);
+    quiz.appendChild(p);
+  });
+
+  /* ── Referencias ── */
+  var ol = $('refs');
+  REFS.forEach(function (r) {
+    var li = document.createElement('li');
+    var html = r.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/doi:\s*(10\.\S+?)(?=[.;,]?(\s|$))/g, 'doi:<a href="https://doi.org/$1">$1</a>')
+      .replace(/(https?:\/\/[^\s<]+[^\s<.,;])/g, function (u) { return u.indexOf('doi.org/') > -1 ? u : '<a href="' + u + '">' + u + '</a>'; })
+      .replace(/PMID:?\s*(\d{6,9})/g, 'PMID <a href="https://pubmed.ncbi.nlm.nih.gov/$1/">$1</a>');
+    li.innerHTML = html;
+    ol.appendChild(li);
+  });
+
+  /* ── Inicio ── */
+  var h = parseInt((location.hash || '').replace('#', ''), 10);
+  slides[0].classList.add('activa');
+  mostrar(h > 0 ? h - 1 : 0, true);
+})();
+</script>
+</body>
+</html>
